@@ -1,5 +1,6 @@
 ﻿
 using ERP_TECKIO.Modelos;
+using SistemaERP.Model.Procomi.Proyecto;
 
 namespace ERP_TECKIO.Modelos;
 
@@ -66,4 +67,5 @@ public partial class Proyecto
     public virtual ICollection<Requisicion> Requisicions { get; set; } = new List<Requisicion>();
     public virtual ICollection<Contrato> Contratos { get; set; } = new List<Contrato>();
     public virtual ICollection<ConjuntoIndirectos> ConjuntoIndirectos { get; set; } = new List<ConjuntoIndirectos>();
+    public virtual ICollection<ProgramacionEstimadaGantt> ProgramacionEstimadaGantts { get; set; } = new List<ProgramacionEstimadaGantt>();
 }

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;using SistemaERP.BLL.Procesos;
 using ERP_TECKIO.Modelos;
 
 

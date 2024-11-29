@@ -1,13 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-
-
-
+﻿using DocumentFormat.OpenXml.InkML;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using ERP_TECKIO;
+using Microsoft.EntityFrameworkCore;using SistemaERP.BLL.Procesos;
+using SistemaERP.BLL.Procesos;
 
-using Microsoft.EntityFrameworkCore;
 
-namespace ERP_TECKIO.Controllers
+
+
+namespace SistemaERP.API.Alumno01Controllers.Procomi
 {
     [Route("api/preciounitariodetalle/1")]
     [ApiController]

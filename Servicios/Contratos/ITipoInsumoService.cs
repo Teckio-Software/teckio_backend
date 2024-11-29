@@ -1,6 +1,6 @@
 ﻿
 
-using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;using SistemaERP.BLL.Procesos;
 
 /// <summary>
 /// Interfaz que contiene los tipos de insumo

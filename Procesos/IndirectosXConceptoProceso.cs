@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;using SistemaERP.BLL.Procesos;
 
 
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 
 namespace ERP_TECKIO
 {

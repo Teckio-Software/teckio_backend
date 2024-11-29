@@ -1,11 +1,11 @@
 ﻿
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 
 
 
-using ERP_TECKIO.DTO;
+
 
 
 

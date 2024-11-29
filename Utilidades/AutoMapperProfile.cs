@@ -2,6 +2,9 @@
 using ERP_TECKIO.Modelos;
 
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using SistemaERP.DTO.Presupuesto.Gantt;
+using SistemaERP.Model.Procomi.Proyecto;
+
 
 namespace ERP_TECKIO
 {
@@ -692,6 +695,30 @@ namespace ERP_TECKIO
             CreateMap<Impuesto, ImpuestoDTO>();
             CreateMap<ImpuestoDTO, Impuesto>();
             #endregion
+            CreateMap<ProgramacionEstimadaGantt, ProgramacionEstimadaGanttDTO>()
+                .ForMember(destino => destino.Id,
+                opt => opt.MapFrom(origen => Convert.ToString(origen.Id)))
+                .ForMember(destino => destino.Start,
+                opt => opt.MapFrom(origen => origen.FechaInicio))
+                .ForMember(destino => destino.End,
+                opt => opt.MapFrom(origen => origen.FechaTermino))
+                .ForMember(destino => destino.Parent,
+                opt => opt.MapFrom(origen => origen.IdPadre));
+            CreateMap<ProgramacionEstimadaGanttDTO, ProgramacionEstimadaGantt>()
+                .ForMember(z => z.IdConceptoNavigation,
+                opt => opt.Ignore())
+                .ForMember(z => z.IdPrecioUnitarioNavigation,
+                opt => opt.Ignore())
+                .ForMember(z => z.IdProyectoNavigation,
+                opt => opt.Ignore())
+                .ForMember(destino => destino.Id,
+                opt => opt.MapFrom(origen => Convert.ToInt32(origen.Id)))
+                .ForMember(destino => destino.FechaInicio,
+                opt => opt.MapFrom(origen => origen.Start))
+                .ForMember(destino => destino.FechaTermino,
+                opt => opt.MapFrom(origen => origen.End))
+                .ForMember(destino => destino.IdPadre,
+                opt => opt.MapFrom(origen => origen.Parent));
             #endregion
             #region Facturas
 

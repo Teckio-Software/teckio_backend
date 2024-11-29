@@ -1,5 +1,5 @@
 using ERP_TECKIO;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;using SistemaERP.BLL.Procesos;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);

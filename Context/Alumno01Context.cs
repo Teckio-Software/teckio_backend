@@ -1,6 +1,9 @@
 ﻿
-using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;using SistemaERP.BLL.Procesos;
 using ERP_TECKIO.Modelos;
+using SistemaERP.Model.Procomi.Proyecto;
+using ERP_TECKIO;
+
 
 public partial class Alumno01Context : DbContext
 {
@@ -44,6 +47,8 @@ public partial class Alumno01Context : DbContext
     public virtual DbSet<MovimientoBancarioSaldo> MovimientoBancarioSaldos { get; set; }
 
     public virtual DbSet<CuentaContable> CuentaContables { get; set; }
+
+    public virtual DbSet<DependenciaProgramacionEstimada> Dependencias { get; set; }
 
     public virtual DbSet<DetalleXContrato> DetalleXContratos { get; set; }
 
@@ -94,6 +99,8 @@ public partial class Alumno01Context : DbContext
     public virtual DbSet<PrecioUnitarioDetalle> PrecioUnitarioDetalles { get; set; }
 
     public virtual DbSet<ProgramacionEstimada> ProgramacionEstimada { get; set; }
+
+    public virtual DbSet<ProgramacionEstimadaGantt> ProgramacionEstimadaGantts { get; set; }
 
     public virtual DbSet<Proyecto> Proyectos { get; set; }
 
@@ -169,6 +176,16 @@ public partial class Alumno01Context : DbContext
             entity.ToTable("ClasificacionImpuesto", "Factura");
 
             entity.Property(e => e.TipoClasificacionImpuesto).HasMaxLength(150);
+        });
+
+        modelBuilder.Entity<DependenciaProgramacionEstimada>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Dependen__3214EC0726AAF715");
+
+            entity.HasOne(d => d.IdProgramacionEstimadaGanttNavigation).WithMany(p => p.Dependencia)
+                .HasForeignKey(d => d.IdProgramacionEstimadaGantt)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Dependenc__IdPro__2BE97B0D");
         });
 
         modelBuilder.Entity<DetalleValidacion>(entity =>
@@ -1434,6 +1451,31 @@ public partial class Alumno01Context : DbContext
                 .HasForeignKey(d => d.IdProyecto)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Programac__idPro__51300E55");
+        });
+
+        modelBuilder.Entity<ProgramacionEstimadaGantt>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Programa__3214EC07B9AEE129");
+
+            entity.ToTable("ProgramacionEstimadaGantt");
+
+            entity.Property(e => e.FechaInicio).HasColumnType("datetime");
+            entity.Property(e => e.FechaTermino).HasColumnType("datetime");
+
+            entity.HasOne(d => d.IdConceptoNavigation).WithMany(p => p.ProgramacionEstimadaGantts)
+                .HasForeignKey(d => d.IdConcepto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Programac__IdCon__290D0E62");
+
+            entity.HasOne(d => d.IdPrecioUnitarioNavigation).WithMany(p => p.ProgramacionEstimadaGantts)
+                .HasForeignKey(d => d.IdPrecioUnitario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Programac__IdPre__2818EA29");
+
+            entity.HasOne(d => d.IdProyectoNavigation).WithMany(p => p.ProgramacionEstimadaGantts)
+                .HasForeignKey(d => d.IdProyecto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Programac__IdPro__2724C5F0");
         });
 
         modelBuilder.Entity<Proyecto>(entity =>

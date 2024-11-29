@@ -1,8 +1,8 @@
 ﻿
-using ERP_TECKIO.DTO;
 
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
+using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+using Microsoft.EntityFrameworkCore;using SistemaERP.BLL.Procesos;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

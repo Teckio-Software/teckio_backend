@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Proyecto\\AspelApiMiguelito\\ERP_Rfacil_backend\\ERP_TECKIO\\ERP_TECKIO.csproj": {}
+    "C:\\Proyecto\\ERP_Procomi_backend\\ERP_TECKIO.csproj": {}
   },
   "projects": {
-    "C:\\Proyecto\\AspelApiMiguelito\\ERP_Rfacil_backend\\ERP_TECKIO\\ERP_TECKIO.csproj": {
+    "C:\\Proyecto\\ERP_Procomi_backend\\ERP_TECKIO.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Proyecto\\AspelApiMiguelito\\ERP_Rfacil_backend\\ERP_TECKIO\\ERP_TECKIO.csproj",
+        "projectUniqueName": "C:\\Proyecto\\ERP_Procomi_backend\\ERP_TECKIO.csproj",
         "projectName": "ERP_TECKIO",
-        "projectPath": "C:\\Proyecto\\AspelApiMiguelito\\ERP_Rfacil_backend\\ERP_TECKIO\\ERP_TECKIO.csproj",
+        "projectPath": "C:\\Proyecto\\ERP_Procomi_backend\\ERP_TECKIO.csproj",
         "packagesPath": "C:\\Users\\teckio_dev\\.nuget\\packages\\",
-        "outputPath": "C:\\Proyecto\\AspelApiMiguelito\\ERP_Rfacil_backend\\ERP_TECKIO\\obj\\",
+        "outputPath": "C:\\Proyecto\\ERP_Procomi_backend\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",

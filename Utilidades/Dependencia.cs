@@ -1,5 +1,6 @@
 ﻿using ERP_TECKIO;
 using ERP_TECKIO.Servicios;
+using SistemaERP.BLL.Procesos;
 namespace ERP_TECKIO
 {
     public static class Dependencia

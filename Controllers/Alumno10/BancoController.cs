@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using ERP_TECKIO.DTO;
+using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+
 
 
 namespace ERP_TECKIO.API.Controllers.Alumno10

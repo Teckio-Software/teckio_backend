@@ -32,4 +32,5 @@ public partial class PrecioUnitario
     public virtual ICollection<ProgramacionEstimada> ProgramacionEstimada { get; set; } = new List<ProgramacionEstimada>();
     public virtual ICollection<DetalleXContrato> DetallesXContrato { get; set; } = new List<DetalleXContrato>();
     public virtual ICollection<PorcentajeAcumuladoContrato> PorcentajeAcumuladoContrato { get; set; } = new List<PorcentajeAcumuladoContrato>();
+    public virtual ICollection<ProgramacionEstimadaGantt> ProgramacionEstimadaGantts { get; set; } = new List<ProgramacionEstimadaGantt>();
 }

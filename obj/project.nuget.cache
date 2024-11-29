@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "oI/B96bWU8Y=",
+  "dgSpecHash": "bXVnB+gwiXA=",
   "success": true,
-  "projectFilePath": "C:\\Proyecto\\AspelApiMiguelito\\ERP_Rfacil_backend\\ERP_TECKIO\\ERP_TECKIO.csproj",
+  "projectFilePath": "C:\\Proyecto\\ERP_Procomi_backend\\ERP_TECKIO.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\teckio_dev\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\teckio_dev\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",

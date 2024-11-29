@@ -1,7 +1,7 @@
 ﻿
-using ERP_TECKIO.DTO;
 
-using Microsoft.AspNetCore.Mvc;
+
+using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 
 
 namespace ERP_TECKIO

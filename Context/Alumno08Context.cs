@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;using SistemaERP.BLL.Procesos;
 using ERP_TECKIO.Modelos;
 
 public partial class Alumno08Context : DbContext

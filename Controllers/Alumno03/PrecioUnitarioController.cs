@@ -1,13 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-
-
-
+﻿
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ERP_TECKIO.Controllers
+
+using SistemaERP.BLL.Procesos;
+using ERP_TECKIO;
+
+
+using SistemaERP.Model.Procomi.Proyecto;
+
+namespace SistemaERP.API.Alumno03Controllers.Procomi
 {
     [Route("api/preciounitario/3")]
     [ApiController]
@@ -44,7 +48,10 @@ namespace ERP_TECKIO.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearPrecioUnitario-Empresa2")]
         public async Task<ActionResult<List<PrecioUnitarioDTO>>> CrearYObtener([FromBody] PrecioUnitarioDTO registro)
         {
-            return await _precioUnitarioProceso.CrearYObtener(registro);
+            using (var db = new Alumno03Context(_Options.Options))
+            {
+                return await _precioUnitarioProceso.CrearYObtener(registro, db);
+            }
         }
 
         [HttpPost("editar")]
@@ -95,6 +102,24 @@ namespace ERP_TECKIO.Controllers
                 registros = await _precioUnitarioProceso.CrearRegistrosDetallesCopia(datos.Registros, datos.IdPrecioUnitarioBase, datos.IdProyecto, db);
             }
             return registros;
+        }
+
+        [HttpPost("actualizarInsumos")]
+        public async Task<ActionResult> ActualizarInsumosExcel(int i)
+        {
+            await _precioUnitarioProceso.ActualizarInsumosBimsa(i);
+            return NoContent();
+        }
+
+        [HttpPost("recalcularDetallesBimsa")]
+        public async Task<ActionResult> RecalcularDetallesBimsa(int i)
+        {
+            var registros = new List<PrecioUnitarioDTO>();
+            using (var db = new Alumno03Context(_Options.Options))
+            {
+                await _precioUnitarioProceso.RecalcularArmadoPrecioUnitario(1, db);
+            }
+            return NoContent();
         }
 
         [HttpPost("copiararmadocomoconcepto")]

@@ -1,4 +1,8 @@
 ﻿
+
+
+using SistemaERP.Model.Procomi.Proyecto;
+
 namespace ERP_TECKIO.Modelos;
 public partial class Concepto
 {
@@ -26,4 +30,5 @@ public partial class Concepto
     public virtual ICollection<IndirectosXConcepto> IndirectosXConceptos { get; set; } = new List<IndirectosXConcepto>();
 
     public virtual ICollection<ProgramacionEstimada> ProgramacionEstimada { get; set; } = new List<ProgramacionEstimada>();
+    public virtual ICollection<ProgramacionEstimadaGantt> ProgramacionEstimadaGantts { get; set; } = new List<ProgramacionEstimadaGantt>();
 }

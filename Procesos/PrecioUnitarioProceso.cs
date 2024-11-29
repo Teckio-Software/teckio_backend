@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-
-
-using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 using ERP_TECKIO.Modelos;
+using ERP_TECKIO;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;using SistemaERP.BLL.Procesos;
+using SistemaERP.BLL.Contrato.Gantt;
+using SistemaERP.DTO.Presupuesto.Gantt;
 using SpreadsheetLight;
+using System.Text.Json;
 
-namespace ERP_TECKIO
+namespace SistemaERP.BLL.Procesos
 {
     public class PrecioUnitarioProceso<TContext> where TContext : DbContext
     {
@@ -18,6 +19,7 @@ namespace ERP_TECKIO
         private readonly IInsumoService<TContext> _InsumoService;
         private readonly IGeneradoresService<TContext> _GeneradoresService;
         private readonly IProgramacionEstimadaService<TContext> _ProgramacionEstimadaService;
+        private readonly IProgramacionEstimadaGanttService<TContext> _ProgramacionEstimadaGanttService;
         private readonly IFactorSalarioRealService<TContext> _FSRService;
         private readonly IConjuntoIndirectosService<TContext> _conjuntoIndirectosService;
         private readonly IMapper _Mapper;
@@ -30,6 +32,7 @@ namespace ERP_TECKIO
             , IInsumoService<TContext> insumoService
             , IGeneradoresService<TContext> generadoresService
             , IProgramacionEstimadaService<TContext> programacionEstimadaService
+            , IProgramacionEstimadaGanttService<TContext> programacionEstimadaGanttService
             , IFactorSalarioRealService<TContext> FSRService
             , IConjuntoIndirectosService<TContext> conjuntoIndirectosService
             , IMapper mapper
@@ -42,6 +45,7 @@ namespace ERP_TECKIO
             _InsumoService = insumoService;
             _GeneradoresService = generadoresService;
             _ProgramacionEstimadaService = programacionEstimadaService;
+            _ProgramacionEstimadaGanttService = programacionEstimadaGanttService;
             _FSRService = FSRService;
             _conjuntoIndirectosService = conjuntoIndirectosService;
             _Mapper = mapper;
@@ -50,12 +54,12 @@ namespace ERP_TECKIO
         public async Task RecalcularPrecioUnitario(PrecioUnitarioDTO registro)
         {
             var registros = await _PrecioUnitarioService.ObtenerTodos(registro.IdProyecto);
-            for(int i = 0; i < registros.Count; i++)
+            for (int i = 0; i < registros.Count; i++)
             {
                 registros[i].Expandido = true;
             }
             var conceptos = await _ConceptoService.ObtenerTodos(registro.IdProyecto);
-            for(int i = 0; i < registros.Count; i++)
+            for (int i = 0; i < registros.Count; i++)
             {
                 var concepto = conceptos.Where(z => z.Id == registros[i].IdConcepto).FirstOrDefault();
                 registros[i].Descripcion = concepto.Descripcion;
@@ -64,7 +68,7 @@ namespace ERP_TECKIO
                 registros[i].CostoUnitario = concepto.CostoUnitario;
             }
             var existePadre = registros.Where(z => z.Id == registro.IdPrecioUnitarioBase);
-            if(existePadre.Count() > 0)
+            if (existePadre.Count() > 0)
             {
                 var padre = existePadre.FirstOrDefault();
                 var hijos = registros.Where(z => z.IdPrecioUnitarioBase == padre.Id).ToList();
@@ -87,7 +91,7 @@ namespace ERP_TECKIO
             var insumos = await _InsumoService.ObtenXIdProyecto(precioUnitario.IdProyecto);
             var detalles = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(registro.IdPrecioUnitario);
             var detallesFiltrados = detalles.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.IdPrecioUnitarioDetallePerteneciente).ToList();
-            for(int i = 0; i < detallesFiltrados.Count; i++)
+            for (int i = 0; i < detallesFiltrados.Count; i++)
             {
                 var insumo = insumos.Where(z => z.id == detallesFiltrados[i].IdInsumo).FirstOrDefault();
                 detallesFiltrados[i].Codigo = insumo.Codigo;
@@ -97,7 +101,7 @@ namespace ERP_TECKIO
                 detallesFiltrados[i].IdTipoInsumo = insumo.idTipoInsumo;
                 detallesFiltrados[i].IdFamiliaInsumo = insumo.idFamiliaInsumo;
             }
-            if(detallesFiltrados.Count == 4)
+            if (detallesFiltrados.Count == 4)
             {
                 var x = 0;
             }
@@ -108,7 +112,7 @@ namespace ERP_TECKIO
                 {
                     decimal total = 0;
                     var detallesManoObra = detallesFiltrados.Where(z => z.IdTipoInsumo == 10000).ToList();
-                    if(detallesManoObra.Count > 0)
+                    if (detallesManoObra.Count > 0)
                     {
                         for (int j = 0; j < detallesManoObra.Count; j++)
                         {
@@ -118,7 +122,7 @@ namespace ERP_TECKIO
                     var insumoPorcentaje = insumos.Where(z => z.id == detallesPorcentajeManoObra[i].IdInsumo).FirstOrDefault();
                     insumoPorcentaje.CostoUnitario = total;
                     await _InsumoService.Editar(insumoPorcentaje);
-                    await _PrecioUnitarioDetalleService.Editar(detallesManoObra[i]); 
+                    await _PrecioUnitarioDetalleService.Editar(detallesManoObra[i]);
                 }
             }
         }
@@ -126,7 +130,7 @@ namespace ERP_TECKIO
         public async Task RecalcularPadresPrecioUnitario(PrecioUnitarioDTO registro, List<PrecioUnitarioDTO> registros)
         {
             var conceptos = await _ConceptoService.ObtenerTodos(registro.IdProyecto);
-            for(int i = 0; i < registros.Count; i++)
+            for (int i = 0; i < registros.Count; i++)
             {
                 var concepto = conceptos.Where(z => z.Id == registros[i].IdConcepto).FirstOrDefault();
                 registros[i].Descripcion = concepto.Descripcion;
@@ -134,7 +138,7 @@ namespace ERP_TECKIO
                 registros[i].Unidad = concepto.Unidad;
                 registros[i].CostoUnitario = concepto.CostoUnitario;
             }
-            if(registro.IdPrecioUnitarioBase > 0)
+            if (registro.IdPrecioUnitarioBase > 0)
             {
                 var padre = registros.Where(z => z.Id == registro.IdPrecioUnitarioBase).FirstOrDefault();
                 var hijos = registros.Where(z => z.IdPrecioUnitarioBase == padre.Id).ToList();
@@ -168,7 +172,7 @@ namespace ERP_TECKIO
         public async Task<DatosAuxiliaresPrecioUnitarioDTO> RecalcularDetalles(int IdPrecioUnitario, List<PrecioUnitarioDetalleDTO> detalles, List<InsumoDTO> insumos)
         {
             var PU = await _PrecioUnitarioService.ObtenXId(IdPrecioUnitario);
-            for(int i = 0; i < detalles.Count; i++)
+            for (int i = 0; i < detalles.Count; i++)
             {
                 var insumo = insumos.Where(z => z.id == detalles[i].IdInsumo).FirstOrDefault();
                 detalles[i].CostoUnitario = insumo.CostoUnitario;
@@ -249,7 +253,7 @@ namespace ERP_TECKIO
                             await RecalcularPorcentajeManoDeObra(detallesFiltradosSinPorcentaje[i]);
                         }
                         var detallesParaPrueba = detalles.Where(z => z.IdPrecioUnitarioDetallePerteneciente == detallesFiltradosSinPorcentaje[i].Id).ToList();
-                        if(detallesParaPrueba.Count > 0)
+                        if (detallesParaPrueba.Count > 0)
                         {
                             datosDetalles = await RecalcularDetallesHijos(IdPrecioUnitario, detallesFiltradosSinPorcentaje[i], detalles, insumos);
                             insumos.Where(z => z.id == detallesFiltradosSinPorcentaje[i].IdInsumo).FirstOrDefault().CostoUnitario = datosDetalles.Total;
@@ -400,7 +404,8 @@ namespace ERP_TECKIO
             }
             var conjuntoIndirectos = await _conjuntoIndirectosService.ObtenerXIdProyecto(IdProyecto);
             decimal indirectos = 0;
-            if (conjuntoIndirectos.Porcentaje == 0 || conjuntoIndirectos.Id <= 0) {
+            if (conjuntoIndirectos.Porcentaje == 0 || conjuntoIndirectos.Id <= 0)
+            {
                 indirectos = 1;
             }
             else
@@ -504,7 +509,7 @@ namespace ERP_TECKIO
             var proyecto = await _ProyectoService.ObtenXId(IdProyecto);
             var conceptos = await _ConceptoService.ObtenerTodos(IdProyecto);
             var lista = await _PrecioUnitarioService.ObtenerTodos(IdProyecto);
-            for(int i = 0; i < lista.Count; i++)
+            for (int i = 0; i < lista.Count; i++)
             {
                 if (lista[i].Nivel == 1)
                 {
@@ -553,7 +558,7 @@ namespace ERP_TECKIO
             return padres;
         }
 
-        public async Task<ActionResult<List<PrecioUnitarioDTO>>> CrearYObtener(PrecioUnitarioDTO registro)
+        public async Task<ActionResult<List<PrecioUnitarioDTO>>> CrearYObtener(PrecioUnitarioDTO registro, DbContext db)
         {
             try
             {
@@ -568,28 +573,29 @@ namespace ERP_TECKIO
                 registro.IdConcepto = nuevoConcepto.Id;
                 var nuevoRegistro = await _PrecioUnitarioService.CrearYObtener(registro);
                 var Proyecto = await _ProyectoService.ObtenXId(registro.IdProyecto);
-                ProgramacionEstimadaDTO nuevaProgramacion = new ProgramacionEstimadaDTO();
-                nuevaProgramacion.IdConcepto = nuevoRegistro.IdConcepto;
-                nuevaProgramacion.Inicio = Proyecto.FechaInicio;
-                nuevaProgramacion.Termino = Proyecto.FechaInicio;
+                ProgramacionEstimadaGanttDTO nuevaProgramacion = new ProgramacionEstimadaGanttDTO();
+                //ProgramacionEstimadaDTO nuevaProgramacion = new ProgramacionEstimadaDTO();
                 nuevaProgramacion.IdProyecto = Proyecto.Id;
                 nuevaProgramacion.IdPrecioUnitario = nuevoRegistro.Id;
-                nuevaProgramacion.DiasTranscurridos = 1;
-                nuevaProgramacion.Nivel = nuevoRegistro.Nivel;
-                nuevaProgramacion.Progreso = 0;
-                nuevaProgramacion.IdPredecesora = 0;
-                if(nuevoRegistro.IdPrecioUnitarioBase != 0)
+                nuevaProgramacion.IdConcepto = nuevoRegistro.IdConcepto;
+                nuevaProgramacion.Start = Proyecto.FechaInicio;
+                nuevaProgramacion.End = Proyecto.FechaInicio;
+                nuevaProgramacion.Duracion = 1;
+                nuevaProgramacion.Progress = 0;
+                nuevaProgramacion.Comando = 0;
+                nuevaProgramacion.DesfaseComando = 0;
+                nuevaProgramacion.Parent = null;
+                if (nuevoRegistro.IdPrecioUnitarioBase != 0)
                 {
-                    var programacionesEstimadas = await _ProgramacionEstimadaService.ObtenerTodosXProyecto(Proyecto.Id);
+                    var programacionesEstimadas = await _ProgramacionEstimadaGanttService.ObtenerXIdProyecto(Proyecto.Id, db);
                     var programacionEstimadaPadre = programacionesEstimadas.Where(z => z.IdPrecioUnitario == nuevoRegistro.IdPrecioUnitarioBase).FirstOrDefault();
-                    nuevaProgramacion.IdPadre = programacionEstimadaPadre.Id;
+                    nuevaProgramacion.Parent = Convert.ToString(programacionEstimadaPadre.Id);
                 }
                 else
                 {
-                    nuevaProgramacion.IdPadre = 0;
+                    nuevaProgramacion.Parent = "0";
                 }
-                await _ProgramacionEstimadaService.CrearYObtener(nuevaProgramacion);
-                nuevaProgramacion.Predecesor = "";
+                await _ProgramacionEstimadaGanttService.CrearYObtener(nuevaProgramacion);
                 var lista = await ObtenerPrecioUnitario(nuevoRegistro.IdProyecto);
                 return lista;
             }
@@ -607,7 +613,7 @@ namespace ERP_TECKIO
                 ConceptoDTO concepto = new ConceptoDTO();
                 var conceptos = await _ConceptoService.ObtenerTodos(registro.IdProyecto);
                 var existeConcepto = conceptos.Where(z => z.Descripcion.ToLower() == registro.Descripcion.ToLower()).ToList();
-                if(existeConcepto.Count > 0)
+                if (existeConcepto.Count > 0)
                 {
                     var conceptoEncontrado = existeConcepto.FirstOrDefault();
                     concepto.Codigo = conceptoEncontrado.Codigo;
@@ -669,7 +675,8 @@ namespace ERP_TECKIO
             {
                 ConceptoDTO concepto = new ConceptoDTO();
                 var obtenconcepto = await _ConceptoService.ObtenXId(registro.IdConcepto);
-                if (obtenconcepto.Unidad != registro.Unidad) {
+                if (obtenconcepto.Unidad != registro.Unidad)
+                {
                     var eliminarG = await _GeneradoresService.EliminarTodos(registro.Id);
                 }
                 concepto.Id = registro.IdConcepto;
@@ -683,13 +690,13 @@ namespace ERP_TECKIO
                 var precioUnitario = await _PrecioUnitarioService.ObtenXId(registro.Id);
                 var generadores = await _GeneradoresService.ObtenerTodosXIdPrecioUnitario(registro.Id);
                 decimal cantidadTotal = 0;
-                for(int i = 0; i < generadores.Count; i++)
+                for (int i = 0; i < generadores.Count; i++)
                 {
                     cantidadTotal = cantidadTotal + generadores[i].X * generadores[i].Y * generadores[i].Z * generadores[i].Cantidad;
                 }
-                if(cantidadTotal != registro.Cantidad)
+                if (cantidadTotal != registro.Cantidad)
                 {
-                    for(int i = 0; i < generadores.Count; i++)
+                    for (int i = 0; i < generadores.Count; i++)
                     {
                         await _GeneradoresService.Eliminar(generadores[i].Id);
                     }
@@ -712,14 +719,14 @@ namespace ERP_TECKIO
             {
                 var precioUnitario = await _PrecioUnitarioService.ObtenXId(Id);
                 var registros = await _PrecioUnitarioService.ObtenerTodos(precioUnitario.IdProyecto);
-                for(int i = 0; i < registros.Count; i++)
+                for (int i = 0; i < registros.Count; i++)
                 {
                     registros[i].Expandido = true;
                 }
                 var hijos = registros.Where(z => z.IdPrecioUnitarioBase == precioUnitario.Id).ToList();
-                if(hijos.Count > 0)
+                if (hijos.Count > 0)
                 {
-                    for(int i = 0; i< hijos.Count; i++)
+                    for (int i = 0; i < hijos.Count; i++)
                     {
                         if (hijos[i].TipoPrecioUnitario == 1)
                         {
@@ -734,17 +741,17 @@ namespace ERP_TECKIO
                 }
                 var programacionesEstimadas = await _ProgramacionEstimadaService.ObtenerTodosXProyecto(precioUnitario.IdProyecto);
                 var programacionesEstimadasFiltradas = programacionesEstimadas.Where(z => z.IdPrecioUnitario == Id).ToList();
-                for(int i = 0; i < programacionesEstimadasFiltradas.Count; i++)
+                for (int i = 0; i < programacionesEstimadasFiltradas.Count; i++)
                 {
                     await _ProgramacionEstimadaService.Eliminar(programacionesEstimadasFiltradas[i].Id);
                 }
                 var detalles = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(Id);
-                for(int i = 0; i < detalles.Count; i++)
+                for (int i = 0; i < detalles.Count; i++)
                 {
                     await _PrecioUnitarioDetalleService.Eliminar(detalles[i].Id);
                 }
                 await _PrecioUnitarioService.Eliminar(Id);
-                if(precioUnitario.IdPrecioUnitarioBase > 0)
+                if (precioUnitario.IdPrecioUnitarioBase > 0)
                 {
                     var precioUnitarioPadre = await _PrecioUnitarioService.ObtenXId(precioUnitario.IdPrecioUnitarioBase);
                     await RecalcularPrecioUnitario(precioUnitarioPadre);
@@ -761,7 +768,7 @@ namespace ERP_TECKIO
         public async Task EliminarDetallesPorPrecioUnitario(int IdPrecioUnitario)
         {
             var detalles = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(IdPrecioUnitario);
-            if(detalles.Count > 0)
+            if (detalles.Count > 0)
             {
                 for (int i = 0; i < detalles.Count; i++)
                 {
@@ -920,7 +927,7 @@ namespace ERP_TECKIO
         public async Task<List<PrecioUnitarioDetalleDTO>> ObtenerDetallesHijos(PrecioUnitarioDetalleDTO registro, DbContext db)
         {
             var items = db.Database.SqlQueryRaw<string>(""""select Id, IdPrecioUnitario, IdInsumo, EsCompuesto, Cantidad, CantidadExcedente, IdPrecioUnitarioDetallePerteneciente from PrecioUnitarioDetalle where IdPrecioUnitario = '"""" + registro.IdPrecioUnitario + """"' for json path"""").ToList();
-            if(items.Count() <= 0)
+            if (items.Count() <= 0)
             {
                 return new List<PrecioUnitarioDetalleDTO>();
             }
@@ -955,7 +962,7 @@ namespace ERP_TECKIO
                 PrecioUnitarioDetalleDTO nuevoRegistro = new PrecioUnitarioDetalleDTO();
                 var precioUnitario = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
                 var FSR = await _FSRService.ObtenerTodosXProyecto(precioUnitario.IdProyecto);
-                if(registro.IdTipoInsumo == 10000 && registro.EsCompuesto != false)
+                if (registro.IdTipoInsumo == 10000 && registro.EsCompuesto != false)
                 {
                     registro.CostoUnitario = registro.CostoUnitario * FSR[0].PorcentajeFsr;
                 }
@@ -966,7 +973,7 @@ namespace ERP_TECKIO
                     var DetallesParaCalcularPorcentaje = TodosDetalles.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.IdPrecioUnitarioDetallePerteneciente).ToList();
                     decimal costo = 0;
                     var insumos = _InsumoService.ObtenXIdProyecto(precioUnitario.IdProyecto).Result;
-                    for(int i = 0; i < DetallesParaCalcularPorcentaje.Count; i++)
+                    for (int i = 0; i < DetallesParaCalcularPorcentaje.Count; i++)
                     {
                         var insumo = insumos.Where(z => z.id == DetallesParaCalcularPorcentaje[i].IdInsumo).FirstOrDefault();
                         if (insumo.idTipoInsumo == 10000)
@@ -997,7 +1004,7 @@ namespace ERP_TECKIO
                     var nuevoInsumo = await _InsumoService.CrearYObtener(insumo);
                     registro.IdInsumo = nuevoInsumo.id;
                     nuevoRegistro = await _PrecioUnitarioDetalleService.CrearYObtener(registro);
-                    if(nuevoRegistro.IdTipoInsumo == 10000)
+                    if (nuevoRegistro.IdTipoInsumo == 10000)
                     {
                         await RecalcularPorcentajeManoDeObra(nuevoRegistro);
                     }
@@ -1030,7 +1037,7 @@ namespace ERP_TECKIO
                         detallesFiltrados[i].ImporteConFormato = String.Format("{0:#,##0.00}", detallesFiltrados[i].Importe);
                     }
                     var datos = await RecalcularDetalles(nuevoRegistro.IdPrecioUnitario, detalles, insumos);
-                    for(int i = 0; i < detallesFiltrados.Count; i++)
+                    for (int i = 0; i < detallesFiltrados.Count; i++)
                     {
                         var dato = datos.Detalles.Where(z => z.Id == detallesFiltrados[i].Id).FirstOrDefault();
                         detallesFiltrados[i] = dato;
@@ -1048,7 +1055,7 @@ namespace ERP_TECKIO
                     var Insumos = await _InsumoService.ObtenXIdProyecto(precioUnitario.IdProyecto);
                     var Detalles = await _PrecioUnitarioDetalleService.ObtenerTodos();
                     var DetallesFiltrados = Detalles.Where(z => z.IdInsumo == registro.IdInsumo).ToList();
-                    if(DetallesFiltrados.Count > 0)
+                    if (DetallesFiltrados.Count > 0)
                     {
                         var Detalle = DetallesFiltrados.FirstOrDefault();
                         if (Detalle.EsCompuesto == true)
@@ -1125,7 +1132,7 @@ namespace ERP_TECKIO
         {
             var DetllesPU = detalles.Where(z => z.IdPrecioUnitario == detalleOriginal.IdPrecioUnitario).ToList();
             var detallesFiltrados = DetllesPU.Where(z => z.IdPrecioUnitarioDetallePerteneciente == detalleOriginal.Id).ToList();
-            if(detallesFiltrados.Count > 0)
+            if (detallesFiltrados.Count > 0)
             {
                 for (int i = 0; i < detallesFiltrados.Count; i++)
                 {
@@ -1173,14 +1180,14 @@ namespace ERP_TECKIO
                 var insumoEditado = await _InsumoService.Editar(insumo);
                 //await RecalcularAfectados(insumo.id);
                 await _PrecioUnitarioDetalleService.Editar(registro);
-                if(registro.IdTipoInsumo == 10000)
+                if (registro.IdTipoInsumo == 10000)
                 {
                     await RecalcularPorcentajeManoDeObra(registro);
                 }
                 var precioUnitario = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
                 var insumos = await _InsumoService.ObtenXIdProyecto(precioUnitario.IdProyecto); //Era id del proyecto pero no lo obtengo
                 var detalles = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(precioUnitario.Id);
-                for(int i = 0; i < detalles.Count; i++)
+                for (int i = 0; i < detalles.Count; i++)
                 {
                     var buscaInsumo = insumos.Where(z => z.id == detalles[i].IdInsumo).FirstOrDefault();
                     detalles[i].Codigo = buscaInsumo.Codigo;
@@ -1197,7 +1204,7 @@ namespace ERP_TECKIO
                 var detallesFiltrados = detalles.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.IdPrecioUnitarioDetallePerteneciente).ToList();
                 var datos = await RecalcularDetalles(registro.IdPrecioUnitario, detalles, insumos);
                 detalles = datos.Detalles;
-                for(int i = 0; i < detallesFiltrados.Count; i++)
+                for (int i = 0; i < detallesFiltrados.Count; i++)
                 {
                     var detalle = detalles.Where(z => z.Id == detallesFiltrados[i].Id).FirstOrDefault();
                     detallesFiltrados[i] = detalle;
@@ -1208,7 +1215,7 @@ namespace ERP_TECKIO
                 concepto.CostoUnitario = datos.Total;
                 await _ConceptoService.Editar(concepto);
                 await RecalcularPrecioUnitario(precioUnitario);
-                
+
                 return detallesFiltrados;
             }
             catch (Exception ex)
@@ -1227,7 +1234,7 @@ namespace ERP_TECKIO
                 var resultado = await _PrecioUnitarioDetalleService.Eliminar(Id);
                 var detalles = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(registro.IdPrecioUnitario);
                 var insumos = await _InsumoService.ObtenXIdProyecto(PU.IdProyecto);
-                for(int i = 0; i < detalles.Count; i++)
+                for (int i = 0; i < detalles.Count; i++)
                 {
                     var insumo = insumos.Where(z => z.id == detalles[i].IdInsumo).FirstOrDefault();
                     detalles[i].Codigo = insumo.Codigo;
@@ -1237,7 +1244,7 @@ namespace ERP_TECKIO
                     detalles[i].IdTipoInsumo = insumo.idTipoInsumo;
                     detalles[i].IdFamiliaInsumo = insumo.idFamiliaInsumo;
                 }
-                var datos= await RecalcularDetalles(registro.IdPrecioUnitario, detalles, insumos);
+                var datos = await RecalcularDetalles(registro.IdPrecioUnitario, detalles, insumos);
                 detalles = datos.Detalles;
                 insumos = datos.Insumos;
                 var precioUnitario = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
@@ -1284,7 +1291,7 @@ namespace ERP_TECKIO
             var todosDetalles = await _PrecioUnitarioDetalleService.ObtenerTodos();
             var detallesEditados = todosDetalles.Where(z => z.IdInsumo == IdInsumo).ToList();
             var insumos = await _InsumoService.ObtenXIdProyecto(insumoBase.IdProyecto);
-            for(int i = 0; i < detallesEditados.Count; i++)
+            for (int i = 0; i < detallesEditados.Count; i++)
             {
                 var insumo = insumos.Where(z => z.id == detallesEditados[i].IdInsumo).FirstOrDefault();
                 detallesEditados[i].Codigo = insumo.Codigo;
@@ -1299,7 +1306,7 @@ namespace ERP_TECKIO
                 for (int i = 0; i < detallesEditados.Count; i++)
                 {
                     var detalles = todosDetalles.Where(z => z.IdPrecioUnitario == detallesEditados[i].IdPrecioUnitario).ToList();
-                    for(int j = 0; j < detalles.Count; j++)
+                    for (int j = 0; j < detalles.Count; j++)
                     {
                         var insumo = insumos.Where(z => z.id == detalles[i].IdInsumo).FirstOrDefault();
                         detalles[j].Codigo = insumo.Codigo;
@@ -1338,7 +1345,7 @@ namespace ERP_TECKIO
                 if (precios[i].TipoPrecioUnitario == 0)
                 {
                     var hijos = await EstructurarPreciosParaCopiar(precios[i].Hijos);
-                    for(int j = 0; j < hijos.Count; j++)
+                    for (int j = 0; j < hijos.Count; j++)
                     {
                         if (hijos[j].Seleccionado == true)
                         {
@@ -1352,7 +1359,7 @@ namespace ERP_TECKIO
                     }
                     else
                     {
-                        preciosCopiar.AddRange(hijosCopiar); 
+                        preciosCopiar.AddRange(hijosCopiar);
                     }
                 }
                 else
@@ -1419,7 +1426,7 @@ namespace ERP_TECKIO
                     if (registrosFiltrados[i].TipoPrecioUnitario == 1)
                     {
                         var items = db.Database.SqlQueryRaw<string>(""""select Id, IdPrecioUnitario, IdInsumo, EsCompuesto, Cantidad, CantidadExcedente, IdPrecioUnitarioDetallePerteneciente from PrecioUnitarioDetalle where IdPrecioUnitario = '"""" + Id + """"' for json path"""").ToList();
-                        if(items.Count > 0)
+                        if (items.Count > 0)
                         {
                             string json = string.Join("", items);
                             var datos = JsonSerializer.Deserialize<List<PrecioUnitarioDetalle>>(json);
@@ -1596,7 +1603,7 @@ namespace ERP_TECKIO
                     if (existeInsumo.Count > 0)
                     {
                         var insumo = existeInsumo.FirstOrDefault();
-                        if(insumo.idTipoInsumo != 10001)
+                        if (insumo.idTipoInsumo != 10001)
                         {
                             detallesFiltrados[i].IdInsumo = insumo.id;
                             detallesFiltrados[i].Id = 0;
@@ -1691,7 +1698,7 @@ namespace ERP_TECKIO
                     if (existeInsumo.Count > 0)
                     {
                         var insumo = existeInsumo.FirstOrDefault();
-                        if(insumo.idTipoInsumo != 10001)
+                        if (insumo.idTipoInsumo != 10001)
                         {
                             detallesFiltrados[i].IdInsumo = insumo.id;
                             detallesFiltrados[i].Id = 0;
@@ -1716,7 +1723,7 @@ namespace ERP_TECKIO
                             detallesFiltrados[i].IdPrecioUnitarioDetallePerteneciente = nuevoDetallePadre.Id;
                             var nuevoDetalle = await _PrecioUnitarioDetalleService.CrearYObtener(detallesFiltrados[i]);
                         }
-                        
+
                     }
                     else
                     {
@@ -1780,7 +1787,7 @@ namespace ERP_TECKIO
             var resultados = await RecalcularDetalles(PU.Id, Detalles, insumos);
             var DetallesFiltrados = resultados.Detalles.Where(z => z.IdPrecioUnitarioDetallePerteneciente == 0).ToList();
             decimal total = 0;
-            for(int i = 0; i < DetallesFiltrados.Count; i++)
+            for (int i = 0; i < DetallesFiltrados.Count; i++)
             {
                 total = total + DetallesFiltrados[i].Importe;
             }
@@ -1798,7 +1805,7 @@ namespace ERP_TECKIO
             var IdPuBase = registrosEstructuradosParaCopiar[0].IdPrecioUnitario;
             var PU = _PrecioUnitarioService.ObtenXId(IdPrecioUnitarioBase).Result;
             var listaNuevosPU = new List<PrecioUnitarioDTO>();
-            for(int i = 0; i < registrosEstructuradosParaCopiar.Count; i++)
+            for (int i = 0; i < registrosEstructuradosParaCopiar.Count; i++)
             {
                 var nuevoPrecioUnitario = new PrecioUnitarioDTO();
                 nuevoPrecioUnitario.IdProyecto = IdProyecto;
@@ -1816,19 +1823,19 @@ namespace ERP_TECKIO
                 nuevoPrecioUnitario.PrecioUnitario = registrosEstructuradosParaCopiar[i].Importe;
                 nuevoPrecioUnitario.Importe = registrosEstructuradosParaCopiar[i].Importe;
                 nuevoPrecioUnitario.ImporteSeries = registrosEstructuradosParaCopiar[i].Importe;
-                await CrearYObtener(nuevoPrecioUnitario);
+                await CrearYObtener(nuevoPrecioUnitario, db);
                 var PUs = await ObtenerPrecioUnitarioSinEstructurar(IdProyecto);
                 var registroCreado = PUs.Where(z => z.Descripcion == nuevoPrecioUnitario.Descripcion).LastOrDefault();
                 listaNuevosPU.Add(registroCreado);
             }
 
             var Detalles0 = await ObtenerDetallesPorPU(IdPuBase, db);
-            
+
             for (int i = 0; i < registrosEstructuradosParaCopiar.Count; i++)
             {
                 var detallesACopiar = Detalles0.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registrosEstructuradosParaCopiar[i].Id);
                 var detallesACopiarCopia = new List<PrecioUnitarioDetalleCopiaDTO>();
-                foreach(PrecioUnitarioDetalleDTO detalle in detallesACopiar)
+                foreach (PrecioUnitarioDetalleDTO detalle in detallesACopiar)
                 {
                     detalle.IdPrecioUnitarioDetallePerteneciente = 0;
                     var nuevoDetalleCopia = new PrecioUnitarioDetalleCopiaDTO();
@@ -1881,7 +1888,7 @@ namespace ERP_TECKIO
             var detallesFiltrados = await EstructurarPreciosDetalleParaCopiar(detalles);
             var precioUnitarioDetalleCopia = await _PrecioUnitarioService.ObtenXId(detallesFiltrados[0].IdPrecioUnitario);
             var items = db.Database.SqlQueryRaw<string>(""""select Id, IdPrecioUnitario, IdInsumo, EsCompuesto, Cantidad, CantidadExcedente, IdPrecioUnitarioDetallePerteneciente from PrecioUnitarioDetalle where IdPrecioUnitario = '"""" + detallesFiltrados[0].IdPrecioUnitario + """"' for json path"""").ToList();
-            if(items.Count > 0)
+            if (items.Count > 0)
             {
                 string json = string.Join("", items);
                 var datos = JsonSerializer.Deserialize<List<PrecioUnitarioDetalle>>(json);
@@ -1957,7 +1964,7 @@ namespace ERP_TECKIO
         {
             var detallesFiltrados = await EstructurarPreciosDetalleParaCopiar(detalles);
             var precioUnitarioDetalleCopia = await _PrecioUnitarioService.ObtenXId(detallesFiltrados[0].IdPrecioUnitario);
-            if(registros.Count > 0)
+            if (registros.Count > 0)
             {
                 var insumos = await _InsumoService.ObtenXIdProyecto(IdProyecto);
                 var registrosFiltrados = new List<PrecioUnitarioDetalleDTO>();
@@ -1996,10 +2003,10 @@ namespace ERP_TECKIO
                     }
                     else
                     {
-                        
+
                         var idPadreBase = detallesFiltrados[i].Id;
                         var existeInsumo = insumos.Where(z => z.Codigo.ToLower() == registrosFiltrados[i].Codigo.ToLower()).ToList();
-                        if(existeInsumo.Count > 0)
+                        if (existeInsumo.Count > 0)
                         {
                             var insumo = existeInsumo.FirstOrDefault();
                             detallesFiltrados[i].IdInsumo = insumo.id;
@@ -2050,6 +2057,76 @@ namespace ERP_TECKIO
             }
         }
 
+        public async Task ActualizarInsumosBimsa(int numero)
+        {
+            string path = @"D:\ExcelBimsa\InsumosParaActualizar.xlsx";
+            SLDocument sl = new SLDocument(path);
+            var insumos = await _InsumoService.ObtenXIdProyecto(10000);
+            int iRow = iRow = 2;
+            while (!string.IsNullOrEmpty(sl.GetCellValueAsString(iRow, 2)))
+            {
+                string ClaveInsumo = sl.GetCellValueAsString(iRow, 1);
+                var insumosRegistros = insumos.Where(z => z.Codigo == ClaveInsumo).ToList();
+                if (insumosRegistros.Count > 0)
+                {
+                    var insumo = insumosRegistros.FirstOrDefault();
+                    decimal valor = sl.GetCellValueAsDecimal(iRow, 2);
+                    insumo.CostoUnitario = valor;
+                    await _InsumoService.Editar(insumo);
+                }
+                iRow++;
+            }
+        }
+
+        public async Task RecalcularArmadoPrecioUnitario(int IdPrecioUnitario, DbContext db)
+        {
+            var insumos = await _InsumoService.ObtenXIdProyecto(10000);
+            var detalles = await ObtenerDetallesPorPU(10001, db);
+            var detallesCompuestos = detalles.Where(z => z.EsCompuesto == true).ToList();
+            foreach (PrecioUnitarioDetalleDTO registro in detallesCompuestos)
+            {
+                var detallesHijos = detalles.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.Id).ToList();
+                decimal total = 0;
+                foreach (PrecioUnitarioDetalleDTO registroHijo in detallesHijos)
+                {
+                    if (registroHijo.EsCompuesto == true)
+                    {
+                        var precioRegistroHijo = await RecalcularArmadoHijos(insumos, detalles, registroHijo);
+                        total = total + precioRegistroHijo;
+                    }
+                    else
+                    {
+                        total = total + registroHijo.Importe;
+                    }
+                }
+                var inusmo = insumos.Where(z => z.id == registro.IdInsumo).FirstOrDefault();
+                inusmo.CostoUnitario = total;
+                await _InsumoService.Editar(inusmo);
+            }
+        }
+
+        public async Task<decimal> RecalcularArmadoHijos(List<InsumoDTO> insumos, List<PrecioUnitarioDetalleDTO> detalles, PrecioUnitarioDetalleDTO padre)
+        {
+            var detallesHijos = detalles.Where(z => z.IdPrecioUnitarioDetallePerteneciente == padre.Id).ToList();
+            decimal total = 0;
+            foreach (PrecioUnitarioDetalleDTO registro in detallesHijos)
+            {
+                if (registro.EsCompuesto == true)
+                {
+                    var precioRegistroHijo = await RecalcularArmadoHijos(insumos, detalles, registro);
+                    total = total + precioRegistroHijo;
+                }
+                else
+                {
+                    total = total + registro.Importe;
+                }
+            }
+            var inusmo = insumos.Where(z => z.id == padre.IdInsumo).FirstOrDefault();
+            inusmo.CostoUnitario = total;
+            await _InsumoService.Editar(inusmo);
+            return total;
+        }
+
         public async Task CreardeExcel(int numero)
         {
             string path = @"D:\ExcelBimsa\Libro1.xlsx";
@@ -2076,7 +2153,7 @@ namespace ERP_TECKIO
                     {
                         var nuevoDetalle = new PrecioUnitarioDetalleDTO();
                         nuevoDetalle.IdPrecioUnitarioDetallePerteneciente = detalle[0].Id;
-                        if(ClaveHijos == "100200-1000")
+                        if (ClaveHijos == "100200-1000")
                         {
                             var nuevoInsumo = new InsumoCreacionDTO();
                             nuevoInsumo.Codigo = insumoHijo[0].Codigo;
@@ -2170,7 +2247,7 @@ namespace ERP_TECKIO
                         nuevoDetalleHijo.CantidadExcedente = 0;
                         var detalleHijoCreado = await _PrecioUnitarioDetalleService.CrearYObtener(nuevoDetalleHijo);
                     }
-                } 
+                }
                 iRow++;
             }
         }
@@ -2275,7 +2352,7 @@ namespace ERP_TECKIO
                     }
                 }
             }
-            for(int i = 0; i < ExplosionDeInsumos.Count; i++)
+            for (int i = 0; i < ExplosionDeInsumos.Count; i++)
             {
                 var aux = ExplosionDeInsumosSinRepetir.Where(z => z.Codigo == ExplosionDeInsumos[i].Codigo).ToList();
                 if (aux.Count > 0)
@@ -2323,37 +2400,37 @@ namespace ERP_TECKIO
             var lista = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(IdPrecioUnitario);
             var insumos = await _InsumoService.ObtenXIdProyecto(PU.IdProyecto);
             var listaFiltrada = lista.ToList();
-                for(int i = 0; i<listaFiltrada.Count; i++)
-                {
-                    var insumo = insumos.Where(z => z.id == listaFiltrada[i].IdInsumo).FirstOrDefault();
-                    listaFiltrada[i].Codigo = insumo.Codigo;
-                    listaFiltrada[i].Descripcion = insumo.Descripcion;
-                    listaFiltrada[i].Unidad = insumo.Unidad;
-                    listaFiltrada[i].CostoUnitario = insumo.CostoUnitario;
-                    listaFiltrada[i].IdTipoInsumo = insumo.idTipoInsumo;
-                    listaFiltrada[i].IdFamiliaInsumo = insumo.idFamiliaInsumo;
-                    listaFiltrada[i].Importe = listaFiltrada[i].Cantidad* listaFiltrada[i].CostoUnitario;
-                    listaFiltrada[i].ImporteConFormato = String.Format("{0:#,##0.00}", listaFiltrada[i].Importe);
-                    listaFiltrada[i].CantidadConFormato = String.Format("{0:#,##0.0000}", listaFiltrada[i].Cantidad);
-                    listaFiltrada[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", listaFiltrada[i].CostoUnitario);
-                }
-                return listaFiltrada;
+            for (int i = 0; i < listaFiltrada.Count; i++)
+            {
+                var insumo = insumos.Where(z => z.id == listaFiltrada[i].IdInsumo).FirstOrDefault();
+                listaFiltrada[i].Codigo = insumo.Codigo;
+                listaFiltrada[i].Descripcion = insumo.Descripcion;
+                listaFiltrada[i].Unidad = insumo.Unidad;
+                listaFiltrada[i].CostoUnitario = insumo.CostoUnitario;
+                listaFiltrada[i].IdTipoInsumo = insumo.idTipoInsumo;
+                listaFiltrada[i].IdFamiliaInsumo = insumo.idFamiliaInsumo;
+                listaFiltrada[i].Importe = listaFiltrada[i].Cantidad * listaFiltrada[i].CostoUnitario;
+                listaFiltrada[i].ImporteConFormato = String.Format("{0:#,##0.00}", listaFiltrada[i].Importe);
+                listaFiltrada[i].CantidadConFormato = String.Format("{0:#,##0.0000}", listaFiltrada[i].Cantidad);
+                listaFiltrada[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", listaFiltrada[i].CostoUnitario);
+            }
+            return listaFiltrada;
         }
 
-public async Task CorreccionBimsa()
+        public async Task CorreccionBimsa()
         {
             var registros = await ObtenerDetallesSinFiltrar(2);
-            for(int i = 0; i < registros.Count; i++)
+            for (int i = 0; i < registros.Count; i++)
             {
                 if (registros[i].EsCompuesto == true)
                 {
                     var hijos = registros.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registros[i].Id);
-                    if(hijos.Count() <= 0)
+                    if (hijos.Count() <= 0)
                     {
                         var registrosOriginalConElInsumo = registros.Where(z => z.IdInsumo == registros[i].IdInsumo);
                         var registroOriginal = registrosOriginalConElInsumo.FirstOrDefault();
                         var detallesACopiar = registros.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registroOriginal.Id).ToList();
-                        for(int j = 0; j < detallesACopiar.Count; j++)
+                        for (int j = 0; j < detallesACopiar.Count; j++)
                         {
                             var nuevoRegistroParaCrear = new PrecioUnitarioDetalleDTO();
                             nuevoRegistroParaCrear.IdPrecioUnitario = detallesACopiar[j].IdPrecioUnitario;
@@ -2388,11 +2465,11 @@ public async Task CorreccionBimsa()
 
         public async Task<List<PrecioUnitarioDetalleDTO>> CrearDetallesHijosCorreccion(List<PrecioUnitarioDetalleDTO> registros, PrecioUnitarioDetalleDTO registroCreado)
         {
-            if(registroCreado.EsCompuesto == true)
+            if (registroCreado.EsCompuesto == true)
             {
                 var registroOriginal = registros.Where(z => z.IdInsumo == registroCreado.IdInsumo).FirstOrDefault();
                 var registrosHijos = registros.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registroOriginal.Id).ToList();
-                foreach(PrecioUnitarioDetalleDTO registroHijo in registrosHijos)
+                foreach (PrecioUnitarioDetalleDTO registroHijo in registrosHijos)
                 {
                     var nuevoRegistroParaCrear = new PrecioUnitarioDetalleDTO();
                     nuevoRegistroParaCrear.IdPrecioUnitario = registroHijo.IdPrecioUnitario;
@@ -2428,7 +2505,7 @@ public async Task CorreccionBimsa()
         {
             var preciosUnitarios = await ObtenerPrecioUnitarioSinEstructurar(IdProyecto);
             var conceptos = preciosUnitarios.Where(z => z.TipoPrecioUnitario == 1).ToList();
-            foreach(PrecioUnitarioDTO concepto in conceptos)
+            foreach (PrecioUnitarioDTO concepto in conceptos)
             {
                 var insumos = await _InsumoService.ObtenXIdProyecto(IdProyecto);
                 var detalles = await ObtenerDetallesPorPU(concepto.Id, db);
@@ -2440,21 +2517,25 @@ public async Task CorreccionBimsa()
             }
         }
 
-        public async Task<bool> EditarIndirectoXConcepto(int IdConcepto, decimal PorcentajeIndirecto) { 
+        public async Task<bool> EditarIndirectoXConcepto(int IdConcepto, decimal PorcentajeIndirecto)
+        {
             var PU = await _PrecioUnitarioService.ObtenXIdConcepto(IdConcepto);
             PU.PorcentajeIndirecto = PorcentajeIndirecto;
             return await EditarIndirectoPrecioUnitario(PU);
         }
 
-        public async Task<bool> EditarIndirectoPrecioUnitario(PrecioUnitarioDTO registro) {
+        public async Task<bool> EditarIndirectoPrecioUnitario(PrecioUnitarioDTO registro)
+        {
             var registros = await _PrecioUnitarioService.ObtenerTodos(registro.IdProyecto);
             var existenHijos = registros.Where(z => z.IdPrecioUnitarioBase == registro.Id).ToList();
             var concepto = await _ConceptoService.ObtenXId(registro.IdConcepto);
 
             concepto.PorcentajeIndirecto = registro.PorcentajeIndirecto;
             var editarPadre = await _ConceptoService.Editar(concepto);
-            if (existenHijos.Count() > 0) {
-                foreach (var hijos in existenHijos) {
+            if (existenHijos.Count() > 0)
+            {
+                foreach (var hijos in existenHijos)
+                {
                     hijos.PorcentajeIndirecto = registro.PorcentajeIndirecto;
                     await EditarIndirectosPrecioUnitarioHijo(hijos, registros);
                 }
@@ -2462,7 +2543,8 @@ public async Task CorreccionBimsa()
             return true;
         }
 
-        public async Task<PrecioUnitarioDTO> EditarIndirectosPrecioUnitarioHijo(PrecioUnitarioDTO padre, List<PrecioUnitarioDTO> registros) {
+        public async Task<PrecioUnitarioDTO> EditarIndirectosPrecioUnitarioHijo(PrecioUnitarioDTO padre, List<PrecioUnitarioDTO> registros)
+        {
             var concepto = await _ConceptoService.ObtenXId(padre.IdConcepto);
             concepto.PorcentajeIndirecto = padre.PorcentajeIndirecto;
             var editarPadre = await _ConceptoService.Editar(concepto);

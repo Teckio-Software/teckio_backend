@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 
+using SistemaERP.BLL.Procesos;
+using ERP_TECKIO;
 
 
+using SistemaERP.Model.Procomi.Proyecto;
 
-
-
-
-namespace ERP_TECKIO
+namespace SistemaERP.API.Alumno25Controllers.Procomi
 {
     [Route("api/preciounitario/25")]
     [ApiController]
@@ -48,7 +48,10 @@ namespace ERP_TECKIO
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearPrecioUnitario-Empresa2")]
         public async Task<ActionResult<List<PrecioUnitarioDTO>>> CrearYObtener([FromBody] PrecioUnitarioDTO registro)
         {
-            return await _precioUnitarioProceso.CrearYObtener(registro);
+            using (var db = new Alumno25Context(_Options.Options))
+            {
+                return await _precioUnitarioProceso.CrearYObtener(registro, db);
+            }
         }
 
         [HttpPost("editar")]
