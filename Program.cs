@@ -1,3 +1,4 @@
+using ERP_TECKIO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -180,6 +181,8 @@ builder.Services.AddDbContext<Alumno44Context>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Equipo7"));
 });
+
+builder.Services.InyectarDependencias(builder.Configuration);
 
 // Add services to the container.
 
