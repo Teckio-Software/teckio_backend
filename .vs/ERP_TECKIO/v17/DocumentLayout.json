@@ -1,7 +1,156 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Proyecto\\AspelApiMiguelito\\ERP_Rfacil_backend\\ERP_TECKIO\\",
-  "Documents": [],
+  "WorkspaceRootPath": "C:\\Proyecto\\ERP_Procomi_backend\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\utilidades\\dependencia.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:utilidades\\dependencia.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\alumno36\\preciounitariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\alumno36\\preciounitariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\alumno35\\preciounitariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\alumno35\\preciounitariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\alumno01\\preciounitariodetallecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\alumno01\\preciounitariodetallecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\alumno01\\preciounitariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\alumno01\\preciounitariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\modelos\\presupuesto\\gantt\\dependenciaprogramacionestimada.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:modelos\\presupuesto\\gantt\\dependenciaprogramacionestimada.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\context\\alumno01context.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:context\\alumno01context.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\equipo5\\preciounitariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\equipo5\\preciounitariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\equipo1\\preciounitariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\equipo1\\preciounitariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\procesos\\preciounitarioproceso.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:procesos\\preciounitarioproceso.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\alumno37\\preciounitariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\alumno37\\preciounitariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\modelos\\presupuesto\\preciounitario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:modelos\\presupuesto\\preciounitario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\modelos\\presupuesto\\gantt\\programacionestimadagantt.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:modelos\\presupuesto\\gantt\\programacionestimadagantt.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\modelos\\presupuesto\\proyecto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:modelos\\presupuesto\\proyecto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\equipo3\\indirectosxconceptocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\equipo3\\indirectosxconceptocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\equipo6\\almacencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\equipo6\\almacencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\equipo7\\almacencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\equipo7\\almacencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\modelos\\presupuesto\\concepto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:modelos\\presupuesto\\concepto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\servicios\\dependenciaprogramacionestimadaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:servicios\\dependenciaprogramacionestimadaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\servicios\\contratos\\idependenciaprogramacionestimadaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:servicios\\contratos\\idependenciaprogramacionestimadaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\utilidades\\automapperprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:utilidades\\automapperprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\equipo4\\compradirectacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\equipo4\\compradirectacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\servicios\\programacionestimadaganttservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:servicios\\programacionestimadaganttservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\servicios\\contratos\\iprogramacionestimadaganttservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:servicios\\contratos\\iprogramacionestimadaganttservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\equipo2\\tipoinsumocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\equipo2\\tipoinsumocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\equipo3\\tipoinsumocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\equipo3\\tipoinsumocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\equipo7\\polizadetallecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\equipo7\\polizadetallecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\equipo1\\tipoinsumocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\equipo1\\tipoinsumocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\equipo2\\rubrocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\equipo2\\rubrocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\equipo7\\preciounitariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\equipo7\\preciounitariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\equipo1\\rubrocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\equipo1\\rubrocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\equipo1\\cotizacioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\equipo1\\cotizacioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\equipo2\\cotizacioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\equipo2\\cotizacioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\equipo3\\preciounitariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\equipo3\\preciounitariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\equipo1\\almacenentradacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\equipo1\\almacenentradacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\controllers\\equipo1\\almacencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:controllers\\equipo1\\almacencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\erp_procomi_backend\\context\\alumno02context.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:context\\alumno02context.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,7 +158,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -22,6 +171,487 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Dependencia.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Utilidades\\Dependencia.cs",
+              "RelativeDocumentMoniker": "Utilidades\\Dependencia.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Utilidades\\Dependencia.cs",
+              "RelativeToolTip": "Utilidades\\Dependencia.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFEAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T23:02:12.945Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PrecioUnitarioController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Alumno35\\PrecioUnitarioController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Alumno35\\PrecioUnitarioController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Alumno35\\PrecioUnitarioController.cs",
+              "RelativeToolTip": "Controllers\\Alumno35\\PrecioUnitarioController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:56:03.489Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PrecioUnitarioController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Alumno36\\PrecioUnitarioController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Alumno36\\PrecioUnitarioController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Alumno36\\PrecioUnitarioController.cs",
+              "RelativeToolTip": "Controllers\\Alumno36\\PrecioUnitarioController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACMAAABYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:55:43.718Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "PrecioUnitarioDetalleController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Alumno01\\PrecioUnitarioDetalleController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Alumno01\\PrecioUnitarioDetalleController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Alumno01\\PrecioUnitarioDetalleController.cs",
+              "RelativeToolTip": "Controllers\\Alumno01\\PrecioUnitarioDetalleController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:54:41.339Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "PrecioUnitarioController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Alumno01\\PrecioUnitarioController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Alumno01\\PrecioUnitarioController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Alumno01\\PrecioUnitarioController.cs",
+              "RelativeToolTip": "Controllers\\Alumno01\\PrecioUnitarioController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAowBgAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:54:36.657Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "PrecioUnitario.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Modelos\\Presupuesto\\PrecioUnitario.cs",
+              "RelativeDocumentMoniker": "Modelos\\Presupuesto\\PrecioUnitario.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Modelos\\Presupuesto\\PrecioUnitario.cs",
+              "RelativeToolTip": "Modelos\\Presupuesto\\PrecioUnitario.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAowCIAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:27:06.965Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "PrecioUnitarioController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Alumno37\\PrecioUnitarioController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Alumno37\\PrecioUnitarioController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Alumno37\\PrecioUnitarioController.cs",
+              "RelativeToolTip": "Controllers\\Alumno37\\PrecioUnitarioController.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAowBQAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:44:02.397Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "PrecioUnitarioProceso.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Procesos\\PrecioUnitarioProceso.cs",
+              "RelativeDocumentMoniker": "Procesos\\PrecioUnitarioProceso.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Procesos\\PrecioUnitarioProceso.cs",
+              "RelativeToolTip": "Procesos\\PrecioUnitarioProceso.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:45:17.854Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "PrecioUnitarioController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo1\\PrecioUnitarioController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Equipo1\\PrecioUnitarioController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo1\\PrecioUnitarioController.cs",
+              "RelativeToolTip": "Controllers\\Equipo1\\PrecioUnitarioController.cs",
+              "ViewState": "AgIAACEAAAAAAAAAAAAowDUAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:45:25.758Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "PrecioUnitarioController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo5\\PrecioUnitarioController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Equipo5\\PrecioUnitarioController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo5\\PrecioUnitarioController.cs",
+              "RelativeToolTip": "Controllers\\Equipo5\\PrecioUnitarioController.cs",
+              "ViewState": "AgIAACMAAAAAAAAAAAAowDQAAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:45:38.895Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Alumno01Context.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Context\\Alumno01Context.cs",
+              "RelativeDocumentMoniker": "Context\\Alumno01Context.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Context\\Alumno01Context.cs",
+              "RelativeToolTip": "Context\\Alumno01Context.cs",
+              "ViewState": "AgIAAFIAAAAAAAAAAAAowGYAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:30:17.415Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "DependenciaProgramacionEstimada.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Modelos\\Presupuesto\\Gantt\\DependenciaProgramacionEstimada.cs",
+              "RelativeDocumentMoniker": "Modelos\\Presupuesto\\Gantt\\DependenciaProgramacionEstimada.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Modelos\\Presupuesto\\Gantt\\DependenciaProgramacionEstimada.cs",
+              "RelativeToolTip": "Modelos\\Presupuesto\\Gantt\\DependenciaProgramacionEstimada.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:28:36.048Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "ProgramacionEstimadaGantt.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Modelos\\Presupuesto\\Gantt\\ProgramacionEstimadaGantt.cs",
+              "RelativeDocumentMoniker": "Modelos\\Presupuesto\\Gantt\\ProgramacionEstimadaGantt.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Modelos\\Presupuesto\\Gantt\\ProgramacionEstimadaGantt.cs",
+              "RelativeToolTip": "Modelos\\Presupuesto\\Gantt\\ProgramacionEstimadaGantt.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:52:09.519Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Proyecto.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Modelos\\Presupuesto\\Proyecto.cs",
+              "RelativeDocumentMoniker": "Modelos\\Presupuesto\\Proyecto.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Modelos\\Presupuesto\\Proyecto.cs",
+              "RelativeToolTip": "Modelos\\Presupuesto\\Proyecto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:26:42.347Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "IndirectosXConceptoController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo3\\IndirectosXConceptoController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Equipo3\\IndirectosXConceptoController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo3\\IndirectosXConceptoController.cs",
+              "RelativeToolTip": "Controllers\\Equipo3\\IndirectosXConceptoController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:51:54.759Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "AlmacenController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo6\\AlmacenController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Equipo6\\AlmacenController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo6\\AlmacenController.cs",
+              "RelativeToolTip": "Controllers\\Equipo6\\AlmacenController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:51:50.731Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "AlmacenController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo7\\AlmacenController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Equipo7\\AlmacenController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo7\\AlmacenController.cs",
+              "RelativeToolTip": "Controllers\\Equipo7\\AlmacenController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:51:41.567Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "DependenciaProgramacionEstimadaService.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Servicios\\DependenciaProgramacionEstimadaService.cs",
+              "RelativeDocumentMoniker": "Servicios\\DependenciaProgramacionEstimadaService.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Servicios\\DependenciaProgramacionEstimadaService.cs",
+              "RelativeToolTip": "Servicios\\DependenciaProgramacionEstimadaService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:51:13.57Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "IDependenciaProgramacionEstimadaService.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Servicios\\Contratos\\IDependenciaProgramacionEstimadaService.cs",
+              "RelativeDocumentMoniker": "Servicios\\Contratos\\IDependenciaProgramacionEstimadaService.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Servicios\\Contratos\\IDependenciaProgramacionEstimadaService.cs",
+              "RelativeToolTip": "Servicios\\Contratos\\IDependenciaProgramacionEstimadaService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:51:20.876Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "CompraDirectaController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo4\\CompraDirectaController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Equipo4\\CompraDirectaController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo4\\CompraDirectaController.cs",
+              "RelativeToolTip": "Controllers\\Equipo4\\CompraDirectaController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:50:54.878Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "IProgramacionEstimadaGanttService.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Servicios\\Contratos\\IProgramacionEstimadaGanttService.cs",
+              "RelativeDocumentMoniker": "Servicios\\Contratos\\IProgramacionEstimadaGanttService.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Servicios\\Contratos\\IProgramacionEstimadaGanttService.cs",
+              "RelativeToolTip": "Servicios\\Contratos\\IProgramacionEstimadaGanttService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:50:34.413Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "ProgramacionEstimadaGanttService.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Servicios\\ProgramacionEstimadaGanttService.cs",
+              "RelativeDocumentMoniker": "Servicios\\ProgramacionEstimadaGanttService.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Servicios\\ProgramacionEstimadaGanttService.cs",
+              "RelativeToolTip": "Servicios\\ProgramacionEstimadaGanttService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:49:43.75Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "Concepto.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Modelos\\Presupuesto\\Concepto.cs",
+              "RelativeDocumentMoniker": "Modelos\\Presupuesto\\Concepto.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Modelos\\Presupuesto\\Concepto.cs",
+              "RelativeToolTip": "Modelos\\Presupuesto\\Concepto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:28:14.168Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "TipoInsumoController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo3\\TipoInsumoController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Equipo3\\TipoInsumoController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo3\\TipoInsumoController.cs",
+              "RelativeToolTip": "Controllers\\Equipo3\\TipoInsumoController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAABBAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:48:31.197Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "TipoInsumoController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo2\\TipoInsumoController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Equipo2\\TipoInsumoController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo2\\TipoInsumoController.cs",
+              "RelativeToolTip": "Controllers\\Equipo2\\TipoInsumoController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:48:20.199Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "AutoMapperProfile.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Utilidades\\AutoMapperProfile.cs",
+              "RelativeDocumentMoniker": "Utilidades\\AutoMapperProfile.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Utilidades\\AutoMapperProfile.cs",
+              "RelativeToolTip": "Utilidades\\AutoMapperProfile.cs",
+              "ViewState": "AgIAAOQBAAAAAAAAAAAowLkCAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:20:59.882Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "PolizaDetalleController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo7\\PolizaDetalleController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Equipo7\\PolizaDetalleController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo7\\PolizaDetalleController.cs",
+              "RelativeToolTip": "Controllers\\Equipo7\\PolizaDetalleController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:48:09.371Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "TipoInsumoController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo1\\TipoInsumoController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Equipo1\\TipoInsumoController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo1\\TipoInsumoController.cs",
+              "RelativeToolTip": "Controllers\\Equipo1\\TipoInsumoController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:47:58.251Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "RubroController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo2\\RubroController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Equipo2\\RubroController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo2\\RubroController.cs",
+              "RelativeToolTip": "Controllers\\Equipo2\\RubroController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:47:42.831Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "RubroController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo1\\RubroController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Equipo1\\RubroController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo1\\RubroController.cs",
+              "RelativeToolTip": "Controllers\\Equipo1\\RubroController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:47:19.088Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "CotizacionController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo1\\CotizacionController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Equipo1\\CotizacionController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo1\\CotizacionController.cs",
+              "RelativeToolTip": "Controllers\\Equipo1\\CotizacionController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:45:48.024Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "CotizacionController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo2\\CotizacionController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Equipo2\\CotizacionController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo2\\CotizacionController.cs",
+              "RelativeToolTip": "Controllers\\Equipo2\\CotizacionController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:45:46.946Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "PrecioUnitarioController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo7\\PrecioUnitarioController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Equipo7\\PrecioUnitarioController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo7\\PrecioUnitarioController.cs",
+              "RelativeToolTip": "Controllers\\Equipo7\\PrecioUnitarioController.cs",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAowDMAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:45:42.388Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "PrecioUnitarioController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo3\\PrecioUnitarioController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Equipo3\\PrecioUnitarioController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo3\\PrecioUnitarioController.cs",
+              "RelativeToolTip": "Controllers\\Equipo3\\PrecioUnitarioController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:45:36.012Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "AlmacenEntradaController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo1\\AlmacenEntradaController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Equipo1\\AlmacenEntradaController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo1\\AlmacenEntradaController.cs",
+              "RelativeToolTip": "Controllers\\Equipo1\\AlmacenEntradaController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAA8AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:42:44.367Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "AlmacenController.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo1\\AlmacenController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Equipo1\\AlmacenController.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Controllers\\Equipo1\\AlmacenController.cs",
+              "RelativeToolTip": "Controllers\\Equipo1\\AlmacenController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:42:31.249Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "Alumno02Context.cs",
+              "DocumentMoniker": "C:\\Proyecto\\ERP_Procomi_backend\\Context\\Alumno02Context.cs",
+              "RelativeDocumentMoniker": "Context\\Alumno02Context.cs",
+              "ToolTip": "C:\\Proyecto\\ERP_Procomi_backend\\Context\\Alumno02Context.cs",
+              "RelativeToolTip": "Context\\Alumno02Context.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-29T22:30:27.032Z",
+              "EditorCaption": ""
             }
           ]
         }

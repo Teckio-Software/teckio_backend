@@ -1,23 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Proyecto\\AspelApiMiguelito\\ERP_Rfacil_backend\\ERP_TECKIO\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\dotnet\\sdk\\9.0.100\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\aspelapimiguelito\\erp_rfacil_backend\\erp_teckio\\erp_teckio.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:erp_teckio.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\aspelapimiguelito\\erp_rfacil_backend\\erp_teckio\\erp_teckio.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
-      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:erp_teckio.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|c:\\proyecto\\aspelapimiguelito\\erp_rfacil_backend\\erp_teckio\\context\\alumno01context.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{25933F73-1487-4996-AF36-5312A8321F75}|ERP_TECKIO.csproj|solutionrelative:context\\alumno01context.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -25,7 +9,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -38,57 +22,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ERP_TECKIO.csproj",
-              "DocumentMoniker": "C:\\Proyecto\\AspelApiMiguelito\\ERP_Rfacil_backend\\ERP_TECKIO\\ERP_TECKIO.csproj",
-              "RelativeDocumentMoniker": "ERP_TECKIO.csproj",
-              "ToolTip": "C:\\Proyecto\\AspelApiMiguelito\\ERP_Rfacil_backend\\ERP_TECKIO\\ERP_TECKIO.csproj",
-              "RelativeToolTip": "ERP_TECKIO.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-11-29T20:26:24.119Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ERP_TECKIO",
-              "DocumentMoniker": "C:\\Proyecto\\AspelApiMiguelito\\ERP_Rfacil_backend\\ERP_TECKIO\\ERP_TECKIO.csproj",
-              "RelativeDocumentMoniker": "ERP_TECKIO.csproj",
-              "ToolTip": "C:\\Proyecto\\AspelApiMiguelito\\ERP_Rfacil_backend\\ERP_TECKIO\\ERP_TECKIO.csproj",
-              "RelativeToolTip": "ERP_TECKIO.csproj",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-11-29T20:17:44.296Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Alumno01Context.cs",
-              "DocumentMoniker": "C:\\Proyecto\\AspelApiMiguelito\\ERP_Rfacil_backend\\ERP_TECKIO\\Context\\Alumno01Context.cs",
-              "RelativeDocumentMoniker": "Context\\Alumno01Context.cs",
-              "ToolTip": "C:\\Proyecto\\AspelApiMiguelito\\ERP_Rfacil_backend\\ERP_TECKIO\\Context\\Alumno01Context.cs",
-              "RelativeToolTip": "Context\\Alumno01Context.cs",
-              "ViewState": "AgIAAB8AAAAAAAAAAEBVwAQAAAArAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-29T20:09:49.975Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Microsoft.PackageDependencyResolution.targets",
-              "DocumentMoniker": "C:\\Program Files\\dotnet\\sdk\\9.0.100\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets",
-              "RelativeDocumentMoniker": "..\\..\\..\\..\\Program Files\\dotnet\\sdk\\9.0.100\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets",
-              "ToolTip": "C:\\Program Files\\dotnet\\sdk\\9.0.100\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets",
-              "RelativeToolTip": "..\\..\\..\\..\\Program Files\\dotnet\\sdk\\9.0.100\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets",
-              "ViewState": "AgIAAPQAAAAAAAAAAAAvwAoBAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
-              "WhenOpened": "2024-11-29T20:04:59.327Z",
-              "EditorCaption": ""
             }
           ]
         }
