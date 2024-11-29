@@ -1,0 +1,50 @@
+﻿using Microsoft.AspNetCore.Mvc;
+
+
+
+
+
+namespace ERP_TECKIO.API.Controllers.Alumno24
+{
+    [Route("api/reportesdestajo/24")]
+    [ApiController]
+    public class ReporteDestajoAlumno24Controller : ControllerBase
+    {
+        private readonly ReporteDestajoProceso<Alumno24Context> _proceso;
+        private readonly EstimacionesProceso<Alumno24Context> _estimacionesProceso;
+
+        public ReporteDestajoAlumno24Controller(
+            ReporteDestajoProceso<Alumno24Context> proceso,
+            EstimacionesProceso<Alumno24Context> estimacionesProceso
+            ) { 
+            _proceso = proceso;
+            _estimacionesProceso = estimacionesProceso;
+        }
+
+        [HttpPost("reporteDestajo")]
+        public async Task<ActionResult<List<ReporteDestajoDTO>>> reporteDestajo(ReporteDestajoDTO parametrosBusqueda)
+        {
+            var reporte = await _proceso.reporteDestajo(parametrosBusqueda);
+            return reporte;
+        }
+
+        [HttpPost("destajoAcumulado")]
+        public async Task<ActionResult<ObjetoDestajoacumuladoDTO>> DestajoAcumulado(ParametrosParaBuscarContratos parametros) {
+            var detajoAcumulado = await _proceso.DestajoAcumulado(parametros);
+            return detajoAcumulado;
+        }
+
+        [HttpGet("ObtenerPeridosConImporteTotal/{IdProyecto:int}")]
+        public async Task<ActionResult<List<PeriodosResumenDTO>>> ObtenerPeridosConImporteTotal(int IdProyecto)
+        {
+            return await _estimacionesProceso.ObtenerPeridosConImporteTotal(IdProyecto);
+        }
+
+        [HttpPost("DestajoTotal")]
+        public async Task<ActionResult<ObjetoDestajoTotalDTO>> DestajoTotal(ParametrosParaBuscarContratos parametros)
+        {
+            var detajoAcumulado = await _proceso.DestajoTotal(parametros);
+            return detajoAcumulado;
+        }
+    }
+}

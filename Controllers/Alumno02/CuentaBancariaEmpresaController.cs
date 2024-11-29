@@ -1,0 +1,40 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+
+
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
+
+namespace ERP_TECKIO.Controllers
+{
+    [Route("api/cuentabancariaempresa/2")]
+    [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public class CuentaBancariaEmpresaAlumno02Controller : ControllerBase
+    {
+        private readonly ICuentaBancariaEmpresaService<Alumno02Context> _cuentaBancariaEmpresaService;
+        private readonly CuentaBancariaProceso<Alumno02Context> _proceso;
+
+        public CuentaBancariaEmpresaAlumno02Controller(
+            ICuentaBancariaEmpresaService<Alumno02Context> cuentaBancariaEmpresaService,
+            CuentaBancariaProceso<Alumno02Context> proceso
+            ) {
+            _cuentaBancariaEmpresaService = cuentaBancariaEmpresaService;
+            _proceso = proceso;
+        }
+
+        [HttpPost]
+        [Route("GuardarCuentaBancaria")]
+        public async Task<ActionResult<bool>> GuardarCuentaBancaria([FromBody] CuentaBancariaEmpresasDTO cuentaBancaria)
+        {
+            return await _cuentaBancariaEmpresaService.Crear(cuentaBancaria);
+        }
+
+        [HttpGet("ObtenerTodos")]
+        public async Task<ActionResult<List<CuentaBancariaEmpresasDTO>>> ObtenerTodos()
+        {
+            return await _proceso.ObtenerXEmpresa();
+        }
+    }
+}

@@ -1,0 +1,6 @@
+@ERP_TECKIO_HostAddress = http://localhost:5185
+
+GET {{ERP_TECKIO_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
