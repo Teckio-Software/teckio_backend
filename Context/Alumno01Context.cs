@@ -19,7 +19,7 @@ public partial class Alumno01Context : DbContext
     public virtual DbSet<Almacen> Almacens { get; set; }
 
     public virtual DbSet<AlmacenEntradaInsumo> AlmacenEntradaInsumos { get; set; }
-
+     
     public virtual DbSet<AlmacenEntrada> AlmacenEntrada { get; set; }
 
     public virtual DbSet<AlmacenSalidaInsumo> AlmacenSalidaInsumos { get; set; }
