@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-using Microsoft.EntityFrameworkCore;using SistemaERP.BLL.Procesos;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 
 namespace ERP_TECKIO.Controllers

@@ -4,14 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-
-using SistemaERP.BLL.Procesos;
-using ERP_TECKIO;
-
-
-using SistemaERP.Model.Procomi.Proyecto;
-
-namespace SistemaERP.API.Alumno01Controllers.Procomi
+namespace ERP_TECKIO
 {
     [Route("api/preciounitario/1")]
     [ApiController]

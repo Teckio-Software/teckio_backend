@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using ERP_TECKIO.Modelos;
-using Microsoft.EntityFrameworkCore;using SistemaERP.BLL.Procesos;
+using Microsoft.EntityFrameworkCore;
 
 namespace ERP_TECKIO
 {

@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
 using ERP_TECKIO.Modelos;
-using ERP_TECKIO;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;using SistemaERP.BLL.Procesos;
-using SistemaERP.BLL.Contrato.Gantt;
-using SistemaERP.DTO.Presupuesto.Gantt;
+using Microsoft.EntityFrameworkCore;
 using SpreadsheetLight;
 using System.Text.Json;
 
-namespace SistemaERP.BLL.Procesos
+namespace ERP_TECKIO
 {
     public class PrecioUnitarioProceso<TContext> where TContext : DbContext
     {

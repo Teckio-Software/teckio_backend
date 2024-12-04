@@ -1,14 +1,9 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
-using Microsoft.EntityFrameworkCore;using SistemaERP.BLL.Procesos;
-using SistemaERP.DTO.Presupuesto.Gantt;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace SistemaERP.BLL.Contrato.Gantt
+
+namespace ERP_TECKIO
 {
     public class ProgramacionEstimadaGanttProceso<TContext> where TContext : DbContext
     {

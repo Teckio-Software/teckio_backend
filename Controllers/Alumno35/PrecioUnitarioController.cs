@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 
-using SistemaERP.BLL.Procesos;
 
 
-using SistemaERP.Model.Procomi.Proyecto;
+
+
 
 namespace SistemaERP.API.Alumno35Controllers.Procomi
 {

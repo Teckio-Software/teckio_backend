@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
-using Microsoft.EntityFrameworkCore;using SistemaERP.BLL.Procesos;
+using Microsoft.EntityFrameworkCore;
 
 
 

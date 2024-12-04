@@ -1,14 +1,8 @@
 ﻿using AutoMapper;
-using ERP_TECKIO;
-using Microsoft.EntityFrameworkCore;using SistemaERP.BLL.Procesos;
-using SistemaERP.BLL.Contrato.Gantt;
+using Microsoft.EntityFrameworkCore;
 
 
-using SistemaERP.DTO.Presupuesto.Gantt;
-using SistemaERP.Model.Procomi.Proyecto;
-
-
-namespace SistemaERP.BLL.Servicios.Gantt
+namespace ERP_TECKIO
 {
     public class DependenciaProgramacionEstimadaService<T> : IDependenciaProgramacionEstimadaService<T> where T : DbContext
     {

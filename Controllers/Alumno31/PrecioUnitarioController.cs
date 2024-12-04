@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 
-using SistemaERP.BLL.Procesos;
+
 using ERP_TECKIO;
 
 
-using SistemaERP.Model.Procomi.Proyecto;
+
 
 namespace SistemaERP.API.Alumno31Controllers.Procomi
 {

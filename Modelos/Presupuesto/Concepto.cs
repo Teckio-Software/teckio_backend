@@ -1,7 +1,7 @@
 ﻿
 
 
-using SistemaERP.Model.Procomi.Proyecto;
+
 
 namespace ERP_TECKIO.Modelos;
 public partial class Concepto

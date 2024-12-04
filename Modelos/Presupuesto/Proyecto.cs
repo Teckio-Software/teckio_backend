@@ -1,6 +1,6 @@
 ﻿
 using ERP_TECKIO.Modelos;
-using SistemaERP.Model.Procomi.Proyecto;
+
 
 namespace ERP_TECKIO.Modelos;
 

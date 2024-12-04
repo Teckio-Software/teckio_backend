@@ -1,6 +1,5 @@
-﻿using ERP_TECKIO;
-using ERP_TECKIO.Servicios;
-using SistemaERP.BLL.Procesos;
+﻿using ERP_TECKIO.Servicios;
+using Microsoft.EntityFrameworkCore;
 namespace ERP_TECKIO
 {
     public static class Dependencia
@@ -20,6 +19,8 @@ namespace ERP_TECKIO
             services.AddScoped(typeof(IConjuntoIndirectosService<>), typeof(ConjuntoIndirectosService<>));
             services.AddScoped(typeof(IIndirectosService<>), typeof(IndirectosService<>));
             services.AddScoped(typeof(IIndirectosXConceptoService<>), typeof(IndirectosXConceptoService<>));
+            services.AddScoped(typeof(IProgramacionEstimadaGanttService<>), typeof(ProgramacionEstimadaGanttService<>));
+            services.AddScoped(typeof(IDependenciaProgramacionEstimadaService<>), typeof(DependenciaProgramacionEstimadaService<>));
             //Factor de salario real
             services.AddScoped(typeof(IFactorSalarioRealService<>), typeof(FactorSalarioRealService<>));
             services.AddScoped(typeof(IFactorSalarioRealDetalleService<>), typeof(FactorSalarioRealDetalleService<>));
@@ -107,6 +108,11 @@ namespace ERP_TECKIO
             services.AddScoped(typeof(ReporteDestajoProceso<>));
             services.AddScoped(typeof(IndirectosProceso<>));
             services.AddScoped(typeof(IndirectosXConceptoProceso<>));
+            services.AddScoped(typeof(ProgramacionEstimadaGanttProceso<>));
+            services.AddScoped(typeof(DbContextOptionsBuilder<>));
+
+            //Facturas
+            services.AddScoped(typeof(ITipoImpuestoService<>), typeof(TipoImpuestoService<>));
 
         }
     }

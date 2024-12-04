@@ -1,5 +1,5 @@
 ﻿
-using Microsoft.EntityFrameworkCore;using SistemaERP.BLL.Procesos;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace ERP_TECKIO.Servicios

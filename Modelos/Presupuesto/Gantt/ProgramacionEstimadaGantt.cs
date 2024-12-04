@@ -1,5 +1,5 @@
 ﻿using ERP_TECKIO.Modelos;
-using SistemaERP.Model.Procomi.Proyecto;
+
 using System;
 using System.Collections.Generic;
 

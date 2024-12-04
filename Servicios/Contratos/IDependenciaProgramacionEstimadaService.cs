@@ -1,14 +1,7 @@
-﻿using ERP_TECKIO;
-using Microsoft.EntityFrameworkCore;using SistemaERP.BLL.Procesos;
-using SistemaERP.DTO.Presupuesto.Gantt;
+﻿using Microsoft.EntityFrameworkCore;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SistemaERP.BLL.Contrato.Gantt
+namespace ERP_TECKIO
 {
     public interface IDependenciaProgramacionEstimadaService<T> where T : DbContext
     {

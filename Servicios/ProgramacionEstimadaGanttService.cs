@@ -1,20 +1,8 @@
-﻿using AutoMapper;
-using ERP_TECKIO;
-using Microsoft.EntityFrameworkCore;using SistemaERP.BLL.Procesos;
+﻿using System.Text.Json;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
-
-
-
-using SistemaERP.DTO.Presupuesto.Gantt;
-using SistemaERP.Model.Procomi.Proyecto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-
-namespace SistemaERP.BLL.Contrato.Gantt
+namespace ERP_TECKIO
 {
     public class ProgramacionEstimadaGanttService<T> : IProgramacionEstimadaGanttService<T> where T : DbContext
     {

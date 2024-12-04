@@ -2,8 +2,8 @@
 using ERP_TECKIO.Modelos;
 
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using SistemaERP.DTO.Presupuesto.Gantt;
-using SistemaERP.Model.Procomi.Proyecto;
+
+
 
 
 namespace ERP_TECKIO
@@ -817,48 +817,48 @@ namespace ERP_TECKIO
             //CreateMap<ArchivoDTO, Archivo>();
             #endregion
             #region TipoImpuesto
-            //CreateMap<TipoImpuesto, TipoImpuestoDTO>();
-            //CreateMap<TipoImpuestoDTO, TipoImpuesto>();
+            CreateMap<TipoImpuesto, TipoImpuestoDTO>();
+            CreateMap<TipoImpuestoDTO, TipoImpuesto>();
             #endregion
             #region TipoFactor
             //CreateMap<TipoFactor, TipoFactorDTO>();
             //CreateMap<TipoFactorDTO, TipoFactor>();
             #endregion
             #region ArchivoDocumento
-           // CreateMap<ArchivoDocumento, ArchivoDocumentoDTO>();
-           // CreateMap<ArchivoDocumentoDTO, ArchivoDocumento>()
-           //.ForMember(destino => destino.Documentos,
-           //     opt => opt.Ignore());
+            // CreateMap<ArchivoDocumento, ArchivoDocumentoDTO>();
+            // CreateMap<ArchivoDocumentoDTO, ArchivoDocumento>()
+            //.ForMember(destino => destino.Documentos,
+            //     opt => opt.Ignore());
             #endregion
             #region TipoDocumento
             //CreateMap<TipoDocumento, TipoDocumentoDTO>();
             //CreateMap<TipoDocumentoDTO, TipoDocumento>();
             #endregion
             #region Documento
-           // CreateMap<Documento, DocumentoDTO>();
-           // CreateMap<DocumentoDTO, Documento>()
-           //.ForMember(destino => destino.IdArchivoNavigation,
-           //     opt => opt.Ignore())
-           //.ForMember(destino => destino.IdTipoDocumentoNavigation,
-           //     opt => opt.Ignore());
+            // CreateMap<Documento, DocumentoDTO>();
+            // CreateMap<DocumentoDTO, Documento>()
+            //.ForMember(destino => destino.IdArchivoNavigation,
+            //     opt => opt.Ignore())
+            //.ForMember(destino => destino.IdTipoDocumentoNavigation,
+            //     opt => opt.Ignore());
             #endregion
 
             #region FacturaEntradaMaterial
-           // CreateMap<FacturaEntradaMaterial, FacturaEntradaMaterialDTO>();
-           // CreateMap<FacturaEntradaMaterialDTO, FacturaEntradaMaterial>()
-           //.ForMember(destino => destino.IdEntradaMaterialNavigation,
-           //     opt => opt.Ignore())
-           //.ForMember(destino => destino.IdFacturaNavigation,
-           //     opt => opt.Ignore());
+            // CreateMap<FacturaEntradaMaterial, FacturaEntradaMaterialDTO>();
+            // CreateMap<FacturaEntradaMaterialDTO, FacturaEntradaMaterial>()
+            //.ForMember(destino => destino.IdEntradaMaterialNavigation,
+            //     opt => opt.Ignore())
+            //.ForMember(destino => destino.IdFacturaNavigation,
+            //     opt => opt.Ignore());
             #endregion
 
             #region AcuseCfdi
-           // CreateMap<AcuseCfdi, AcuseCfdiDTO>();
-           // CreateMap<AcuseCfdiDTO, AcuseCfdi>()
-           //.ForMember(destino => destino.IdArchivoNavigation,
-           //     opt => opt.Ignore())
-           //.ForMember(destino => destino.IdArchivoPdfNavigation,
-           //     opt => opt.Ignore());
+            // CreateMap<AcuseCfdi, AcuseCfdiDTO>();
+            // CreateMap<AcuseCfdiDTO, AcuseCfdi>()
+            //.ForMember(destino => destino.IdArchivoNavigation,
+            //     opt => opt.Ignore())
+            //.ForMember(destino => destino.IdArchivoPdfNavigation,
+            //     opt => opt.Ignore());
             #endregion
             #region EntradasAutorizacionDTO
             //CreateMap<EntradasAutorizacion, EntradasAutorizacionDTO>();
@@ -885,10 +885,10 @@ namespace ERP_TECKIO
             //CreateMap<PagoDTO, Pago>();
             #endregion
             #region PagoDetalleProveedores
-           // CreateMap<PagoDetalle, PagoDetalleDTO>();
-           // CreateMap<PagoDetalleDTO, PagoDetalle>()
-           //.ForMember(destino => destino.IdPagoNavigation,
-           //     opt => opt.Ignore());
+            // CreateMap<PagoDetalle, PagoDetalleDTO>();
+            // CreateMap<PagoDetalleDTO, PagoDetalle>()
+            //.ForMember(destino => destino.IdPagoNavigation,
+            //     opt => opt.Ignore());
             #endregion
             #region FacturaCentroCostos
             CreateMap<FacturaDetalleDTO, FacturaDetalleCentroCostosDTO>()

@@ -1,7 +1,7 @@
 ﻿
-using Microsoft.EntityFrameworkCore;using SistemaERP.BLL.Procesos;
+using Microsoft.EntityFrameworkCore;
 using ERP_TECKIO.Modelos;
-using SistemaERP.Model.Procomi.Proyecto;
+
 using ERP_TECKIO;
 
 

@@ -1,8 +1,5 @@
-﻿using ERP_TECKIO;
-using System;
-using System.Collections.Generic;
-
-namespace SistemaERP.Model.Procomi.Proyecto;
+﻿
+namespace ERP_TECKIO;
 
 public partial class DependenciaProgramacionEstimada
 {
