@@ -1,24 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Proyecto\\ERP_Procomi_backend\\ERP_TECKIO.csproj": {}
+    "C:\\Users\\teckio_dev2\\Documents\\GitHub\\ERP_Procomi_backend\\ERP_TECKIO.csproj": {}
   },
   "projects": {
-    "C:\\Proyecto\\ERP_Procomi_backend\\ERP_TECKIO.csproj": {
+    "C:\\Users\\teckio_dev2\\Documents\\GitHub\\ERP_Procomi_backend\\ERP_TECKIO.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Proyecto\\ERP_Procomi_backend\\ERP_TECKIO.csproj",
+        "projectUniqueName": "C:\\Users\\teckio_dev2\\Documents\\GitHub\\ERP_Procomi_backend\\ERP_TECKIO.csproj",
         "projectName": "ERP_TECKIO",
-        "projectPath": "C:\\Proyecto\\ERP_Procomi_backend\\ERP_TECKIO.csproj",
-        "packagesPath": "C:\\Users\\teckio_dev\\.nuget\\packages\\",
-        "outputPath": "C:\\Proyecto\\ERP_Procomi_backend\\obj\\",
+        "projectPath": "C:\\Users\\teckio_dev2\\Documents\\GitHub\\ERP_Procomi_backend\\ERP_TECKIO.csproj",
+        "packagesPath": "C:\\Users\\teckio_dev2\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\teckio_dev2\\Documents\\GitHub\\ERP_Procomi_backend\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\teckio_dev\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\teckio_dev2\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],

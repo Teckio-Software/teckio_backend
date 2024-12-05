@@ -719,6 +719,15 @@ namespace ERP_TECKIO
                 opt => opt.MapFrom(origen => origen.End))
                 .ForMember(destino => destino.IdPadre,
                 opt => opt.MapFrom(origen => origen.Parent));
+            CreateMap<ProgramacionEstimadaGanttDeserealizadaDTO, ProgramacionEstimadaGanttDTO>()
+                .ForMember(destino => destino.Id,
+                opt => opt.MapFrom(origen => Convert.ToString(origen.Id)))
+                .ForMember(destino => destino.Start,
+                opt => opt.MapFrom(origen => origen.FechaInicio))
+                .ForMember(destino => destino.End,
+                opt => opt.MapFrom(origen => origen.FechaTermino))
+                .ForMember(destino => destino.Parent,
+                opt => opt.MapFrom(origen => origen.IdPadre));
             #endregion
             #region Facturas
 

@@ -1,8 +1,14 @@
-﻿using System.Text.Json;
-using AutoMapper;
+﻿using AutoMapper;
+using ERP_TECKIO;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 
-namespace ERP_TECKIO
+namespace ERP_TECKIO.Servicios
 {
     public class ProgramacionEstimadaGanttService<T> : IProgramacionEstimadaGanttService<T> where T : DbContext
     {
@@ -30,6 +36,7 @@ namespace ERP_TECKIO
                 , PEG.IdConcepto
                 , C.Codigo
                 , C.Descripcion
+                , C.Descripcion as Name
                 , C.CostoUnitario
                 , C.CostoUnitario * PU.Cantidad as Importe 
                 , PEG.FechaInicio
@@ -39,18 +46,21 @@ namespace ERP_TECKIO
                 , PEG.Comando
                 , PEG.DesfaseComando
                 , PEG.IdPadre
+                , 'project' as Type
                 from ProgramacionEstimadaGantt PEG
                 inner join PrecioUnitario PU on PEG.IdPrecioUnitario = PU.id
                 inner join Concepto C on PEG.IdConcepto = C.Id
                 where PEG.IdProyecto = 
-                """" + IdProyecto
+                """" + IdProyecto +
+                """"for json path""""
                 ).ToList();
             if (items.Count <= 0)
             {
                 return new List<ProgramacionEstimadaGanttDTO>();
             }
             string json = string.Join("", items);
-            var datos = JsonSerializer.Deserialize<List<ProgramacionEstimadaGanttDTO>>(json);
+            var datosBase = JsonSerializer.Deserialize<List<ProgramacionEstimadaGanttDeserealizadaDTO>>(json);
+            var datos = _Mapper.Map<List<ProgramacionEstimadaGanttDTO>>(datosBase);
             return datos;
         }
 
