@@ -15,6 +15,7 @@ public partial class Alumno01Context : DbContext
         : base(options)
     {
     }
+    public virtual DbSet<Empleado> Empleados { get; set; }
 
     public virtual DbSet<Almacen> Almacens { get; set; }
 
@@ -133,6 +134,25 @@ public partial class Alumno01Context : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Empleado>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_AcuseValidacion_2024_02_15");
+
+            entity.ToTable("Empleado");
+
+            entity.Property(e => e.IdUser).HasColumnName("IdUser");
+            entity.Property(e => e.Nombre).HasMaxLength(100);
+            entity.Property(e => e.ApellidoPaterno).HasMaxLength(100);
+            entity.Property(e => e.ApellidoMaterno).HasMaxLength(100);
+            entity.Property(e => e.Curp).HasMaxLength(18);
+            entity.Property(e => e.Rfc).HasMaxLength(13);
+            entity.Property(e => e.SeguroSocial).HasMaxLength(20);
+            entity.Property(e => e.FechaRelacionLaboral).HasColumnType("datetime");
+            entity.Property(e => e.FechaTerminoRelacionLaboral).HasColumnType("datetime");
+            entity.Property(e => e.SalarioDiario).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Estatus).HasColumnName("Estatus");
+        });
+
         modelBuilder.Entity<AcuseValidacion>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_AcuseValidacion_2024_02_15");

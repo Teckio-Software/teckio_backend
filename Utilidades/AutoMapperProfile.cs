@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ERP_TECKIO.DTO.Usuario;
 using ERP_TECKIO.Modelos;
 
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -728,6 +729,9 @@ namespace ERP_TECKIO
                 opt => opt.MapFrom(origen => origen.FechaTermino))
                 .ForMember(destino => destino.Parent,
                 opt => opt.MapFrom(origen => origen.IdPadre));
+
+            CreateMap<Empleado, EmpleadoDTO>();
+            CreateMap<EmpleadoDTO, Empleado>();
             #endregion
             #region Facturas
 
