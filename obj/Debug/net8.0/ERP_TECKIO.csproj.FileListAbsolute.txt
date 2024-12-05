@@ -1,0 +1,7 @@
+C:\Proyecto\AspelApiMiguelito\ERP_Rfacil_backend\ERP_TECKIO\obj\Debug\net8.0\ERP_TECKIO.csproj.AssemblyReference.cache
+C:\Proyecto\AspelApiMiguelito\ERP_Rfacil_backend\ERP_TECKIO\obj\Debug\net8.0\ERP_TECKIO.GeneratedMSBuildEditorConfig.editorconfig
+C:\Proyecto\AspelApiMiguelito\ERP_Rfacil_backend\ERP_TECKIO\obj\Debug\net8.0\ERP_TECKIO.AssemblyInfoInputs.cache
+C:\Proyecto\AspelApiMiguelito\ERP_Rfacil_backend\ERP_TECKIO\obj\Debug\net8.0\ERP_TECKIO.AssemblyInfo.cs
+C:\Proyecto\AspelApiMiguelito\ERP_Rfacil_backend\ERP_TECKIO\obj\Debug\net8.0\ERP_TECKIO.csproj.CoreCompileInputs.cache
+C:\Proyecto\AspelApiMiguelito\ERP_Rfacil_backend\ERP_TECKIO\obj\Debug\net8.0\ERP_TECKIO.MvcApplicationPartsAssemblyInfo.cache
+C:\Proyecto\AspelApiMiguelito\ERP_Rfacil_backend\ERP_TECKIO\obj\Debug\net8.0\ERP_TECKIO.sourcelink.json
