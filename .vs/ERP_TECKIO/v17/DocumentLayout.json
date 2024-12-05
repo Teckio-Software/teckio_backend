@@ -61,7 +61,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -74,10 +74,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             },
             {
               "$type": "Document",
@@ -102,8 +98,7 @@
               "RelativeToolTip": "Controllers\\Alumno01\\PrecioUnitarioController.cs",
               "ViewState": "AgIAAAkAAAAAAAAAAAAAABwAAAA9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-04T22:54:34.644Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-04T22:54:34.644Z"
             },
             {
               "$type": "Document",
@@ -115,8 +110,7 @@
               "RelativeToolTip": "Utilidades\\AutoMapperProfile.cs",
               "ViewState": "AgIAALwCAAAAAAAAAAAowNMCAABEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-04T20:59:14.793Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-04T20:59:14.793Z"
             },
             {
               "$type": "Document",
@@ -128,8 +122,7 @@
               "RelativeToolTip": "Utilidades\\Dependencia.cs",
               "ViewState": "AgIAAD0AAAAAAAAAAAAgwAIAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-04T17:58:50.959Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-04T17:58:50.959Z"
             },
             {
               "$type": "Document",
@@ -141,8 +134,7 @@
               "RelativeToolTip": "Controllers\\Alumno01\\ProgramacionEstimadaGanttController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-04T17:58:10.197Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-04T17:58:10.197Z"
             },
             {
               "$type": "Document",
@@ -178,8 +170,7 @@
               "RelativeToolTip": "Program.cs",
               "ViewState": "AgIAAN4AAAAAAAAAAAAAAOkAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-04T16:27:26.966Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-04T16:27:26.966Z"
             },
             {
               "$type": "Document",
@@ -191,8 +182,7 @@
               "RelativeToolTip": "Procesos\\ProgramacionEstimadaGanttProceso.cs",
               "ViewState": "AgIAAA0AAAAAAAAAAAAawCAAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-04T16:23:24.346Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-04T16:23:24.346Z"
             },
             {
               "$type": "Document",
@@ -204,8 +194,7 @@
               "RelativeToolTip": "Servicios\\ProgramacionEstimadaGanttService.cs",
               "ViewState": "AgIAABoAAAAAAAAAAIA7wD4AAABFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-04T16:21:43.612Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-04T16:21:43.612Z"
             },
             {
               "$type": "Document",
@@ -217,8 +206,11 @@
               "RelativeToolTip": "..\\..\\..\\..\\..\\Program Files\\dotnet\\sdk\\9.0.100\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets",
               "ViewState": "AgIAAG0BAAAAAAAAAADwv24BAABRAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
-              "WhenOpened": "2024-12-04T15:43:22.114Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-04T15:43:22.114Z"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             }
           ]
         },
