@@ -16,6 +16,7 @@ public partial class Alumno01Context : DbContext
     {
     }
     public virtual DbSet<Empleado> Empleados { get; set; }
+    public virtual DbSet<PrecioUnitarioXEmpleado> PrecioUnitarioXEmpleados { get; set; }
 
     public virtual DbSet<Almacen> Almacens { get; set; }
 
@@ -151,6 +152,23 @@ public partial class Alumno01Context : DbContext
             entity.Property(e => e.FechaTerminoRelacionLaboral).HasColumnType("datetime");
             entity.Property(e => e.SalarioDiario).HasColumnType("decimal(28, 6)");
             entity.Property(e => e.Estatus).HasColumnName("Estatus");
+        });
+
+        modelBuilder.Entity<PrecioUnitarioXEmpleado>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_AcuseValidacion_2024_02_15");
+
+            entity.ToTable("PrecioUnitarioXEmpleado");
+
+            entity.HasOne(d => d.IdEmpleadoNavigation).WithMany(p => p.PrecioUnitarioXEmpleados)
+                .HasForeignKey(d => d.IdEmpleado)
+                .HasConstraintName("FK_PrecioUnitarioXEmpleado_IdEmpleado");
+            entity.HasOne(d => d.IdProyectoNavigation).WithMany(p => p.PrecioUnitarioXEmpleados)
+                .HasForeignKey(d => d.IdProyceto)
+                .HasConstraintName("FK_PrecioUnitarioXEmpleado_IdPoryecto");
+            entity.HasOne(d => d.IdPrecioUnitarioNavigation).WithMany(p => p.PrecioUnitarioXEmpleados)
+                .HasForeignKey(d => d.IdPrecioUnitario)
+                .HasConstraintName("FK_PrecioUnitarioXEmpleado_IdPrecioUnitario");
         });
 
         modelBuilder.Entity<AcuseValidacion>(entity =>

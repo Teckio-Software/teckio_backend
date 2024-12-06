@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ERP_TECKIO.DTO;
 using ERP_TECKIO.DTO.Usuario;
 using ERP_TECKIO.Modelos;
 
@@ -732,6 +733,9 @@ namespace ERP_TECKIO
 
             CreateMap<Empleado, EmpleadoDTO>();
             CreateMap<EmpleadoDTO, Empleado>();
+
+            CreateMap<PrecioUnitarioXEmpleado, PrecioUnitarioXEmpleadoDTO>();
+            CreateMap<PrecioUnitarioXEmpleadoDTO, PrecioUnitarioXEmpleado>();
             #endregion
             #region Facturas
 

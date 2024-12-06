@@ -2,7 +2,7 @@
 {
     public class Empleado : EmpleadoAbstract
     {
-
+        public virtual ICollection<PrecioUnitarioXEmpleado> PrecioUnitarioXEmpleados { get; set; } = new List<PrecioUnitarioXEmpleado>();
     }
 
     public class EmpleadoAbstract

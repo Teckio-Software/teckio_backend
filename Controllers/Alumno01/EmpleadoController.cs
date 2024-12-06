@@ -45,9 +45,9 @@ namespace ERP_TECKIO
         }
 
         [HttpGet("ObtenerXIdUser/{IdUser:int}")]
-        public async Task<ActionResult<EmpleadoDTO>> ObtenerXIdUser(int IdEmpleado)
+        public async Task<ActionResult<EmpleadoDTO>> ObtenerXIdUser(int IdUser)
         {
-            return await _empleadoService.ObtenerXIdUser(IdEmpleado);
+            return await _empleadoService.ObtenerXIdUser(IdUser);
         }
     }
 

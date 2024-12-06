@@ -12,6 +12,7 @@ namespace ERP_TECKIO
 
             //Sistema Teckio
             services.AddScoped(typeof(IEmpleadoService<>), typeof(EmpleadoService<>));
+            services.AddScoped(typeof(IPrecioUnitarioXEmpleadoService<>), typeof(PrecioUnitarioXEmpleadoService<>));
             //Proyecto
             services.AddScoped(typeof(IProyectoService<>), typeof(ProyectoService<>));
             services.AddScoped(typeof(IPrecioUnitarioService<>), typeof(PrecioUnitarioService<>));
