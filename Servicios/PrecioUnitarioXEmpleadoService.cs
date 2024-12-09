@@ -52,5 +52,11 @@ namespace ERP_TECKIO.Servicios
             var lista = await _Repository.ObtenerTodos(z => z.IdEmpleado == IdEmpleado);
             return _Mapper.Map<List<PrecioUnitarioXEmpleadoDTO>>(lista);
         }
+
+        public async Task<List<PrecioUnitarioXEmpleadoDTO>> ObtenerXIdEmpleadoYIdProyceto(int IdEmpleado, int IdProyceto)
+        {
+            var lista = await _Repository.ObtenerTodos(z => z.IdEmpleado == IdEmpleado && z.IdProyceto == IdProyceto);
+            return _Mapper.Map<List<PrecioUnitarioXEmpleadoDTO>>(lista);
+        }
     }
 }
