@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ERP_TECKIO")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c9a8802a850b652e180af35d8495a2f455825538")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bd75d9bff71316562665df50590a65c9a2ec4d66")]
 [assembly: System.Reflection.AssemblyProductAttribute("ERP_TECKIO")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ERP_TECKIO")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

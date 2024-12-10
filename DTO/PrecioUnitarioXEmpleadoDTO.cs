@@ -4,6 +4,7 @@ namespace ERP_TECKIO.DTO
 {
     public class PrecioUnitarioXEmpleadoDTO : PrecioUnitarioXEmpleadoAbstract
     {
+        public string NombreProyceto { get; set; }
         public string Codigo { get; set; }
         public string Descripcion { get; set; }
         public string Unidad { get; set; }

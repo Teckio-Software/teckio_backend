@@ -9,14 +9,17 @@ namespace ERP_TECKIO.Procesos
         private readonly IPrecioUnitarioXEmpleadoService<T> _precioUnitarioXEmpleadoService;
         private readonly IPrecioUnitarioService<T> _precioUnitarioService;
         private readonly PrecioUnitarioProceso<T> _precioUnitarioProceso;
+        private readonly IProyectoService<T> _proyectoService;
         public PrecioUnitarioXEmpleadoProceso(
             IPrecioUnitarioXEmpleadoService<T> precioUnitarioXEmpleadoService,
             IPrecioUnitarioService<T> precioUnitarioService,
-            PrecioUnitarioProceso<T> precioUnitarioProceso
+            PrecioUnitarioProceso<T> precioUnitarioProceso,
+            IProyectoService<T> proyectoService
             ) {
             _precioUnitarioXEmpleadoService = precioUnitarioXEmpleadoService;
             _precioUnitarioService = precioUnitarioService;
             _precioUnitarioProceso = precioUnitarioProceso;
+            _proyectoService = proyectoService;
         }
 
         public async Task<List<PrecioUnitarioXEmpleadoDTO>> ObtenerXIdEmpleado(int IdEmpleado)
@@ -26,10 +29,12 @@ namespace ERP_TECKIO.Procesos
             foreach (var item in AgrupadosXProyecto)
             {
                 var PUXProyecto = await _precioUnitarioProceso.ObtenerSinEstructura(item.Key);
-
+                var proyecto = await _proyectoService.ObtenXId(item.Key);
                 foreach (var item1 in PUXEmpleado.Where(z => z.IdProyceto == item.Key))
                 {
+
                     var PU = PUXProyecto.Where(z => z.Id == item1.IdPrecioUnitario).First();
+                    item1.NombreProyceto = proyecto.Nombre;
                     item1.Codigo = PU.Codigo;
                     item1.Descripcion = PU.Descripcion;
                     item1.Unidad = PU.Unidad;
