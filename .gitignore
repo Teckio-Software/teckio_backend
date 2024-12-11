@@ -18,3 +18,5 @@
 .vs/ERP_TECKIO/v17/.suo
 .vs/ERP_TECKIO/v17/DocumentLayout.backup.json
 .vs/ERP_TECKIO/v17/DocumentLayout.json
+bin/Debug/net9.0/ERP_TECKIO.dll
+bin/Debug/net9.0/ERP_TECKIO.pdb
