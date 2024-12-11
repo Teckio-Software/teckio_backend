@@ -1,4 +1,5 @@
 ﻿
+using ERP_TECKIO.Procesos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,15 +15,18 @@ namespace ERP_TECKIO
         private readonly PrecioUnitarioProceso<Alumno01Context> _precioUnitarioProceso;
         private readonly IProgramacionEstimadaService<Alumno01Context> _programacionestimadaService;
         private readonly DbContextOptionsBuilder<Alumno01Context> _Options;
+        private readonly ExplocionInsumosProceso<Alumno01Context> _explocionInsumosProceso;
         public PrecioUnitarioAlumno01Controller(
             PrecioUnitarioProceso<Alumno01Context> precioUnitarioProceso
             , IProgramacionEstimadaService<Alumno01Context> programacionEstimadaService
-            , DbContextOptionsBuilder<Alumno01Context> options
+            , DbContextOptionsBuilder<Alumno01Context> options,
+            ExplocionInsumosProceso<Alumno01Context> explocionInsumosProceso
             )
         {
             _precioUnitarioProceso = precioUnitarioProceso;
             _programacionestimadaService = programacionEstimadaService;
             _Options = options;
+            _explocionInsumosProceso = explocionInsumosProceso;
         }
 
         [HttpGet("todos/{IdProyecto:int}")]
@@ -126,6 +130,12 @@ namespace ERP_TECKIO
         public async Task<ActionResult<List<InsumoParaExplosionDTO>>> ObtenerExplosion(int IdProyecto)
         {
             return await _precioUnitarioProceso.obtenerExplosion(IdProyecto);
+        }
+
+        [HttpGet("obtenerExplosionDeInsumosXEmpleado/{IdProyecto}/{IdEmpleado}")]
+        public async Task<ActionResult<List<InsumoParaExplosionDTO>>> obtenerExplosionXEmpleado(int IdProyecto, int IdEmpleado)
+        {
+            return await _explocionInsumosProceso.obtenerExplosionXEmpleado(IdProyecto, IdEmpleado);
         }
 
         [HttpPost("recalcularPresupuesto")]

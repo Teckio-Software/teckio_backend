@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using ERP_TECKIO.DTO;
+using ERP_TECKIO.DTO.Usuario;
 using ERP_TECKIO.Modelos;
 
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -728,6 +730,23 @@ namespace ERP_TECKIO
                 opt => opt.MapFrom(origen => origen.FechaTermino))
                 .ForMember(destino => destino.Parent,
                 opt => opt.MapFrom(origen => origen.IdPadre));
+
+            CreateMap<Empleado, EmpleadoDTO>();
+            CreateMap<EmpleadoDTO, Empleado>();
+
+            CreateMap<PrecioUnitarioXEmpleado, PrecioUnitarioXEmpleadoDTO>();
+            CreateMap<PrecioUnitarioXEmpleadoDTO, PrecioUnitarioXEmpleado>();
+            CreateMap<DependenciaProgramacionEstimadaDTO, DependenciaProgramacionEstimada>()
+                .ForMember(z => z.IdProyectoNavigation,
+                opt => opt.Ignore())
+                .ForMember(z => z.IdProgramacionEstimadaGanttNavigation,
+                opt => opt.Ignore())
+                .ForMember(z => z.IdProgramacionEstimadaGanttPredecesoraNavigation,
+                opt => opt.Ignore());
+            CreateMap<DependenciaProgramacionEstimada, DependenciaProgramacionEstimadaDTO>();
+            CreateMap<DependenciaProgramacionEstimadaDeserealizadaDTO, DependenciaProgramacionEstimadaDTO>()
+                .ForMember(destino => destino.SourceId,
+                opt => opt.MapFrom(origen => Convert.ToString(origen.IdProgramacionEstimadaGanttPredecesora)));
             #endregion
             #region Facturas
 

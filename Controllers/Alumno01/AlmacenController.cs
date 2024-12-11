@@ -44,9 +44,7 @@ namespace ERP_TECKIO.Controllers
         [HttpGet("{Id:int}")]
         public async Task<ActionResult<AlmacenDTO>> GetAlmacenXId(int Id)
         {
-          
             return await _almacenServicio.ObtenXId(Id);
-          
         }
 
         [HttpDelete]

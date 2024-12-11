@@ -29,5 +29,15 @@ namespace SistemaERP.API.Controllers.Alumno01
                 return programacionesEstimadas;
             }
         }
+
+        [HttpPost("EditarFechaGantt")]
+        public async Task<List<ProgramacionEstimadaGanttDTO>> EditarProgramacionEstimadaGantt(ProgramacionEstimadaGanttDTO registro)
+        {
+            using (var db = new Alumno01Context(_Options.Options))
+            {
+                var programaciones = _ProgramacionEstimadaGanttProceso.EditarFechaProgramacionEstimada(registro, db);
+                return programaciones.Result;
+            }
+        }
     }
 }

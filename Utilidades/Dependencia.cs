@@ -1,4 +1,6 @@
-﻿using ERP_TECKIO.Servicios;
+﻿using ERP_TECKIO.Procesos;
+using ERP_TECKIO.Servicios;
+using ERP_TECKIO.Servicios.Contratos;
 using Microsoft.EntityFrameworkCore;
 namespace ERP_TECKIO
 {
@@ -10,6 +12,8 @@ namespace ERP_TECKIO
             services.AddAutoMapper(typeof(AutoMapperProfile));
 
             //Sistema Teckio
+            services.AddScoped(typeof(IEmpleadoService<>), typeof(EmpleadoService<>));
+            services.AddScoped(typeof(IPrecioUnitarioXEmpleadoService<>), typeof(PrecioUnitarioXEmpleadoService<>));
             //Proyecto
             services.AddScoped(typeof(IProyectoService<>), typeof(ProyectoService<>));
             services.AddScoped(typeof(IPrecioUnitarioService<>), typeof(PrecioUnitarioService<>));
@@ -101,6 +105,8 @@ namespace ERP_TECKIO
             services.AddScoped(typeof(AlmacenSalidaProceso<>));
             services.AddScoped(typeof(ExistenciasProceso<>));
             services.AddScoped(typeof(ObjetoRequisicionProceso<>));
+            services.AddScoped(typeof(PrecioUnitarioXEmpleadoProceso<>));
+            services.AddScoped(typeof(ExplocionInsumosProceso<>));
             //services.AddScoped(typeof(RegistraFacturaProceso<>));
             //services.AddScoped(typeof(ObtenFacturasProceso<>));
             services.AddScoped(typeof(MovimientoBancarioProceso<>));

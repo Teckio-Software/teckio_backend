@@ -33,6 +33,7 @@ namespace ERP_TECKIO.Servicios
                 , PEG.IdPrecioUnitario
                 , PU.Cantidad
                 , PU.TipoPrecioUnitario
+                , CASE WHEN PU.TipoPrecioUnitario = 1 THEN 'task' ELSE 'project' END as Type
                 , PEG.IdConcepto
                 , C.Codigo
                 , C.Descripcion
@@ -45,8 +46,7 @@ namespace ERP_TECKIO.Servicios
                 , PEG.Progreso
                 , PEG.Comando
                 , PEG.DesfaseComando
-                , PEG.IdPadre
-                , 'project' as Type
+                , CASE WHEN PEG.IdPadre != 0 THEN PEG.IdPadre ELSE null END as IdPadre
                 from ProgramacionEstimadaGantt PEG
                 inner join PrecioUnitario PU on PEG.IdPrecioUnitario = PU.id
                 inner join Concepto C on PEG.IdConcepto = C.Id
@@ -100,6 +100,19 @@ namespace ERP_TECKIO.Servicios
             return datos.FirstOrDefault();
         }
 
+        public async Task<List<ProgramacionEstimadaGantt>> ObtenerProgramacionesEnModelo(int IdProyecto)
+        {
+            try
+            {
+                var registros = await _Repositorio.ObtenerTodos(z => z.IdProyecto == IdProyecto);
+                return registros;
+            }
+            catch
+            {
+                return new List<ProgramacionEstimadaGantt>();
+            }
+        }
+
         public async Task<ProgramacionEstimadaGanttDTO> CrearYObtener(ProgramacionEstimadaGanttDTO registro)
         {
             try
@@ -146,6 +159,43 @@ namespace ERP_TECKIO.Servicios
                 return respuesta;
             }
             catch(Exception ex)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = ex.Message;
+                return respuesta;
+            }
+        }
+
+        public async Task<RespuestaDTO> EditarModelo(ProgramacionEstimadaGantt registro)
+        {
+            RespuestaDTO respuesta = new RespuestaDTO();
+            try
+            {
+                var objetoEncontrado = await _Repositorio.Obtener(z => z.Id == registro.Id);
+                if (objetoEncontrado == null)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "La programacionEstimada no existe";
+                    return respuesta;
+                }
+                objetoEncontrado.FechaInicio = registro.FechaInicio;
+                objetoEncontrado.FechaTermino = registro.FechaTermino;
+                objetoEncontrado.Duracion = registro.Duracion;
+                objetoEncontrado.Progreso = registro.Progreso;
+                objetoEncontrado.Comando = registro.Comando;
+                objetoEncontrado.DesfaseComando = registro.DesfaseComando;
+                respuesta.Estatus = await _Repositorio.Editar(objetoEncontrado);
+                if (!respuesta.Estatus)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "No se puede editar ProgramacionEstimada";
+                    return respuesta;
+                }
+                respuesta.Estatus = true;
+                respuesta.Descripcion = "ProgramacionEstimada editada";
+                return respuesta;
+            }
+            catch (Exception ex)
             {
                 respuesta.Estatus = false;
                 respuesta.Descripcion = ex.Message;

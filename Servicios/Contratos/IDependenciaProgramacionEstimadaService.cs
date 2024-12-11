@@ -5,6 +5,7 @@ namespace ERP_TECKIO
 {
     public interface IDependenciaProgramacionEstimadaService<T> where T : DbContext
     {
+        Task<List<DependenciaProgramacionEstimadaDTO>> ObtenerXIdProyecto(int IdProyecto, DbContext db);
         Task<List<DependenciaProgramacionEstimadaDTO>> ObtenerXIdProgramacionEstimadaGantt(int IdProgramacionEstimadaGantt);
         Task<DependenciaProgramacionEstimadaDTO> ObtenerXId(int Id);
         Task<DependenciaProgramacionEstimadaDTO> CrearYObtener(DependenciaProgramacionEstimadaDTO registro);
