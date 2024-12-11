@@ -45,5 +45,11 @@ namespace SistemaERP.API.Controllers.Alumno01
         {
             await _ProgramacionEstimadaGanttProceso.EliminarDependencia(IdDependencia);
         }
+
+        [HttpPut("generarDependencia")]
+        public async Task GenerarDependencia(DependenciaProgramacionEstimadaDTO registro)
+        {
+            await _ProgramacionEstimadaGanttProceso.GenerarDependencia(registro);
+        }
     }
 }

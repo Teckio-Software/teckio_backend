@@ -742,7 +742,16 @@ namespace ERP_TECKIO
                 .ForMember(z => z.IdProgramacionEstimadaGanttNavigation,
                 opt => opt.Ignore())
                 .ForMember(z => z.IdProgramacionEstimadaGanttPredecesoraNavigation,
-                opt => opt.Ignore());
+                opt => opt.Ignore())
+                .ForMember(destino => destino.Id,
+                opt => opt.MapFrom(origen => Convert.ToInt32(origen.Id)))
+                .ForMember(destino => destino.IdProgramacionEstimadaGantt,
+                opt => opt.MapFrom(origen => Convert.ToInt32(origen.IdProgramacionEstimadaGantt)))
+                .ForMember(destino => destino.IdProyecto,
+                opt => opt.MapFrom(origen => Convert.ToInt32(origen.IdProyecto)))
+                .ForMember(destino => destino.IdProgramacionEstimadaGanttPredecesora,
+                opt => opt.MapFrom(origen => Convert.ToInt32(origen.SourceId)))
+                ;
             CreateMap<DependenciaProgramacionEstimada, DependenciaProgramacionEstimadaDTO>();
             CreateMap<DependenciaProgramacionEstimadaDeserealizadaDTO, DependenciaProgramacionEstimadaDTO>()
                 .ForMember(destino => destino.SourceId,

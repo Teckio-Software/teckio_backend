@@ -29,7 +29,7 @@ public partial class ProgramacionEstimadaGantt
 
     public int? IdPadre { get; set; }
 
-    public virtual ICollection<DependenciaProgramacionEstimada> Dependencia { get; set; } = new List<DependenciaProgramacionEstimada>();
+    public virtual ICollection<DependenciaProgramacionEstimada> Dependencias { get; set; } = new List<DependenciaProgramacionEstimada>();
     public virtual ICollection<DependenciaProgramacionEstimada> DependenciaPredecesora { get; set; } = new List<DependenciaProgramacionEstimada>();
 
     public virtual Concepto IdConceptoNavigation { get; set; } = null!;

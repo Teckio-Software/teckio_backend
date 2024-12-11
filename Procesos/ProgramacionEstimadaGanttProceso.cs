@@ -79,5 +79,10 @@ namespace ERP_TECKIO
         {
             await _DependenciaProgramacionEstimadaService.Eliminar(IdDependencia);
         }
+
+        public async Task GenerarDependencia(DependenciaProgramacionEstimadaDTO registro)
+        {
+            await _DependenciaProgramacionEstimadaService.CrearYObtener(registro);
+        }
     }
 }
