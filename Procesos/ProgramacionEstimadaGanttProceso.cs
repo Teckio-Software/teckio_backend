@@ -74,5 +74,10 @@ namespace ERP_TECKIO
                 await RecalcularPadresProgramacionEstimada(programacionPadre, db);
             }
         }
+
+        public async Task EliminarDependencia(int IdDependencia)
+        {
+            await _DependenciaProgramacionEstimadaService.Eliminar(IdDependencia);
+        }
     }
 }

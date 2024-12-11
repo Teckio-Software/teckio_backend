@@ -50,7 +50,7 @@ public partial class Alumno01Context : DbContext
 
     public virtual DbSet<CuentaContable> CuentaContables { get; set; }
 
-    public virtual DbSet<DependenciaProgramacionEstimada> Dependencias { get; set; }
+    public virtual DbSet<DependenciaProgramacionEstimada> Dependencia { get; set; }
 
     public virtual DbSet<DetalleXContrato> DetalleXContratos { get; set; }
 
@@ -231,7 +231,7 @@ public partial class Alumno01Context : DbContext
                     .HasConstraintName("FK__Dependenc__IdPro__36670980");
 
             entity.HasOne(d => d.IdProyectoNavigation).WithMany(p => p.DependenciaProgramacionEstimadas)
-                .HasForeignKey(d => d.IdProgramacionEstimadaGantt)
+                .HasForeignKey(d => d.IdProyecto)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Dependenc__IdPro__375B2DB9");
         });

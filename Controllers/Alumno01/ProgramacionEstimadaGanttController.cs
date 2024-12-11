@@ -39,5 +39,11 @@ namespace SistemaERP.API.Controllers.Alumno01
                 return programaciones.Result;
             }
         }
+
+        [HttpDelete("EliminarDependencia/{IdDependencia:int}")]
+        public async Task EliminarDependencia(int IdDependencia)
+        {
+            await _ProgramacionEstimadaGanttProceso.EliminarDependencia(IdDependencia);
+        }
     }
 }
