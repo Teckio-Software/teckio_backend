@@ -577,7 +577,7 @@ namespace ERP_TECKIO
                 nuevaProgramacion.IdPrecioUnitario = nuevoRegistro.Id;
                 nuevaProgramacion.IdConcepto = nuevoRegistro.IdConcepto;
                 nuevaProgramacion.Start = Proyecto.FechaInicio;
-                nuevaProgramacion.End = Proyecto.FechaInicio;
+                nuevaProgramacion.End = Proyecto.FechaInicio.AddDays(1);
                 nuevaProgramacion.Duracion = 1;
                 nuevaProgramacion.Progress = 0;
                 nuevaProgramacion.Comando = 0;
