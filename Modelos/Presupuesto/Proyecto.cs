@@ -69,5 +69,5 @@ public partial class Proyecto
     public virtual ICollection<ConjuntoIndirectos> ConjuntoIndirectos { get; set; } = new List<ConjuntoIndirectos>();
     public virtual ICollection<ProgramacionEstimadaGantt> ProgramacionEstimadaGantts { get; set; } = new List<ProgramacionEstimadaGantt>();
     public virtual ICollection<PrecioUnitarioXEmpleado> PrecioUnitarioXEmpleados { get; set; } = new List<PrecioUnitarioXEmpleado>();
-
+    public virtual ICollection<DependenciaProgramacionEstimada> DependenciaProgramacionEstimadas { get; set; } = new List<DependenciaProgramacionEstimada>();
 }

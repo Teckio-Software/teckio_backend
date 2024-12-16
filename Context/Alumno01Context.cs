@@ -50,7 +50,7 @@ public partial class Alumno01Context : DbContext
 
     public virtual DbSet<CuentaContable> CuentaContables { get; set; }
 
-    public virtual DbSet<DependenciaProgramacionEstimada> Dependencias { get; set; }
+    public virtual DbSet<DependenciaProgramacionEstimada> DependenciaProgramacionEstimada { get; set; }
 
     public virtual DbSet<DetalleXContrato> DetalleXContratos { get; set; }
 
@@ -220,10 +220,20 @@ public partial class Alumno01Context : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__Dependen__3214EC0726AAF715");
 
-            entity.HasOne(d => d.IdProgramacionEstimadaGanttNavigation).WithMany(p => p.Dependencia)
+            entity.HasOne(d => d.IdProgramacionEstimadaGanttNavigation).WithMany(p => p.Dependencias)
                 .HasForeignKey(d => d.IdProgramacionEstimadaGantt)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Dependenc__IdPro__2BE97B0D");
+                .HasConstraintName("FK_ProgramacionEstimadaGanttDependiente");
+
+            entity.HasOne(d => d.IdProgramacionEstimadaGanttPredecesoraNavigation).WithMany(p => p.DependenciaPredecesora)
+                .HasForeignKey(d => d.IdProgramacionEstimadaGanttPredecesora)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ProgramacionEstimadaGanttPerteneciente");
+
+            entity.HasOne(d => d.IdProyectoNavigation).WithMany(p => p.DependenciaProgramacionEstimadas)
+                .HasForeignKey(d => d.IdProyecto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Proyecto");
         });
 
         modelBuilder.Entity<DetalleValidacion>(entity =>

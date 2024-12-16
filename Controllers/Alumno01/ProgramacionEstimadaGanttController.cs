@@ -29,5 +29,27 @@ namespace SistemaERP.API.Controllers.Alumno01
                 return programacionesEstimadas;
             }
         }
+
+        [HttpPost("EditarFechaGantt")]
+        public async Task<List<ProgramacionEstimadaGanttDTO>> EditarProgramacionEstimadaGantt(ProgramacionEstimadaGanttDTO registro)
+        {
+            using (var db = new Alumno01Context(_Options.Options))
+            {
+                var programaciones = _ProgramacionEstimadaGanttProceso.EditarFechaProgramacionEstimada(registro, db);
+                return programaciones.Result;
+            }
+        }
+
+        [HttpDelete("EliminarDependencia/{IdDependencia:int}")]
+        public async Task EliminarDependencia(int IdDependencia)
+        {
+            await _ProgramacionEstimadaGanttProceso.EliminarDependencia(IdDependencia);
+        }
+
+        [HttpPut("generarDependencia")]
+        public async Task GenerarDependencia(DependenciaProgramacionEstimadaDTO registro)
+        {
+            await _ProgramacionEstimadaGanttProceso.GenerarDependencia(registro);
+        }
     }
 }

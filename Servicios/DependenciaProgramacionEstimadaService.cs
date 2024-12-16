@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 
 namespace ERP_TECKIO
@@ -15,6 +16,30 @@ namespace ERP_TECKIO
         {
             _Repositorio = repositorio;
             _Mapper = mapper;
+        }
+
+        public async Task<List<DependenciaProgramacionEstimadaDTO>> ObtenerXIdProyecto(int IdProyecto, DbContext db)
+        {
+            var items = db.Database.SqlQueryRaw<string>("""
+                select
+                Id
+                , IdProgramacionEstimadaGantt
+                , IdProyecto
+                , IdProgramacionEstimadaGanttPredecesora
+                , 'endOfTask' as SourceTarget
+                , 'startOfTask' as OwnTarget
+                from DependenciaProgramacionEstimada where IdProyecto =
+                """ + IdProyecto +
+                """for json path"""
+                ).ToList();
+            if (items.Count <= 0)
+            {
+                return new List<DependenciaProgramacionEstimadaDTO>();
+            }
+            string json = string.Join("", items);
+            var datosBase = JsonSerializer.Deserialize<List<DependenciaProgramacionEstimadaDeserealizadaDTO>>(json);
+            var datos = _Mapper.Map<List<DependenciaProgramacionEstimadaDTO>>(datosBase);
+            return datos;
         }
 
         public async Task<List<DependenciaProgramacionEstimadaDTO>> ObtenerXIdProgramacionEstimadaGantt(int IdPE)
@@ -106,7 +131,7 @@ namespace ERP_TECKIO
             RespuestaDTO respuesta = new RespuestaDTO();
             try
             {
-                var query = await _Repositorio.ObtenerTodos(z => z.IdProgramacionEstimadaGantt == registros[0].IdProgramacionEstimadaGantt);
+                var query = await _Repositorio.ObtenerTodos(z => z.IdProgramacionEstimadaGantt == Convert.ToInt64(registros[0].SourceId));
                 var resultado = await _Repositorio.EliminarMultiple(query);
                 if (!resultado)
                 {

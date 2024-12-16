@@ -736,6 +736,26 @@ namespace ERP_TECKIO
 
             CreateMap<PrecioUnitarioXEmpleado, PrecioUnitarioXEmpleadoDTO>();
             CreateMap<PrecioUnitarioXEmpleadoDTO, PrecioUnitarioXEmpleado>();
+            CreateMap<DependenciaProgramacionEstimadaDTO, DependenciaProgramacionEstimada>()
+                .ForMember(z => z.IdProyectoNavigation,
+                opt => opt.Ignore())
+                .ForMember(z => z.IdProgramacionEstimadaGanttNavigation,
+                opt => opt.Ignore())
+                .ForMember(z => z.IdProgramacionEstimadaGanttPredecesoraNavigation,
+                opt => opt.Ignore())
+                .ForMember(destino => destino.Id,
+                opt => opt.MapFrom(origen => Convert.ToInt32(origen.Id)))
+                .ForMember(destino => destino.IdProgramacionEstimadaGantt,
+                opt => opt.MapFrom(origen => Convert.ToInt32(origen.IdProgramacionEstimadaGantt)))
+                .ForMember(destino => destino.IdProyecto,
+                opt => opt.MapFrom(origen => Convert.ToInt32(origen.IdProyecto)))
+                .ForMember(destino => destino.IdProgramacionEstimadaGanttPredecesora,
+                opt => opt.MapFrom(origen => Convert.ToInt32(origen.SourceId)))
+                ;
+            CreateMap<DependenciaProgramacionEstimada, DependenciaProgramacionEstimadaDTO>();
+            CreateMap<DependenciaProgramacionEstimadaDeserealizadaDTO, DependenciaProgramacionEstimadaDTO>()
+                .ForMember(destino => destino.SourceId,
+                opt => opt.MapFrom(origen => Convert.ToString(origen.IdProgramacionEstimadaGanttPredecesora)));
             #endregion
             #region Facturas
 

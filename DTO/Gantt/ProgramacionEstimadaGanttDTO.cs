@@ -28,6 +28,7 @@ namespace ERP_TECKIO
         public int DesfaseComando { get; set; }
         public string? Parent { get; set; }
         public string Type { get; set;  }
+        public List<DependenciaProgramacionEstimadaDTO> Dependencies { get; set; }
     }
 
     public class ProgramacionEstimadaGanttDeserealizadaDTO
