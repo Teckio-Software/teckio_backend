@@ -85,6 +85,7 @@ namespace ERP_TECKIO
             services.AddScoped(typeof(IBancoService<>), typeof(BancoService<>));
             //Procesos
             services.AddScoped(typeof(PrecioUnitarioProceso<>));
+            services.AddScoped(typeof(GeneradoresProceso<>));
             services.AddScoped(typeof(TipoInsumoProceso<>));
             services.AddScoped(typeof(FamiliaInsumoProceso<>));
             services.AddScoped(typeof(InsumoProceso<>));

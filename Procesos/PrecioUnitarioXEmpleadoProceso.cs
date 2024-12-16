@@ -51,6 +51,8 @@ namespace ERP_TECKIO.Procesos
             var PUXEmpleado = await _precioUnitarioXEmpleadoService.ObtenerXIdEmpleadoYIdProyceto(IdEmpleado, IdProyceto);
 
             var PUXProyecto = await _precioUnitarioProceso.ObtenerSinEstructura(IdProyceto);
+            var proyecto = await _proyectoService.ObtenXId(IdProyceto);
+
             foreach (var item in PUXProyecto.Where(z => z.TipoPrecioUnitario == 1))
             {
                 var PUXId = PUXEmpleado.Where(z => z.IdPrecioUnitario == item.Id).FirstOrDefault();
@@ -60,6 +62,7 @@ namespace ERP_TECKIO.Procesos
                         IdEmpleado = IdEmpleado,
                         IdPrecioUnitario = item.Id,
                         IdProyceto = item.IdProyecto,
+                        NombreProyceto = proyecto.Nombre,
                         Codigo = item.Codigo,
                         Descripcion = item.Descripcion,
                         Unidad = item.Unidad,
