@@ -84,5 +84,11 @@ namespace ERP_TECKIO
         {
             await _DependenciaProgramacionEstimadaService.CrearYObtener(registro);
         }
+
+        public async Task AsignarProgreso(ProgramacionEstimadaGanttDTO registro)
+        {
+            await _ProgramacionEstimadaGanttService.Editar(registro);
+        }
     }
 }
+
