@@ -1,4 +1,5 @@
 ﻿using ERP_TECKIO;
+using ERP_TECKIO.Procesos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,14 +11,17 @@ namespace SistemaERP.API.Controllers.Alumno01
     {
         private readonly ProgramacionEstimadaGanttProceso<Alumno01Context> _ProgramacionEstimadaGanttProceso;
         private readonly DbContextOptionsBuilder<Alumno01Context> _Options;
+        private readonly ImporteSemanalGanttProceso<Alumno01Context> _importeSemanalGanttProceso;
 
         public ProgramacionEstimadaGanttAlumno01Controller(
             ProgramacionEstimadaGanttProceso<Alumno01Context> programacionEstimadaGanttProceso,
+            ImporteSemanalGanttProceso<Alumno01Context> importeSemanalGanttProceso,
             DbContextOptionsBuilder<Alumno01Context> options
             )
         {
             _ProgramacionEstimadaGanttProceso = programacionEstimadaGanttProceso;
             _Options = options;
+            _importeSemanalGanttProceso = importeSemanalGanttProceso;
         }
 
         [HttpGet("obtenerGanttXIdProyecto/{IdProyecto:int}")]
@@ -28,6 +32,13 @@ namespace SistemaERP.API.Controllers.Alumno01
                 var programacionesEstimadas = _ProgramacionEstimadaGanttProceso.ObtenerProgramacionEstimadaXIdProyecto(IdProyecto, db).Result;
                 return programacionesEstimadas;
             }
+        }
+
+        [HttpGet("obtenerImporteSemanalGantt/{IdProyecto:int}")]
+        public async Task<List<ImporteSemanalDTO>> obtenerImporteSemanalGantt(int IdProyecto)
+        {
+            return await _importeSemanalGanttProceso.ImporteSemanal(IdProyecto);
+
         }
 
         [HttpPost("EditarFechaGantt")]

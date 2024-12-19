@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ERP_TECKIO;
+using ERP_TECKIO.Procesos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -38,6 +39,7 @@ namespace ERP_TECKIO
                     registro.Dependencies = dependencias.Where(z => z.IdProgramacionEstimadaGantt == Convert.ToInt32(registro.Id)).ToList();
                 }
             }
+
             return programacionesEstimadas;
         }
 

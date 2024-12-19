@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -52,5 +53,14 @@ namespace ERP_TECKIO
         public int DesfaseComando { get; set; }
         public int? IdPadre { get; set; }
         public string Type { get; set;  }
+    }
+
+    public class ImporteSemanalDTO
+    {
+        public int NumeroSemana { get; set; }
+        public DateTime FechaInicio { get; set; }
+        public DateTime FechaFin { get; set; }
+        public int Anio { get; set; }
+        public decimal Total { get; set; }
     }
 }
