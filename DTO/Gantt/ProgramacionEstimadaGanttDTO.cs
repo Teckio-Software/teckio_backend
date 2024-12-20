@@ -13,6 +13,8 @@ namespace ERP_TECKIO
         public string Id { get; set; }
         public string Name { get; set; }
         public int IdProyecto { get; set; }
+        public bool EsSabado { get; set; }
+        public bool EsDomingo { get; set; }
         public int IdPrecioUnitario { get; set; }
         public decimal Cantidad { get; set; }
         public int TipoPrecioUnitario { get; set; }

@@ -30,6 +30,8 @@ namespace ERP_TECKIO.Servicios
                 select 
                 PEG.Id
                 , PEG.IdProyecto
+                , P.EsSabado
+                , P.EsDomingo
                 , PEG.IdPrecioUnitario
                 , PU.Cantidad
                 , PU.TipoPrecioUnitario
@@ -50,6 +52,7 @@ namespace ERP_TECKIO.Servicios
                 from ProgramacionEstimadaGantt PEG
                 inner join PrecioUnitario PU on PEG.IdPrecioUnitario = PU.id
                 inner join Concepto C on PEG.IdConcepto = C.Id
+                inner join Proyecto P on PEG.IdProyecto = P.Id
                 where PEG.IdProyecto = 
                 """" + IdProyecto +
                 """"for json path""""

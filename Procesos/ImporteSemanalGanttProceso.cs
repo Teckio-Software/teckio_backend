@@ -16,7 +16,7 @@ namespace ERP_TECKIO.Procesos
             _programacionEstimadaGanttProceso = programacionEstimadaGanttProceso;
         }
 
-        public async Task<List<ImporteSemanalDTO>> ImporteSemanal(int IdProyecto) {
+        public async Task<List<ImporteSemanalDTO>> ImporteSemanal(int IdProyecto) { //True en EsSabado o EsDomingo = no se trabaja
             var db = _dbContex;
 
             var registros = await _programacionEstimadaGanttProceso.ObtenerProgramacionEstimadaXIdProyecto(IdProyecto, db);
@@ -45,6 +45,10 @@ namespace ERP_TECKIO.Procesos
                 decimal SubTotalSemana = 0;
 
                 foreach (var z in registros) {
+
+                    DateTime fechaInicio = z.Start;
+                    DateTime fechaFin = z.End;
+                    
                     var dias = z.End - z.Start;
                     var costoDia = z.Importe / dias.Days;
 
@@ -85,7 +89,7 @@ namespace ERP_TECKIO.Procesos
                                 continue;
                             }
                         }
-                    }
+                    }   
                     else
                     {
                         var nuevaFecha = z.Start.AddDays(((int)(z.Start.DayOfWeek) * -1) + 1);
