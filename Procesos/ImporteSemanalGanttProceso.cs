@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Globalization;
 
 namespace ERP_TECKIO.Procesos
@@ -33,11 +34,11 @@ namespace ERP_TECKIO.Procesos
 
             CultureInfo cul = CultureInfo.CurrentCulture;
 
-            var UltimaSemana = cul.Calendar.GetWeekOfYear(fechaFinal, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
-            var StartSemana = cul.Calendar.GetWeekOfYear(startOfWeek, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
             var EndSemana = cul.Calendar.GetWeekOfYear(endOfWeek, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
 
             var semanas = new List<ImporteSemanalDTO>();
+            var DomingoLaboral = registros.First().EsDomingo;
+            var SabadoLaboral = registros.First().EsSabado;
 
             registros = registros.Where(z => (z.Parent == "0" || z.Parent == null)).ToList();
             while (startOfWeek < fechaFinal)
@@ -45,13 +46,34 @@ namespace ERP_TECKIO.Procesos
                 decimal SubTotalSemana = 0;
 
                 foreach (var z in registros) {
-
-                    DateTime fechaInicio = z.Start;
-                    DateTime fechaFin = z.End;
-                    
+                    DateTime fI = z.Start;
+                    DateTime fF = z.End;
+                    int domingos = 0;
+                    int sabados = 0;
                     var dias = z.End - z.Start;
-                    var costoDia = z.Importe / dias.Days;
-
+                    if (DomingoLaboral) {
+                        while (fI <= fF) {
+                            if (fI.DayOfWeek == DayOfWeek.Sunday) {
+                                domingos++;
+                            }
+                            if (fI.DayOfWeek == DayOfWeek.Saturday)
+                            {
+                                sabados++;
+                            }
+                            fI = fI.AddDays(1);
+                        }
+                    }
+                    
+                    var costoDia = z.Importe / (dias.Days-domingos-sabados);
+                    int diasSemanas = 7;
+                    if (DomingoLaboral)
+                    {
+                        diasSemanas--;
+                    }
+                    if (SabadoLaboral)
+                    {
+                        diasSemanas--;
+                    }
                     bool esInicio =(int) z.Start.DayOfWeek == 1;
 
                     if (esInicio) {
@@ -59,8 +81,7 @@ namespace ERP_TECKIO.Procesos
                         if (esFin) {
                             if (startOfWeek >= z.Start && endOfWeek <= z.End)
                             {
-                                var difecincia = endOfWeek - startOfWeek;
-                                var total = difecincia.Days * costoDia;
+                                var total = diasSemanas * costoDia;
                                 SubTotalSemana = SubTotalSemana + total;
                                 continue;
                             }
@@ -75,12 +96,14 @@ namespace ERP_TECKIO.Procesos
                                 decimal total = 0;
                                 if (EndSemana == cul.Calendar.GetWeekOfYear(nuevaFechaFin, CalendarWeekRule.FirstDay, DayOfWeek.Monday))
                                 {
-                                    total = indice2-1 * costoDia;
+                                    if (indice2 == 6 && SabadoLaboral) {
+                                        indice2 = 5;
+                                    }
+                                    total = indice2 * costoDia;
                                 }
                                 else
                                 {
-                                    var difecincia = endOfWeek - startOfWeek;
-                                    total = difecincia.Days * costoDia;
+                                    total = diasSemanas * costoDia;
                                 }
                                 SubTotalSemana = SubTotalSemana + total;
                                 continue;
@@ -98,8 +121,7 @@ namespace ERP_TECKIO.Procesos
                         {
                             if (startOfWeek >= nuevaFecha && endOfWeek <= z.End)
                             {
-                                var difecincia = endOfWeek - startOfWeek;
-                                var total = difecincia.Days * costoDia;
+                                var total = diasSemanas * costoDia;
                                 SubTotalSemana = SubTotalSemana + total;
                                 continue;
                             }
@@ -115,12 +137,15 @@ namespace ERP_TECKIO.Procesos
                             {
                                 decimal total = 0;
                                 if (EndSemana == cul.Calendar.GetWeekOfYear(nuevaFechaFin, CalendarWeekRule.FirstDay, DayOfWeek.Monday)) {
-                                    total = indice2-1 * costoDia;
+                                    if (indice2 == 6 && SabadoLaboral)
+                                    {
+                                        indice2 = 5;
+                                    }
+                                    total = indice2 * costoDia;
                                 }
                                 else
                                 {
-                                    var difecincia = endOfWeek - startOfWeek;
-                                    total = difecincia.Days * costoDia;
+                                    total = diasSemanas * costoDia;
                                 }
                                 SubTotalSemana = SubTotalSemana + total;
                                 continue;
