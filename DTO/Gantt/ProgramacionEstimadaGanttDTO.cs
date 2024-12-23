@@ -66,5 +66,6 @@ namespace ERP_TECKIO
         public DateTime FechaFin { get; set; }
         public int Anio { get; set; }
         public decimal Total { get; set; }
+        public string TotalConFormato { get; set; }
     }
 }
