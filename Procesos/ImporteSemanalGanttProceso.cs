@@ -164,7 +164,7 @@ namespace ERP_TECKIO.Procesos
                     FechaInicio = startOfWeek,
                     FechaFin = endOfWeek,
                     Total = SubTotalSemana,
-                    TotalConFormato = String.Format("{0:#,##0.0000}", SubTotalSemana)
+                    TotalConFormato = String.Format("{0:#,##0.00}", SubTotalSemana)
                 });
 
                 startOfWeek = startOfWeek.AddDays(7);
