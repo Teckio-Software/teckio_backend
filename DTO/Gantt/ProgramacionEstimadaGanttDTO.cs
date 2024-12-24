@@ -68,4 +68,17 @@ namespace ERP_TECKIO
         public decimal Total { get; set; }
         public string TotalConFormato { get; set; }
     }
+
+    public class ImporteSemanalPorTipoDTO: ImporteSemanalDTO
+    {
+        public int TipoDeInsumo { get; set; }
+    }
+
+    public class ImportesSemanalesPorTipoDTO
+    {
+        public List<ImporteSemanalDTO> semanas { get; set; } = new List<ImporteSemanalDTO>();
+        public List<ImporteSemanalPorTipoDTO> semanasMDO { get; set; } = new List<ImporteSemanalPorTipoDTO>();
+        public List<ImporteSemanalPorTipoDTO> semanasMaterial { get; set; } = new List<ImporteSemanalPorTipoDTO>();
+        public List<ImporteSemanalPorTipoDTO> semanasEquipo { get; set; } = new List<ImporteSemanalPorTipoDTO>();
+    }
 }
