@@ -203,9 +203,9 @@ namespace ERP_TECKIO.Procesos
             CultureInfo cul = CultureInfo.CurrentCulture;
 
             var EndSemana = cul.Calendar.GetWeekOfYear(endOfWeek, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
-            var semanasMDO = new List<ImporteSemanalPorTipoDTO>();
-            var semanasMaterial = new List<ImporteSemanalPorTipoDTO>();
-            var semanasEquipo = new List<ImporteSemanalPorTipoDTO>();
+            var semanasMDO = new List<ImporteSemanalDTO>();
+            var semanasMaterial = new List<ImporteSemanalDTO>();
+            var semanasEquipo = new List<ImporteSemanalDTO>();
 
             var DomingoLaboral = registros.First().EsDomingo;
             var SabadoLaboral = registros.First().EsSabado;
@@ -232,7 +232,7 @@ namespace ERP_TECKIO.Procesos
                             IdPadre = PrecioUnitarioRegistro.IdPrecioUnitarioBase;
                             while(IdPadre != 0)
                             {
-                                var padre = PreciosUnitarios.Where(z => z.Id == registro.IdPrecioUnitario).FirstOrDefault();
+                                var padre = PreciosUnitarios.Where(z => z.Id == IdPadre).FirstOrDefault();
                                 totalAuxiliar = totalAuxiliar * padre.Cantidad;
                                 IdPadre = padre.IdPrecioUnitarioBase;
                             }
@@ -245,7 +245,7 @@ namespace ERP_TECKIO.Procesos
                             IdPadre = PrecioUnitarioRegistro.IdPrecioUnitarioBase;
                             while (IdPadre != 0)
                             {
-                                var padre = PreciosUnitarios.Where(z => z.Id == registro.IdPrecioUnitario).FirstOrDefault();
+                                var padre = PreciosUnitarios.Where(z => z.Id == IdPadre).FirstOrDefault();
                                 totalAuxiliar = totalAuxiliar * padre.Cantidad;
                                 IdPadre = padre.IdPrecioUnitarioBase;
                             }
@@ -258,7 +258,7 @@ namespace ERP_TECKIO.Procesos
                             IdPadre = PrecioUnitarioRegistro.IdPrecioUnitarioBase;
                             while (IdPadre != 0)
                             {
-                                var padre = PreciosUnitarios.Where(z => z.Id == registro.IdPrecioUnitario).FirstOrDefault();
+                                var padre = PreciosUnitarios.Where(z => z.Id == IdPadre).FirstOrDefault();
                                 totalAuxiliar = totalAuxiliar * padre.Cantidad;
                                 IdPadre = padre.IdPrecioUnitarioBase;
                             }
@@ -287,9 +287,13 @@ namespace ERP_TECKIO.Procesos
                                 fI = fI.AddDays(1);
                             }
                         }
-                        var costoDiaMDO = TotalMDO / (dias.Days - domingos - sabados);
-                        var costoDiaEquipo = TotalEquipo / (dias.Days - domingos - sabados);
-                        var costoDiaMaterial = TotalMaterial / (dias.Days - domingos - sabados);
+                        var dias2 = dias.Days - domingos - sabados;
+                        if(dias2 <= 0) {
+                            dias2 = 1;
+                        }
+                        var costoDiaMDO = TotalMDO / (dias2);
+                        var costoDiaEquipo = TotalEquipo / (dias2);
+                        var costoDiaMaterial = TotalMaterial / (dias2);
                         int diasSemanas = 7;
                         if (DomingoLaboral)
                         {
@@ -415,42 +419,42 @@ namespace ERP_TECKIO.Procesos
                             }
                         }
                     }
-                    semanasMDO.Add(new ImporteSemanalPorTipoDTO()
-                    {
-                        NumeroSemana = EndSemana,
-                        Anio = startOfWeek.Year,
-                        FechaInicio = startOfWeek,
-                        FechaFin = endOfWeek,
-                        Total = TotalMDOSemana,
-                        TotalConFormato = String.Format("{0:#,##0.00}", TotalMDOSemana)
-
-                    });
-                    semanasMaterial.Add(new ImporteSemanalPorTipoDTO()
-                    {
-                        NumeroSemana = EndSemana,
-                        Anio = startOfWeek.Year,
-                        FechaInicio = startOfWeek,
-                        FechaFin = endOfWeek,
-                        Total = TotalMaterialSemana,
-                        TotalConFormato = String.Format("{0:#,##0.00}", TotalMaterialSemana)
-                    });
-                    semanasEquipo.Add(new ImporteSemanalPorTipoDTO()
-                    {
-                        NumeroSemana = EndSemana,
-                        Anio = startOfWeek.Year,
-                        FechaInicio = startOfWeek,
-                        FechaFin = endOfWeek,
-                        Total = TotalEquipoSemana,
-                        TotalConFormato = String.Format("{0:#,##0.00}", TotalEquipoSemana)
-                    });
-                    startOfWeek = startOfWeek.AddDays(7);
-                    endOfWeek = startOfWeek.AddDays(6);
-                    EndSemana = cul.Calendar.GetWeekOfYear(endOfWeek, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
                 }
-                ImportesSemanales.semanasMDO = semanasMDO;
-                ImportesSemanales.semanasMaterial = semanasMaterial;
-                ImportesSemanales.semanasEquipo = semanasEquipo;
+                semanasMDO.Add(new ImporteSemanalDTO()
+                {
+                    NumeroSemana = EndSemana,
+                    Anio = startOfWeek.Year,
+                    FechaInicio = startOfWeek,
+                    FechaFin = endOfWeek,
+                    Total = TotalMDOSemana,
+                    TotalConFormato = String.Format("{0:#,##0.00}", TotalMDOSemana)
+
+                });
+                semanasMaterial.Add(new ImporteSemanalDTO()
+                {
+                    NumeroSemana = EndSemana,
+                    Anio = startOfWeek.Year,
+                    FechaInicio = startOfWeek,
+                    FechaFin = endOfWeek,
+                    Total = TotalMaterialSemana,
+                    TotalConFormato = String.Format("{0:#,##0.00}", TotalMaterialSemana)
+                });
+                semanasEquipo.Add(new ImporteSemanalDTO()
+                {
+                    NumeroSemana = EndSemana,
+                    Anio = startOfWeek.Year,
+                    FechaInicio = startOfWeek,
+                    FechaFin = endOfWeek,
+                    Total = TotalEquipoSemana,
+                    TotalConFormato = String.Format("{0:#,##0.00}", TotalEquipoSemana)
+                });
+                startOfWeek = startOfWeek.AddDays(7);
+                endOfWeek = startOfWeek.AddDays(6);
+                EndSemana = cul.Calendar.GetWeekOfYear(endOfWeek, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
             }
+            ImportesSemanales.semanasMDO = semanasMDO;
+            ImportesSemanales.semanasMaterial = semanasMaterial;
+            ImportesSemanales.semanasEquipo = semanasEquipo;
             return ImportesSemanales;
         }
     }

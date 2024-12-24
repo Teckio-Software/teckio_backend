@@ -77,8 +77,8 @@ namespace ERP_TECKIO
     public class ImportesSemanalesPorTipoDTO
     {
         public List<ImporteSemanalDTO> semanas { get; set; } = new List<ImporteSemanalDTO>();
-        public List<ImporteSemanalPorTipoDTO> semanasMDO { get; set; } = new List<ImporteSemanalPorTipoDTO>();
-        public List<ImporteSemanalPorTipoDTO> semanasMaterial { get; set; } = new List<ImporteSemanalPorTipoDTO>();
-        public List<ImporteSemanalPorTipoDTO> semanasEquipo { get; set; } = new List<ImporteSemanalPorTipoDTO>();
+        public List<ImporteSemanalDTO> semanasMDO { get; set; } = new List<ImporteSemanalDTO>();
+        public List<ImporteSemanalDTO> semanasMaterial { get; set; } = new List<ImporteSemanalDTO>();
+        public List<ImporteSemanalDTO> semanasEquipo { get; set; } = new List<ImporteSemanalDTO>();
     }
 }
