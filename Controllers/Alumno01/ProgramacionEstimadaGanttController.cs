@@ -37,9 +37,7 @@ namespace SistemaERP.API.Controllers.Alumno01
         [HttpGet("obtenerImporteSemanalGantt/{IdProyecto:int}")]
         public async Task<ImportesSemanalesPorTipoDTO> obtenerImporteSemanalGantt(int IdProyecto)
         {
-            var semanas = await _importeSemanalGanttProceso.ImporteSemanal(IdProyecto);
             var semanasRetornar = await _importeSemanalGanttProceso.ObtenerTotalesPorTipo(IdProyecto);
-            semanasRetornar.semanas = semanas;
             return semanasRetornar;
         }
 

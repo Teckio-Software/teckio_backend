@@ -203,6 +203,8 @@ namespace ERP_TECKIO.Procesos
             CultureInfo cul = CultureInfo.CurrentCulture;
 
             var EndSemana = cul.Calendar.GetWeekOfYear(endOfWeek, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
+            var StartSemana = cul.Calendar.GetWeekOfYear(startOfWeek, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
+            var semanas = new List<ImporteSemanalDTO>();
             var semanasMDO = new List<ImporteSemanalDTO>();
             var semanasMaterial = new List<ImporteSemanalDTO>();
             var semanasEquipo = new List<ImporteSemanalDTO>();
@@ -213,11 +215,13 @@ namespace ERP_TECKIO.Procesos
             var ImportesSemanales = new ImportesSemanalesPorTipoDTO();
             while (startOfWeek < fechaFinal)
             {
+                decimal TotalSemana = 0;
                 decimal TotalMDOSemana = 0;
                 decimal TotalEquipoSemana = 0;
                 decimal TotalMaterialSemana = 0;
                 foreach (ProgramacionEstimadaGanttDTO registro in ProgramacionesExistentesEnIntervaloDeTiempo)
                 {
+                    decimal Total = registro.Importe;
                     decimal TotalMDO = 0;
                     decimal TotalEquipo = 0;
                     decimal TotalMaterial = 0;
@@ -265,13 +269,12 @@ namespace ERP_TECKIO.Procesos
                             TotalMaterial = TotalMaterial + totalAuxiliar;
                         }
                     }
-                    foreach(var z in registros)
-                    {
-                        DateTime fI = z.Start;
-                        DateTime fF = z.End;
+                    registros = registros.Where(z => z.TipoPrecioUnitario == 1).ToList();
+                        DateTime fI = registro.Start;
+                        DateTime fF = registro.End;
                         int domingos = 0;
                         int sabados = 0;
-                        var dias = z.End - z.Start;
+                        var dias = registro.End - registro.Start;
                         if (DomingoLaboral)
                         {
                             while (fI <= fF)
@@ -291,6 +294,7 @@ namespace ERP_TECKIO.Procesos
                         if(dias2 <= 0) {
                             dias2 = 1;
                         }
+                        var costoDia = Total / (dias2);
                         var costoDiaMDO = TotalMDO / (dias2);
                         var costoDiaEquipo = TotalEquipo / (dias2);
                         var costoDiaMaterial = TotalMaterial / (dias2);
@@ -303,18 +307,20 @@ namespace ERP_TECKIO.Procesos
                         {
                             diasSemanas--;
                         }
-                        bool esInicio = (int)z.Start.DayOfWeek == 1;
+                        bool esInicio = (int)registro.Start.DayOfWeek == 1;
 
                         if (esInicio)
                         {
-                            bool esFin = (int)z.End.DayOfWeek == 0;
+                            bool esFin = (int)registro.End.DayOfWeek == 0;
                             if (esFin)
                             {
-                                if (startOfWeek >= z.Start && endOfWeek <= z.End)
+                                if (startOfWeek >= registro.Start && endOfWeek <= registro.End)
                                 {
+                                    decimal total = diasSemanas * costoDia;
                                     decimal totalMDO = diasSemanas * costoDiaMDO;
                                     decimal totalEquipo = diasSemanas * costoDiaEquipo;
                                     decimal totalMaterial = diasSemanas * costoDiaMaterial;
+                                    TotalSemana = TotalSemana + total;
                                     TotalMDOSemana = TotalMDOSemana + totalMDO;
                                     TotalEquipoSemana = TotalEquipoSemana + totalEquipo;
                                     TotalMaterialSemana = TotalMaterialSemana + totalMaterial;
@@ -327,10 +333,12 @@ namespace ERP_TECKIO.Procesos
                             }
                             else
                             {
-                                var indice2 = (int)z.End.DayOfWeek;
-                                var nuevaFechaFin = z.End.AddDays(7 - indice2);
-                                if (startOfWeek >= z.Start && endOfWeek <= nuevaFechaFin)
+                                var indice2 = (int)registro.End.DayOfWeek;
+                                var indice2Inicio = (int)registro.Start.DayOfWeek;
+                                var nuevaFechaFin = registro.End.AddDays(7 - indice2);
+                                if (startOfWeek >= registro.Start && endOfWeek <= nuevaFechaFin)
                                 {
+                                    decimal total = 0;
                                     decimal totalMDO = 0;
                                     decimal totalEquipo = 0;
                                     decimal totalMaterial = 0;
@@ -340,16 +348,27 @@ namespace ERP_TECKIO.Procesos
                                         {
                                             indice2 = 5;
                                         }
+                                        if (StartSemana == cul.Calendar.GetWeekOfYear(startOfWeek, CalendarWeekRule.FirstDay, DayOfWeek.Monday))
+                                        {
+                                            indice2 = indice2 - indice2Inicio;
+                                            if (indice2 == 0)
+                                            {
+                                                indice2 = 1;
+                                            }
+                                        }
+                                        total = indice2 * costoDia; 
                                         totalMDO = indice2 * costoDiaMDO;
                                         totalEquipo = indice2 * costoDiaEquipo;
                                         totalMaterial = indice2 * costoDiaMaterial;
                                     }
                                     else
                                     {
+                                        total = diasSemanas * costoDia;
                                         totalMDO = diasSemanas * costoDiaMDO;
                                         totalEquipo = diasSemanas * costoDiaEquipo;
                                         totalMaterial = diasSemanas * costoDiaMaterial;
                                     }
+                                    TotalSemana = TotalSemana + total;
                                     TotalMDOSemana = TotalMDOSemana + totalMDO;
                                     TotalEquipoSemana = TotalEquipoSemana + totalEquipo;
                                     TotalMaterialSemana = TotalMaterialSemana + totalMaterial;
@@ -363,15 +382,17 @@ namespace ERP_TECKIO.Procesos
                         }
                         else
                         {
-                            var nuevaFecha = z.Start.AddDays(((int)(z.Start.DayOfWeek) * -1) + 1);
-                            bool esFin = (int)z.End.DayOfWeek == 0;
+                            var nuevaFecha = registro.Start.AddDays(((int)(registro.Start.DayOfWeek) * -1) + 1);
+                            bool esFin = (int)registro.End.DayOfWeek == 0;
                             if (esFin)
                             {
-                                if (startOfWeek >= nuevaFecha && endOfWeek <= z.End)
+                                if (startOfWeek >= nuevaFecha && endOfWeek <= registro.End)
                                 {
+                                    decimal total = diasSemanas * costoDia;
                                     decimal totalMDO = diasSemanas * costoDiaMDO;
                                     decimal totalEquipo = diasSemanas * costoDiaEquipo;
                                     decimal totalMaterial = diasSemanas * costoDiaMaterial;
+                                    TotalSemana = TotalSemana + total;
                                     TotalMDOSemana = TotalMDOSemana + totalMDO;
                                     TotalEquipoSemana = TotalEquipoSemana + totalEquipo;
                                     TotalMaterialSemana = TotalMaterialSemana + totalMaterial;
@@ -384,10 +405,12 @@ namespace ERP_TECKIO.Procesos
                             }
                             else
                             {
-                                var indice2 = (int)z.End.DayOfWeek;
-                                var nuevaFechaFin = z.End.AddDays(7 - indice2);
+                                var indice2 = (int)registro.End.DayOfWeek;
+                                var indice2Inicio = (int)registro.Start.DayOfWeek;
+                                var nuevaFechaFin = registro.End.AddDays(7 - indice2);
                                 if (startOfWeek >= nuevaFecha && endOfWeek <= nuevaFechaFin)
                                 {
+                                    decimal total = 0;
                                     decimal totalMDO = 0;
                                     decimal totalEquipo = 0;
                                     decimal totalMaterial = 0;
@@ -397,16 +420,27 @@ namespace ERP_TECKIO.Procesos
                                         {
                                             indice2 = 5;
                                         }
+                                        if(StartSemana == cul.Calendar.GetWeekOfYear(startOfWeek, CalendarWeekRule.FirstDay, DayOfWeek.Monday))
+                                        {
+                                            indice2 = indice2 - indice2Inicio;
+                                            if(indice2 == 0)
+                                            {
+                                                indice2 = 1;
+                                            }
+                                        }
+                                        total = indice2 * costoDia;
                                         totalMDO = indice2 * costoDiaMDO;
                                         totalEquipo = indice2 * costoDiaEquipo;
                                         totalMaterial = indice2 * costoDiaMaterial;
                                     }
                                     else
                                     {
+                                        total = diasSemanas * costoDia;
                                         totalMDO = diasSemanas * costoDiaMDO;
                                         totalEquipo = diasSemanas * costoDiaEquipo;
                                         totalMaterial = diasSemanas * costoDiaMaterial;
                                     }
+                                    TotalSemana = TotalSemana + total;
                                     TotalMDOSemana = TotalMDOSemana + totalMDO;
                                     TotalEquipoSemana = TotalEquipoSemana + totalEquipo;
                                     TotalMaterialSemana = TotalMaterialSemana + totalMaterial;
@@ -418,8 +452,16 @@ namespace ERP_TECKIO.Procesos
                                 }
                             }
                         }
-                    }
                 }
+                semanas.Add(new ImporteSemanalDTO()
+                {
+                    NumeroSemana = EndSemana,
+                    Anio = startOfWeek.Year,
+                    FechaInicio = startOfWeek,
+                    FechaFin = endOfWeek,
+                    Total = TotalSemana,
+                    TotalConFormato = String.Format("{0:#,##0.00}", TotalMDOSemana)
+                });
                 semanasMDO.Add(new ImporteSemanalDTO()
                 {
                     NumeroSemana = EndSemana,
@@ -452,6 +494,7 @@ namespace ERP_TECKIO.Procesos
                 endOfWeek = startOfWeek.AddDays(6);
                 EndSemana = cul.Calendar.GetWeekOfYear(endOfWeek, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
             }
+            ImportesSemanales.semanas = semanas;
             ImportesSemanales.semanasMDO = semanasMDO;
             ImportesSemanales.semanasMaterial = semanasMaterial;
             ImportesSemanales.semanasEquipo = semanasEquipo;
