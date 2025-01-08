@@ -39,10 +39,13 @@ namespace ERP_TECKIO
         /// boleana que se vuelve true cuando esta expandido el nodo
         /// </summary>
         public bool Expandido { get; set; }
+        public bool Seleccionado { get; set; }
         /// <summary>
         /// Listado de las cuentas contables hijo
         /// </summary>
         public List<CuentaContableDTO> Hijos { get; set; }
+
+        public string TipoCuentaContable { get; set; }
     }
     /// <summary>
     /// Clase para las cuentas contables hijos de las cuentas contables madre
