@@ -218,7 +218,7 @@ public partial class Alumno01Context : DbContext
 
         modelBuilder.Entity<DependenciaProgramacionEstimada>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Dependen__3214EC0726AAF715");
+            entity.HasKey(e => e.Id).HasName("PK__Dependen__3214EC07DC96535C");
 
             entity.HasOne(d => d.IdProgramacionEstimadaGanttNavigation).WithMany(p => p.Dependencias)
                 .HasForeignKey(d => d.IdProgramacionEstimadaGantt)

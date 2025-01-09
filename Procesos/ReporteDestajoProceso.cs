@@ -384,9 +384,9 @@ namespace ERP_TECKIO
             for (int i = 0; i < peridosEstimaciones.Count(); i++)
             {
                 var totalPeridos = objetoDestajoTotal.periodos[i].totales.Sum(z => z.Importe);
-                if (totalPeridos <= 0) {
-                    objetoDestajoTotal.periodos.RemoveAt(i);
-                }
+                //if (totalPeridos <= 0) {
+                //    objetoDestajoTotal.periodos.RemoveAt(i);
+                //}
             }
             return objetoDestajoTotal;
         }
