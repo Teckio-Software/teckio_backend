@@ -119,6 +119,7 @@ namespace ERP_TECKIO
             services.AddScoped(typeof(ImporteSemanalGanttProceso<>));
             services.AddScoped(typeof(DbContextOptionsBuilder<>));
             services.AddScoped(typeof(ContratistaCuentasContablesProceso<>));
+            services.AddScoped(typeof(ClienteCuentasContablesProceso<>));
 
             //Facturas
             services.AddScoped(typeof(ITipoImpuestoService<>), typeof(TipoImpuestoService<>));

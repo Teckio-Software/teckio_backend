@@ -88,8 +88,8 @@ namespace ERP_TECKIO.Servicios
 
         public async Task<ClienteDTO> ObtenXId(int id)
         {
-                var lista = await _Repositorio.ObtenerTodos(z => z.Id == id);
-                return _Mapper.Map<ClienteDTO>(lista);
+                var objeto = await _Repositorio.Obtener(z => z.Id == id);
+                return _Mapper.Map<ClienteDTO>(objeto);
         }
 
         public async Task<bool> Eliminar(int Id)

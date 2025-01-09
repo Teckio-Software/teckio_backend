@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ERP_TECKIO.Procesos;
 
 
 namespace ERP_TECKIO.Controllers
@@ -16,12 +17,15 @@ namespace ERP_TECKIO.Controllers
         private readonly IClientesService<Alumno01Context> _Service;
 
         private readonly ClienteProceso<Alumno01Context> _Proceso;
+        private readonly ClienteCuentasContablesProceso<Alumno01Context> _clientesCuentasContablesProceso;
         public ClienteAlumno01Controller(
             IClientesService<Alumno01Context> service
-            , ClienteProceso<Alumno01Context> proceso)
+            , ClienteProceso<Alumno01Context> proceso,
+            ClienteCuentasContablesProceso<Alumno01Context> clientesCuentasContablesProceso)
         {
             _Service = service;
             _Proceso = proceso;
+            _clientesCuentasContablesProceso = clientesCuentasContablesProceso;
         }
 
         [HttpPost]
@@ -82,6 +86,13 @@ namespace ERP_TECKIO.Controllers
         public async Task<ActionResult<List<ClienteDTO>>> todos()
         {
             return await _Service.ObtenTodos();
+        }
+
+        [HttpGet("cuentasContables/{IdCliente:int}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<List<CuentaContableDTO>>> obtenerXCliente(int IdCliente)
+        {
+            return await _clientesCuentasContablesProceso.obtenerXCliente(IdCliente);
         }
     }
 }
