@@ -197,13 +197,27 @@ namespace ERP_TECKIO.Procesos
             DateTime fechaFinal = registros.Max(z => z.End);
 
             var indice = (int)fechaInicial.DayOfWeek;
-            DateTime startOfWeek = fechaInicial.AddDays(((int)(fechaInicial.DayOfWeek) * -1) + 1);
+            DateTime startOfWeek = new DateTime();
+            DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(fechaInicial);
+            if (day == DayOfWeek.Sunday) {
+                startOfWeek = fechaInicial.AddDays(-6);
+            }
+            else
+            {
+                startOfWeek = fechaInicial.AddDays(((int)(fechaInicial.DayOfWeek) * -1) + 1);
+            }
             DateTime endOfWeek = startOfWeek.AddDays(6);
 
             CultureInfo cul = CultureInfo.CurrentCulture;
 
             var EndSemana = cul.Calendar.GetWeekOfYear(endOfWeek, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
+            var FinalSemana = cul.Calendar.GetWeekOfYear(fechaFinal, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
             var StartSemana = cul.Calendar.GetWeekOfYear(startOfWeek, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
+            var auxiliarSemanaTermino = 0;
+            if (StartSemana > FinalSemana)
+            {
+                auxiliarSemanaTermino = FinalSemana = StartSemana;
+            }
             var semanas = new List<ImporteSemanalDTO>();
             var semanasMDO = new List<ImporteSemanalDTO>();
             var semanasMaterial = new List<ImporteSemanalDTO>();
@@ -290,15 +304,20 @@ namespace ERP_TECKIO.Procesos
                                 fI = fI.AddDays(1);
                             }
                         }
-                        var dias2 = dias.Days - domingos - sabados;
-                        if(dias2 <= 0) {
-                            dias2 = 1;
-                        }
-                        var costoDia = Total / (dias2);
-                        var costoDiaMDO = TotalMDO / (dias2);
-                        var costoDiaEquipo = TotalEquipo / (dias2);
-                        var costoDiaMaterial = TotalMaterial / (dias2);
-                        int diasSemanas = 7;
+                    decimal costoDia = 0;
+                    decimal costoDiaMDO = 0;
+                    decimal costoDiaEquipo = 0;
+                    decimal costoDiaMaterial = 0;
+                    var dias2 = dias.Days - domingos - sabados;
+                        if(dias2 == 0) {
+                        dias2 = 1;
+                    }
+                    costoDia = Total / (dias2);
+                    costoDiaMDO = TotalMDO / (dias2);
+                    costoDiaEquipo = TotalEquipo / (dias2);
+                    costoDiaMaterial = TotalMaterial / (dias2);
+
+                    int diasSemanas = 7;
                         if (DomingoLaboral)
                         {
                             diasSemanas--;
@@ -336,6 +355,10 @@ namespace ERP_TECKIO.Procesos
                                 var indice2 = (int)registro.End.DayOfWeek;
                                 var indice2Inicio = (int)registro.Start.DayOfWeek;
                                 var nuevaFechaFin = registro.End.AddDays(7 - indice2);
+                                if (FinalSemana == cul.Calendar.GetWeekOfYear(registro.End, CalendarWeekRule.FirstDay, DayOfWeek.Monday))
+                                {
+                                    indice2--;
+                                }
                                 if (startOfWeek >= registro.Start && endOfWeek <= nuevaFechaFin)
                                 {
                                     decimal total = 0;
@@ -382,8 +405,17 @@ namespace ERP_TECKIO.Procesos
                         }
                         else
                         {
-                            var nuevaFecha = registro.Start.AddDays(((int)(registro.Start.DayOfWeek) * -1) + 1);
-                            bool esFin = (int)registro.End.DayOfWeek == 0;
+                        var nuevaFecha = new DateTime();
+                        DayOfWeek NewDay = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(registro.Start);
+                        if (day == DayOfWeek.Sunday)
+                        {
+                            nuevaFecha = registro.Start.AddDays(-6);
+                        }
+                        else
+                        {
+                            nuevaFecha = fechaInicial.AddDays(((int)(registro.Start.DayOfWeek) * -1) + 1);
+                        }
+                        bool esFin = (int)registro.End.DayOfWeek == 0;
                             if (esFin)
                             {
                                 if (startOfWeek >= nuevaFecha && endOfWeek <= registro.End)
@@ -407,6 +439,10 @@ namespace ERP_TECKIO.Procesos
                             {
                                 var indice2 = (int)registro.End.DayOfWeek;
                                 var indice2Inicio = (int)registro.Start.DayOfWeek;
+                                if(FinalSemana == cul.Calendar.GetWeekOfYear(registro.End, CalendarWeekRule.FirstDay, DayOfWeek.Monday))
+                                {
+                                    indice2--;
+                                }
                                 var nuevaFechaFin = registro.End.AddDays(7 - indice2);
                                 if (startOfWeek >= nuevaFecha && endOfWeek <= nuevaFechaFin)
                                 {
@@ -460,7 +496,7 @@ namespace ERP_TECKIO.Procesos
                     FechaInicio = startOfWeek,
                     FechaFin = endOfWeek,
                     Total = TotalSemana,
-                    TotalConFormato = String.Format("{0:#,##0.00}", TotalMDOSemana)
+                    TotalConFormato = String.Format("{0:#,##0.00}", TotalSemana)
                 });
                 semanasMDO.Add(new ImporteSemanalDTO()
                 {

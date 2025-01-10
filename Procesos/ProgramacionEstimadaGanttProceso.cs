@@ -53,6 +53,7 @@ namespace ERP_TECKIO
             {
                 registro.End = registro.End.AddDays(1);
             }
+            //registro.End = registro.End.AddSeconds(-1);
             var programacionEstimada = await _ProgramacionEstimadaGanttService.Editar(registro);
             var programaciones = await _ProgramacionEstimadaGanttService.ObtenerXIdProyecto(registro.IdProyecto, db);
             if (Convert.ToInt32(registro.Parent) != 0)
