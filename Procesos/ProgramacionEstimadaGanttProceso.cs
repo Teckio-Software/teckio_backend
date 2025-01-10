@@ -44,7 +44,15 @@ namespace ERP_TECKIO
         }
 
         public async Task<List<ProgramacionEstimadaGanttDTO>> EditarFechaProgramacionEstimada(ProgramacionEstimadaGanttDTO registro, DbContext db)
-        {
+        { 
+            var FI = registro.Start.ToShortDateString();
+            registro.Start = Convert.ToDateTime(FI);
+            var FT = registro.End.ToShortDateString();
+            registro.End = Convert.ToDateTime(FT);
+            if(registro.Start == registro.End)
+            {
+                registro.End = registro.End.AddDays(1);
+            }
             var programacionEstimada = await _ProgramacionEstimadaGanttService.Editar(registro);
             var programaciones = await _ProgramacionEstimadaGanttService.ObtenerXIdProyecto(registro.IdProyecto, db);
             if (Convert.ToInt32(registro.Parent) != 0)
