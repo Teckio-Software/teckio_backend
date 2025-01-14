@@ -720,7 +720,9 @@ namespace ERP_TECKIO
                 .ForMember(destino => destino.FechaTermino,
                 opt => opt.MapFrom(origen => origen.End))
                 .ForMember(destino => destino.IdPadre,
-                opt => opt.MapFrom(origen => origen.Parent));
+                opt => opt.MapFrom(origen => origen.Parent))
+                .ForMember(destino => destino.Progreso,
+                opt => opt.MapFrom(origen => origen.Progress));
             CreateMap<ProgramacionEstimadaGanttDeserealizadaDTO, ProgramacionEstimadaGanttDTO>()
                 .ForMember(destino => destino.Id,
                 opt => opt.MapFrom(origen => Convert.ToString(origen.Id)))

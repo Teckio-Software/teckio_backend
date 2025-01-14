@@ -45,7 +45,7 @@ namespace ERP_TECKIO.Servicios
                 , PEG.FechaInicio
                 , PEG.FechaTermino
                 , PEG.Duracion
-                , PEG.Progreso
+                , PEG.Progreso as Progress
                 , PEG.Comando
                 , PEG.DesfaseComando
                 , CASE WHEN PEG.IdPadre != 0 THEN PEG.IdPadre ELSE null END as IdPadre
