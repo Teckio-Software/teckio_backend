@@ -98,23 +98,28 @@ namespace ERP_TECKIO
 
         public async Task AsignarProgreso(ProgramacionEstimadaGanttDTO registro, DbContext db)
         {
-            await _ProgramacionEstimadaGanttService.Editar(registro);
             var programaciones = await ObtenerProgramacionEstimadaXIdProyecto(registro.IdProyecto, db);
-            var programacionPadre = programaciones.Where(z => z.Id == registro.Parent).FirstOrDefault();
-            var hijos = programaciones.Where(z => z.Parent == programacionPadre.Id).ToList();
-            if(hijos.Count > 0)
+            var registroEditado = programaciones.Where(z => z.Id == registro.Id).FirstOrDefault();
+            registroEditado.Progress = registro.Progress;
+            await _ProgramacionEstimadaGanttService.Editar(registroEditado);
+            if(registro.Parent != null)
             {
-                int SumaProgreso = 0;
-                foreach (ProgramacionEstimadaGanttDTO registroHijo in hijos)
+                var programacionPadre = programaciones.Where(z => z.Id == registro.Parent).FirstOrDefault();
+                var hijos = programaciones.Where(z => z.Parent == programacionPadre.Id).ToList();
+                if (hijos.Count > 0)
                 {
-                    SumaProgreso = SumaProgreso + registroHijo.Progress;
-                }
-                SumaProgreso = SumaProgreso / hijos.Count();
-                programacionPadre.Progress = SumaProgreso;
-                await _ProgramacionEstimadaGanttService.Editar(programacionPadre);
-                if(programacionPadre.Parent != "0")
-                {
-
+                    int SumaProgreso = 0;
+                    foreach (ProgramacionEstimadaGanttDTO registroHijo in hijos)
+                    {
+                        SumaProgreso = SumaProgreso + registroHijo.Progress;
+                    }
+                    SumaProgreso = SumaProgreso / hijos.Count();
+                    programacionPadre.Progress = SumaProgreso;
+                    await _ProgramacionEstimadaGanttService.Editar(programacionPadre);
+                    if (programacionPadre.Parent != "0")
+                    {
+                        await RecalcularProgresoPadre(programacionPadre, db);
+                    }
                 }
             }
         }
@@ -122,21 +127,24 @@ namespace ERP_TECKIO
         public async Task RecalcularProgresoPadre(ProgramacionEstimadaGanttDTO registro, DbContext db)
         {
             var programaciones = await ObtenerProgramacionEstimadaXIdProyecto(registro.IdProyecto, db);
-            var programacionPadre = programaciones.Where(z => z.Id == registro.Parent).FirstOrDefault();
-            var hijos = programaciones.Where(z => z.Parent == programacionPadre.Id).ToList();
-            if(hijos.Count > 0)
+            if(registro.Parent != null)
             {
-                int SumaProgreso = 0;
-                foreach (ProgramacionEstimadaGanttDTO registroHijo in hijos)
+                var programacionPadre = programaciones.Where(z => z.Id == registro.Parent).FirstOrDefault();
+                var hijos = programaciones.Where(z => z.Parent == programacionPadre.Id).ToList();
+                if (hijos.Count > 0)
                 {
-                    SumaProgreso = SumaProgreso + registroHijo.Progress;
-                }
-                SumaProgreso = SumaProgreso / hijos.Count();
-                programacionPadre.Progress = SumaProgreso;
-                await _ProgramacionEstimadaGanttService.Editar(programacionPadre);
-                if (programacionPadre.Parent != "0")
-                {
-                    await RecalcularProgresoPadre(programacionPadre, db);
+                    int SumaProgreso = 0;
+                    foreach (ProgramacionEstimadaGanttDTO registroHijo in hijos)
+                    {
+                        SumaProgreso = SumaProgreso + registroHijo.Progress;
+                    }
+                    SumaProgreso = SumaProgreso / hijos.Count();
+                    programacionPadre.Progress = SumaProgreso;
+                    await _ProgramacionEstimadaGanttService.Editar(programacionPadre);
+                    if (programacionPadre.Parent != "0")
+                    {
+                        await RecalcularProgresoPadre(programacionPadre, db);
+                    }
                 }
             }
         }
