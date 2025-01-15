@@ -62,5 +62,14 @@ namespace SistemaERP.API.Controllers.Alumno01
         {
             await _ProgramacionEstimadaGanttProceso.GenerarDependencia(registro);
         }
+
+        [HttpPut("asignarProgreso")]
+        public async Task AsignarProgreso(ProgramacionEstimadaGanttDTO registro)
+        {
+            using (var db = new Alumno01Context(_Options.Options))
+            {
+                await _ProgramacionEstimadaGanttProceso.AsignarProgreso(registro, db);
+            }
+        }
     }
 }
