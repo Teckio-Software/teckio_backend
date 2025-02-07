@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 
 namespace ERP_TECKIO.Controllers
@@ -15,7 +14,7 @@ namespace ERP_TECKIO.Controllers
     /// </summary>
     [Route("api/rubro/3")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionRubro-Empresa3")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionRubro-Empresa1")]
     public class RubroAlumno03Controller : ControllerBase
     {
         private readonly IRubroService<Alumno03Context> _Service;
@@ -61,7 +60,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearRubro-Empresa3")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearRubro-Empresa1")]
         public async Task<ActionResult> Post([FromBody] RubroCreacionDTO creacionDTO)
         {
             try
@@ -77,7 +76,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpPut]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarRubro-Empresa3")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarRubro-Empresa1")]
         public async Task<ActionResult> Put([FromBody] RubroDTO parametroDTO)
         {
             try

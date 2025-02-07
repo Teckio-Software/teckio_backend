@@ -5,13 +5,12 @@ using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-using Microsoft.EntityFrameworkCore;
 
 namespace ERP_TECKIO.Controllers
 {
     [Route("api/polizadetalle/6")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPoliza-Empresa6")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPoliza-Empresa1")]
     public class PolizaDetalleAlumno06Controller : ControllerBase
     {
         private readonly IPolizaDetalleService<Alumno06Context> _Service;

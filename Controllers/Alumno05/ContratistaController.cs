@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+﻿using Microsoft.AspNetCore.Mvc;
+using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
 
 
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ERP_TECKIO.Procesos;
 
-using Microsoft.EntityFrameworkCore;
 
 namespace ERP_TECKIO.Controllers
 {
@@ -31,15 +32,19 @@ namespace ERP_TECKIO.Controllers
         /// </summary>
         /// <param name="logger">Para mostrar errores en consola</param>
         /// <param name="context">Para mandar información de los registros</param>
+        /// 
+        private readonly ContratistaCuentasContablesProceso<Alumno05Context> _contratistaCuentasContablesProceso;
         public ContratistaAlumno05Controller(
             ILogger<ContratistaAlumno05Controller> logger,
             Alumno05Context context
-            , IContratistaService<Alumno05Context> ContratistaService
+            , IContratistaService<Alumno05Context> ContratistaService,
+            ContratistaCuentasContablesProceso<Alumno05Context> contratistaCuentasContablesProceso
             )
         {
             Logger = logger;
             Context = context;
             _ContratistaService = ContratistaService;
+            _contratistaCuentasContablesProceso = contratistaCuentasContablesProceso;
         }
 
         /// <summary>
@@ -99,9 +104,16 @@ namespace ERP_TECKIO.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarContratista-Empresa1")]
         public async Task<ActionResult<RespuestaDTO>> Delete(int Id)
         {
-
+            
             var lista = await _ContratistaService.Eliminar(Id);
             return lista;
+        }
+
+        [HttpGet("cuentasContables/{IdContratista:int}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<List<CuentaContableDTO>>> obtenerXContratista(int IdContratista)
+        {
+            return await _contratistaCuentasContablesProceso.obtenerXContratista(IdContratista);
         }
     }
 }

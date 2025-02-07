@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
-using System.Data;
 
-namespace ERP_TECKIO
+
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
+
+namespace ERP_TECKIO.Controllers
 {
     /// <summary>
     /// Controlador para las Salidas de almacén
@@ -21,7 +23,7 @@ namespace ERP_TECKIO
         /// Se usa para mostrar errores en consola
         /// </summary>
         private readonly ILogger<AlmacenSalidaAlumno16Controller> Logger;
-        private readonly UserManager<IdentityUser> zvUserManager;
+        //private readonly UserManager<IdentityUser> zvUserManager;
         /// <summary>
         /// Se usa para mandar en "headers" los registros totales de los registros
         /// </summary>
@@ -32,7 +34,7 @@ namespace ERP_TECKIO
         /// <param name="logger">Para mostrar errores en consola</param>
         /// <param name="context">Para mandar inofrmación de los registros</param>
         public AlmacenSalidaAlumno16Controller(
-            UserManager<IdentityUser> zUserManager,
+            //UserManager<IdentityUser> zUserManager,
             ILogger<AlmacenSalidaAlumno16Controller> logger,
             Alumno16Context context
             , IAlmacenSalidaService<Alumno16Context> AlmacenSalidaServicio
@@ -40,7 +42,7 @@ namespace ERP_TECKIO
             , AlmacenSalidaProceso<Alumno16Context> Proceso
             )
         {
-            zvUserManager = zUserManager;
+            //zvUserManager = zUserManager;
             Logger = logger;
             Context = context;
             _AlmacenSalidaServicio = AlmacenSalidaServicio;
@@ -118,7 +120,7 @@ namespace ERP_TECKIO
         {
             var lista = await _Proceso.obtenerInsumosDisponibles(IdAlmacen);
             return lista;
-        }
+        }            
 
         /// <summary>
         /// Endpoint que llama al método que permite obtener un registro a partir del Id de este

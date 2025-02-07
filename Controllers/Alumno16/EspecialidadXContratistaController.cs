@@ -1,17 +1,19 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 
 
 
-namespace ERP_TECKIO
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
+
+namespace ERP_TECKIO.Controllers
 {
     /// <summary>
     /// Controlador de las especialIdades por contratista que hereda de <see cref="ControllerBase"/>
     /// </summary>
     [Route("api/especialIdadxcontratista/16")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionEspecialidadContratista-Empresa16")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionEspecialidadContratista-Empresa1")]
     public class EspecialIdadXContratistaAlumno16Controller : ControllerBase
     {
         /// <summary>

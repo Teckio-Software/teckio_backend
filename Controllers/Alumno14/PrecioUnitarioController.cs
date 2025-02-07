@@ -1,17 +1,11 @@
 ﻿
+using ERP_TECKIO.Procesos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-
-
-using ERP_TECKIO;
-
-
-
-
-namespace SistemaERP.API.Alumno14Controllers.Procomi
+namespace ERP_TECKIO
 {
     [Route("api/preciounitario/14")]
     [ApiController]
@@ -21,15 +15,18 @@ namespace SistemaERP.API.Alumno14Controllers.Procomi
         private readonly PrecioUnitarioProceso<Alumno14Context> _precioUnitarioProceso;
         private readonly IProgramacionEstimadaService<Alumno14Context> _programacionestimadaService;
         private readonly DbContextOptionsBuilder<Alumno14Context> _Options;
+        private readonly ExplocionInsumosProceso<Alumno14Context> _explocionInsumosProceso;
         public PrecioUnitarioAlumno14Controller(
             PrecioUnitarioProceso<Alumno14Context> precioUnitarioProceso
             , IProgramacionEstimadaService<Alumno14Context> programacionEstimadaService
-            , DbContextOptionsBuilder<Alumno14Context> options
+            , DbContextOptionsBuilder<Alumno14Context> options,
+            ExplocionInsumosProceso<Alumno14Context> explocionInsumosProceso
             )
         {
             _precioUnitarioProceso = precioUnitarioProceso;
             _programacionestimadaService = programacionEstimadaService;
             _Options = options;
+            _explocionInsumosProceso = explocionInsumosProceso;
         }
 
         [HttpGet("todos/{IdProyecto:int}")]
@@ -133,6 +130,12 @@ namespace SistemaERP.API.Alumno14Controllers.Procomi
         public async Task<ActionResult<List<InsumoParaExplosionDTO>>> ObtenerExplosion(int IdProyecto)
         {
             return await _precioUnitarioProceso.obtenerExplosion(IdProyecto);
+        }
+
+        [HttpGet("obtenerExplosionDeInsumosXEmpleado/{IdProyecto}/{IdEmpleado}")]
+        public async Task<ActionResult<List<InsumoParaExplosionDTO>>> obtenerExplosionXEmpleado(int IdProyecto, int IdEmpleado)
+        {
+            return await _explocionInsumosProceso.obtenerExplosionXEmpleado(IdProyecto, IdEmpleado);
         }
 
         [HttpPost("recalcularPresupuesto")]

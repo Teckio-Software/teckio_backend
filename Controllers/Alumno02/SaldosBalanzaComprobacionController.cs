@@ -10,7 +10,7 @@ namespace ERP_TECKIO.Controllers
 {
     [Route("api/saldosbalanzacomprobacion/2")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionSaldosBalanza-Empresa2")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionSaldosBalanza-Empresa1")]
     public class SaldosBalanzaComprobacionAlumno02Controller : ControllerBase
     {
         private readonly ISaldosBalanzaComprobacionService<Alumno02Context> _Service;

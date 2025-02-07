@@ -1,17 +1,12 @@
-﻿
-
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
-
-
-
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
 
 
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-namespace ERP_TECKIO
+
+namespace ERP_TECKIO.Controllers
 {
     /// <summary>
     /// Controlador para las Requisiciones a las que accede el usuario

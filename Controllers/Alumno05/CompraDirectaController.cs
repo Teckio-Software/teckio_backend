@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-using Microsoft.EntityFrameworkCore;
 
 namespace ERP_TECKIO.Controllers
 {
@@ -14,7 +13,7 @@ namespace ERP_TECKIO.Controllers
     /// </summary>
     [Route("api/compradirecta/5")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionOrdenCompra-Empresa5")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionOrdenCompra-Empresa1")]
     public class CompraDirectaAlumno05Controller : ControllerBase
     {
         private readonly ICompraDirectaService<Alumno05Context> _Service;
@@ -95,7 +94,7 @@ namespace ERP_TECKIO.Controllers
         /// <param name="CreacionDTO">Descripción, Unidad, Detalle y Agrupación</param>
         /// <returns>NoContent</returns>
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearOrdenCompra-Empresa5")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearOrdenCompra-Empresa1")]
         public async Task<ActionResult> Post([FromBody] CompraDirectaCreacionDTO CreacionDTO)
         {
             try
@@ -117,7 +116,7 @@ namespace ERP_TECKIO.Controllers
         /// <param name="Edita">Id, Descripción, Unidad, Detalle y Agrupación</param>
         /// <returns>NoContent</returns>
         [HttpPut]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarOrdenCompra-Empresa5")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarOrdenCompra-Empresa1")]
         public async Task<ActionResult> Put([FromBody] CompraDirectaDTO Edita)
         {
             try
@@ -138,7 +137,7 @@ namespace ERP_TECKIO.Controllers
         /// <param name="Edita">Id, Descripción, Unidad, Detalle y Agrupación</param>
         /// <returns>NoContent</returns>
         [HttpPut("cancelar")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarOrdenCompra-Empresa5")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarOrdenCompra-Empresa1")]
         public async Task<ActionResult> PutCancelar([FromBody] CompraDirectaDTO Edita)
         {
             try

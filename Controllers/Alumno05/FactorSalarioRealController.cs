@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-using Microsoft.EntityFrameworkCore;
 
 namespace ERP_TECKIO.Controllers.Alumno05
 {

@@ -1,15 +1,12 @@
-﻿
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 
 
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 
-
-
-namespace ERP_TECKIO.API.Alumno013Controllers.Procomi
+namespace ERP_TECKIO.Controllers
 {
     [Route("api/estimaciones/13")]
     [ApiController]
@@ -36,7 +33,7 @@ namespace ERP_TECKIO.API.Alumno013Controllers.Procomi
         }
 
         [HttpPost("crearPeriodo")]
-        public async Task<ActionResult<PeriodoEstimacionesDTO>> CrearPeriodo([FromBody]PeriodoEstimacionesDTO registro)
+        public async Task<ActionResult<PeriodoEstimacionesDTO>> CrearPeriodo([FromBody] PeriodoEstimacionesDTO registro)
         {
             return await _estimacionesProceso.CrearPeriodo(registro);
         }

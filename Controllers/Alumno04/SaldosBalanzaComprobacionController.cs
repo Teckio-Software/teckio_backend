@@ -5,13 +5,12 @@ using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-using Microsoft.EntityFrameworkCore;
 
 namespace ERP_TECKIO.Controllers
 {
     [Route("api/saldosbalanzacomprobacion/4")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionSaldosBalanza-Empresa4")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionSaldosBalanza-Empresa1")]
     public class SaldosBalanzaComprobacionAlumno04Controller : ControllerBase
     {
         private readonly ISaldosBalanzaComprobacionService<Alumno04Context> _Service;

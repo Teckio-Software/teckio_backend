@@ -1,20 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
-
-
+using Microsoft.AspNetCore.Authorization;
 
 
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 
-namespace ERP_TECKIO
+
+namespace ERP_TECKIO.Controllers
 {
     /// <summary>
     /// Controlador de los Insumos que hereda <see cref="ControllerBase"/>
     /// </summary>
     [Route("api/generadores/22")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPrecioUnitario-Empresa22")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPrecioUnitario-Empresa1")]
     public class GeneradoresAlumno22Controller : ControllerBase
     {
         private readonly GeneradoresProceso<Alumno22Context> _GeneradoresProceso;
@@ -25,14 +24,14 @@ namespace ERP_TECKIO
         }
 
         [HttpPost("crear")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearPrecioUnitario-Empresa22")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearPrecioUnitario-Empresa1")]
         public async Task<ActionResult<GeneradoresDTO>> Post([FromBody] GeneradoresDTO parametro)
         {
             return await _GeneradoresProceso.Post(parametro);
         }
 
         [HttpPut("editar")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPrecioUnitario-Empresa22")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPrecioUnitario-Empresa1")]
         public async Task<ActionResult<GeneradoresDTO>> Put([FromBody] GeneradoresDTO parametros)
         {
             return await _GeneradoresProceso.Put(parametros);
@@ -45,7 +44,7 @@ namespace ERP_TECKIO
         }
 
         [HttpDelete("{Id:int}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarPrecioUnitario-Empresa22")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarPrecioUnitario-Empresa1")]
         public async Task Delete(int Id)
         {
             await _GeneradoresProceso.Delete(Id);

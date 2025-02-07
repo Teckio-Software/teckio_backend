@@ -16,6 +16,7 @@ namespace ERP_TECKIO.Controllers
         private readonly IProyectoService<Alumno02Context> _ProyectoService;
         private readonly IPrecioUnitarioService<Alumno02Context> _PrecioUnitarioService;
 
+
         public ProgramacionEstimadaAlumno02Controller(
             ProgramacionEstimadaProceso<Alumno02Context> programacionEstimadaProceso,
             IProyectoService<Alumno02Context> proyectoProceso,
@@ -78,7 +79,7 @@ namespace ERP_TECKIO.Controllers
         {
             var registro = await _ProgramacionEstimadaProceso.ObtenerXId(programacionEstimada.Id);
             registro.DiasTranscurridos = programacionEstimada.DiasTranscurridos;
-            if (registro.TipoPrecioUnitario == 1)
+            if(registro.TipoPrecioUnitario == 1)
             {
                 await _ProgramacionEstimadaProceso.PutFechaDias(registro);
             }

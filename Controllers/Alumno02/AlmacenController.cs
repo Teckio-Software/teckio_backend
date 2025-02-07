@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-
 namespace ERP_TECKIO.Controllers
 {
 
@@ -45,20 +44,18 @@ namespace ERP_TECKIO.Controllers
         [HttpGet("{Id:int}")]
         public async Task<ActionResult<AlmacenDTO>> GetAlmacenXId(int Id)
         {
-
             return await _almacenServicio.ObtenXId(Id);
-
         }
 
         [HttpDelete]
         public async Task<ActionResult<RespuestaDTO>> Delete(int id)
         {
-
+            
             return await _almacenServicio.Eliminar(id);
         }
 
         [HttpPut("Editar")]
-        public async Task<ActionResult<RespuestaDTO>> Editar([FromBody] AlmacenDTO Edit)
+        public async Task<ActionResult<RespuestaDTO>> Editar([FromBody]AlmacenDTO Edit)
         {
             return await _almacenServicio.Editar(Edit);
         }

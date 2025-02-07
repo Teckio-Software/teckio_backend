@@ -1,23 +1,16 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
-using Microsoft.EntityFrameworkCore;
 
 
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 
-
-
-
-
-
-namespace ERP_TECKIO
+namespace ERP_TECKIO.Controllers
 {
     [Route("api/saldosbalanzacomprobacion/21")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionSaldosBalanza-Empresa21")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionSaldosBalanza-Empresa1")]
     public class SaldosBalanzaComprobacionAlumno21Controller : ControllerBase
     {
         private readonly ISaldosBalanzaComprobacionService<Alumno21Context> _Service;

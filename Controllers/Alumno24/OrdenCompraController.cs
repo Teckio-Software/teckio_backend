@@ -1,15 +1,12 @@
-﻿
-
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
-
-
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
 
 
 
-namespace ERP_TECKIO
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
+
+namespace ERP_TECKIO.Controllers
 {
     [Route("api/ordencompra/24")]
     [ApiController]
@@ -63,7 +60,7 @@ namespace ERP_TECKIO
             }
             return NoContent();
         }
-
+        
 
         [HttpPut]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarOrdenCompra-Empresa1")]

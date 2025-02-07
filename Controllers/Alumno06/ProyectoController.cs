@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-using Microsoft.EntityFrameworkCore;
 
 namespace ERP_TECKIO.Controllers
 {
@@ -14,7 +13,7 @@ namespace ERP_TECKIO.Controllers
     /// </summary>
     [Route("api/proyecto/6")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionProyecto-Empresa6")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//)]//, Policy = "SeccionProyecto-Empresa1")]
     public class ProyectoAlumno06Controller : ControllerBase
     {
         private readonly ProyectoProceso<Alumno06Context> _ProyectoProceso;
@@ -29,10 +28,10 @@ namespace ERP_TECKIO.Controllers
         /// <param name="parametroCreacionDTO">Un objeto del tipo </param>
         /// <returns>Un mensaje de resultado en headers</returns>
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearProyecto-Empresa6")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//)]//, Policy = "CrearProyecto-Empresa1")]
         public async Task<ActionResult<RespuestaDTO>> Post([FromBody] ProyectoDTO parametroCreacionDTO)
         {
-            var respuesta = await _ProyectoProceso.Post(parametroCreacionDTO);
+            var respuesta =  await _ProyectoProceso.Post(parametroCreacionDTO);
             return respuesta;
         }
         /// <summary>
@@ -41,7 +40,7 @@ namespace ERP_TECKIO.Controllers
         /// <param name="creacionDTO">Un objeto del tipo <see cref="ProyectoCreacionDTO"/></param>
         /// <returns>Un objeto del tipo <see cref="ProyectoDTO"/></returns>
         [HttpPost("crearyobtener")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearProyecto-Empresa6")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//)]//, Policy = "CrearProyecto-Empresa1")]
         public async Task<ActionResult<ProyectoDTO>> PostCrearYObtener([FromBody] ProyectoDTO creacionDTO)
         {
             return await _ProyectoProceso.PostCrearYObtener(creacionDTO);
@@ -54,7 +53,7 @@ namespace ERP_TECKIO.Controllers
         /// <param name="parametros">Datos necesarios para editar un registro y el Id del registro a editar</param>
         /// <returns>NoContent</returns>
         [HttpPut]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarProyecto-Empresa6")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//)]//, Policy = "EditarProyecto-Empresa1")]
         public async Task<ActionResult> Put([FromBody] ProyectoDTO parametros)
         {
             await _ProyectoProceso.Put(parametros);
@@ -67,7 +66,7 @@ namespace ERP_TECKIO.Controllers
         /// <param name="Id">Id del registro a eliminar</param>
         /// <returns>NoContent</returns>
         [HttpDelete("{Id:int}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarProyecto-Empresa6")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//)]//, Policy = "EliminarProyecto-Empresa1")]
         public async Task<ActionResult> delete(int Id)
         {
             await _ProyectoProceso.delete(Id);

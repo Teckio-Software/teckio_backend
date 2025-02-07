@@ -1,20 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
-
+using Microsoft.AspNetCore.Authorization;
 
 
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 
 
-namespace ERP_TECKIO
+namespace ERP_TECKIO.Controllers
 {
     /// <summary>
     /// Controlador de los Insumos que hereda <see cref="ControllerBase"/>
     /// </summary>
     [Route("api/insumo/14")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionInsumo-Empresa14")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionInsumo-Empresa1")]
     public class InsumoAlumno14Controller : ControllerBase
     {
         private readonly InsumoProceso<Alumno14Context> _InsumoProceso;
@@ -25,7 +24,7 @@ namespace ERP_TECKIO
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearInsumo-Empresa14")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearInsumo-Empresa1")]
         public async Task<ActionResult> Post([FromBody] InsumoCreacionDTO parametro)
         {
             await _InsumoProceso.Post(parametro);
@@ -33,7 +32,7 @@ namespace ERP_TECKIO
         }
 
         [HttpPut]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarInsumo-Empresa14")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarInsumo-Empresa1")]
         public async Task<ActionResult> Put([FromBody] InsumoDTO parametros)
         {
             try
@@ -60,7 +59,7 @@ namespace ERP_TECKIO
         }
 
         [HttpDelete("{Id:int}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarInsumo-Empresa14")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarInsumo-Empresa1")]
         public async Task<ActionResult> Delete(int Id)
         {
             try

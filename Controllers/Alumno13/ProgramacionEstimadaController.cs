@@ -1,14 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+using Microsoft.AspNetCore.Authorization;
 
 
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 
-
-
-
-
-namespace ERP_TECKIO
+namespace ERP_TECKIO.Controllers
 {
     [Route("api/programacionestimada/13")]
     [ApiController]
@@ -17,6 +15,7 @@ namespace ERP_TECKIO
         private readonly ProgramacionEstimadaProceso<Alumno13Context> _ProgramacionEstimadaProceso;
         private readonly IProyectoService<Alumno13Context> _ProyectoService;
         private readonly IPrecioUnitarioService<Alumno13Context> _PrecioUnitarioService;
+
 
         public ProgramacionEstimadaAlumno13Controller(
             ProgramacionEstimadaProceso<Alumno13Context> programacionEstimadaProceso,
@@ -80,7 +79,7 @@ namespace ERP_TECKIO
         {
             var registro = await _ProgramacionEstimadaProceso.ObtenerXId(programacionEstimada.Id);
             registro.DiasTranscurridos = programacionEstimada.DiasTranscurridos;
-            if (registro.TipoPrecioUnitario == 1)
+            if(registro.TipoPrecioUnitario == 1)
             {
                 await _ProgramacionEstimadaProceso.PutFechaDias(registro);
             }

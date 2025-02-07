@@ -13,7 +13,7 @@ namespace ERP_TECKIO.Controllers
     /// </summary>
     [Route("api/generadores/2")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPrecioUnitario-Empresa2")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPrecioUnitario-Empresa1")]
     public class GeneradoresAlumno02Controller : ControllerBase
     {
         private readonly GeneradoresProceso<Alumno02Context> _GeneradoresProceso;
@@ -24,14 +24,14 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpPost("crear")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearPrecioUnitario-Empresa2")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearPrecioUnitario-Empresa1")]
         public async Task<ActionResult<GeneradoresDTO>> Post([FromBody] GeneradoresDTO parametro)
         {
             return await _GeneradoresProceso.Post(parametro);
         }
 
         [HttpPut("editar")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPrecioUnitario-Empresa2")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPrecioUnitario-Empresa1")]
         public async Task<ActionResult<GeneradoresDTO>> Put([FromBody] GeneradoresDTO parametros)
         {
             return await _GeneradoresProceso.Put(parametros);
@@ -44,7 +44,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpDelete("{Id:int}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarPrecioUnitario-Empresa2")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarPrecioUnitario-Empresa1")]
         public async Task Delete(int Id)
         {
             await _GeneradoresProceso.Delete(Id);

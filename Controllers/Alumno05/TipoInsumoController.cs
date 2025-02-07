@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-using Microsoft.EntityFrameworkCore;
 
 namespace ERP_TECKIO.Controllers
 {
@@ -14,7 +13,7 @@ namespace ERP_TECKIO.Controllers
     /// </summary>
     [Route("api/tipoinsumo/5")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionTipoInsumo-Empresa5")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionTipoInsumo-Empresa1")]
     public class TipoInsumoAlumno05Controller : ControllerBase
     {
         private readonly TipoInsumoProceso<Alumno05Context> _TipoInsumoProceso;
@@ -27,7 +26,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearTipoInsumo-Empresa5")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearTipoInsumo-Empresa1")]
         public async Task<ActionResult> Post([FromBody] TipoInsumoCreacionDTO parametros)
         {
             await _TipoInsumoProceso.Post(parametros);
@@ -44,7 +43,7 @@ namespace ERP_TECKIO.Controllers
         /// necesarios para editar el registro</param>
         /// <returns>NoContent</returns>
         [HttpPut]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarTipoInsumo-Empresa5")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarTipoInsumo-Empresa1")]
         public async Task<ActionResult> Put([FromBody] TipoInsumoDTO parametros)
         {
             try
@@ -65,7 +64,7 @@ namespace ERP_TECKIO.Controllers
         /// <param name="Id">Id del insumo que se desea eliminar</param>
         /// <returns>NoContent</returns>
         [HttpDelete("{Id:int}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarTipoInsumo-Empresa5")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarTipoInsumo-Empresa1")]
         public async Task<ActionResult> Delete(int Id)
         {
             try
@@ -102,6 +101,12 @@ namespace ERP_TECKIO.Controllers
             return await _TipoInsumoProceso.GetSinPaginar();
         }
 
+        [HttpGet("TipoInsumosParaRequisitar")]
+        public async Task<ActionResult<List<TipoInsumoDTO>>> TipoInsumosParaRequisitar()
+        {
+            return await _TipoInsumoProceso.TipoInsumosParaRequisitar();
+        }
+
         /// <summary>
         /// Endpoint del tipo Get que accede al método "obtenTiposInsumoAsync" para
         /// obtener un registro de la tabla de Tipo de Insumo a partir del Id recibIdo
@@ -113,12 +118,6 @@ namespace ERP_TECKIO.Controllers
         public async Task<ActionResult<TipoInsumoDTO>> Get(int Id)
         {
             return await _TipoInsumoProceso.GetXId(Id);
-        }
-
-        [HttpGet("TipoInsumosParaRequisitar")]
-        public async Task<ActionResult<List<TipoInsumoDTO>>> TipoInsumosParaRequisitar()
-        {
-            return await _TipoInsumoProceso.TipoInsumosParaRequisitar();
         }
     }
 }

@@ -1,21 +1,19 @@
-﻿
-
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+using Microsoft.AspNetCore.Authorization;
 
 
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 
 
-namespace ERP_TECKIO
+namespace ERP_TECKIO.Controllers
 {
     /// <summary>
     /// Controlador de los conceptos que hereda de <see cref="ControllerBase"/>
     /// </summary>
     [Route("api/compradirectainsumos/19")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionOrdenCompra-Empresa19")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionOrdenCompra-Empresa1")]
     public class CompraDirectaInsumoAlumno19Controller : ControllerBase
     {
         private readonly IInsumoXCompraDirectaService<Alumno19Context> _Service;
@@ -99,7 +97,7 @@ namespace ERP_TECKIO
         /// <param name="Id">Id</param>
         /// <returns>NoContent</returns>
         [HttpDelete("{Id:int}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarOrdenCompra-Empresa19")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarOrdenCompra-Empresa1")]
         public async Task<ActionResult> Delete(int Id)
         {
             try

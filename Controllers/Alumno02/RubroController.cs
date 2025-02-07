@@ -14,7 +14,7 @@ namespace ERP_TECKIO.Controllers
     /// </summary>
     [Route("api/rubro/2")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionRubro-Empresa2")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionRubro-Empresa1")]
     public class RubroAlumno02Controller : ControllerBase
     {
         private readonly IRubroService<Alumno02Context> _Service;
@@ -60,7 +60,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearRubro-Empresa2")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearRubro-Empresa1")]
         public async Task<ActionResult> Post([FromBody] RubroCreacionDTO creacionDTO)
         {
             try
@@ -76,7 +76,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpPut]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarRubro-Empresa2")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarRubro-Empresa1")]
         public async Task<ActionResult> Put([FromBody] RubroDTO parametroDTO)
         {
             try

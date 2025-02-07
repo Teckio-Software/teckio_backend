@@ -1,10 +1,12 @@
-﻿
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+using Microsoft.AspNetCore.Authorization;
 
 
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 
-namespace ERP_TECKIO
+namespace ERP_TECKIO.Controllers
 {
     /// <summary>
     /// Controlador de las cuentas bancarias de los contratistas que hereda de <see cref="ControllerBase"/>

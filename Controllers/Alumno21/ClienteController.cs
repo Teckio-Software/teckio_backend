@@ -1,20 +1,13 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
-using Microsoft.EntityFrameworkCore;
 
 
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ERP_TECKIO.Procesos;
 
 
-
-
-
-
-
-
-namespace ERP_TECKIO
+namespace ERP_TECKIO.Controllers
 {
     [Route("api/cliente/21")]
     [ApiController]
@@ -24,12 +17,15 @@ namespace ERP_TECKIO
         private readonly IClientesService<Alumno21Context> _Service;
 
         private readonly ClienteProceso<Alumno21Context> _Proceso;
+        private readonly ClienteCuentasContablesProceso<Alumno21Context> _clientesCuentasContablesProceso;
         public ClienteAlumno21Controller(
             IClientesService<Alumno21Context> service
-            , ClienteProceso<Alumno21Context> proceso)
+            , ClienteProceso<Alumno21Context> proceso,
+            ClienteCuentasContablesProceso<Alumno21Context> clientesCuentasContablesProceso)
         {
             _Service = service;
             _Proceso = proceso;
+            _clientesCuentasContablesProceso = clientesCuentasContablesProceso;
         }
 
         [HttpPost]
@@ -75,7 +71,7 @@ namespace ERP_TECKIO
         public async Task<ActionResult<RespuestaDTO>> Delete(int Id)
         {
             RespuestaDTO respuesta = new RespuestaDTO();
-            if (!await _Service.Eliminar(Id))
+            if(!await _Service.Eliminar(Id))
             {
                 respuesta.Estatus = false;
                 respuesta.Descripcion = "Error, el cliente no se elimino";
@@ -90,6 +86,13 @@ namespace ERP_TECKIO
         public async Task<ActionResult<List<ClienteDTO>>> todos()
         {
             return await _Service.ObtenTodos();
+        }
+
+        [HttpGet("cuentasContables/{IdCliente:int}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<List<CuentaContableDTO>>> obtenerXCliente(int IdCliente)
+        {
+            return await _clientesCuentasContablesProceso.obtenerXCliente(IdCliente);
         }
     }
 }

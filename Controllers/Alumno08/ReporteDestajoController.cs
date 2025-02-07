@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+using Microsoft.AspNetCore.Authorization;
 
 
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 
-namespace ERP_TECKIO.API.Controllers.Alumno08
+namespace ERP_TECKIO.Controllers
 {
     [Route("api/reportesdestajo/8")]
     [ApiController]

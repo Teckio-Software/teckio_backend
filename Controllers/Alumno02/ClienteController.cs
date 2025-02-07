@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ERP_TECKIO.Procesos;
 
 
 namespace ERP_TECKIO.Controllers
@@ -16,12 +17,15 @@ namespace ERP_TECKIO.Controllers
         private readonly IClientesService<Alumno02Context> _Service;
 
         private readonly ClienteProceso<Alumno02Context> _Proceso;
+        private readonly ClienteCuentasContablesProceso<Alumno02Context> _clientesCuentasContablesProceso;
         public ClienteAlumno02Controller(
             IClientesService<Alumno02Context> service
-            , ClienteProceso<Alumno02Context> proceso)
+            , ClienteProceso<Alumno02Context> proceso,
+            ClienteCuentasContablesProceso<Alumno02Context> clientesCuentasContablesProceso)
         {
             _Service = service;
             _Proceso = proceso;
+            _clientesCuentasContablesProceso = clientesCuentasContablesProceso;
         }
 
         [HttpPost]
@@ -67,7 +71,7 @@ namespace ERP_TECKIO.Controllers
         public async Task<ActionResult<RespuestaDTO>> Delete(int Id)
         {
             RespuestaDTO respuesta = new RespuestaDTO();
-            if (!await _Service.Eliminar(Id))
+            if(!await _Service.Eliminar(Id))
             {
                 respuesta.Estatus = false;
                 respuesta.Descripcion = "Error, el cliente no se elimino";
@@ -82,6 +86,13 @@ namespace ERP_TECKIO.Controllers
         public async Task<ActionResult<List<ClienteDTO>>> todos()
         {
             return await _Service.ObtenTodos();
+        }
+
+        [HttpGet("cuentasContables/{IdCliente:int}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<List<CuentaContableDTO>>> obtenerXCliente(int IdCliente)
+        {
+            return await _clientesCuentasContablesProceso.obtenerXCliente(IdCliente);
         }
     }
 }

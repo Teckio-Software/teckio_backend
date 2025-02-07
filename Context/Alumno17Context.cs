@@ -1,5 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+using Microsoft.EntityFrameworkCore;
 using ERP_TECKIO.Modelos;
+
+using ERP_TECKIO;
+
 
 public partial class Alumno17Context : DbContext
 {
@@ -11,6 +15,8 @@ public partial class Alumno17Context : DbContext
         : base(options)
     {
     }
+    public virtual DbSet<Empleado> Empleados { get; set; }
+    public virtual DbSet<PrecioUnitarioXEmpleado> PrecioUnitarioXEmpleados { get; set; }
 
     public virtual DbSet<Almacen> Almacens { get; set; }
 
@@ -43,6 +49,8 @@ public partial class Alumno17Context : DbContext
     public virtual DbSet<MovimientoBancarioSaldo> MovimientoBancarioSaldos { get; set; }
 
     public virtual DbSet<CuentaContable> CuentaContables { get; set; }
+
+    public virtual DbSet<DependenciaProgramacionEstimada> DependenciaProgramacionEstimada { get; set; }
 
     public virtual DbSet<DetalleXContrato> DetalleXContratos { get; set; }
 
@@ -88,12 +96,13 @@ public partial class Alumno17Context : DbContext
     public virtual DbSet<ConjuntoIndirectos> ConjuntoIndirectos { get; set; }
     public virtual DbSet<Indirectos> Indirectos { get; set; }
     public virtual DbSet<IndirectosXConcepto> IndirectosXConceptos { get; set; }
-
     public virtual DbSet<PrecioUnitario> PrecioUnitarios { get; set; }
 
     public virtual DbSet<PrecioUnitarioDetalle> PrecioUnitarioDetalles { get; set; }
 
     public virtual DbSet<ProgramacionEstimada> ProgramacionEstimada { get; set; }
+
+    public virtual DbSet<ProgramacionEstimadaGantt> ProgramacionEstimadaGantts { get; set; }
 
     public virtual DbSet<Proyecto> Proyectos { get; set; }
 
@@ -126,6 +135,42 @@ public partial class Alumno17Context : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Empleado>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_AcuseValidacion_2024_02_15");
+
+            entity.ToTable("Empleado");
+
+            entity.Property(e => e.IdUser).HasColumnName("IdUser");
+            entity.Property(e => e.Nombre).HasMaxLength(100);
+            entity.Property(e => e.ApellidoPaterno).HasMaxLength(100);
+            entity.Property(e => e.ApellidoMaterno).HasMaxLength(100);
+            entity.Property(e => e.Curp).HasMaxLength(18);
+            entity.Property(e => e.Rfc).HasMaxLength(13);
+            entity.Property(e => e.SeguroSocial).HasMaxLength(20);
+            entity.Property(e => e.FechaRelacionLaboral).HasColumnType("datetime");
+            entity.Property(e => e.FechaTerminoRelacionLaboral).HasColumnType("datetime");
+            entity.Property(e => e.SalarioDiario).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Estatus).HasColumnName("Estatus");
+        });
+
+        modelBuilder.Entity<PrecioUnitarioXEmpleado>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_AcuseValidacion_2024_02_15");
+
+            entity.ToTable("PrecioUnitarioXEmpleado");
+
+            entity.HasOne(d => d.IdEmpleadoNavigation).WithMany(p => p.PrecioUnitarioXEmpleados)
+                .HasForeignKey(d => d.IdEmpleado)
+                .HasConstraintName("FK_PrecioUnitarioXEmpleado_IdEmpleado");
+            entity.HasOne(d => d.IdProyectoNavigation).WithMany(p => p.PrecioUnitarioXEmpleados)
+                .HasForeignKey(d => d.IdProyceto)
+                .HasConstraintName("FK_PrecioUnitarioXEmpleado_IdPoryecto");
+            entity.HasOne(d => d.IdPrecioUnitarioNavigation).WithMany(p => p.PrecioUnitarioXEmpleados)
+                .HasForeignKey(d => d.IdPrecioUnitario)
+                .HasConstraintName("FK_PrecioUnitarioXEmpleado_IdPrecioUnitario");
+        });
+
         modelBuilder.Entity<AcuseValidacion>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_AcuseValidacion_2024_02_15");
@@ -169,6 +214,26 @@ public partial class Alumno17Context : DbContext
             entity.ToTable("ClasificacionImpuesto", "Factura");
 
             entity.Property(e => e.TipoClasificacionImpuesto).HasMaxLength(150);
+        });
+
+        modelBuilder.Entity<DependenciaProgramacionEstimada>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Dependen__3214EC07DC96535C");
+
+            entity.HasOne(d => d.IdProgramacionEstimadaGanttNavigation).WithMany(p => p.Dependencias)
+                .HasForeignKey(d => d.IdProgramacionEstimadaGantt)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ProgramacionEstimadaGanttDependiente");
+
+            entity.HasOne(d => d.IdProgramacionEstimadaGanttPredecesoraNavigation).WithMany(p => p.DependenciaPredecesora)
+                .HasForeignKey(d => d.IdProgramacionEstimadaGanttPredecesora)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ProgramacionEstimadaGanttPerteneciente");
+
+            entity.HasOne(d => d.IdProyectoNavigation).WithMany(p => p.DependenciaProgramacionEstimadas)
+                .HasForeignKey(d => d.IdProyecto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Proyecto");
         });
 
         modelBuilder.Entity<DetalleValidacion>(entity =>
@@ -1436,6 +1501,31 @@ public partial class Alumno17Context : DbContext
                 .HasConstraintName("FK__Programac__idPro__51300E55");
         });
 
+        modelBuilder.Entity<ProgramacionEstimadaGantt>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Programa__3214EC07B9AEE129");
+
+            entity.ToTable("ProgramacionEstimadaGantt");
+
+            entity.Property(e => e.FechaInicio).HasColumnType("datetime");
+            entity.Property(e => e.FechaTermino).HasColumnType("datetime");
+
+            entity.HasOne(d => d.IdConceptoNavigation).WithMany(p => p.ProgramacionEstimadaGantts)
+                .HasForeignKey(d => d.IdConcepto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Programac__IdCon__290D0E62");
+
+            entity.HasOne(d => d.IdPrecioUnitarioNavigation).WithMany(p => p.ProgramacionEstimadaGantts)
+                .HasForeignKey(d => d.IdPrecioUnitario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Programac__IdPre__2818EA29");
+
+            entity.HasOne(d => d.IdProyectoNavigation).WithMany(p => p.ProgramacionEstimadaGantts)
+                .HasForeignKey(d => d.IdProyecto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Programac__IdPro__2724C5F0");
+        });
+
         modelBuilder.Entity<Proyecto>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Proyecto__3214EC0708EA5793");
@@ -1488,7 +1578,6 @@ public partial class Alumno17Context : DbContext
             entity.Property(e => e.Observaciones).HasMaxLength(200);
             entity.Property(e => e.PersonaSolicitante).HasMaxLength(100);
             entity.Property(e => e.Residente).HasMaxLength(200);
-
 
             entity.HasOne(d => d.IdProyectoNavigation).WithMany(p => p.Requisicions)
                 .HasForeignKey(d => d.IdProyecto)

@@ -1,21 +1,19 @@
-﻿
-
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+using Microsoft.AspNetCore.Authorization;
 
 
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 
 
-namespace ERP_TECKIO
+namespace ERP_TECKIO.Controllers
 {
     /// <summary>
     /// Controlador de las familias de Insumo que hereda de <see cref="ControllerBase"/>
     /// </summary>
     [Route("api/familiainsumo/18")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionFamiliaInsumo-Empresa18")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionFamiliaInsumo-Empresa1")]
     public class FamiliaInsumoAlumno18Controller : ControllerBase
     {
         private readonly FamiliaInsumoProceso<Alumno18Context> _FamiliaInsumoProceso;
@@ -25,7 +23,7 @@ namespace ERP_TECKIO
             _FamiliaInsumoProceso = familiaInsumoProceso;
         }
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearFamiliaInsumo-Empresa18")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearFamiliaInsumo-Empresa1")]
         public async Task<ActionResult> Post([FromBody] FamiliaInsumoCreacionDTO parametros)
         {
             await _FamiliaInsumoProceso.Post(parametros);
@@ -39,7 +37,7 @@ namespace ERP_TECKIO
         /// <param name="parametros">Objeto del tipo FamiliaInsumoDTO que contiene todos los datos del registro</param>
         /// <returns>NoContent</returns>
         [HttpPut]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarFamiliaInsumo-Empresa18")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarFamiliaInsumo-Empresa1")]
         public async Task<ActionResult> Put([FromBody] FamiliaInsumoDTO parametros)
         {
             try
@@ -60,7 +58,7 @@ namespace ERP_TECKIO
         /// <param name="Id">Id del registro a eliminar</param>
         /// <returns>NoContent</returns>
         [HttpDelete("{Id:int}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarFamiliaInsumo-Empresa18")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarFamiliaInsumo-Empresa1")]
         public async Task<ActionResult> Delete(int Id)
         {
             try

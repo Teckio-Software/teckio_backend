@@ -1,16 +1,12 @@
-﻿
-
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
-
-
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
 
 
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-namespace ERP_TECKIO
+
+namespace ERP_TECKIO.Controllers
 {
     [Route("api/insumoxordencompra/20")]
     [ApiController]
@@ -34,8 +30,7 @@ namespace ERP_TECKIO
         }
 
         [HttpPost("CrearInsumoOrdenCompra")]
-        public async Task<ActionResult<RespuestaDTO>> CrearInsumoOrdenCompra(InsumoXOrdenCompraCreacionDTO objeto)
-        {
+        public async Task<ActionResult<RespuestaDTO>> CrearInsumoOrdenCompra(InsumoXOrdenCompraCreacionDTO objeto) {
             return await _Proceso.CrearInsumoOrdenCompra(objeto);
         }
 

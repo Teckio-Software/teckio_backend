@@ -30,8 +30,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpPost("CrearInsumoOrdenCompra")]
-        public async Task<ActionResult<RespuestaDTO>> CrearInsumoOrdenCompra(InsumoXOrdenCompraCreacionDTO objeto)
-        {
+        public async Task<ActionResult<RespuestaDTO>> CrearInsumoOrdenCompra(InsumoXOrdenCompraCreacionDTO objeto) {
             return await _Proceso.CrearInsumoOrdenCompra(objeto);
         }
 

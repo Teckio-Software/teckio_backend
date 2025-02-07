@@ -1,24 +1,16 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
-using Microsoft.EntityFrameworkCore;
 
 
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 
-
-
-
-
-
-
-namespace ERP_TECKIO
+namespace ERP_TECKIO.Controllers
 {
     [Route("api/polizadetalle/10")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPoliza-Empresa10")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPoliza-Empresa1")]
     public class PolizaDetalleAlumno10Controller : ControllerBase
     {
         private readonly IPolizaDetalleService<Alumno10Context> _Service;

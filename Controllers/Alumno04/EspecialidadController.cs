@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-using Microsoft.EntityFrameworkCore;
 
 namespace ERP_TECKIO.Controllers
 {
@@ -14,7 +13,7 @@ namespace ERP_TECKIO.Controllers
     /// </summary>
     [Route("api/especialidad/4")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionEspecialidad-Empresa4")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionEspecialidad-Empresa1")]
     public class EspecialidadAlumno04Controller : ControllerBase
     {
         private readonly EspecialidadProceso<Alumno04Context> _EspecialidadProceso;
@@ -25,7 +24,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearEspecialidad-Empresa4")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearEspecialidad-Empresa1")]
         public async Task<ActionResult> Post([FromBody] EspecialidadDTO parametros)
         {
             await _EspecialidadProceso.Post(parametros);
@@ -33,7 +32,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpPut]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarEspecialidad-Empresa4")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarEspecialidad-Empresa1")]
         public async Task<ActionResult> Put([FromBody] EspecialidadDTO parametros)
         {
             try
@@ -48,7 +47,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpDelete("{Id:int}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarEspecialidad-Empresa4")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarEspecialidad-Empresa1")]
         public async Task<ActionResult> Delete(int Id)
         {
             try

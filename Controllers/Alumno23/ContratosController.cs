@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+using Microsoft.AspNetCore.Authorization;
 
 
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 
-namespace ERP_TECKIO.API.Controllers.Alumno23
+namespace ERP_TECKIO.Controllers
 {
     [Route("api/contratos/23")]
     [ApiController]
@@ -33,7 +35,7 @@ namespace ERP_TECKIO.API.Controllers.Alumno23
 
         [HttpPost("editarContratoDestajo")]
         public async Task<ActionResult> EditarContratoDestajo([FromBody] ContratoDTO nuevoContrato)
-        {
+        { 
             await _contratosProceso.EditarContratoDestajo(nuevoContrato);
             return NoContent();
         }

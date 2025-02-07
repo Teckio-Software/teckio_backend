@@ -10,7 +10,7 @@ namespace ERP_TECKIO.Controllers
 {
     [Route("api/polizadetalle/3")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPoliza-Empresa3")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPoliza-Empresa1")]
     public class PolizaDetalleAlumno03Controller : ControllerBase
     {
         private readonly IPolizaDetalleService<Alumno03Context> _Service;

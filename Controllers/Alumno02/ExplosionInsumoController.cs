@@ -13,7 +13,7 @@ namespace ERP_TECKIO.Controllers
     /// </summary>
     [Route("api/explosioninsumos/2")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionInsumo-Empresa2")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionInsumo-Empresa1")]
     public class ExplosionInsumoAlumno02Controller : ControllerBase
     {
         private readonly IExplosionInsumoService _ExplosionInsumoService;

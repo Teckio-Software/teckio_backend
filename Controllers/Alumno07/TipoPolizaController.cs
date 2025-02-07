@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-using Microsoft.EntityFrameworkCore;
 
 namespace ERP_TECKIO.Controllers
 {
@@ -14,7 +13,7 @@ namespace ERP_TECKIO.Controllers
     /// </summary>
     [Route("api/tipopoliza/7")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionTipoPoliza-Empresa7")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionTipoPoliza-Empresa1")]
     public class TipoPolizaAlumno07Controller : ControllerBase
     {
         private readonly ITipoPolizaService<Alumno07Context> _Service;
@@ -61,7 +60,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearTipoPoliza-Empresa7")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearTipoPoliza-Empresa1")]
         public async Task<ActionResult> Post([FromBody] TipoPolizaCreacionDTO creacionDTO)
         {
             try
@@ -77,7 +76,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpPut]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarTipoPoliza-Empresa7")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarTipoPoliza-Empresa1")]
         public async Task<ActionResult> Put([FromBody] TipoPolizaDTO parametroDTO)
         {
             try

@@ -45,8 +45,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpPost("CrearInsumoEntradaAlmacen")]
-        public async Task<ActionResult<RespuestaDTO>> CrearInsumoEntradaAlmacen(AlmacenEntradaInsumoCreacionDTO parametro)
-        {
+        public async Task<ActionResult<RespuestaDTO>> CrearInsumoEntradaAlmacen(AlmacenEntradaInsumoCreacionDTO parametro) {
             return await _Proceso.CrearInsumoEntradaAlmacen(parametro);
         }
 
@@ -55,7 +54,6 @@ namespace ERP_TECKIO.Controllers
         {
             return await _Proceso.CrearInsumoAjusteAlmacen(parametro);
         }
-
         /// <summary>
         /// Endpoint que llama al método para mostrar los registros de la tabla de almacenes
         /// que recibe como parametro los datos de paginación.
@@ -70,7 +68,7 @@ namespace ERP_TECKIO.Controllers
             await HttpContext.InsertarParametrosPaginacionEnCabecera(queryable.AsQueryable());
             var lista = queryable.AsQueryable().Paginar(paginacionDTO).ToList();
             if (lista.Count <= 0)
-            {
+            { 
                 return NoContent();
             }
             return lista;
@@ -107,7 +105,7 @@ namespace ERP_TECKIO.Controllers
         {
             var lista = await _Proceso.IsumosAlmacenEntradaObtenXIdEntradaAlmacen(idEntradaAlmacen);
             return lista;
-        }
+        }   
 
         /// <summary>
         /// Endpoint que llama al método que permite obtener un registro a partir del Id de este

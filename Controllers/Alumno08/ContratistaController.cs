@@ -1,14 +1,14 @@
-﻿
-
-
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Mvc;
+using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
 
 
 
-namespace ERP_TECKIO
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ERP_TECKIO.Procesos;
+
+
+namespace ERP_TECKIO.Controllers
 {
     /// <summary>
     /// Controlador de los insumos por contratista que hereda de <see cref="ControllerBase"/>
@@ -32,15 +32,19 @@ namespace ERP_TECKIO
         /// </summary>
         /// <param name="logger">Para mostrar errores en consola</param>
         /// <param name="context">Para mandar información de los registros</param>
+        /// 
+        private readonly ContratistaCuentasContablesProceso<Alumno08Context> _contratistaCuentasContablesProceso;
         public ContratistaAlumno08Controller(
             ILogger<ContratistaAlumno08Controller> logger,
             Alumno08Context context
-            , IContratistaService<Alumno08Context> ContratistaService
+            , IContratistaService<Alumno08Context> ContratistaService,
+            ContratistaCuentasContablesProceso<Alumno08Context> contratistaCuentasContablesProceso
             )
         {
             Logger = logger;
             Context = context;
             _ContratistaService = ContratistaService;
+            _contratistaCuentasContablesProceso = contratistaCuentasContablesProceso;
         }
 
         /// <summary>
@@ -100,9 +104,16 @@ namespace ERP_TECKIO
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarContratista-Empresa1")]
         public async Task<ActionResult<RespuestaDTO>> Delete(int Id)
         {
-
+            
             var lista = await _ContratistaService.Eliminar(Id);
             return lista;
+        }
+
+        [HttpGet("cuentasContables/{IdContratista:int}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<List<CuentaContableDTO>>> obtenerXContratista(int IdContratista)
+        {
+            return await _contratistaCuentasContablesProceso.obtenerXContratista(IdContratista);
         }
     }
 }

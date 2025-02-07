@@ -1,19 +1,12 @@
-﻿
-
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
-
-
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
 
 
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 
-
-
-namespace ERP_TECKIO
+namespace ERP_TECKIO.Controllers
 {
     [Route("api/cotizacion/23")]
     [ApiController]
@@ -78,8 +71,7 @@ namespace ERP_TECKIO
 
         [HttpGet]
         [Route("ObtenerImpuestos")]
-        public async Task<ActionResult<List<TipoImpuestoDTO>>> ObtenerImpuestos()
-        {
+        public async Task<ActionResult<List<TipoImpuestoDTO>>> ObtenerImpuestos() { 
             return await _TipoImpuestoService.ObtenTodos();
         }
 
@@ -219,8 +211,5 @@ namespace ERP_TECKIO
             var lista = await _Service.ObtenXId(Id);
             return lista;
         }
-
-
-
     }
 }

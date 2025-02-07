@@ -60,7 +60,7 @@ namespace ERP_TECKIO.Controllers
             }
             return NoContent();
         }
-
+        
 
         [HttpPut]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarOrdenCompra-Empresa1")]

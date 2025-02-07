@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 
 
 
-using System.Diagnostics;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-namespace ERP_TECKIO.API.Controllers.Alumno22
+
+namespace ERP_TECKIO.Controllers
 {
     [Route("api/cuentabancariaempresa/22")]
     [ApiController]

@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 
 namespace ERP_TECKIO.Controllers
 {
@@ -25,7 +23,7 @@ namespace ERP_TECKIO.Controllers
         /// Se usa para mostrar errores en consola
         /// </summary>
         private readonly ILogger<AlmacenSalidaAlumno07Controller> Logger;
-        private readonly UserManager<IdentityUser> zvUserManager;
+        //private readonly UserManager<IdentityUser> zvUserManager;
         /// <summary>
         /// Se usa para mandar en "headers" los registros totales de los registros
         /// </summary>
@@ -36,7 +34,7 @@ namespace ERP_TECKIO.Controllers
         /// <param name="logger">Para mostrar errores en consola</param>
         /// <param name="context">Para mandar inofrmación de los registros</param>
         public AlmacenSalidaAlumno07Controller(
-            UserManager<IdentityUser> zUserManager,
+            //UserManager<IdentityUser> zUserManager,
             ILogger<AlmacenSalidaAlumno07Controller> logger,
             Alumno07Context context
             , IAlmacenSalidaService<Alumno07Context> AlmacenSalidaServicio
@@ -44,7 +42,7 @@ namespace ERP_TECKIO.Controllers
             , AlmacenSalidaProceso<Alumno07Context> Proceso
             )
         {
-            zvUserManager = zUserManager;
+            //zvUserManager = zUserManager;
             Logger = logger;
             Context = context;
             _AlmacenSalidaServicio = AlmacenSalidaServicio;
@@ -122,7 +120,7 @@ namespace ERP_TECKIO.Controllers
         {
             var lista = await _Proceso.obtenerInsumosDisponibles(IdAlmacen);
             return lista;
-        }
+        }            
 
         /// <summary>
         /// Endpoint que llama al método que permite obtener un registro a partir del Id de este

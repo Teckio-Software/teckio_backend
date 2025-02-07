@@ -13,7 +13,7 @@ namespace ERP_TECKIO.Controllers
     /// </summary>
     [Route("api/especialIdadxcontratista/3")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionEspecialidadContratista-Empresa3")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionEspecialidadContratista-Empresa1")]
     public class EspecialIdadXContratistaAlumno03Controller : ControllerBase
     {
         /// <summary>

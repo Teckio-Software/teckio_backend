@@ -1,20 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+using Microsoft.AspNetCore.Authorization;
 
-namespace ERP_TECKIO
+
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
+
+namespace ERP_TECKIO.Controllers
 {
     [Route("api/programacionestimada/9")]
     [ApiController]
-    public class ProgramacionEstimadaAlumno02Controller : ControllerBase
+    public class ProgramacionEstimadaAlumno09Controller : ControllerBase
     {
-        private readonly ProgramacionEstimadaProceso<Alumno02Context> _ProgramacionEstimadaProceso;
-        private readonly IProyectoService<Alumno02Context> _ProyectoService;
-        private readonly IPrecioUnitarioService<Alumno02Context> _PrecioUnitarioService;
+        private readonly ProgramacionEstimadaProceso<Alumno09Context> _ProgramacionEstimadaProceso;
+        private readonly IProyectoService<Alumno09Context> _ProyectoService;
+        private readonly IPrecioUnitarioService<Alumno09Context> _PrecioUnitarioService;
 
-        public ProgramacionEstimadaAlumno02Controller(
-            ProgramacionEstimadaProceso<Alumno02Context> programacionEstimadaProceso,
-            IProyectoService<Alumno02Context> proyectoProceso,
-            IPrecioUnitarioService<Alumno02Context> precioUnitarioService,
-            Alumno02Context context)
+
+        public ProgramacionEstimadaAlumno09Controller(
+            ProgramacionEstimadaProceso<Alumno09Context> programacionEstimadaProceso,
+            IProyectoService<Alumno09Context> proyectoProceso,
+            IPrecioUnitarioService<Alumno09Context> precioUnitarioService,
+            Alumno09Context context)
         {
             _ProgramacionEstimadaProceso = programacionEstimadaProceso;
             _ProyectoService = proyectoProceso;
@@ -72,7 +79,7 @@ namespace ERP_TECKIO
         {
             var registro = await _ProgramacionEstimadaProceso.ObtenerXId(programacionEstimada.Id);
             registro.DiasTranscurridos = programacionEstimada.DiasTranscurridos;
-            if (registro.TipoPrecioUnitario == 1)
+            if(registro.TipoPrecioUnitario == 1)
             {
                 await _ProgramacionEstimadaProceso.PutFechaDias(registro);
             }

@@ -10,7 +10,7 @@ namespace ERP_TECKIO.Controllers
 {
     [Route("api/concepto/3")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionConcepto-Empresa3")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionConcepto-Empresa1")]
     public class ConceptoAlumno03Controller : ControllerBase
     {
         private readonly ConceptoProceso<Alumno03Context> _ConceptoProceso;
@@ -21,7 +21,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearConcepto-Empresa3")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearConcepto-Empresa1")]
         public async Task<ActionResult> Post([FromBody] ConceptoDTO parametros)
         {
             await _ConceptoProceso.Post(parametros);
@@ -29,7 +29,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpPut]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarConcepto-Empresa3")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarConcepto-Empresa1")]
         public async Task<ActionResult> Put([FromBody] ConceptoDTO parametros)
         {
             try
@@ -44,7 +44,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpDelete("{Id:int}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarConcepto-Empresa3")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarConcepto-Empresa1")]
         public async Task<ActionResult> Delete(int Id)
         {
             try

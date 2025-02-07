@@ -13,7 +13,7 @@ namespace ERP_TECKIO.Controllers
     /// </summary>
     [Route("api/tipopoliza/2")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionTipoPoliza-Empresa2")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionTipoPoliza-Empresa1")]
     public class TipoPolizaAlumno02Controller : ControllerBase
     {
         private readonly ITipoPolizaService<Alumno02Context> _Service;
@@ -60,7 +60,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearTipoPoliza-Empresa2")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearTipoPoliza-Empresa1")]
         public async Task<ActionResult> Post([FromBody] TipoPolizaCreacionDTO creacionDTO)
         {
             try
@@ -76,7 +76,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpPut]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarTipoPoliza-Empresa2")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarTipoPoliza-Empresa1")]
         public async Task<ActionResult> Put([FromBody] TipoPolizaDTO parametroDTO)
         {
             try

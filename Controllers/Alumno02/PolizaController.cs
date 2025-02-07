@@ -10,7 +10,7 @@ namespace ERP_TECKIO.Controllers
 {
     [Route("api/poliza/2")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPoliza-Empresa2")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPoliza-Empresa1")]
     public class PolizaAlumno02Controller : ControllerBase
     {
         private readonly IPolizaService<Alumno02Context> _Service;
@@ -40,7 +40,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearPoliza-Empresa2")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearPoliza-Empresa1")]
         public async Task<ActionResult> Post([FromBody] PolizaDTO polizaCreacionDTO)
         {
             try
@@ -113,7 +113,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpPost("generarfolio")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearPoliza-Empresa2")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearPoliza-Empresa1")]
         public async Task<PolizaFolioCodigoDTO> GenerarFolio(PolizaDTO datos)
         {
             try
@@ -231,7 +231,7 @@ namespace ERP_TECKIO.Controllers
         //}
 
         [HttpPut("editar")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPoliza-Empresa2")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPoliza-Empresa1")]
         public async Task<ActionResult> Put([FromBody] PolizaDTO parametros)
         {
             try
@@ -262,7 +262,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpPut("cancelar")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarPoliza-Empresa2")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarPoliza-Empresa1")]
         public async Task<ActionResult> Cancelar([FromBody] PolizaDTO parametros)
         {
             try
@@ -290,7 +290,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpPut("auditar")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearPoliza-Empresa2")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearPoliza-Empresa1")]
         public async Task<ActionResult> Auditar([FromBody] PolizaDTO parametros)
         {
             try

@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-namespace ERP_TECKIO
+
+namespace ERP_TECKIO.Controllers.Alumno08
 {
     [Route("api/fsr/8")]
     [ApiController]

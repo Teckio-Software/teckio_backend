@@ -1,28 +1,20 @@
-﻿
-
-
-
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
-
-
-
-
-
-
-using AutoMapper;
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
 
 
-namespace ERP_TECKIO
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
+using AutoMapper;
+
+namespace ERP_TECKIO.Controllers
 {
     /// <summary>
     /// Controlador de los rubros que hereda de <see cref="ControllerBase"/>
     /// </summary>
     [Route("api/rubro/12")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionRubro-Empresa12")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionRubro-Empresa1")]
     public class RubroAlumno12Controller : ControllerBase
     {
         private readonly IRubroService<Alumno12Context> _Service;
@@ -68,7 +60,7 @@ namespace ERP_TECKIO
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearRubro-Empresa12")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearRubro-Empresa1")]
         public async Task<ActionResult> Post([FromBody] RubroCreacionDTO creacionDTO)
         {
             try
@@ -84,7 +76,7 @@ namespace ERP_TECKIO
         }
 
         [HttpPut]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarRubro-Empresa12")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarRubro-Empresa1")]
         public async Task<ActionResult> Put([FromBody] RubroDTO parametroDTO)
         {
             try

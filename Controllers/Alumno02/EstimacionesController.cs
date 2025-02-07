@@ -33,7 +33,7 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpPost("crearPeriodo")]
-        public async Task<ActionResult<PeriodoEstimacionesDTO>> CrearPeriodo([FromBody]PeriodoEstimacionesDTO registro)
+        public async Task<ActionResult<PeriodoEstimacionesDTO>> CrearPeriodo([FromBody] PeriodoEstimacionesDTO registro)
         {
             return await _estimacionesProceso.CrearPeriodo(registro);
         }

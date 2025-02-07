@@ -5,9 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-using Microsoft.EntityFrameworkCore;
-
-namespace ERP_TECKIO.Controllers 
+namespace ERP_TECKIO.Controllers
 {
     /// <summary>
     /// Controlador de las entradas a almacén que hereda de <see cref="ControllerBase"/>

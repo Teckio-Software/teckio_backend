@@ -1,21 +1,19 @@
-﻿
-
-
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+using Microsoft.AspNetCore.Authorization;
 
 
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 
-namespace ERP_TECKIO
+
+namespace ERP_TECKIO.Controllers
 {
     /// <summary>
     /// Controlador de las cuentas contables que hereda de <see cref="ControllerBase"/>
     /// </summary>
     [Route("api/cuentacontable/15")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionCuentaContable-Empresa15")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionCuentaContable-Empresa1")]
     public class CuentaContableAlumno15Controller : ControllerBase
     {
         private readonly ICuentaContableService<Alumno15Context> _Service;
@@ -78,7 +76,7 @@ namespace ERP_TECKIO
                 var cuentasContablesHijos = await ObtenHijos(lista, cuentasContablesPadres[i]);
                 cuentasContablesPadres[i].Hijos = cuentasContablesHijos;
             }
-            return cuentasContablesPadres;
+            return cuentasContablesPadres.OrderBy(z => z.Codigo).ToList();
         }
 
         [HttpGet("Asignables")]
@@ -88,6 +86,7 @@ namespace ERP_TECKIO
             var asignables = lista.Where(z => z.ExisteMovimiento == false).OrderBy(z => z.Codigo).ToList();
             return asignables;
         }
+
         [HttpGet("todossinestructura")]
         public async Task<ActionResult<List<CuentaContableDTO>>> GetSinEstructura()
         {
@@ -155,6 +154,22 @@ namespace ERP_TECKIO
             {
                 string error = ex.Message.ToString();
                 return new CuentaContableDTO();
+            }
+        }
+
+        [HttpDelete]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearCuentaContable-Empresa1")]
+        public async Task<bool> Delete(int Id)
+        {
+            try
+            {
+                var resultado = await _Service.Eliminar(Id);
+                return resultado.Estatus;
+            }
+            catch(Exception ex)
+            {
+                string error = ex.Message.ToString();
+                return false;
             }
         }
     }

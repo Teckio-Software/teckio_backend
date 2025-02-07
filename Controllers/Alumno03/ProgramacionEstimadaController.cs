@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-using Microsoft.EntityFrameworkCore;
 
 namespace ERP_TECKIO.Controllers
 {
@@ -16,6 +15,7 @@ namespace ERP_TECKIO.Controllers
         private readonly ProgramacionEstimadaProceso<Alumno03Context> _ProgramacionEstimadaProceso;
         private readonly IProyectoService<Alumno03Context> _ProyectoService;
         private readonly IPrecioUnitarioService<Alumno03Context> _PrecioUnitarioService;
+
 
         public ProgramacionEstimadaAlumno03Controller(
             ProgramacionEstimadaProceso<Alumno03Context> programacionEstimadaProceso,
@@ -79,7 +79,7 @@ namespace ERP_TECKIO.Controllers
         {
             var registro = await _ProgramacionEstimadaProceso.ObtenerXId(programacionEstimada.Id);
             registro.DiasTranscurridos = programacionEstimada.DiasTranscurridos;
-            if (registro.TipoPrecioUnitario == 1)
+            if(registro.TipoPrecioUnitario == 1)
             {
                 await _ProgramacionEstimadaProceso.PutFechaDias(registro);
             }

@@ -25,7 +25,6 @@ namespace ERP_TECKIO.Controllers
             this._proceso = _proceso;
             this._servicio = _servicio;
         }
-
         /// <summary>
         /// Obtiene las cuentas bancarias de las empresas
         /// </summary>

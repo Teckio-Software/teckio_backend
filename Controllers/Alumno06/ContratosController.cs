@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-using Microsoft.EntityFrameworkCore;
 
 namespace ERP_TECKIO.Controllers
 {
@@ -36,7 +35,7 @@ namespace ERP_TECKIO.Controllers
 
         [HttpPost("editarContratoDestajo")]
         public async Task<ActionResult> EditarContratoDestajo([FromBody] ContratoDTO nuevoContrato)
-        {
+        { 
             await _contratosProceso.EditarContratoDestajo(nuevoContrato);
             return NoContent();
         }

@@ -1,24 +1,19 @@
-﻿
-
-
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
-
-
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+using Microsoft.AspNetCore.Authorization;
 
 
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 
 
-namespace ERP_TECKIO
+namespace ERP_TECKIO.Controllers
 {
     /// <summary>
     /// Controlador de las EspecialIdades que hereda <see cref="ControllerBase"/>
     /// </summary>
     [Route("api/especialidad/24")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionEspecialidad-Empresa24")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionEspecialidad-Empresa1")]
     public class EspecialidadAlumno24Controller : ControllerBase
     {
         private readonly EspecialidadProceso<Alumno24Context> _EspecialidadProceso;
@@ -29,7 +24,7 @@ namespace ERP_TECKIO
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearEspecialidad-Empresa24")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearEspecialidad-Empresa1")]
         public async Task<ActionResult> Post([FromBody] EspecialidadDTO parametros)
         {
             await _EspecialidadProceso.Post(parametros);
@@ -37,7 +32,7 @@ namespace ERP_TECKIO
         }
 
         [HttpPut]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarEspecialidad-Empresa24")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarEspecialidad-Empresa1")]
         public async Task<ActionResult> Put([FromBody] EspecialidadDTO parametros)
         {
             try
@@ -52,7 +47,7 @@ namespace ERP_TECKIO
         }
 
         [HttpDelete("{Id:int}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarEspecialidad-Empresa24")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarEspecialidad-Empresa1")]
         public async Task<ActionResult> Delete(int Id)
         {
             try

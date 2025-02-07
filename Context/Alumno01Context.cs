@@ -21,7 +21,7 @@ public partial class Alumno01Context : DbContext
     public virtual DbSet<Almacen> Almacens { get; set; }
 
     public virtual DbSet<AlmacenEntradaInsumo> AlmacenEntradaInsumos { get; set; }
-     
+
     public virtual DbSet<AlmacenEntrada> AlmacenEntrada { get; set; }
 
     public virtual DbSet<AlmacenSalidaInsumo> AlmacenSalidaInsumos { get; set; }
@@ -73,7 +73,7 @@ public partial class Alumno01Context : DbContext
     public virtual DbSet<Insumo> Insumos { get; set; }
 
     public virtual DbSet<InsumoExistencia> InsumoExistencia { get; set; }
-       
+
     public virtual DbSet<InsumoXCotizacion> InsumoXcotizacions { get; set; }
 
     public virtual DbSet<InsumoXOrdenCompra> InsumoXordenCompras { get; set; }
@@ -648,7 +648,7 @@ public partial class Alumno01Context : DbContext
                 .HasForeignKey(d => d.IdIvaPorAcreditar)
                 .HasConstraintName("FK__Contratis__IdIva__7EC1CEDB");
         });
-      
+
         modelBuilder.Entity<Contrato>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Contrato__3214EC07324172E1");
@@ -1117,7 +1117,7 @@ public partial class Alumno01Context : DbContext
             entity.Property(e => e.Porcentaje).HasColumnType("decimal(18, 0)");
 
             entity.HasOne(d => d.IdImpuestoNavigation).WithMany(p => p.ImpuestoInsumoCotizados)
-                .HasForeignKey(d => d.IdImpuesto)   
+                .HasForeignKey(d => d.IdImpuesto)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ImpuestoInsumoC_IdTipoImpuesto");
 

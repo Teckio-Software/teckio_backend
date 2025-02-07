@@ -35,7 +35,7 @@ namespace ERP_TECKIO.Controllers
 
         [HttpPost("editarContratoDestajo")]
         public async Task<ActionResult> EditarContratoDestajo([FromBody] ContratoDTO nuevoContrato)
-        {
+        { 
             await _contratosProceso.EditarContratoDestajo(nuevoContrato);
             return NoContent();
         }

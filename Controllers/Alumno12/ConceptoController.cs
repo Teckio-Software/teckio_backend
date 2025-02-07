@@ -1,20 +1,16 @@
-﻿
-
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
-
-
-
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+using Microsoft.AspNetCore.Authorization;
 
 
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 
-namespace ERP_TECKIO
+
+namespace ERP_TECKIO.Controllers
 {
     [Route("api/concepto/12")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionConcepto-Empresa12")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionConcepto-Empresa1")]
     public class ConceptoAlumno12Controller : ControllerBase
     {
         private readonly ConceptoProceso<Alumno12Context> _ConceptoProceso;
@@ -25,7 +21,7 @@ namespace ERP_TECKIO
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearConcepto-Empresa12")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearConcepto-Empresa1")]
         public async Task<ActionResult> Post([FromBody] ConceptoDTO parametros)
         {
             await _ConceptoProceso.Post(parametros);
@@ -33,7 +29,7 @@ namespace ERP_TECKIO
         }
 
         [HttpPut]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarConcepto-Empresa12")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarConcepto-Empresa1")]
         public async Task<ActionResult> Put([FromBody] ConceptoDTO parametros)
         {
             try
@@ -48,7 +44,7 @@ namespace ERP_TECKIO
         }
 
         [HttpDelete("{Id:int}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarConcepto-Empresa12")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarConcepto-Empresa1")]
         public async Task<ActionResult> Delete(int Id)
         {
             try

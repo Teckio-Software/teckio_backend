@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 
 
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 
-
-
-namespace ERP_TECKIO.API.Controllers.Alumno21
+namespace ERP_TECKIO.Controllers
 {
     [Route("api/indirectosXConcepto/21")]
     [ApiController]

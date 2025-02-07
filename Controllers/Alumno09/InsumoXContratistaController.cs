@@ -1,16 +1,19 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 
 
-namespace ERP_TECKIO
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
+
+namespace ERP_TECKIO.Controllers
 {
     /// <summary>
     /// Controlador de los insumos por contratista que hereda de <see cref="ControllerBase"/>
     /// </summary>
     [Route("api/insumoxcontratista/9")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionInsumoXContratista-Empresa9")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionInsumoXContratista-Empresa1")]
     public class InsumoXContratistaAlumno09Controller : ControllerBase
     {
         /// <summary>

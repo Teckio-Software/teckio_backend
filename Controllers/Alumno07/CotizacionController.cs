@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-using Microsoft.EntityFrameworkCore;
 
 namespace ERP_TECKIO.Controllers
 {
@@ -72,8 +71,7 @@ namespace ERP_TECKIO.Controllers
 
         [HttpGet]
         [Route("ObtenerImpuestos")]
-        public async Task<ActionResult<List<TipoImpuestoDTO>>> ObtenerImpuestos()
-        {
+        public async Task<ActionResult<List<TipoImpuestoDTO>>> ObtenerImpuestos() { 
             return await _TipoImpuestoService.ObtenTodos();
         }
 
@@ -213,8 +211,5 @@ namespace ERP_TECKIO.Controllers
             var lista = await _Service.ObtenXId(Id);
             return lista;
         }
-
-
-
     }
 }

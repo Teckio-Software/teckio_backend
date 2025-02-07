@@ -1,21 +1,19 @@
-﻿
-
-
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
-
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
 
 
-namespace ERP_TECKIO
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
+
+namespace ERP_TECKIO.Controllers
 {
     /// <summary>
     /// Controlador de los tipos de tipopoliza que hereda de <see cref="ControllerBase"/>
     /// </summary>
     [Route("api/tipopoliza/18")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionTipoPoliza-Empresa18")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionTipoPoliza-Empresa1")]
     public class TipoPolizaAlumno18Controller : ControllerBase
     {
         private readonly ITipoPolizaService<Alumno18Context> _Service;
@@ -62,7 +60,7 @@ namespace ERP_TECKIO
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearTipoPoliza-Empresa18")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearTipoPoliza-Empresa1")]
         public async Task<ActionResult> Post([FromBody] TipoPolizaCreacionDTO creacionDTO)
         {
             try
@@ -78,7 +76,7 @@ namespace ERP_TECKIO
         }
 
         [HttpPut]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarTipoPoliza-Empresa18")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarTipoPoliza-Empresa1")]
         public async Task<ActionResult> Put([FromBody] TipoPolizaDTO parametroDTO)
         {
             try

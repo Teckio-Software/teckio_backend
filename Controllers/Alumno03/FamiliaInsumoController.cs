@@ -13,7 +13,7 @@ namespace ERP_TECKIO.Controllers
     /// </summary>
     [Route("api/familiainsumo/3")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionFamiliaInsumo-Empresa3")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionFamiliaInsumo-Empresa1")]
     public class FamiliaInsumoAlumno03Controller : ControllerBase
     {
         private readonly FamiliaInsumoProceso<Alumno03Context> _FamiliaInsumoProceso;
@@ -23,7 +23,7 @@ namespace ERP_TECKIO.Controllers
             _FamiliaInsumoProceso = familiaInsumoProceso;
         }
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearFamiliaInsumo-Empresa3")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearFamiliaInsumo-Empresa1")]
         public async Task<ActionResult> Post([FromBody] FamiliaInsumoCreacionDTO parametros)
         {
             await _FamiliaInsumoProceso.Post(parametros);
@@ -37,7 +37,7 @@ namespace ERP_TECKIO.Controllers
         /// <param name="parametros">Objeto del tipo FamiliaInsumoDTO que contiene todos los datos del registro</param>
         /// <returns>NoContent</returns>
         [HttpPut]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarFamiliaInsumo-Empresa3")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarFamiliaInsumo-Empresa1")]
         public async Task<ActionResult> Put([FromBody] FamiliaInsumoDTO parametros)
         {
             try
@@ -58,7 +58,7 @@ namespace ERP_TECKIO.Controllers
         /// <param name="Id">Id del registro a eliminar</param>
         /// <returns>NoContent</returns>
         [HttpDelete("{Id:int}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarFamiliaInsumo-Empresa3")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarFamiliaInsumo-Empresa1")]
         public async Task<ActionResult> Delete(int Id)
         {
             try

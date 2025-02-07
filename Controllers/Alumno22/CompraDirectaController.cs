@@ -1,20 +1,19 @@
-﻿
-
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
-
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
 
 
-namespace ERP_TECKIO
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
+
+namespace ERP_TECKIO.Controllers
 {
     /// <summary>
     /// Controlador de los conceptos que hereda de <see cref="ControllerBase"/>
     /// </summary>
     [Route("api/compradirecta/22")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionOrdenCompra-Empresa22")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionOrdenCompra-Empresa1")]
     public class CompraDirectaAlumno22Controller : ControllerBase
     {
         private readonly ICompraDirectaService<Alumno22Context> _Service;
@@ -95,7 +94,7 @@ namespace ERP_TECKIO
         /// <param name="CreacionDTO">Descripción, Unidad, Detalle y Agrupación</param>
         /// <returns>NoContent</returns>
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearOrdenCompra-Empresa22")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearOrdenCompra-Empresa1")]
         public async Task<ActionResult> Post([FromBody] CompraDirectaCreacionDTO CreacionDTO)
         {
             try
@@ -117,7 +116,7 @@ namespace ERP_TECKIO
         /// <param name="Edita">Id, Descripción, Unidad, Detalle y Agrupación</param>
         /// <returns>NoContent</returns>
         [HttpPut]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarOrdenCompra-Empresa22")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarOrdenCompra-Empresa1")]
         public async Task<ActionResult> Put([FromBody] CompraDirectaDTO Edita)
         {
             try
@@ -138,7 +137,7 @@ namespace ERP_TECKIO
         /// <param name="Edita">Id, Descripción, Unidad, Detalle y Agrupación</param>
         /// <returns>NoContent</returns>
         [HttpPut("cancelar")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarOrdenCompra-Empresa22")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarOrdenCompra-Empresa1")]
         public async Task<ActionResult> PutCancelar([FromBody] CompraDirectaDTO Edita)
         {
             try
