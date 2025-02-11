@@ -8,6 +8,7 @@ namespace ERP_TECKIO.Servicios.Contratos
         public Task<RespuestaDTO> CrearMultiple(List<PrecioUnitarioXEmpleadoDTO> lista);
         public Task<RespuestaDTO> Crear(PrecioUnitarioXEmpleadoDTO objeto);
         public Task<List<PrecioUnitarioXEmpleadoDTO>> ObtenerXIdEmpleado(int IdEmpleado);
+        public Task<List<PrecioUnitarioXEmpleadoDTO>> ObtenerXIdPrecioUnitario(int IdPrecioUnitario);
         public Task<List<PrecioUnitarioXEmpleadoDTO>> ObtenerXIdEmpleadoYIdProyceto(int IdEmpleado, int IdProyceto);
     }
 }

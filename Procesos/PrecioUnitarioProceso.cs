@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using ERP_TECKIO.Modelos;
 using ERP_TECKIO.Procesos;
+using ERP_TECKIO.Servicios.Contratos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
 using SpreadsheetLight;
 using System.Text.Json;
 
@@ -20,8 +23,11 @@ namespace ERP_TECKIO
         private readonly IProgramacionEstimadaGanttService<TContext> _ProgramacionEstimadaGanttService;
         private readonly IFactorSalarioRealService<TContext> _FSRService;
         private readonly IConjuntoIndirectosService<TContext> _conjuntoIndirectosService;
+        private readonly IEstimacionesService<TContext> _estimacionesService;
+        private readonly IPrecioUnitarioXEmpleadoService<TContext> _precioUnitarioXEmpleadoService;
+        private readonly IDetalleXContratoService<TContext> _detalleXContratoService;
         private readonly IMapper _Mapper;
-
+        private readonly TContext _dbContex;
         public PrecioUnitarioProceso(
             IProyectoService<TContext> proyectoService
             , IPrecioUnitarioService<TContext> precioUnitarioService
@@ -33,7 +39,12 @@ namespace ERP_TECKIO
             , IProgramacionEstimadaGanttService<TContext> programacionEstimadaGanttService
             , IFactorSalarioRealService<TContext> FSRService
             , IConjuntoIndirectosService<TContext> conjuntoIndirectosService
+            , IEstimacionesService<TContext> estimacionesService
+            , IPrecioUnitarioXEmpleadoService<TContext> precioUnitarioXEmpleadoService
+            , IDetalleXContratoService<TContext> detalleXContratoService
             , IMapper mapper
+            , TContext dbContex
+
             )
         {
             _ProyectoService = proyectoService;
@@ -46,7 +57,11 @@ namespace ERP_TECKIO
             _ProgramacionEstimadaGanttService = programacionEstimadaGanttService;
             _FSRService = FSRService;
             _conjuntoIndirectosService = conjuntoIndirectosService;
+            _estimacionesService = estimacionesService;
+            _precioUnitarioXEmpleadoService = precioUnitarioXEmpleadoService;
+            _detalleXContratoService = detalleXContratoService;
             _Mapper = mapper;
+            _dbContex = dbContex;
         }
 
         public async Task RecalcularPrecioUnitario(PrecioUnitarioDTO registro)
@@ -711,57 +726,153 @@ namespace ERP_TECKIO
             }
         }
 
-        public async Task<ActionResult<List<PrecioUnitarioDTO>>> Eliminar(int Id)
+        public async Task<List<PrecioUnitarioDTO>> Eliminar(int Id) {
+            return new List<PrecioUnitarioDTO>();
+        }
+
+        public async Task<RespuestaDTO> EliminarPU(int Id)
         {
             try
             {
+                var respuesta = new RespuestaDTO();
+
                 var precioUnitario = await _PrecioUnitarioService.ObtenXId(Id);
                 var registros = await _PrecioUnitarioService.ObtenerTodos(precioUnitario.IdProyecto);
-                for (int i = 0; i < registros.Count; i++)
-                {
-                    registros[i].Expandido = true;
-                }
+                //for (int i = 0; i < registros.Count; i++)
+                //{
+                //    registros[i].Expandido = true;
+                //}
                 var hijos = registros.Where(z => z.IdPrecioUnitarioBase == precioUnitario.Id).ToList();
+                var programacionE = await _ProgramacionEstimadaGanttService.ObtenerXIdProyecto(precioUnitario.IdProyecto, _dbContex);
+                var PE = new ProgramacionEstimadaGanttDTO();
                 if (hijos.Count > 0)
                 {
                     for (int i = 0; i < hijos.Count; i++)
                     {
-                        if (hijos[i].TipoPrecioUnitario == 1)
-                        {
-                            await EliminarDetallesPorPrecioUnitario(hijos[i].Id);
-                            await _PrecioUnitarioService.Eliminar(hijos[i].Id);
-                        }
-                        else
-                        {
-                            await _PrecioUnitarioService.Eliminar(hijos[i].Id);
+                        respuesta = await PrecioUnitarioHijos(hijos[i].Id, registros);
+                        if (!respuesta.Estatus) {
+                            return respuesta;
                         }
                     }
+
+                    for (int i = 0; i < hijos.Count; i++)
+                    {
+                        await EliminarPrecioUnitarioHijos(hijos[i].Id, registros, programacionE);
+
+                        //await EliminarDetallesPorPrecioUnitario(hijos[i].Id);
+                        //PE = programacionE.Where(z => z.IdPrecioUnitario == hijos[i].Id).First();
+                        //await _ProgramacionEstimadaGanttService.Eliminar(Convert.ToInt32(PE.Id));
+                        //await _GeneradoresService.EliminarTodos(hijos[i].Id);
+                        //await _PrecioUnitarioService.Eliminar(hijos[i].Id);
+                    }
                 }
-                var programacionesEstimadas = await _ProgramacionEstimadaService.ObtenerTodosXProyecto(precioUnitario.IdProyecto);
-                var programacionesEstimadasFiltradas = programacionesEstimadas.Where(z => z.IdPrecioUnitario == Id).ToList();
-                for (int i = 0; i < programacionesEstimadasFiltradas.Count; i++)
+                else
                 {
-                    await _ProgramacionEstimadaService.Eliminar(programacionesEstimadasFiltradas[i].Id);
+                    var existenEstimaciones = await _estimacionesService.ObtenXIdPrecioUnitario(Id);
+                    if (existenEstimaciones.Count() > 0)
+                    {
+                        respuesta.Estatus = false;
+                        respuesta.Descripcion = "Error, ya existe una o mas estimaciones";
+                        return respuesta;
+                    }
+                    var existeEmpleado = await _precioUnitarioXEmpleadoService.ObtenerXIdPrecioUnitario(Id);
+                    if (existeEmpleado.Count() > 0)
+                    {
+                        respuesta.Estatus = false;
+                        respuesta.Descripcion = "Error, ya hay una relación con uno o mas empleados";
+                        return respuesta;
+                    }
+                    var existeDetalleXContrato = await _detalleXContratoService.ObtenerRegistrosXIdPrecioUnitario(Id);
+                    if (existeDetalleXContrato.Count() > 0)
+                    {
+                        respuesta.Estatus = false;
+                        respuesta.Descripcion = "Error, ya existe relacion con algún contrato";
+                        return respuesta;
+                    }
+
                 }
-                var detalles = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(Id);
-                for (int i = 0; i < detalles.Count; i++)
-                {
-                    await _PrecioUnitarioDetalleService.Eliminar(detalles[i].Id);
-                }
+                await EliminarDetallesPorPrecioUnitario(Id);
+                PE = programacionE.Where(z => z.IdPrecioUnitario == Id).First();
+                await _ProgramacionEstimadaGanttService.Eliminar(Convert.ToInt32(PE.Id));
+                await _GeneradoresService.EliminarTodos(Id);
                 await _PrecioUnitarioService.Eliminar(Id);
-                if (precioUnitario.IdPrecioUnitarioBase > 0)
-                {
-                    var precioUnitarioPadre = await _PrecioUnitarioService.ObtenXId(precioUnitario.IdPrecioUnitarioBase);
-                    await RecalcularPrecioUnitario(precioUnitarioPadre);
-                }
-                return await ObtenerPrecioUnitario(precioUnitario.IdProyecto);
+
+                return new RespuestaDTO();
             }
             catch (Exception ex)
             {
                 string error = ex.Message.ToString();
-                return new List<PrecioUnitarioDTO>();
+                return new RespuestaDTO();
             }
         }
+
+        public async Task<RespuestaDTO> PrecioUnitarioHijos(int IdPrecioUnitario, List<PrecioUnitarioDTO> registros)
+        {
+            var respuesta = new RespuestaDTO();
+            var hijos = registros.Where(z => z.IdPrecioUnitarioBase == IdPrecioUnitario).ToList();
+            if(hijos.Count() <= 0)
+            {
+                var existenEstimaciones = await _estimacionesService.ObtenXIdPrecioUnitario(IdPrecioUnitario);
+                if(existenEstimaciones.Count() > 0)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "Error, ya existe una o mas estimaciones";
+                    return respuesta;
+                }
+                var existeEmpleado = await _precioUnitarioXEmpleadoService.ObtenerXIdPrecioUnitario(IdPrecioUnitario);
+                if (existeEmpleado.Count() > 0)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "Error, ya hay una relación con uno o mas empleados";
+                    return respuesta;
+                }
+                var existeDetalleXContrato = await _detalleXContratoService.ObtenerRegistrosXIdPrecioUnitario(IdPrecioUnitario);
+                if (existeDetalleXContrato.Count() > 0)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "Error, ya existe relacion con algún contrato";
+                    return respuesta;
+                }
+            }
+            foreach (var hijo in hijos)
+            {
+                await PrecioUnitarioHijos(hijo.Id, registros);
+            }
+
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Listo para eliminar";
+
+            return respuesta;
+        }
+
+        public async Task<RespuestaDTO> EliminarPrecioUnitarioHijos(int IdPrecioUnitario, List<PrecioUnitarioDTO> registros, List<ProgramacionEstimadaGanttDTO> progrmaciones)
+        {
+            var respuesta = new RespuestaDTO();
+            var hijos = registros.Where(z => z.IdPrecioUnitarioBase == IdPrecioUnitario).ToList();
+            if (hijos.Count() <= 0)
+            {
+                await EliminarDetallesPorPrecioUnitario(IdPrecioUnitario);
+                var PE = progrmaciones.Where(z => z.IdPrecioUnitario == IdPrecioUnitario).First();
+                await _ProgramacionEstimadaGanttService.Eliminar(Convert.ToInt32(PE.Id));
+                await _GeneradoresService.EliminarTodos(IdPrecioUnitario);
+                await _PrecioUnitarioService.Eliminar(IdPrecioUnitario);
+            }
+            else
+            {
+                foreach (var hijo in hijos)
+                {
+                    await EliminarPrecioUnitarioHijos(hijo.Id, registros, progrmaciones);
+                }
+            }
+
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Listo para eliminar";
+
+            return respuesta;
+        }
+
+
+
 
         public async Task EliminarDetallesPorPrecioUnitario(int IdPrecioUnitario)
         {

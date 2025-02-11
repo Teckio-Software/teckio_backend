@@ -98,5 +98,11 @@ namespace ERP_TECKIO.Servicios
             await _Repositorio.EliminarMultiple(query);
             return true;
         }
+
+        public async Task<List<EstimacionesDTO>> ObtenXIdPrecioUnitario(int IdPrecioUnitario)
+        {
+            var query = await _Repositorio.ObtenerTodos(z => z.IdPrecioUnitario == IdPrecioUnitario);
+            return _Mapper.Map<List<EstimacionesDTO>>(query);
+        }
     }
 }

@@ -67,9 +67,9 @@ namespace ERP_TECKIO
 
         [HttpPost("eliminar")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarPrecioUnitario-Empresa2")]
-        public async Task<ActionResult<List<PrecioUnitarioDTO>>> Eliminar([FromBody] int idPrecioUnitario)
+        public async Task<ActionResult<RespuestaDTO>> Eliminar([FromBody] int idPrecioUnitario)
         {
-            return await _precioUnitarioProceso.Eliminar(idPrecioUnitario);
+            return await _precioUnitarioProceso.EliminarPU(idPrecioUnitario);
         }
 
         [HttpPost("copiaregistros")]
