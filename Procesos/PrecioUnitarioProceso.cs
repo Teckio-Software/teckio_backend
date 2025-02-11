@@ -797,7 +797,9 @@ namespace ERP_TECKIO
                 await _GeneradoresService.EliminarTodos(Id);
                 await _PrecioUnitarioService.Eliminar(Id);
 
-                return new RespuestaDTO();
+                respuesta.Estatus = true;
+                respuesta.Descripcion = "Eliminacion correacta";
+                return respuesta;
             }
             catch (Exception ex)
             {
