@@ -2,6 +2,7 @@
 using DocumentFormat.OpenXml.Office2010.Excel;
 using ERP_TECKIO.Modelos;
 using ERP_TECKIO.Procesos;
+using ERP_TECKIO.Servicios;
 using ERP_TECKIO.Servicios.Contratos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -1508,28 +1509,25 @@ namespace ERP_TECKIO
                     registrosFiltrados[i].IdConcepto = conceptoCreado.Id;
                     var nuevoRegistro = await _PrecioUnitarioService.CrearYObtenerCopia(registrosFiltrados[i]);
                     var Proyecto = await _ProyectoService.ObtenXId(IdProyecto);
-                    ProgramacionEstimadaDTO nuevaProgramacion = new ProgramacionEstimadaDTO();
+                    ProgramacionEstimadaGanttDTO nuevaProgramacion = new ProgramacionEstimadaGanttDTO();
                     nuevaProgramacion.IdConcepto = nuevoRegistro.IdConcepto;
-                    nuevaProgramacion.Inicio = Proyecto.FechaInicio;
-                    nuevaProgramacion.Termino = Proyecto.FechaInicio;
+                    nuevaProgramacion.Start = Proyecto.FechaInicio;
+                    nuevaProgramacion.End = Proyecto.FechaInicio;
                     nuevaProgramacion.IdProyecto = Proyecto.Id;
                     nuevaProgramacion.IdPrecioUnitario = nuevoRegistro.Id;
-                    nuevaProgramacion.DiasTranscurridos = 1;
-                    nuevaProgramacion.Nivel = nuevoRegistro.Nivel;
-                    nuevaProgramacion.Progreso = 0;
-                    nuevaProgramacion.IdPredecesora = 0;
+                    nuevaProgramacion.Duracion = 1;
+                    nuevaProgramacion.Progress = 0;
                     if (nuevoRegistro.IdPrecioUnitarioBase != 0)
                     {
-                        var programacionesEstimadas = await _ProgramacionEstimadaService.ObtenerTodosXProyecto(Proyecto.Id);
+                        var programacionesEstimadas = await _ProgramacionEstimadaGanttService.ObtenerXIdProyecto(Proyecto.Id, db);
                         var programacionEstimadaPadre = programacionesEstimadas.Where(z => z.IdPrecioUnitario == nuevoRegistro.IdPrecioUnitarioBase).FirstOrDefault();
-                        nuevaProgramacion.IdPadre = programacionEstimadaPadre.Id;
+                        nuevaProgramacion.Parent = programacionEstimadaPadre.Id;
                     }
                     else
                     {
-                        nuevaProgramacion.IdPadre = 0;
+                        nuevaProgramacion.Parent = "";
                     }
-                    await _ProgramacionEstimadaService.CrearYObtener(nuevaProgramacion);
-                    nuevaProgramacion.Predecesor = "";
+                    await _ProgramacionEstimadaGanttService.CrearYObtener(nuevaProgramacion);
                     if (registrosFiltrados[i].Hijos.Count > 0)
                     {
                         await CrearRegistrosSeleccionados(registrosFiltrados[i].Hijos, nuevoRegistro.Id, IdProyecto, db);

@@ -14,8 +14,8 @@ namespace ERP_TECKIO
         public int TipoPrecioUnitario { get; set; }
         public decimal CostoUnitario { get; set; }
         public decimal PorcentajeIndirecto { get; set; }
-        public string PorcentajeIndirectoConFormato { get; set; }
-        public string CostoUnitarioConFormato { get; set; }
+        public string? PorcentajeIndirectoConFormato { get; set; }
+        public string? CostoUnitarioConFormato { get; set; }
         public bool CostoUnitarioEditado { get; set; }
         public int Nivel { get; set; }
         public int NoSerie { get; set; }
