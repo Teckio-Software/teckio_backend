@@ -149,5 +149,17 @@ namespace ERP_TECKIO
             }
             return registros;
         }
+
+        [HttpPost("moverRegistro")]
+        public async Task<ActionResult<List<PrecioUnitarioDTO>>> MoverRegistros([FromBody] PreciosParaEditarPosicionDTO registro)
+        {
+            var registros = new List<PrecioUnitarioDTO>();
+            using (var db = new Alumno07Context(_Options.Options))
+            {
+                await _precioUnitarioProceso.modificarPosicion(registro);
+                registros = await _precioUnitarioProceso.ObtenerPrecioUnitario(registro.Seleccionado.IdProyecto);
+            }
+            return registros;
+        }
     }
 }
