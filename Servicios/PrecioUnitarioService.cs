@@ -46,9 +46,11 @@ namespace ERP_TECKIO.Servicios
         public async Task<List<PrecioUnitarioDTO>> Estructurar(List<PrecioUnitarioDTO> registros, decimal Indirecto)
         {
             var padres = registros.Where(z => z.IdPrecioUnitarioBase == 0).ToList();
+            padres = padres.OrderBy(z => z.Posicion).ToList();
             for (int i = 0; i < padres.Count; i++)
             {
                 var hijos = await BuscaHijos(registros, padres[i], Indirecto);
+                hijos = hijos.OrderBy(z => z.Posicion).ToList();
                 padres[i].Hijos = hijos;
                 if (padres[i].TipoPrecioUnitario == 1)
                 {
@@ -96,9 +98,11 @@ namespace ERP_TECKIO.Servicios
         private async Task<List<PrecioUnitarioDTO>> BuscaHijos(List<PrecioUnitarioDTO> registros, PrecioUnitarioDTO padre, decimal Indirecto)
         {
             var padres = registros.Where(z => z.IdPrecioUnitarioBase == padre.Id).ToList();
+            padres = padres.OrderBy(z => z.Posicion).ToList();
             for (int i = 0; i < padres.Count; i++)
             {
                 var hijos = await BuscaHijos(registros, padres[i], Indirecto);
+                hijos = hijos.OrderBy(z => z.Posicion).ToList();
                 padres[i].Hijos = hijos;
                 if (padres[i].TipoPrecioUnitario == 1) {
                     if (hijos.Count() > 0)
@@ -297,6 +301,7 @@ namespace ERP_TECKIO.Servicios
                 objetoEncontrado.IdPrecioUnitarioBase = registro.IdPrecioUnitarioBase;
                 objetoEncontrado.IdConcepto = registro.IdConcepto;
                 objetoEncontrado.EsDetalle = false;
+                objetoEncontrado.Posicion = registro.Posicion;
 
                 respuesta.Estatus = await _Repositorio.Editar(objetoEncontrado);
                 if (!respuesta.Estatus)

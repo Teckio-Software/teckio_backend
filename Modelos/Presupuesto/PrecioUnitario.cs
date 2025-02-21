@@ -19,6 +19,7 @@ public partial class PrecioUnitario
     public bool? EsDetalle { get; set; }
 
     public int? IdConcepto { get; set; }
+    public int Posicion { get; set; }
     public virtual ICollection<Estimaciones> Estimaciones { get; set; } = new List<Estimaciones>();
 
     public virtual ICollection<Generadores> Generadores { get; set; } = new List<Generadores>();

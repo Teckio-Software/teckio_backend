@@ -33,6 +33,7 @@ namespace ERP_TECKIO
         public decimal ImporteSeries { get; set; }
         public string ImporteSeriesConFormato { get; set; }
         public bool Expandido { get; set; }
+        public int Posicion { get; set; }
     }
 
     public class PrecioUnitarioDTO : PrecioUnitarioAbstractaDTO
@@ -65,5 +66,11 @@ namespace ERP_TECKIO
         public decimal Total { get; set; }
         public List<InsumoDTO> Insumos { get; set; }
         public List<PrecioUnitarioDetalleDTO> Detalles { get; set; }
+    }
+
+    public class PreciosParaEditarPosicionDTO
+    {
+        public PrecioUnitarioDTO Seleccionado { get; set; }
+        public PrecioUnitarioDTO Destino { get; set; }
     }
 }

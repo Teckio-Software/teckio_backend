@@ -585,6 +585,9 @@ namespace ERP_TECKIO
                 concepto.IdProyecto = registro.IdProyecto;
                 var nuevoConcepto = await _ConceptoService.CrearYObtener(concepto);
                 registro.IdConcepto = nuevoConcepto.Id;
+                var registrosSinEstructurar = await ObtenerPrecioUnitarioSinEstructurar(registro.IdProyecto);
+                var registrosFiltrados = registrosSinEstructurar.Where(z => z.IdPrecioUnitarioBase == registro.IdPrecioUnitarioBase);
+                registro.Posicion = registrosFiltrados.Count() + 1;
                 var nuevoRegistro = await _PrecioUnitarioService.CrearYObtener(registro);
                 var Proyecto = await _ProyectoService.ObtenXId(registro.IdProyecto);
                 ProgramacionEstimadaGanttDTO nuevaProgramacion = new ProgramacionEstimadaGanttDTO();
@@ -2667,6 +2670,107 @@ namespace ERP_TECKIO
                 }
             }
             return padre;
+        }
+
+        public async Task modificarPosicion(PreciosParaEditarPosicionDTO registros)
+        {
+            var registrosSinEstructurar = await ObtenerPrecioUnitarioSinEstructurar(registros.Seleccionado.IdProyecto);
+            var registroPadreOriginal = new PrecioUnitarioDTO();
+            if(registros.Seleccionado.IdPrecioUnitarioBase != 0)
+            {
+                registroPadreOriginal = registrosSinEstructurar.Where(z => z.Id == registros.Seleccionado.IdPrecioUnitarioBase).FirstOrDefault();
+            }
+            var registrosFiltrados = registrosSinEstructurar.Where(z => z.IdPrecioUnitarioBase == registros.Destino.IdPrecioUnitarioBase).OrderBy(z => z.Posicion).ToList();
+            var index = registrosFiltrados.FindIndex(z => z.Id == registros.Destino.Id);
+            registros.Seleccionado.Posicion = index;
+            var listaRegistrosOrdenados = new List<PrecioUnitarioDTO>();
+            if(registros.Seleccionado.IdPrecioUnitarioBase == registros.Destino.IdPrecioUnitarioBase)
+            {
+                var indexEncontrado = false;
+                var registroOriginalEncontrado = false;
+                for (int i = 0; i < registrosFiltrados.Count; i++)
+                {
+                    if(i == index)
+                    {
+                        listaRegistrosOrdenados.Add(registros.Seleccionado);
+                        indexEncontrado = true;
+                    }
+                    if (registrosFiltrados[i].Id == registros.Seleccionado.Id)
+                    {
+                        registroOriginalEncontrado = true;
+                    }
+                    if(indexEncontrado == true && registroOriginalEncontrado == false)
+                    {
+                        registrosFiltrados[i].Posicion = i + 1;
+                    }
+                    else
+                    {
+                        registrosFiltrados[i].Posicion = i;
+                    }
+                    if(registrosFiltrados[i].Id != registros.Seleccionado.Id)
+                    {
+                        listaRegistrosOrdenados.Add(registrosFiltrados[i]);
+
+                    }
+                }
+            }
+            else
+            {
+                var indexEncontrado = false;
+                for (int i = 0; i < registrosFiltrados.Count; i++)
+                {
+                    if(i == index)
+                    {
+                        registros.Seleccionado.IdPrecioUnitarioBase = registros.Destino.IdPrecioUnitarioBase;
+                        registros.Seleccionado.Nivel = registros.Destino.Nivel;
+                        listaRegistrosOrdenados.Add(registros.Seleccionado);
+                        indexEncontrado = true;
+                    }
+                    if(indexEncontrado == true)
+                    {
+                        registrosFiltrados[i].Posicion = i + 1;
+                    }
+                    else
+                    {
+                        registrosFiltrados[i].Posicion = i;
+                    }
+                    listaRegistrosOrdenados.Add(registrosFiltrados[i]);
+                }
+            }
+            for(int i = 0; i < listaRegistrosOrdenados.Count; i++)
+            {
+                await Editar(listaRegistrosOrdenados[i]);
+            }
+            var registrosHijos = registrosSinEstructurar.Where(z => z.IdPrecioUnitarioBase == registroPadreOriginal.Id).ToList();
+            if(registrosHijos.Count() > 1)
+            {
+                for(int i = 0; i < registrosHijos.Count; i++)
+                {
+                    if (registrosHijos[i].Id != registros.Seleccionado.Id)
+                    {
+                        await RecalcularPrecioUnitario(registrosHijos[i]);
+                        i = registrosHijos.Count();
+                    }
+                }
+            }
+            else
+            {
+                registroPadreOriginal.Importe = 0;
+                await RecalcularPrecioUnitario(registroPadreOriginal);
+            }
+        }
+
+        public async Task AjustarNivelHijos(int nivelPadre, List<PrecioUnitarioDTO> hijos)
+        {
+            for(int i = 0; i < hijos.Count; i++)
+            {
+                if (hijos[i].Hijos.Count > 0)
+                {
+                    await AjustarNivelHijos(nivelPadre + 1, hijos[i].Hijos);
+                }
+                hijos[i].Nivel = nivelPadre + 1;
+                await Editar(hijos[i]);
+            }
         }
     }
 }
