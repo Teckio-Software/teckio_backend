@@ -2754,6 +2754,19 @@ namespace ERP_TECKIO
         }
 
         public async Task MismoNivel(List<PrecioUnitarioDTO> registrosSinEstructurar, PreciosParaEditarPosicionDTO registros) {
+            if (registros.Seleccionado.Id == registros.Destino.IdPrecioUnitarioBase)
+            {
+                return;
+            }
+            var hijos = registrosSinEstructurar.Where(z => z.IdPrecioUnitarioBase == registros.Seleccionado.Id).ToList();
+            foreach (var hijo in hijos)
+            {
+                var mismaFamilia = await ValidaMismaFamilia(registrosSinEstructurar, registros.Destino, hijo);
+                if (mismaFamilia)
+                {
+                    return;
+                }
+            }
             var registrosFiltrados = registrosSinEstructurar.Where(z => z.IdPrecioUnitarioBase == registros.Destino.IdPrecioUnitarioBase).OrderBy(z => z.Posicion).ToList();
             var index = registrosFiltrados.FindIndex(z => z.Id == registros.Destino.Id);
             var listaRegistrosOrdenados = new List<PrecioUnitarioDTO>();
