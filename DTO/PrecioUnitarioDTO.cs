@@ -73,5 +73,6 @@ namespace ERP_TECKIO
         public PrecioUnitarioDTO Seleccionado { get; set; }
         public PrecioUnitarioDTO Destino { get; set; }
         public bool EsSubnivel { get; set; }
+        public bool EsCopiado { get; set; }
     }
 }
