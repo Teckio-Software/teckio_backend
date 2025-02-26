@@ -797,8 +797,12 @@ namespace ERP_TECKIO
 
                 }
                 await EliminarDetallesPorPrecioUnitario(Id);
-                PE = programacionE.Where(z => z.IdPrecioUnitario == Id).First();
-                await _ProgramacionEstimadaGanttService.Eliminar(Convert.ToInt32(PE.Id));
+                if (programacionE.Count > 0) {
+                    PE = programacionE.Where(z => z.IdPrecioUnitario == Id).First();
+                    if (PE != null) {
+                        await _ProgramacionEstimadaGanttService.Eliminar(Convert.ToInt32(PE.Id));
+                    }
+                }
                 await _GeneradoresService.EliminarTodos(Id);
                 await _PrecioUnitarioService.Eliminar(Id);
 
