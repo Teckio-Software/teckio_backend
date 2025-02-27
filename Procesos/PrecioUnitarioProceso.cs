@@ -1229,7 +1229,13 @@ namespace ERP_TECKIO
                             for (int i = 0; i < DetallesHijos.Count; i++)
                             {
                                 PrecioUnitarioDetalleDTO DetalleAuxiliar = new PrecioUnitarioDetalleDTO();
-                                DetalleAuxiliar = DetallesHijos[i];
+                                DetalleAuxiliar.Cantidad = DetallesHijos[i].Cantidad;
+                                DetalleAuxiliar.EsCompuesto = DetallesHijos[i].EsCompuesto;
+                                DetalleAuxiliar.Id = DetallesHijos[i].Id;
+                                DetalleAuxiliar.IdPrecioUnitario = DetallesHijos[i].IdPrecioUnitario;
+                                DetalleAuxiliar.IdInsumo = DetallesHijos[i].IdInsumo;
+                                DetalleAuxiliar.CantidadExcedente = DetallesHijos[i].CantidadExcedente;
+                                DetalleAuxiliar.IdPrecioUnitarioDetallePerteneciente = DetallesHijos[i].IdPrecioUnitarioDetallePerteneciente;
                                 DetallesHijos[i].Id = 0;
                                 DetallesHijos[i].IdPrecioUnitario = registro.IdPrecioUnitario;
                                 DetallesHijos[i].IdPrecioUnitarioDetallePerteneciente = nuevoRegistro.Id;
@@ -1287,7 +1293,13 @@ namespace ERP_TECKIO
                 for (int i = 0; i < detallesFiltrados.Count; i++)
                 {
                     PrecioUnitarioDetalleDTO DetalleAuxiliar = new PrecioUnitarioDetalleDTO();
-                    DetalleAuxiliar = detallesFiltrados[i];
+                    DetalleAuxiliar.Cantidad = detallesFiltrados[i].Cantidad;
+                    DetalleAuxiliar.EsCompuesto = detallesFiltrados[i].EsCompuesto;
+                    DetalleAuxiliar.Id = detallesFiltrados[i].Id;
+                    DetalleAuxiliar.IdPrecioUnitario = detallesFiltrados[i].IdPrecioUnitario;
+                    DetalleAuxiliar.IdInsumo = detallesFiltrados[i].IdInsumo;
+                    DetalleAuxiliar.CantidadExcedente = detallesFiltrados[i].CantidadExcedente;
+                    DetalleAuxiliar.IdPrecioUnitarioDetallePerteneciente = detallesFiltrados[i].IdPrecioUnitarioDetallePerteneciente;
                     detallesFiltrados[i].Id = 0;
                     detallesFiltrados[i].IdPrecioUnitario = nuevoDetalle.IdPrecioUnitario;
                     detallesFiltrados[i].IdPrecioUnitarioDetallePerteneciente = nuevoDetalle.Id;
