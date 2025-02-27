@@ -75,6 +75,7 @@ namespace ERP_TECKIO
 
             foreach (var indirecto in indirectosPadre)
             {
+                indirecto.Nivel = 1;
                 indirecto.Hijos = await ObtenerHijos(indirectos, indirecto);
                 indirecto.Expandido = true;
             }
@@ -87,6 +88,7 @@ namespace ERP_TECKIO
 
             foreach (var indirecto in indirectosPadre)
             {
+                indirecto.Nivel = padre.Nivel + 1;
                 indirecto.Hijos = await ObtenerHijos(indirectos, indirecto);
                 indirecto.Expandido = true;
             }

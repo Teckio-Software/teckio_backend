@@ -17,6 +17,7 @@ namespace ERP_TECKIO
         public string PorcentajeConFormato { get; set; }
         public int IdIndirectoBase { get; set; }
         public bool Expandido { get; set; } = false;
+        public int Nivel {  get; set; }
     }
 
     public class IndirectosDTO : IndirectosAbstractDTO
@@ -36,6 +37,8 @@ namespace ERP_TECKIO
         public string PorcentajeConFormato { get; set; }
         public int IdIndirectoBase { get; set; }
         public bool Expandido { get; set; } = false;
+        public int Nivel { get; set; }
+
     }
 
     public class IndirectosXConceptoDTO : IndirectosXConceptoAbstractDTO
