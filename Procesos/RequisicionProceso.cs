@@ -40,7 +40,14 @@ namespace ERP_TECKIO
 
             var requisiciones = await _requisicionService.ObtenXIdProyecto(parametros.IdProyecto);
             var proyecto = await _proyectoService.ObtenXId(parametros.IdProyecto);
-            var codigoProyecto = proyecto.CodigoProyecto.Substring(0, 3);
+            var codigoProyecto = "";
+            if (proyecto.CodigoProyecto.Count() >= 3) {
+                codigoProyecto = proyecto.CodigoProyecto.Substring(0, 3);
+            }
+            else
+            {
+                codigoProyecto = proyecto.CodigoProyecto;
+            }
             string numero = "";
             if (requisiciones.Count <= 0)
             {
