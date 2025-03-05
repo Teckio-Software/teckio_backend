@@ -933,7 +933,7 @@ namespace ERP_TECKIO
                 I.CostoUnitario,
                 FORMAT(I.CostoUnitario, 'N', 'en-us') as CostoUnitarioConFormato,
                 PUD.Cantidad,
-                FORMAT(PUD.Cantidad, 'N', 'en-us') as CantidadConFormato,
+                FORMAT(PUD.Cantidad, '0.0000') as CantidadConFormato,
                 PUD.IdPrecioUnitarioDetallePerteneciente,
                 I.Codigo,
                 I.Descripcion,
@@ -991,7 +991,7 @@ namespace ERP_TECKIO
                 I.CostoUnitario,
                 FORMAT(I.CostoUnitario, 'N', 'en-us') as CostoUnitarioConFormato,
                 PUD.Cantidad,
-                FORMAT(PUD.Cantidad, 'N', 'en-us') as CantidadConFormato,
+                FORMAT(PUD.Cantidad, '0.0000') as CantidadConFormato,
                 PUD.IdPrecioUnitarioDetallePerteneciente,
                 I.Codigo,
                 I.Descripcion,
@@ -1026,7 +1026,7 @@ namespace ERP_TECKIO
                 I.CostoUnitario,
                 FORMAT(I.CostoUnitario, 'N', 'en-us') as CostoUnitarioConFormato,
                 PUD.Cantidad,
-                FORMAT(PUD.Cantidad, 'N', 'en-us') as CantidadConFormato,
+                FORMAT(PUD.Cantidad, '0.0000') as CantidadConFormato,
                 PUD.IdPrecioUnitarioDetallePerteneciente,
                 I.Codigo,
                 I.Descripcion,
@@ -1377,21 +1377,21 @@ namespace ERP_TECKIO
                 }
                 var precioUnitario = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
                 var insumos = await _InsumoService.ObtenXIdProyecto(precioUnitario.IdProyecto); //Era id del proyecto pero no lo obtengo
-                var detalles = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(precioUnitario.Id);
-                for (int i = 0; i < detalles.Count; i++)
-                {
-                    var buscaInsumo = insumos.Where(z => z.id == detalles[i].IdInsumo).FirstOrDefault();
-                    detalles[i].Codigo = buscaInsumo.Codigo;
-                    detalles[i].Descripcion = buscaInsumo.Descripcion;
-                    detalles[i].Unidad = buscaInsumo.Unidad;
-                    detalles[i].IdTipoInsumo = buscaInsumo.idTipoInsumo;
-                    detalles[i].IdFamiliaInsumo = buscaInsumo.idFamiliaInsumo;
-                    detalles[i].CostoUnitario = buscaInsumo.CostoUnitario;
-                    detalles[i].Importe = detalles[i].Cantidad * detalles[i].CostoUnitario;
-                    detalles[i].CantidadConFormato = String.Format("{0:#,##0.0000}", detalles[i].Cantidad);
-                    detalles[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", detalles[i].CostoUnitario);
-                    detalles[i].ImporteConFormato = String.Format("{0:#,##0.00}", detalles[i].Importe);
-                }
+                var detalles = await ObtenerDetallesPorPU(precioUnitario.Id, _dbContex);
+                //for (int i = 0; i < detalles.Count; i++)
+                //{
+                //    var buscaInsumo = insumos.Where(z => z.id == detalles[i].IdInsumo).FirstOrDefault();
+                //    detalles[i].Codigo = buscaInsumo.Codigo;
+                //    detalles[i].Descripcion = buscaInsumo.Descripcion;
+                //    detalles[i].Unidad = buscaInsumo.Unidad;
+                //    detalles[i].IdTipoInsumo = buscaInsumo.idTipoInsumo;
+                //    detalles[i].IdFamiliaInsumo = buscaInsumo.idFamiliaInsumo;
+                //    detalles[i].CostoUnitario = buscaInsumo.CostoUnitario;
+                //    detalles[i].Importe = detalles[i].Cantidad * detalles[i].CostoUnitario;
+                //    detalles[i].CantidadConFormato = String.Format("{0:#,##0.0000}", detalles[i].Cantidad);
+                //    detalles[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", detalles[i].CostoUnitario);
+                //    detalles[i].ImporteConFormato = String.Format("{0:#,##0.00}", detalles[i].Importe);
+                //}
                 var detallesFiltrados = detalles.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.IdPrecioUnitarioDetallePerteneciente).ToList();
                 var datos = await RecalcularDetalles(registro.IdPrecioUnitario, detalles, insumos);
                 detalles = datos.Detalles;
@@ -1419,40 +1419,49 @@ namespace ERP_TECKIO
         public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> PartirDetalle(PrecioUnitarioDetalleDTO registro)
         {
             var insumo = await _InsumoService.ObtenXId(registro.IdInsumo);
+            var detallesXIdInsumo = await ObtenerDetallesPorIdInsumo(registro.IdInsumo, _dbContex);
+            var registrosFiltrados = await ObtenerDetallesPorPU(registro.IdPrecioUnitario, _dbContex);
+            if(detallesXIdInsumo.Count <= 1)
+            {
+                return registrosFiltrados.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.IdPrecioUnitarioDetallePerteneciente).ToList();
+            }
             var insumos = await _InsumoService.ObtenerInsumoXProyecto(insumo.IdProyecto);
             var mismoCodigo = insumos.Where(z => z.Codigo == insumo.Codigo).ToList();
 
             InsumoCreacionDTO nuevoInsumo = new InsumoCreacionDTO();
-            nuevoInsumo.Codigo = insumo.Codigo;
+            nuevoInsumo.Codigo = insumo.Codigo + "-" + mismoCodigo.Count().ToString();
             nuevoInsumo.Unidad = insumo.Unidad;
             nuevoInsumo.idTipoInsumo = insumo.idTipoInsumo;
             nuevoInsumo.idFamiliaInsumo = insumo.idFamiliaInsumo;
             nuevoInsumo.CostoUnitario = insumo.CostoUnitario;
             nuevoInsumo.IdProyecto = insumo.IdProyecto;
-            nuevoInsumo.Descripcion = insumo.Descripcion + "Divicion" + mismoCodigo.Count().ToString();
+            nuevoInsumo.Descripcion = insumo.Descripcion + "-" + mismoCodigo.Count().ToString();
 
-            var detalles = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(registro.IdPrecioUnitario);
-            var detallesFiltrados = detalles.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.IdPrecioUnitarioDetallePerteneciente).ToList();
-            for (int i = 0; i < detallesFiltrados.Count; i++)
-            {
-                var buscaInsumo = insumos.Where(z => z.id == detalles[i].IdInsumo).FirstOrDefault();
-                detallesFiltrados[i].Codigo = buscaInsumo.Codigo;
-                detallesFiltrados[i].Descripcion = buscaInsumo.Descripcion;
-                detallesFiltrados[i].Unidad = buscaInsumo.Unidad;
-                detallesFiltrados[i].IdTipoInsumo = buscaInsumo.idTipoInsumo;
-                detallesFiltrados[i].IdFamiliaInsumo = buscaInsumo.idFamiliaInsumo;
-                detallesFiltrados[i].CostoUnitario = buscaInsumo.CostoUnitario;
-                detallesFiltrados[i].Importe = detalles[i].Cantidad * detalles[i].CostoUnitario;
-                detallesFiltrados[i].CantidadConFormato = String.Format("{0:#,##0.0000}", detalles[i].Cantidad);
-                detallesFiltrados[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", detalles[i].CostoUnitario);
-                detallesFiltrados[i].ImporteConFormato = String.Format("{0:#,##0.00}", detalles[i].Importe);
-            }
+            var detallesFiltrados = registrosFiltrados.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.IdPrecioUnitarioDetallePerteneciente).ToList();
+
+            //var detalles = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(registro.IdPrecioUnitario);
+            //var detallesFiltrados = detalles.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.IdPrecioUnitarioDetallePerteneciente).ToList();
+            //for (int i = 0; i < detallesFiltrados.Count; i++)
+            //{
+            //    var buscaInsumo = insumos.Where(z => z.id == detalles[i].IdInsumo).FirstOrDefault();
+            //    detallesFiltrados[i].Codigo = buscaInsumo.Codigo;
+            //    detallesFiltrados[i].Descripcion = buscaInsumo.Descripcion;
+            //    detallesFiltrados[i].Unidad = buscaInsumo.Unidad;
+            //    detallesFiltrados[i].IdTipoInsumo = buscaInsumo.idTipoInsumo;
+            //    detallesFiltrados[i].IdFamiliaInsumo = buscaInsumo.idFamiliaInsumo;
+            //    detallesFiltrados[i].CostoUnitario = buscaInsumo.CostoUnitario;
+            //    detallesFiltrados[i].Importe = detalles[i].Cantidad * detalles[i].CostoUnitario;
+            //    detallesFiltrados[i].CantidadConFormato = String.Format("{0:#,##0.0000}", detalles[i].Cantidad);
+            //    detallesFiltrados[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", detalles[i].CostoUnitario);
+            //    detallesFiltrados[i].ImporteConFormato = String.Format("{0:#,##0.00}", detalles[i].Importe);
+            //}
             var crearInsumo = await _InsumoService.CrearYObtener(nuevoInsumo);
             if (crearInsumo.id <= 0) { 
                 return detallesFiltrados;
             }
 
             registro.IdInsumo = crearInsumo.id;
+            registro.Codigo = crearInsumo.Codigo;
             registro.Descripcion = crearInsumo.Descripcion;
             var editar = await _PrecioUnitarioDetalleService.Editar(registro);
             if (!editar.Estatus) {
@@ -1578,7 +1587,7 @@ namespace ERP_TECKIO
             var preciosUnitarios = await ObtenerPrecioUnitario(IdProyecto);
             return preciosUnitarios;
         }
-
+          
         public async Task<List<PrecioUnitarioCopiaDTO>> EstructurarPreciosParaCopiar(List<PrecioUnitarioCopiaDTO> precios)
         {
             var preciosCopiar = new List<PrecioUnitarioCopiaDTO>();
