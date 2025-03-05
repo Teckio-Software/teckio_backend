@@ -656,6 +656,7 @@ public partial class Alumno03Context : DbContext
             entity.ToTable("Contrato");
 
             entity.Property(e => e.CostoDestajo).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.FechaRegistro).HasColumnType("datetime");
 
             entity.HasOne(d => d.IdContratistaNavigation).WithMany(p => p.Contratos)
                 .HasForeignKey(d => d.IdContratista)

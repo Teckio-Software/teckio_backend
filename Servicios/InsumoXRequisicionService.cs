@@ -645,16 +645,16 @@ namespace ERP_TECKIO.Servicios
                 return respuesta;
             }
             if (objetoEncomprado.EstatusInsumoRequisicion != 1) {
-                respuesta.Descripcion = "no puedes eliminar este insumo";
+                respuesta.Descripcion = "No puedes eliminar este insumo";
                 return respuesta;
             }
             var eliminarInsumo = await _Repositorio.Eliminar(objetoEncomprado);
             if (!eliminarInsumo) {
-                respuesta.Descripcion = "no se elimino el insumo";
+                respuesta.Descripcion = "No se eliminó el insumo";
                 return respuesta;
             }
             respuesta.Estatus = true;
-            respuesta.Descripcion = "insumo eliminado";
+            respuesta.Descripcion = "Insumo eliminado";
             return respuesta;
         }
     }

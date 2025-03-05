@@ -14,7 +14,7 @@ namespace ERP_TECKIO
         private readonly IPeriodoEstimacionesService<TContext> _periodoEstimacionesService;
         private readonly IContratistaService<TContext> _contratistaService;
         private readonly EstimacionesProceso<TContext> _EstmacionesProceso;
-
+        private readonly IProyectoService<TContext> _proyectoService;
 
         public ContratosProceso(
               PrecioUnitarioProceso<TContext> precioUnitarioProceso
@@ -23,8 +23,8 @@ namespace ERP_TECKIO
             , IPorcentajeAcumuladoContratoService<TContext> porcentajeAcumuladoContratoService,
               IPeriodoEstimacionesService<TContext> periodoEstimacionesService,
               IContratistaService<TContext> contratistaService,
-              EstimacionesProceso<TContext> EstmacionesProceso
-
+              EstimacionesProceso<TContext> EstmacionesProceso,
+              IProyectoService<TContext> proyectoService
             )
         {
             _PrecioUnitarioProceso = precioUnitarioProceso;
@@ -34,6 +34,7 @@ namespace ERP_TECKIO
             _periodoEstimacionesService = periodoEstimacionesService;
             _EstmacionesProceso = EstmacionesProceso;
             _contratistaService = contratistaService;
+            _proyectoService = proyectoService;
         }
 
         public async Task<List<ContratoDTO>> ObtenerContratosDestajos(ParametrosParaBuscarContratos parametrosBusqueda)
@@ -41,6 +42,35 @@ namespace ERP_TECKIO
             var Contratos = await _ContratoService.ObtenerRegistrosXIdProyecto(parametrosBusqueda.IdProyecto);
             var ContratosPorTipo = Contratos.Where(z => z.TipoContrato == parametrosBusqueda.TipoContrato);
             var ContratosFiltrados = Contratos.Where(z => z.IdContratista == parametrosBusqueda.IdContratista).ToList();
+            if (ContratosFiltrados.Count() <= 0) { 
+                return new List<ContratoDTO>();
+            }
+
+            var proyecto = await _proyectoService.ObtenXId(parametrosBusqueda.IdProyecto);
+            var codigoProyecto = "";
+            if (proyecto.CodigoProyecto.Count() < 3) {
+                codigoProyecto = proyecto.CodigoProyecto;
+            }
+            else
+            {
+                codigoProyecto = proyecto.CodigoProyecto.Substring(0, 3);
+            }
+
+            foreach (var contratos in ContratosFiltrados) {
+                var numeroDestajo = "";
+                if (contratos.NumeroDestajo < 10) {
+                    numeroDestajo = "00"+contratos.NumeroDestajo.ToString();
+                }else if (contratos.NumeroDestajo >= 10 && contratos.NumeroDestajo < 100)
+                {
+                    numeroDestajo = "0" + contratos.NumeroDestajo.ToString();
+                }else if (contratos.NumeroDestajo >= 100)
+                {
+                    numeroDestajo = contratos.NumeroDestajo.ToString();
+                }
+
+                contratos.NumeroDestajoDescripcion = codigoProyecto + "_" + numeroDestajo + "_" + contratos.FechaRegistro.ToString();
+            }
+
             return ContratosFiltrados;
         }
 

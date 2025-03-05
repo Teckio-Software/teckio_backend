@@ -22,6 +22,7 @@ namespace ERP_TECKIO.Servicios
         {
             try
             {
+                modelo.FechaRegistro = DateTime.Now;
                 var objetoCreado = await _Repositorio.Crear(_Mapper.Map<Contrato>(modelo));
                 if (objetoCreado.Id == 0)
                     throw new TaskCanceledException("No se pudó crear");

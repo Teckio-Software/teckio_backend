@@ -23,6 +23,10 @@ namespace ERP_TECKIO
         public int IdContratista { get; set; }
 
         public int IdPeriodoEstimacion { get; set; }
+
+        public DateTime? FechaRegistro { get; set; }
+
+        public string NumeroDestajoDescripcion { get; set; }
     }
 
     public class ParametrosParaBuscarContratos {
