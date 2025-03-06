@@ -96,3 +96,5 @@ obj/ERP_TECKIO.csproj.nuget.dgspec.json
 obj/ERP_TECKIO.csproj.nuget.g.props
 obj/project.assets.json
 obj/project.nuget.cache
+bin/Debug/net9.0/ERP_TECKIO.pdb
+bin/Debug/net9.0/ERP_TECKIO.dll
