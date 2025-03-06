@@ -1483,6 +1483,9 @@ namespace ERP_TECKIO
                 var registro = await _PrecioUnitarioDetalleService.ObtenXId(Id);
                 var PU = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
                 var resultado = await _PrecioUnitarioDetalleService.Eliminar(Id);
+                if (resultado.Estatus) {
+                    var eliminaInsumo = await _InsumoService.Eliminar(registro.IdInsumo);
+                }
                 await RecalcularPorcentajeManoDeObra(registro);
                 var detalles = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(registro.IdPrecioUnitario);
                 var insumos = await _InsumoService.ObtenXIdProyecto(PU.IdProyecto);

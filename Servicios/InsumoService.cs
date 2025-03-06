@@ -112,6 +112,8 @@ namespace ERP_TECKIO.Servicios
                 if (!respuesta.Estatus)
                 {
                     respuesta.Descripcion = "No se pudo eliminar";
+                    respuesta.Estatus = false;
+                    return respuesta;
                 }
                 respuesta.Estatus = true;
                 respuesta.Descripcion = "Insumo eliminado";
