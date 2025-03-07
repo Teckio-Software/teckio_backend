@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ERP_TECKIO;
 using Microsoft.EntityFrameworkCore;
+using ERP_TECKIO.DTO;
 
 
 
@@ -90,6 +91,30 @@ namespace SistemaERP.API.Alumno02Controllers.Procomi
                 registros = await _precioUnitarioProceso.EliminarDetalle(Id, db);
             }
             return registros;
+        }
+
+        [HttpPost("crearOperaciones")]
+        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> CrearOperacion([FromBody] OperacionesXPrecioUnitarioDetalleDTO registro)
+        {
+            return await _precioUnitarioProceso.CrearOperacion(registro);
+        }
+
+        [HttpPost("editarOperaciones")]
+        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> EditarOperacion([FromBody] OperacionesXPrecioUnitarioDetalleDTO registro)
+        {
+            return await _precioUnitarioProceso.EditarOperacion(registro);
+        }
+
+        [HttpPost("eliminarOperacion")]
+        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> EliminarOperacion([FromBody] int Id)
+        {
+            return await _precioUnitarioProceso.EliminarOperacion(Id);
+        }
+
+        [HttpGet("obtenerOperaciones/{IdPrecioUnitarioDetalle:int}")]
+        public async Task<ActionResult<List<OperacionesXPrecioUnitarioDetalleDTO>>> ObtenerOperaciones(int IdPrecioUnitarioDetalle)
+        {
+            return await _precioUnitarioProceso.ObtenerOperaciones(IdPrecioUnitarioDetalle);
         }
 
         //[HttpPost("correccionBimsa")]
