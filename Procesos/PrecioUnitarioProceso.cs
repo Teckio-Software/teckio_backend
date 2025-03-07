@@ -1,14 +1,18 @@
 ﻿using AutoMapper;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using ERP_TECKIO.DTO;
 using ERP_TECKIO.Modelos;
 using ERP_TECKIO.Procesos;
 using ERP_TECKIO.Servicios;
 using ERP_TECKIO.Servicios.Contratos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Writers;
 using Microsoft.Win32;
 using SpreadsheetLight;
 using System.Collections.Generic;
+using System.Data;
+using System.Linq.Expressions;
 using System.Text.Json;
 
 namespace ERP_TECKIO
@@ -28,6 +32,7 @@ namespace ERP_TECKIO
         private readonly IEstimacionesService<TContext> _estimacionesService;
         private readonly IPrecioUnitarioXEmpleadoService<TContext> _precioUnitarioXEmpleadoService;
         private readonly IDetalleXContratoService<TContext> _detalleXContratoService;
+        private readonly IOperacionesXPrecioUnitarioDetalleService<TContext> _OperacionXPUService;
         private readonly IMapper _Mapper;
         private readonly TContext _dbContex;
         public PrecioUnitarioProceso(
@@ -44,6 +49,7 @@ namespace ERP_TECKIO
             , IEstimacionesService<TContext> estimacionesService
             , IPrecioUnitarioXEmpleadoService<TContext> precioUnitarioXEmpleadoService
             , IDetalleXContratoService<TContext> detalleXContratoService
+            , IOperacionesXPrecioUnitarioDetalleService<TContext> operacionXPUService
             , IMapper mapper
             , TContext dbContex
 
@@ -64,6 +70,7 @@ namespace ERP_TECKIO
             _detalleXContratoService = detalleXContratoService;
             _Mapper = mapper;
             _dbContex = dbContex;
+            _OperacionXPUService = operacionXPUService;
         }
 
         public async Task RecalcularPrecioUnitario(PrecioUnitarioDTO registro)
@@ -1117,7 +1124,13 @@ namespace ERP_TECKIO
                 PrecioUnitarioDetalleDTO nuevoRegistro = new PrecioUnitarioDetalleDTO();
                 var precioUnitario = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
                 var FSR = await _FSRService.ObtenerTodosXProyecto(precioUnitario.IdProyecto);
-                if (registro.IdTipoInsumo == 10000 && registro.EsCompuesto != false)
+                if (registro.IdTipoInsumo == 10006)
+                {
+                    registro.EsCompuesto = true;
+                    registro.CostoUnitario = 0;
+                }
+
+                if (registro.IdTipoInsumo == 10000)
                 {
                     registro.CostoUnitario = registro.CostoUnitario * FSR[0].PorcentajeFsr;
                 }
@@ -3197,5 +3210,70 @@ namespace ERP_TECKIO
             }
         }
 
+        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> CrearOperacion(OperacionesXPrecioUnitarioDetalleDTO registro)
+        {
+            DataTable table = new DataTable();
+            object result = table.Compute(registro.Operacion, string.Empty);
+            registro.Resultado = Convert.ToDecimal(result);
+            var registroCreado = await _OperacionXPUService.CrearYObtener(registro);
+            var obtenerOperaciones = await _OperacionXPUService.ObtenerXIdPrecioUnitarioDetalle(registro.IdPrecioUnitarioDetalle);
+            decimal total = 0;
+            foreach (var operacion in obtenerOperaciones)
+            {
+                total = total + operacion.Resultado;
+            }
+
+            var detalle = await _PrecioUnitarioDetalleService.ObtenerXId(registro.IdPrecioUnitarioDetalle);
+            var detalles = await ObtenerDetalles(detalle.IdPrecioUnitario, _dbContex);
+            detalle = detalles.Where(z => z.Id == detalle.Id).FirstOrDefault();
+            detalle.Cantidad = total;
+            var resultado = await EditarDetalle(detalle);
+            return resultado;
+        }
+
+        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> EditarOperacion(OperacionesXPrecioUnitarioDetalleDTO registro)
+        {
+            DataTable table = new DataTable();
+            object result = table.Compute(registro.Operacion, string.Empty);
+            registro.Resultado = Convert.ToDecimal(result);
+            var registroEditado = await _OperacionXPUService.Editar(registro);
+            var obtenerOperaciones = await _OperacionXPUService.ObtenerXIdPrecioUnitarioDetalle(registro.IdPrecioUnitarioDetalle);
+            decimal total = 0;
+            foreach (var operacion in obtenerOperaciones)
+            {
+                total = total + operacion.Resultado;
+            }
+
+            var detalle = await _PrecioUnitarioDetalleService.ObtenerXId(registro.IdPrecioUnitarioDetalle);
+            var detalles = await ObtenerDetalles(detalle.IdPrecioUnitario, _dbContex);
+            detalle = detalles.Where(z => z.Id == detalle.Id).FirstOrDefault();
+            detalle.Cantidad = total;
+            var resultado = await EditarDetalle(detalle);
+            return resultado;
+        }
+
+        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> EliminarOperacion(int Id)
+        {
+            var operacionEliminar = await _OperacionXPUService.ObtenerXId(Id);
+            var registroEditado = await _OperacionXPUService.Eliminar(Id);
+            var obtenerOperaciones = await _OperacionXPUService.ObtenerXIdPrecioUnitarioDetalle(operacionEliminar.IdPrecioUnitarioDetalle);
+            decimal total = 0;
+            foreach (var operacion in obtenerOperaciones)
+            {
+                total = total + operacion.Resultado;
+            }
+
+            var detalle = await _PrecioUnitarioDetalleService.ObtenerXId(operacionEliminar.IdPrecioUnitarioDetalle);
+            var detalles = await ObtenerDetalles(detalle.IdPrecioUnitario, _dbContex);
+            detalle = detalles.Where(z => z.Id == detalle.Id).FirstOrDefault();
+            detalle.Cantidad = total;
+            var resultado = await EditarDetalle(detalle);
+            return resultado;
+        }
+
+        public async Task<ActionResult<List<OperacionesXPrecioUnitarioDetalleDTO>>> ObtenerOperaciones(int IdPrecioUnitarioDetalle)
+        {
+            return await _OperacionXPUService.ObtenerXIdPrecioUnitarioDetalle(IdPrecioUnitarioDetalle);
+        }
     }
 }
