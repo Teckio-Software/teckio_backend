@@ -60,7 +60,7 @@ namespace ERP_TECKIO.Servicios
             RespuestaDTO respuesta = new RespuestaDTO();
             try
             {
-                var objetoEncontrado = await ObtenerXId(registro.Id);
+                var objetoEncontrado = await _Repositorio.Obtener(z => z.Id == registro.Id);
                 if (objetoEncontrado == null || objetoEncontrado.Id <= 0)
                 {
                     respuesta.Estatus = false;
@@ -70,8 +70,7 @@ namespace ERP_TECKIO.Servicios
                 objetoEncontrado.Descripcion = registro.Descripcion;
                 objetoEncontrado.Operacion = registro.Operacion;
                 objetoEncontrado.Resultado = registro.Resultado;
-                var modelo = _Mapper.Map<OperacionesXPrecioUnitarioDetalle>(objetoEncontrado);
-                respuesta.Estatus = await _Repositorio.Editar(modelo);
+                respuesta.Estatus = await _Repositorio.Editar(objetoEncontrado);
                 if (!respuesta.Estatus)
                 {
                     respuesta.Estatus = false;
