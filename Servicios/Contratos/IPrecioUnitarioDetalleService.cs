@@ -7,6 +7,7 @@ namespace ERP_TECKIO
     {
         Task<List<PrecioUnitarioDetalleDTO>> ObtenerTodosXIdPrecioUnitario(int IdPrecioUnitario);
         Task<List<PrecioUnitarioDetalleDTO>> ObtenerTodosXIdPrecioUnitarioFiltrados(int IdPrecioUnitario, int IdPerteneciente);
+        Task<PrecioUnitarioDetalleDTO> ObtenerXId(int Id);
         Task<List<PrecioUnitarioDetalleDTO>> ObtenerTodos();
         Task<List<PrecioUnitarioDetalleDTO>> ObtenerTodosXIdPrecioUnitarioDetalle(PrecioUnitarioDetalleDTO PrecioUnitarioDetalle);
         Task<PrecioUnitarioDetalleDTO> ObtenXId(int Id); 

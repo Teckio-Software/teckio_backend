@@ -2,7 +2,7 @@
 using ERP_TECKIO.DTO;
 using ERP_TECKIO.DTO.Usuario;
 using ERP_TECKIO.Modelos;
-
+using ERP_TECKIO.Modelos.Presupuesto;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 
@@ -128,6 +128,11 @@ namespace ERP_TECKIO
             CreateMap<IndirectosXConcepto, IndirectosXConceptoDTO>();
             CreateMap<IndirectosXConceptoDTO, IndirectosXConcepto>()
                 .ForMember(z => z.IdConceptoNavigation,
+                opt => opt.Ignore());
+            //////////////////////////////////////
+            CreateMap<OperacionesXPrecioUnitarioDetalle, OperacionesXPrecioUnitarioDetalleDTO>();
+            CreateMap<OperacionesXPrecioUnitarioDetalleDTO, OperacionesXPrecioUnitarioDetalle>()
+                .ForMember(z => z.IdPrecioUnitarioDetalleNavigation,
                 opt => opt.Ignore());
             #endregion
 

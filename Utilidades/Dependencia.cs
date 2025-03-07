@@ -25,6 +25,7 @@ namespace ERP_TECKIO
             services.AddScoped(typeof(IIndirectosXConceptoService<>), typeof(IndirectosXConceptoService<>));
             services.AddScoped(typeof(IProgramacionEstimadaGanttService<>), typeof(ProgramacionEstimadaGanttService<>));
             services.AddScoped(typeof(IDependenciaProgramacionEstimadaService<>), typeof(DependenciaProgramacionEstimadaService<>));
+            services.AddScoped(typeof(IOperacionesXPrecioUnitarioDetalleService<>), typeof(OperacionesXPrecioUnitarioDetalleService<>));
             //Factor de salario real
             services.AddScoped(typeof(IFactorSalarioRealService<>), typeof(FactorSalarioRealService<>));
             services.AddScoped(typeof(IFactorSalarioRealDetalleService<>), typeof(FactorSalarioRealDetalleService<>));

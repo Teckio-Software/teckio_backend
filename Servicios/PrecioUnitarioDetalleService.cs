@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ERP_TECKIO.Modelos;
+using ERP_TECKIO.DTO;
 
 
 
@@ -180,6 +181,19 @@ namespace ERP_TECKIO.Servicios
                 padre.CostoUnitario = total;
                 await Editar(padre);
                 await RecalcularPadres(padre, registros);
+            }
+        }
+
+        public async Task<PrecioUnitarioDetalleDTO> ObtenerXId(int Id)
+        {
+            try
+            {
+                var query = await _Repositorio.Obtener(z => z.Id == Id);
+                return _Mapper.Map<PrecioUnitarioDetalleDTO>(query);
+            }
+            catch (Exception ex)
+            {
+                return new PrecioUnitarioDetalleDTO();
             }
         }
     }
