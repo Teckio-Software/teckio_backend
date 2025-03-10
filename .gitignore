@@ -37,6 +37,3 @@ Version.h
 Version.cpp
 /bin
 /obj
-bin/Debug/net9.0/ERP_TECKIO.pdb
-bin/Debug/net9.0/ERP_TECKIO.exe
-bin/Debug/net9.0/ERP_TECKIO.dll
