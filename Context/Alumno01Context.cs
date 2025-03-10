@@ -227,6 +227,7 @@ public partial class Alumno01Context : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_FSRXInsummoMdODetalle_IdFSR");
         });
+
         modelBuilder.Entity<OperacionesXPrecioUnitarioDetalle>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("OperacionesXPrecioUnitarioDetalle");
