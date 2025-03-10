@@ -134,9 +134,99 @@ public partial class Alumno01Context : DbContext
     public virtual DbSet<FacturaReceptor> FacturaReceptors { get; set; }
     public virtual DbSet<TipoFactor> TipoFactors { get; set; }
     public virtual DbSet<OperacionesXPrecioUnitarioDetalle> OperacionesXPrecioUnitarioDetalles { get; set; }
+    public virtual DbSet<FsixinsummoMdO> FsixinsummoMdOs { get; set; }
 
+    public virtual DbSet<FsixinsummoMdOdetalle> FsixinsummoMdOdetalles { get; set; }
+
+    public virtual DbSet<FsrxinsummoMdO> FsrxinsummoMdOs { get; set; }
+
+    public virtual DbSet<FsrxinsummoMdOdetalle> FsrxinsummoMdOdetalles { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<FsixinsummoMdO>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__FSIXInsu__3214EC07D9E08BFA");
+
+            entity.ToTable("FSIXInsummoMdO");
+
+            entity.Property(e => e.DiasNoLaborales).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.DiasPagados).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Fsi)
+                .HasColumnType("decimal(28, 6)")
+                .HasColumnName("FSI");
+
+            entity.HasOne(d => d.IdInsumoNavigation).WithMany(p => p.FsixinsummoMdOs)
+                .HasForeignKey(d => d.IdInsumo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_FSIXInsummoMdO_IdInsumo");
+
+            entity.HasOne(d => d.IdProyectoNavigation).WithMany(p => p.FsixinsummoMdOs)
+                .HasForeignKey(d => d.IdProyecto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_FSIXInsummoMdO_IdProyecto");
+        });
+
+        modelBuilder.Entity<FsixinsummoMdOdetalle>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__FSIXInsu__3214EC0714F5F2A2");
+
+            entity.ToTable("FSIXInsummoMdODetalle");
+
+            entity.Property(e => e.ArticulosLey).HasMaxLength(500);
+            entity.Property(e => e.Codigo).HasMaxLength(50);
+            entity.Property(e => e.Descripcion).HasMaxLength(500);
+            entity.Property(e => e.Dias).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.EsLaborableOpagado).HasColumnName("EsLaborableOPagado");
+            entity.Property(e => e.IdFsixinsummoMdO).HasColumnName("IdFSIXInsummoMdO");
+
+            entity.HasOne(d => d.IdFsixinsummoMdONavigation).WithMany(p => p.FsixinsummoMdOdetalles)
+                .HasForeignKey(d => d.IdFsixinsummoMdO)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_FSIXInsummoMdODetalle_IdFSI");
+        });
+
+        modelBuilder.Entity<FsrxinsummoMdO>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__FSRXInsu__3214EC073F7B7BD2");
+
+            entity.ToTable("FSRXInsummoMdO");
+
+            entity.Property(e => e.CostoDirecto).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.CostoFinal).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Fsr)
+                .HasColumnType("decimal(28, 6)")
+                .HasColumnName("FSR");
+
+            entity.HasOne(d => d.IdInsumoNavigation).WithMany(p => p.FsrxinsummoMdOs)
+                .HasForeignKey(d => d.IdInsumo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_FSRXInsummoMdO_IdInsumo");
+
+            entity.HasOne(d => d.IdProyectoNavigation).WithMany(p => p.FsrxinsummoMdOs)
+                .HasForeignKey(d => d.IdProyecto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_FSRXInsummoMdO_IdProyecto");
+        });
+
+        modelBuilder.Entity<FsrxinsummoMdOdetalle>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__FSRXInsu__3214EC0748E716E5");
+
+            entity.ToTable("FSRXInsummoMdODetalle");
+
+            entity.Property(e => e.ArticulosLey).HasMaxLength(500);
+            entity.Property(e => e.Codigo).HasMaxLength(50);
+            entity.Property(e => e.Descripcion).HasMaxLength(500);
+            entity.Property(e => e.IdFsrxinsummoMdO).HasColumnName("IdFSRXInsummoMdO");
+            entity.Property(e => e.PorcentajeFsr)
+                .HasColumnType("decimal(28, 6)")
+                .HasColumnName("PorcentajeFSR");
+
+            entity.HasOne(d => d.IdFsrxinsummoMdONavigation).WithMany(p => p.FsrxinsummoMdOdetalles)
+                .HasForeignKey(d => d.IdFsrxinsummoMdO)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_FSRXInsummoMdODetalle_IdFSR");
+        });
         modelBuilder.Entity<OperacionesXPrecioUnitarioDetalle>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("OperacionesXPrecioUnitarioDetalle");

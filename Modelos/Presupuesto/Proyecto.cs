@@ -57,6 +57,9 @@ public partial class Proyecto
     public virtual ICollection<Estimaciones> Estimaciones { get; set; } = new List<Estimaciones>();
     public virtual ICollection<FactorSalarioIntegrado> FactorSalarioIntegrados { get; set; } = new List<FactorSalarioIntegrado>();
     public virtual ICollection<FactorSalarioReal> FactorSalarioReals { get; set; } = new List<FactorSalarioReal>();
+    public virtual ICollection<FsixinsummoMdO> FsixinsummoMdOs { get; set; } = new List<FsixinsummoMdO>();
+
+    public virtual ICollection<FsrxinsummoMdO> FsrxinsummoMdOs { get; set; } = new List<FsrxinsummoMdO>();
     public virtual ICollection<InsumoExistencia> InsumoExistencia { get; set; } = new List<InsumoExistencia>();
     public virtual ICollection<Insumo> Insumos { get; set; } = new List<Insumo>();
     public virtual ICollection<OrdenCompra> OrdenCompras { get; set; } = new List<OrdenCompra>();

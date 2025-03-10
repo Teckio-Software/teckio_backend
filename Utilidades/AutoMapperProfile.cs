@@ -65,6 +65,16 @@ namespace ERP_TECKIO
                 .ForMember(z => z.IdFactorSalarioIntegradoNavigation,
                 opt => opt.Ignore());
             //////////////////////////////////////
+            CreateMap<FsrxinsummoMdO, FsrxinsummoMdODTO>();
+            CreateMap<FsrxinsummoMdODTO, FsrxinsummoMdO>();
+            CreateMap<FsrxinsummoMdOdetalle, FsrxinsummoMdOdetalleDTO>();
+            CreateMap<FsrxinsummoMdOdetalleDTO, FsrxinsummoMdOdetalle>();
+            //////////////////////////////////////
+            CreateMap<FsixinsummoMdO, FsixinsummoMdODTO>();
+            CreateMap<FsixinsummoMdODTO, FsixinsummoMdO>();
+            CreateMap<FsixinsummoMdOdetalle, FsixinsummoMdOdetalleDTO>();
+            CreateMap<FsixinsummoMdOdetalleDTO, FsixinsummoMdOdetalle>();
+            //////////////////////////////////////
             CreateMap<RelacionFSRInsumo, RelacionFSRInsumoDTO>();
             CreateMap<RelacionFSRInsumoDTO, RelacionFSRInsumo>()
                 .ForMember(z => z.IdProyectoNavigation,

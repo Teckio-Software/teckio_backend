@@ -24,6 +24,9 @@ public partial class Insumo
     public virtual ICollection<AlmacenSalidaInsumo> AlmacenSalidaInsumos { get; set; } = new List<AlmacenSalidaInsumo>();
 
     public virtual FamiliaInsumo? IdFamiliaInsumoNavigation { get; set; }
+    public virtual ICollection<FsixinsummoMdO> FsixinsummoMdOs { get; set; } = new List<FsixinsummoMdO>();
+
+    public virtual ICollection<FsrxinsummoMdO> FsrxinsummoMdOs { get; set; } = new List<FsrxinsummoMdO>();
 
     public virtual Proyecto? IdProyectoNavigation { get; set; }
 

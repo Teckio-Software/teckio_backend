@@ -1,7 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+using Microsoft.AspNetCore.Mvc;
+using ERP_TECKIO;
+using ERP_TECKIO.Servicios.Contratos;
+using ERP_TECKIO.DTO;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using ERP_TECKIO.Modelos;
 
 namespace ERP_TECKIO
 {
@@ -18,6 +23,11 @@ namespace ERP_TECKIO
         private readonly IConceptoService<TContext> _ConceptoService;
         private readonly PrecioUnitarioProceso<TContext> _PrecioUnitarioProceso;
 
+        private readonly IFsrxinsummoMdOService<TContext> _FsrxinsummoMdOService;
+        private readonly IFsrxinsummoMdOdetalleService<TContext> _FsrxinsummoMdOdetalleService;
+        private readonly IFsixinsummoMdOService<TContext> _FsixinsummoMdOService;
+        private readonly IFsixinsummoMdOdetalleService<TContext> _FsixinsummoMdOdetalleService;
+
         public FactorSalarioRealProceso(
             IFactorSalarioRealService<TContext> fsrService
             , IFactorSalarioRealDetalleService<TContext> fsrDetalleService
@@ -29,6 +39,12 @@ namespace ERP_TECKIO
             , IPrecioUnitarioService<TContext> precioUnitarioService
             , PrecioUnitarioProceso<TContext>  precioUnitarioProceso
             , IConceptoService<TContext> conceptoService
+
+
+            , IFsrxinsummoMdOService<TContext> FsrxinsummoMdOService
+            , IFsrxinsummoMdOdetalleService<TContext> FsrxinsummoMdOdetalleService
+            , IFsixinsummoMdOService<TContext> FsixinsummoMdOService
+            , IFsixinsummoMdOdetalleService<TContext> FsixinsummoMdOdetalleService
             )
         {
             _FSRService = fsrService;
@@ -41,7 +57,167 @@ namespace ERP_TECKIO
             _PUDetalle = puDetalle;
             _PrecioUnitarioService = precioUnitarioService;
             _ConceptoService = conceptoService;
+
+            _FsrxinsummoMdOService = FsrxinsummoMdOService;
+            _FsrxinsummoMdOdetalleService = FsrxinsummoMdOdetalleService;
+            _FsixinsummoMdOService = FsixinsummoMdOService;
+            _FsixinsummoMdOdetalleService = FsixinsummoMdOdetalleService;
         }
+
+        public async Task<RespuestaDTO> CrearFsrDetalle(FsrxinsummoMdOdetalleDTO fsrdetalle) { 
+            var respuesta = new RespuestaDTO();
+            var Fsr = new FsrxinsummoMdODTO();
+            Fsr = await _FsrxinsummoMdOService.ObtenerXIdInsumo(fsrdetalle.Id);
+            if (Fsr == null) {
+                var insumo = await _InsumoService.ObtenXId(fsrdetalle.IdInsumo);
+                var nuevoFsr = new FsrxinsummoMdODTO();
+                nuevoFsr.Id = 0;
+                nuevoFsr.CostoDirecto = insumo.CostoUnitario;
+                nuevoFsr.CostoFinal = 0;
+                nuevoFsr.Fsr = 1;
+                nuevoFsr.IdInsumo = fsrdetalle.IdInsumo;
+                nuevoFsr.IdProyecto = fsrdetalle.IdProyceto;
+                Fsr = await _FsrxinsummoMdOService.CrearYObtener(nuevoFsr);
+            }
+
+            fsrdetalle.IdFsrxinsummoMdO = Fsr.Id;
+            var nuevoFsrDetralle = await _FsrxinsummoMdOdetalleService.Crear(fsrdetalle);
+            if (!nuevoFsrDetralle)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No guardó el registro";
+                return respuesta;
+            }
+
+            var editar = await EditarFsrXInsumo(Fsr.IdInsumo);
+            if (!editar) { 
+                respuesta.Estatus = true;
+                respuesta.Descripcion = "No se editó el FSR";
+            }
+
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Se editó el FSR";
+            return respuesta;
+        }
+
+        public async Task<RespuestaDTO> CrearFsiDetalle(FsixinsummoMdOdetalleDTO fsidetalle) {
+            var respuesta = new RespuestaDTO();
+            var Fsi = await _FsixinsummoMdOService.ObtenerXIdInsumo(fsidetalle.IdInsumo);
+            if (Fsi == null)
+            {
+                var nuevoFsi = new FsixinsummoMdODTO();
+                nuevoFsi.Id = 0;
+                nuevoFsi.DiasNoLaborales = 0;
+                nuevoFsi.DiasPagados = 0;
+                nuevoFsi.Fsi = 0;
+                nuevoFsi.IdInsumo = fsidetalle.IdInsumo;
+                nuevoFsi.IdProyecto = fsidetalle.IdProyecto;
+                Fsi = await _FsixinsummoMdOService.CrearYObtener(nuevoFsi);
+            }
+
+            fsidetalle.IdFsixinsummoMdO = Fsi.Id;
+            var nuevoFsiDetralle = await _FsixinsummoMdOdetalleService.Crear(fsidetalle);
+            if (!nuevoFsiDetralle)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No guardó el registro";
+                return respuesta;
+            }
+
+            var editarFSI = await EditarFsiXInsumo(Fsi);
+            if (!editarFSI) {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No se editó el FSI";
+                return respuesta;
+            }
+
+            var editarFSR = await EditarFsrXInsumo(Fsi.IdInsumo);
+            if (!editarFSR)
+            {
+                respuesta.Estatus = true;
+                respuesta.Descripcion = "No se editó el FSR";
+            }
+
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Se editó el FSR";
+            return respuesta;
+        }
+
+        public async Task<bool> EditarFsrXInsumo(int IdInsumo) {
+            var Fsr = await _FsrxinsummoMdOService.ObtenerXIdInsumo(IdInsumo);
+            var FsrDetalles = await _FsrxinsummoMdOdetalleService.ObtenerXIdFsr(Fsr.Id);
+            var PorcentajeFSR = FsrDetalles.Sum(z => z.PorcentajeFsr);
+            var Fsi = await _FsixinsummoMdOService.ObtenerXIdInsumo(IdInsumo);
+            if (Fsi != null) {
+                if (Fsi.Fsi != 0) {
+                    Fsr.Fsr = Fsi.Fsi + (PorcentajeFSR / 100);
+                }
+                else
+                {
+                    Fsr.Fsr = 1 + (PorcentajeFSR/100);
+                }
+            }
+            else
+            {
+                Fsr.Fsr = 1 + (PorcentajeFSR / 100);
+            }
+            Fsr.CostoFinal = Fsr.CostoDirecto * Fsr.Fsr;
+
+            var editarFsr = await _FsrxinsummoMdOService.Editar(Fsr);
+            return editarFsr;
+        }
+
+        public async Task<bool> EditarFsiXInsumo(FsixinsummoMdODTO Fsi) {
+            var listaDetalles = await _FsixinsummoMdOdetalleService.ObtenerXIdFsi(Fsi.Id);
+            var diasNoLaborales = listaDetalles.Where(z => z.EsLaborableOpagado == false).Sum(z => z.Dias);
+            var diasPagados = listaDetalles.Where(z => z.EsLaborableOpagado == true).Sum(z => z.Dias);
+
+            Fsi.DiasNoLaborales = diasNoLaborales;
+            Fsi.DiasPagados = diasPagados;
+            if (diasNoLaborales != 0 && diasPagados != 0) {
+                Fsi.Fsi = diasPagados / ((decimal)365.25 - diasNoLaborales);
+            }
+
+            var editarFsi = await _FsixinsummoMdOService.Editar(Fsi);
+            return editarFsi;
+        }
+
+        public async Task<ObjetoFactorSalarioXInsumoDTO> ObtenerFactorSalario(int IdInsumo) { 
+            var objeto = new ObjetoFactorSalarioXInsumoDTO();
+            var Fsr = await _FsrxinsummoMdOService.ObtenerXIdInsumo(IdInsumo);
+            var Fsi = await _FsixinsummoMdOService.ObtenerXIdInsumo(IdInsumo);
+
+            objeto.Fsr = new EstructuraFsrxinsummoMdODTO();
+            if (Fsr != null) { 
+                objeto.Fsr.Id = Fsr.Id;
+                objeto.Fsr.Fsr = Fsr.Fsr;
+                objeto.Fsr.CostoDirecto = Fsr.CostoDirecto;
+                objeto.Fsr.CostoFinal = Fsr.CostoFinal;
+                objeto.Fsr.IdInsumo = Fsr.IdInsumo;
+                objeto.Fsr.IdProyecto = Fsr.IdProyecto;
+
+                var detallesFSR = await _FsrxinsummoMdOdetalleService.ObtenerXIdFsr(Fsr.Id);
+                objeto.Fsr.detalles = detallesFSR;
+            }
+
+            if (Fsi != null) { 
+                objeto.Fsi.Id = Fsi.Id;
+                objeto.Fsi.DiasNoLaborales = Fsi.DiasNoLaborales;
+                objeto.Fsi.DiasPagados = Fsi.DiasPagados;
+                objeto.Fsi.Fsi = Fsi.Fsi;
+                objeto.Fsi.IdInsumo = Fsi.IdInsumo;
+                objeto.Fsi.IdProyecto = Fsi.IdProyecto;
+
+                var detallesFSI = await _FsixinsummoMdOdetalleService.ObtenerXIdFsi(Fsi.Id);
+                objeto.Fsi.detalles = detallesFSI;
+            }
+
+
+            return objeto;
+        }
+
+
+
 
         public async Task<FactorSalarioRealDTO> ObtenerFSR(int IdProyecto)
         {

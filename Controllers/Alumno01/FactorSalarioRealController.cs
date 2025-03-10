@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+﻿using Microsoft.AspNetCore.Mvc;
+using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
 
 
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ERP_TECKIO.DTO;
 
 
 namespace ERP_TECKIO.Controllers.Alumno01
@@ -18,6 +20,23 @@ namespace ERP_TECKIO.Controllers.Alumno01
             FactorSalarioRealProceso<Alumno01Context> factorSalarioRealProceso)
         {
             _FactorSalarioRealProceso = factorSalarioRealProceso;
+        }
+
+        [HttpPost("crearFsrDetalleXInsumo")]
+        public async Task<ActionResult<RespuestaDTO>> CrearFsrDetalleXInsumo(FsrxinsummoMdOdetalleDTO objeto) { 
+            return await _FactorSalarioRealProceso.CrearFsrDetalle(objeto);
+        }
+
+        [HttpPost("crearFsiDetalleXInsumo")]
+        public async Task<ActionResult<RespuestaDTO>> CrearFsiDetalleXInsumo(FsixinsummoMdOdetalleDTO objeto)
+        {
+            return await _FactorSalarioRealProceso.CrearFsiDetalle(objeto);
+        }
+
+        [HttpGet("ObtenerFactorSalarioXInsumo/{IdInsumo:int}")]
+        public async Task<ActionResult<ObjetoFactorSalarioXInsumoDTO>> ObtenerFactorSalarioXInsumo(int IdInsumo)
+        {
+            return await _FactorSalarioRealProceso.ObtenerFactorSalario(IdInsumo);
         }
 
         [HttpGet("obtenerFSR/{IdProyecto:int}")]

@@ -32,6 +32,10 @@ namespace ERP_TECKIO
             services.AddScoped(typeof(IFactorSalarioIntegradoService<>), typeof(FactorSalarioIntegradoService<>));
             services.AddScoped(typeof(IRelacionFSRInsumoService<>), typeof(RelacionFSRInsumoService<>));
             services.AddScoped(typeof(IDiasConsideradosService<>), typeof(DiasConsideradosService<>));
+            services.AddScoped(typeof(IFsrxinsummoMdOService<>), typeof(FsrxinsummoMdOService<>));
+            services.AddScoped(typeof(IFsrxinsummoMdOdetalleService<>), typeof(FsrxinsummoMdOdetalleService<>));
+            services.AddScoped(typeof(IFsixinsummoMdOService<>), typeof(FsixinsummoMdOService<>));
+            services.AddScoped(typeof(IFsixinsummoMdOdetalleService<>), typeof(FsixinsummoMdOdetalleService<>));
             //Insumos
             services.AddScoped(typeof(ITipoInsumoService<>), typeof(TipoInsumoService<>));
             services.AddScoped(typeof(IFamiliaInsumoService<>), typeof(FamiliaInsumoService<>));
