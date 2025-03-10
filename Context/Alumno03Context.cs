@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ERP_TECKIO.Modelos;
 
 using ERP_TECKIO;
+using ERP_TECKIO.Modelos.Presupuesto;
 
 
 public partial class Alumno03Context : DbContext
@@ -133,8 +134,23 @@ public partial class Alumno03Context : DbContext
     public virtual DbSet<FacturaReceptor> FacturaReceptors { get; set; }
     public virtual DbSet<TipoFactor> TipoFactors { get; set; }
 
+    public virtual DbSet<OperacionesXPrecioUnitarioDetalle> OperacionesXPrecioUnitarioDetalles { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<OperacionesXPrecioUnitarioDetalle>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("OperacionesXPrecioUnitarioDetalle");
+            entity.ToTable("OperacionesXPrecioUnitarioDetalle");
+            entity.Property(e => e.Operacion).HasMaxLength(500);
+            entity.Property(e => e.Descripcion).HasMaxLength(500);
+            entity.Property(e => e.Resultado).HasColumnType("decimal(28, 6)");
+
+            entity.HasOne(d => d.IdPrecioUnitarioDetalleNavigation).WithMany(p => p.OperacionesXPrecioUnitarioDetalles)
+                .HasForeignKey(d => d.IdPrecioUnitarioDetalle)
+                .HasConstraintName("FK__Operacion__IdPre__60B24907");
+        });
+
         modelBuilder.Entity<Empleado>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_AcuseValidacion_2024_02_15");
