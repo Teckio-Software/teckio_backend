@@ -68,7 +68,7 @@ namespace ERP_TECKIO
             var respuesta = new RespuestaDTO();
             var Fsr = new FsrxinsummoMdODTO();
             Fsr = await _FsrxinsummoMdOService.ObtenerXIdInsumo(fsrdetalle.Id);
-            if (Fsr == null) {
+            if (Fsr.Id <= 0) {
                 var insumo = await _InsumoService.ObtenXId(fsrdetalle.IdInsumo);
                 var nuevoFsr = new FsrxinsummoMdODTO();
                 nuevoFsr.Id = 0;
@@ -103,7 +103,7 @@ namespace ERP_TECKIO
         public async Task<RespuestaDTO> CrearFsiDetalle(FsixinsummoMdOdetalleDTO fsidetalle) {
             var respuesta = new RespuestaDTO();
             var Fsi = await _FsixinsummoMdOService.ObtenerXIdInsumo(fsidetalle.IdInsumo);
-            if (Fsi == null)
+            if (Fsi.Id <= 0)
             {
                 var nuevoFsi = new FsixinsummoMdODTO();
                 nuevoFsi.Id = 0;
@@ -148,7 +148,7 @@ namespace ERP_TECKIO
             var FsrDetalles = await _FsrxinsummoMdOdetalleService.ObtenerXIdFsr(Fsr.Id);
             var PorcentajeFSR = FsrDetalles.Sum(z => z.PorcentajeFsr);
             var Fsi = await _FsixinsummoMdOService.ObtenerXIdInsumo(IdInsumo);
-            if (Fsi != null) {
+            if (Fsi.Id > 0) {
                 if (Fsi.Fsi != 0) {
                     Fsr.Fsr = Fsi.Fsi + (PorcentajeFSR / 100);
                 }
@@ -168,7 +168,7 @@ namespace ERP_TECKIO
                 return false;
             }
             var insumo = await _InsumoService.ObtenXId(IdInsumo);
-            if (insumo != null)
+            if (insumo.id > 0)
             {
                 insumo.CostoUnitario = Fsr.CostoFinal;
                 insumo.EsFsrGlobal = true;
@@ -310,11 +310,13 @@ namespace ERP_TECKIO
 
         public async Task<ObjetoFactorSalarioXInsumoDTO> ObtenerFactorSalario(int IdInsumo) { 
             var objeto = new ObjetoFactorSalarioXInsumoDTO();
+            objeto.Fsr = new EstructuraFsrxinsummoMdODTO();
+            objeto.Fsi = new EstructuraFsixinsummoMdODTO();
             var Fsr = await _FsrxinsummoMdOService.ObtenerXIdInsumo(IdInsumo);
             var Fsi = await _FsixinsummoMdOService.ObtenerXIdInsumo(IdInsumo);
 
             objeto.Fsr = new EstructuraFsrxinsummoMdODTO();
-            if (Fsr != null) { 
+            if (Fsr.Id > 0) { 
                 objeto.Fsr.Id = Fsr.Id;
                 objeto.Fsr.Fsr = Fsr.Fsr;
                 objeto.Fsr.CostoDirecto = Fsr.CostoDirecto;
@@ -326,7 +328,7 @@ namespace ERP_TECKIO
                 objeto.Fsr.detalles = detallesFSR;
             }
 
-            if (Fsi != null) { 
+            if (Fsi.Id > 0) { 
                 objeto.Fsi.Id = Fsi.Id;
                 objeto.Fsi.DiasNoLaborales = Fsi.DiasNoLaborales;
                 objeto.Fsi.DiasPagados = Fsi.DiasPagados;
