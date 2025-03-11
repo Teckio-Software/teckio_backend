@@ -2518,6 +2518,7 @@ namespace ERP_TECKIO
 
         public async Task<List<InsumoParaExplosionDTO>> ObtenerExplosionDeInsumoXConcepto(int IdPrecioUnitario)
         {
+            var PrecioUnitario = await _PrecioUnitarioService.ObtenXId(IdPrecioUnitario);
             var ExplosionInsumos = new List<InsumoParaExplosionDTO>();
             var ExplosionInsumosSinRepetidos = new List<InsumoParaExplosionDTO>();
             var registros = await ObtenerDetallesParaProgramacionEstimada(IdPrecioUnitario);
@@ -2541,11 +2542,11 @@ namespace ERP_TECKIO
                     insumo.idFamiliaInsumo = registrosInsumos[i].IdFamiliaInsumo;
                     insumo.Cantidad = registrosInsumos[i].Cantidad;
                     insumo.Importe = registrosInsumos[i].Importe;
+                    insumo.IdProyecto = PrecioUnitario.IdProyecto;
                     insumo.CostoUnitarioConFormato = String.Format("{0:#,##0.00}", insumo.CostoUnitario);
                     ExplosionInsumos.Add(insumo);
                 }
             }
-            var PrecioUnitario = await _PrecioUnitarioService.ObtenXId(IdPrecioUnitario);
             for (int i = 0; i < ExplosionInsumos.Count; i++)
             {
                 ExplosionInsumos[i].Cantidad = ExplosionInsumos[i].Cantidad * PrecioUnitario.Cantidad;

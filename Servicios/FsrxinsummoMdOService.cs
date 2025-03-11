@@ -18,9 +18,13 @@ namespace ERP_TECKIO.Servicios
             _repository = repository;
             _mapper = mapper;
         }
-        public Task<FsrxinsummoMdODTO> CrearYObtener(FsrxinsummoMdODTO objeto)
+        public async Task<FsrxinsummoMdODTO> CrearYObtener(FsrxinsummoMdODTO objeto)
         {
-            throw new NotImplementedException();
+            var crear = await _repository.Crear(_mapper.Map<FsrxinsummoMdO>(objeto));
+            if (crear.Id <= 0) { 
+                return new FsrxinsummoMdODTO();
+            }
+            return _mapper.Map<FsrxinsummoMdODTO>(crear);
         }
 
         public async Task<bool> Editar(FsrxinsummoMdODTO objeto)
