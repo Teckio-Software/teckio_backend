@@ -76,7 +76,7 @@ namespace ERP_TECKIO
                 nuevoFsr.CostoFinal = 0;
                 nuevoFsr.Fsr = 1;
                 nuevoFsr.IdInsumo = fsrdetalle.IdInsumo;
-                nuevoFsr.IdProyecto = fsrdetalle.IdProyceto;
+                nuevoFsr.IdProyecto = fsrdetalle.IdProyecto;
                 Fsr = await _FsrxinsummoMdOService.CrearYObtener(nuevoFsr);
             }
 

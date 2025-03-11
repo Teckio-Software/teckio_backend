@@ -14,6 +14,6 @@
 
         public int IdFsrxinsummoMdO { get; set; }
         public int IdInsumo { get; set; }
-        public int IdProyceto { get; set; }
+        public int IdProyecto { get; set; }
     }
 }
