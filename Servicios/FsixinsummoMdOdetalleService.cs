@@ -34,19 +34,45 @@ namespace ERP_TECKIO.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<bool> Editar(FsixinsummoMdOdetalleDTO objeto)
+        public async Task<bool> Editar(FsixinsummoMdOdetalleDTO objeto)
         {
-            throw new NotImplementedException();
+            var objetoEncontrado = await _repository.Obtener(z => z.Id == objeto.Id);
+            if (objetoEncontrado.Id <= 0)
+            {
+                return false;
+            }
+            objetoEncontrado.Descripcion = objeto.Descripcion;
+            objetoEncontrado.ArticulosLey = objeto.ArticulosLey;
+            objetoEncontrado.Codigo = objeto.Codigo;
+            objetoEncontrado.Dias = objeto.Dias;
+            var editar = await _repository.Editar(objetoEncontrado);
+            if (!editar)
+            {
+                return false;
+            }
+            return true;
         }
 
-        public Task<bool> Eliminar(int IdFsiDeatalle)
+        public async Task<bool> Eliminar(int IdFsiDeatalle)
         {
-            throw new NotImplementedException();
+            var objetoEncontrado = await _repository.Obtener(z => z.Id == IdFsiDeatalle);
+            if (objetoEncontrado.Id <= 0)
+            {
+                return false;
+            }
+
+            var eliminar = await _repository.Eliminar(objetoEncontrado);
+            if (!eliminar)
+            {
+                return false;
+            }
+            return true;
         }
 
-        public Task<FsixinsummoMdOdetalleDTO> ObtenerXId(int IdFsiDetalle)
+        public async Task<FsixinsummoMdOdetalleDTO> ObtenerXId(int IdFsiDetalle)
         {
-            throw new NotImplementedException();
+            var detalle = await _repository.Obtener(z => z.Id == IdFsiDetalle);
+            return _mapper.Map<FsixinsummoMdOdetalleDTO>(detalle);
         }
 
         public async Task<List<FsixinsummoMdOdetalleDTO>> ObtenerXIdFsi(int IdFsi)

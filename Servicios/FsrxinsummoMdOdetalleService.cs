@@ -33,19 +33,43 @@ namespace ERP_TECKIO.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<bool> Editar(FsrxinsummoMdOdetalleDTO objeto)
+        public async Task<bool> Editar(FsrxinsummoMdOdetalleDTO objeto)
         {
-            throw new NotImplementedException();
+            var objetoEncontrado = await _repository.Obtener(z => z.Id == objeto.Id);
+            if (objetoEncontrado.Id <= 0) {
+                return false;
+            }
+            objetoEncontrado.Descripcion = objeto.Descripcion;
+            objetoEncontrado.ArticulosLey = objeto.ArticulosLey;
+            objetoEncontrado.Codigo = objeto.Codigo;
+            objetoEncontrado.PorcentajeFsr = objeto.PorcentajeFsr;
+            var editar = await _repository.Editar(objetoEncontrado);
+            if (!editar) {
+                return false;
+            }
+            return true;
         }
 
-        public Task<bool> Eliminar(int IdFsrDeatalle)
+        public async Task<bool> Eliminar(int IdFsrDeatalle)
         {
-            throw new NotImplementedException();
+            var objetoEncontrado = await _repository.Obtener(z => z.Id == IdFsrDeatalle);
+            if (objetoEncontrado.Id <= 0)
+            {
+                return false;
+            }
+
+            var eliminar = await _repository.Eliminar(objetoEncontrado);
+            if (!eliminar)
+            {
+                return false;
+            }
+            return true;
         }
 
-        public Task<FsrxinsummoMdOdetalleDTO> ObtenerXId(int IdFsrDetalle)
+        public async Task<FsrxinsummoMdOdetalleDTO> ObtenerXId(int IdFsrDetalle)
         {
-            throw new NotImplementedException();
+            var detalle = await _repository.Obtener(z => z.Id == IdFsrDetalle);
+            return _mapper.Map<FsrxinsummoMdOdetalleDTO>(detalle);
         }
 
         public async Task<List<FsrxinsummoMdOdetalleDTO>> ObtenerXIdFsr(int IdFsr)

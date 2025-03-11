@@ -33,6 +33,30 @@ namespace ERP_TECKIO.Controllers.Alumno15
             return await _FactorSalarioRealProceso.CrearFsiDetalle(objeto);
         }
 
+        [HttpPut("editarFsrDetalleXInsumo")]
+        public async Task<ActionResult<RespuestaDTO>> EditarFsrDetalleXInsumo(FsrxinsummoMdOdetalleDTO objeto)
+        {
+            return await _FactorSalarioRealProceso.EditarFsrDetalle(objeto);
+        }
+
+        [HttpPut("editarFsiDetalleXInsumo")]
+        public async Task<ActionResult<RespuestaDTO>> EditarFsiDetalleXInsumo(FsixinsummoMdOdetalleDTO objeto)
+        {
+            return await _FactorSalarioRealProceso.EditarFsiDetalle(objeto);
+        }
+
+        [HttpDelete("eliminarFsrDetalleXInsumo/{IdFsrDetalle:int}")]
+        public async Task<ActionResult<RespuestaDTO>> EliminarFsrDetalleXInsumo(int IdFsrDetalle)
+        {
+            return await _FactorSalarioRealProceso.EliminarFsrDetalle(IdFsrDetalle);
+        }
+
+        [HttpDelete("eliminarFsiDetalleXInsumo/{IdFsiDetalle:int}")]
+        public async Task<ActionResult<RespuestaDTO>> EliminarFsiDetalleXInsumo(int IdFsiDetalle)
+        {
+            return await _FactorSalarioRealProceso.EliminarFsiDetalle(IdFsiDetalle);
+        }
+
         [HttpGet("ObtenerFactorSalarioXInsumo/{IdInsumo:int}")]
         public async Task<ActionResult<ObjetoFactorSalarioXInsumoDTO>> ObtenerFactorSalarioXInsumo(int IdInsumo)
         {

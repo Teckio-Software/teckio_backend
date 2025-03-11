@@ -134,7 +134,7 @@ namespace ERP_TECKIO
             var editarFSR = await EditarFsrXInsumo(Fsi.IdInsumo);
             if (!editarFSR)
             {
-                respuesta.Estatus = true;
+                respuesta.Estatus = false;
                 respuesta.Descripcion = "No se editó el FSR";
             }
 
@@ -174,12 +174,128 @@ namespace ERP_TECKIO
 
             Fsi.DiasNoLaborales = diasNoLaborales;
             Fsi.DiasPagados = diasPagados;
+            if (diasPagados == 0) {
+                Fsi.Fsi = 0;
+            }
             if (diasNoLaborales != 0 && diasPagados != 0) {
                 Fsi.Fsi = diasPagados / ((decimal)365.25 - diasNoLaborales);
             }
 
             var editarFsi = await _FsixinsummoMdOService.Editar(Fsi);
             return editarFsi;
+        }
+
+        public async Task<RespuestaDTO> EditarFsrDetalle(FsrxinsummoMdOdetalleDTO objeto) {
+            var respuesta = new RespuestaDTO();
+
+            var editarDetalle = await _FsrxinsummoMdOdetalleService.Editar(objeto);
+            if (!editarDetalle)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No se editó en registro";
+                return respuesta;
+            }
+
+            var editarFSR = await EditarFsrXInsumo(objeto.IdInsumo);
+            if (!editarFSR)
+            {
+                respuesta.Estatus = true;
+                respuesta.Descripcion = "No se editó el FSR";
+            }
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Se actualizó la información";
+            return respuesta;
+        }
+
+        public async Task<RespuestaDTO> EliminarFsrDetalle(int IdFsrDetalle)
+        {
+            var respuesta = new RespuestaDTO();
+            var detalle = await _FsrxinsummoMdOdetalleService.ObtenerXId(IdFsrDetalle);
+
+            var eliminarDetalle = await _FsrxinsummoMdOdetalleService.Eliminar(detalle.Id);
+            if (!eliminarDetalle)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No se eliminó en registro";
+                return respuesta;
+            }
+
+            var editarFSR = await EditarFsrXInsumo(detalle.IdInsumo);
+            if (!editarFSR)
+            {
+                respuesta.Estatus = true;
+                respuesta.Descripcion = "No se editó el FSR";
+            }
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Se actualizó la información";
+            return respuesta;
+        }
+
+        public async Task<RespuestaDTO> EditarFsiDetalle(FsixinsummoMdOdetalleDTO objeto) {
+            var respuesta = new RespuestaDTO();
+
+            var editarDetalle = await _FsixinsummoMdOdetalleService.Editar(objeto);
+            if (!editarDetalle) {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No se editó en registro";
+                return respuesta;
+            }
+
+            var Fsi = await _FsixinsummoMdOService.ObtenerXIdInsumo(objeto.IdInsumo);
+
+            var editarFSI = await EditarFsiXInsumo(Fsi);
+            if (!editarFSI)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No se editó el FSI";
+                return respuesta;
+            }
+
+            var editarFSR = await EditarFsrXInsumo(Fsi.IdInsumo);
+            if (!editarFSR)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No se editó el FSR";
+            }
+
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Se actualizó la información";
+            return respuesta;
+        }
+
+        public async Task<RespuestaDTO> EliminarFsiDetalle(int IdFsiDetalle)
+        {
+            var respuesta = new RespuestaDTO();
+            var detalle = await _FsixinsummoMdOdetalleService.ObtenerXId(IdFsiDetalle);
+
+            var eliminarDetalle = await _FsixinsummoMdOdetalleService.Eliminar(detalle.Id);
+            if (!eliminarDetalle)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No se eliminó en registro";
+                return respuesta;
+            }
+
+            var Fsi = await _FsixinsummoMdOService.ObtenerXIdInsumo(detalle.IdInsumo);
+
+            var editarFSI = await EditarFsiXInsumo(Fsi);
+            if (!editarFSI)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No se editó el FSI";
+                return respuesta;
+            }
+
+            var editarFSR = await EditarFsrXInsumo(Fsi.IdInsumo);
+            if (!editarFSR)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No se editó el FSR";
+            }
+
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Se actualizó la información";
+            return respuesta;
         }
 
         public async Task<ObjetoFactorSalarioXInsumoDTO> ObtenerFactorSalario(int IdInsumo) { 
