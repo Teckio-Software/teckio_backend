@@ -16,7 +16,8 @@ public partial class Insumo
     public int? IdFamiliaInsumo { get; set; }
 
     public decimal? CostoUnitario { get; set; }
-
+    public decimal CostoBase { get; set; }
+    public bool EsFsrGlobal { get; set; }
     public int? IdProyecto { get; set; }
 
     public virtual ICollection<AlmacenEntradaInsumo> AlmacenEntradaInsumos { get; set; } = new List<AlmacenEntradaInsumo>();

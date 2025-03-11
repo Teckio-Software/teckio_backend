@@ -40,6 +40,8 @@ namespace ERP_TECKIO
         /// </summary>
         public string DescripcionFamiliaInsumo { get; set; } = string.Empty;
         public decimal CostoUnitario { get; set; }
+        public decimal CostoBase { get; set; }
+        public bool EsFsrGlobal { get; set; }
         public int IdProyecto { get; set; }
     }
 

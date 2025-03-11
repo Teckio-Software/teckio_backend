@@ -72,7 +72,7 @@ namespace ERP_TECKIO
                 var insumo = await _InsumoService.ObtenXId(fsrdetalle.IdInsumo);
                 var nuevoFsr = new FsrxinsummoMdODTO();
                 nuevoFsr.Id = 0;
-                nuevoFsr.CostoDirecto = insumo.CostoUnitario;
+                nuevoFsr.CostoDirecto = insumo.CostoBase;
                 nuevoFsr.CostoFinal = 0;
                 nuevoFsr.Fsr = 1;
                 nuevoFsr.IdInsumo = fsrdetalle.IdInsumo;
@@ -164,7 +164,17 @@ namespace ERP_TECKIO
             Fsr.CostoFinal = Fsr.CostoDirecto * Fsr.Fsr;
 
             var editarFsr = await _FsrxinsummoMdOService.Editar(Fsr);
-            return editarFsr;
+            if (!editarFsr) {
+                return false;
+            }
+            var insumo = await _InsumoService.ObtenXId(IdInsumo);
+            if (insumo != null)
+            {
+                insumo.CostoUnitario = Fsr.CostoFinal;
+                insumo.EsFsrGlobal = true;
+                var editaInsumo = await _InsumoService.Editar(insumo);
+            }
+            return true;
         }
 
         public async Task<bool> EditarFsiXInsumo(FsixinsummoMdODTO Fsi) {
