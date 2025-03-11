@@ -53,7 +53,7 @@ namespace ERP_TECKIO.Servicios
 
         public async Task<FsrxinsummoMdODTO> ObtenerXIdInsumo(int IdInsumo)
         {
-            var objetoEncontrado = _repository.Obtener(z => z.IdInsumo == IdInsumo);
+            var objetoEncontrado = await _repository.Obtener(z => z.IdInsumo == IdInsumo);
             return _mapper.Map<FsrxinsummoMdODTO>(objetoEncontrado);
         }
 
