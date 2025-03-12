@@ -67,7 +67,7 @@ namespace ERP_TECKIO
         public async Task<RespuestaDTO> CrearFsrDetalle(FsrxinsummoMdOdetalleDTO fsrdetalle) { 
             var respuesta = new RespuestaDTO();
             var Fsr = new FsrxinsummoMdODTO();
-            Fsr = await _FsrxinsummoMdOService.ObtenerXIdInsumo(fsrdetalle.Id);
+            Fsr = await _FsrxinsummoMdOService.ObtenerXIdInsumo(fsrdetalle.IdInsumo);
             if (Fsr.Id <= 0) {
                 var insumo = await _InsumoService.ObtenXId(fsrdetalle.IdInsumo);
                 var nuevoFsr = new FsrxinsummoMdODTO();

@@ -147,6 +147,8 @@ namespace ERP_TECKIO
         public decimal Cantidad { get; set; }
         public decimal Importe { get; set; }
         public string CostoUnitarioConFormato{ get; set; }
+        public string CostoBaseConFormato{ get; set; }
+        public bool SeEstaEditandoCostoBase { get; set; }
         public string CantidadConFormato { get; set; }
         public string ImporteConFormato { get; set; }
     }

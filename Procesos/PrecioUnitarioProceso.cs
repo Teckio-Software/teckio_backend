@@ -939,6 +939,8 @@ namespace ERP_TECKIO
                 PUD.EsCompuesto,
                 I.CostoUnitario,
                 FORMAT(I.CostoUnitario, 'N', 'en-us') as CostoUnitarioConFormato,
+                I.CostoBase,
+                FORMAT(I.CostoBase, 'N', 'en-us') as CostoBaseConFormato,
                 PUD.Cantidad,
                 FORMAT(PUD.Cantidad, '0.0000') as CantidadConFormato,
                 PUD.IdPrecioUnitarioDetallePerteneciente,
@@ -997,6 +999,8 @@ namespace ERP_TECKIO
                 PUD.EsCompuesto,
                 I.CostoUnitario,
                 FORMAT(I.CostoUnitario, 'N', 'en-us') as CostoUnitarioConFormato,
+                I.CostoBase,
+                FORMAT(I.CostoBase, 'N', 'en-us') as CostoBaseConFormato,
                 PUD.Cantidad,
                 FORMAT(PUD.Cantidad, '0.0000') as CantidadConFormato,
                 PUD.IdPrecioUnitarioDetallePerteneciente,
@@ -1032,6 +1036,8 @@ namespace ERP_TECKIO
                 PUD.EsCompuesto,
                 I.CostoUnitario,
                 FORMAT(I.CostoUnitario, 'N', 'en-us') as CostoUnitarioConFormato,
+                I.CostoBase,
+                FORMAT(I.CostoBase, 'N', 'en-us') as CostoBaseConFormato,
                 PUD.Cantidad,
                 FORMAT(PUD.Cantidad, '0.0000') as CantidadConFormato,
                 PUD.IdPrecioUnitarioDetallePerteneciente,
@@ -2521,7 +2527,7 @@ namespace ERP_TECKIO
             var PrecioUnitario = await _PrecioUnitarioService.ObtenXId(IdPrecioUnitario);
             var ExplosionInsumos = new List<InsumoParaExplosionDTO>();
             var ExplosionInsumosSinRepetidos = new List<InsumoParaExplosionDTO>();
-            var registros = await ObtenerDetallesParaProgramacionEstimada(IdPrecioUnitario);
+            var registros = await ObtenerDetallesPorPU(IdPrecioUnitario, _dbContex);
             var registrosInsumos = registros.Where(z => z.EsCompuesto == false).ToList();
             for (int i = 0; i < registrosInsumos.Count; i++)
             {
@@ -2538,12 +2544,14 @@ namespace ERP_TECKIO
                     insumo.Descripcion = registrosInsumos[i].Descripcion;
                     insumo.Unidad = registrosInsumos[i].Unidad;
                     insumo.CostoUnitario = registrosInsumos[i].CostoUnitario;
+                    insumo.CostoBase = registrosInsumos[i].CostoBase;
                     insumo.idTipoInsumo = registrosInsumos[i].IdTipoInsumo;
                     insumo.idFamiliaInsumo = registrosInsumos[i].IdFamiliaInsumo;
                     insumo.Cantidad = registrosInsumos[i].Cantidad;
                     insumo.Importe = registrosInsumos[i].Importe;
                     insumo.IdProyecto = PrecioUnitario.IdProyecto;
                     insumo.CostoUnitarioConFormato = String.Format("{0:#,##0.00}", insumo.CostoUnitario);
+                    insumo.CostoBaseConFormato = String.Format("{0:#,##0.00}", insumo.CostoBase);
                     ExplosionInsumos.Add(insumo);
                 }
             }
