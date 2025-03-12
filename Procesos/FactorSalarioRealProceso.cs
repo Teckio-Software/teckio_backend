@@ -93,6 +93,7 @@ namespace ERP_TECKIO
             if (!editar) { 
                 respuesta.Estatus = true;
                 respuesta.Descripcion = "No se editó el FSR";
+                return respuesta;
             }
 
             respuesta.Estatus = true;
@@ -136,6 +137,7 @@ namespace ERP_TECKIO
             {
                 respuesta.Estatus = false;
                 respuesta.Descripcion = "No se editó el FSR";
+                return respuesta;
             }
 
             respuesta.Estatus = true;
@@ -145,6 +147,9 @@ namespace ERP_TECKIO
 
         public async Task<bool> EditarFsrXInsumo(int IdInsumo) {
             var Fsr = await _FsrxinsummoMdOService.ObtenerXIdInsumo(IdInsumo);
+            if (Fsr.Id <= 0) {
+                return true;
+            }
             var FsrDetalles = await _FsrxinsummoMdOdetalleService.ObtenerXIdFsr(Fsr.Id);
             var PorcentajeFSR = FsrDetalles.Sum(z => z.PorcentajeFsr);
             var Fsi = await _FsixinsummoMdOService.ObtenerXIdInsumo(IdInsumo);
@@ -184,11 +189,16 @@ namespace ERP_TECKIO
 
             Fsi.DiasNoLaborales = diasNoLaborales;
             Fsi.DiasPagados = diasPagados;
-            if (diasPagados == 0) {
+            if (diasPagados == 0 || diasNoLaborales == 0) {
                 Fsi.Fsi = 0;
             }
             if (diasNoLaborales != 0 && diasPagados != 0) {
-                Fsi.Fsi = diasPagados / ((decimal)365.25 - diasNoLaborales);
+                if (((decimal)365.25 - diasNoLaborales) <= 0) {
+                    Fsi.Fsi = 0;
+                }
+                else {
+                    Fsi.Fsi = diasPagados / ((decimal)365.25 - diasNoLaborales);
+                }
             }
 
             var editarFsi = await _FsixinsummoMdOService.Editar(Fsi);
@@ -209,8 +219,9 @@ namespace ERP_TECKIO
             var editarFSR = await EditarFsrXInsumo(objeto.IdInsumo);
             if (!editarFSR)
             {
-                respuesta.Estatus = true;
+                respuesta.Estatus = false;
                 respuesta.Descripcion = "No se editó el FSR";
+                return respuesta;
             }
             respuesta.Estatus = true;
             respuesta.Descripcion = "Se actualizó la información";
@@ -230,7 +241,9 @@ namespace ERP_TECKIO
                 return respuesta;
             }
 
-            var editarFSR = await EditarFsrXInsumo(detalle.IdInsumo);
+            var Fsi = await _FsrxinsummoMdOService.ObtenerXId(detalle.IdFsrxinsummoMdO);
+
+            var editarFSR = await EditarFsrXInsumo(Fsi.IdInsumo);
             if (!editarFSR)
             {
                 respuesta.Estatus = true;
@@ -266,6 +279,7 @@ namespace ERP_TECKIO
             {
                 respuesta.Estatus = false;
                 respuesta.Descripcion = "No se editó el FSR";
+                return respuesta;
             }
 
             respuesta.Estatus = true;
@@ -286,7 +300,7 @@ namespace ERP_TECKIO
                 return respuesta;
             }
 
-            var Fsi = await _FsixinsummoMdOService.ObtenerXIdInsumo(detalle.IdInsumo);
+            var Fsi = await _FsixinsummoMdOService.ObtenerXId(detalle.IdFsixinsummoMdO);
 
             var editarFSI = await EditarFsiXInsumo(Fsi);
             if (!editarFSI)

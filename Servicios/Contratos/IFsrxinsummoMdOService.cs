@@ -8,7 +8,7 @@ namespace ERP_TECKIO.Servicios.Contratos
         Task<FsrxinsummoMdODTO> CrearYObtener(FsrxinsummoMdODTO objeto);
         Task<bool> Eliminar(int IdFsi);
         Task<bool> Editar(FsrxinsummoMdODTO objeto);
-        Task<FsrxinsummoMdODTO> ObtenerXId(int IdFsi);
+        Task<FsrxinsummoMdODTO> ObtenerXId(int IdFsr);
         Task<FsrxinsummoMdODTO> ObtenerXIdInsumo(int IdInsumo);
         Task<List<FsrxinsummoMdODTO>> ObtenerXIdProyecto(int IdProyecto);
     }

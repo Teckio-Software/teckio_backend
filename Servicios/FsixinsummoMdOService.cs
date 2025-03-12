@@ -54,9 +54,10 @@ namespace ERP_TECKIO.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<FsixinsummoMdODTO> ObtenerXId(int IdFsi)
+        public async Task<FsixinsummoMdODTO> ObtenerXId(int IdFsi)
         {
-            throw new NotImplementedException();
+            var objetoEncontrado = await _repository.Obtener(z => z.Id == IdFsi);
+            return _mapper.Map<FsixinsummoMdODTO>(objetoEncontrado);
         }
 
         public async Task<FsixinsummoMdODTO> ObtenerXIdInsumo(int IdInsumo)
