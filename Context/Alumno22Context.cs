@@ -1263,6 +1263,8 @@ public partial class Alumno22Context : DbContext
 
             entity.Property(e => e.Codigo).HasMaxLength(50);
             entity.Property(e => e.CostoUnitario).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.CostoBase).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.EsFsrGlobal).HasColumnName("EsFsrGlobal");
             entity.Property(e => e.Descripcion).HasMaxLength(2500);
             entity.Property(e => e.Unidad).HasMaxLength(15);
 
