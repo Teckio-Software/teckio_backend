@@ -131,6 +131,11 @@ namespace ERP_TECKIO
         {
             return await _precioUnitarioProceso.obtenerExplosion(IdProyecto);
         }
+        [HttpPost("editarCostoDesdeExplosion")]
+        public async Task<ActionResult<List<InsumoParaExplosionDTO>>> EditarCostoDesdeExplosion(InsumoParaExplosionDTO registro)
+        {
+            return await _precioUnitarioProceso.EditarInsumoDesdeExplosion(registro);
+        }
 
         [HttpGet("obtenerExplosionDeInsumosXEmpleado/{IdProyecto}/{IdEmpleado}")]
         public async Task<ActionResult<List<InsumoParaExplosionDTO>>> obtenerExplosionXEmpleado(int IdProyecto, int IdEmpleado)
