@@ -10,7 +10,7 @@ namespace ERP_TECKIO
 {
     [Route("api/preciounitario/1")]
     [ApiController]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPrecioUnitario-Empresa2")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPrecioUnitario-Empresa2")]
     public class PrecioUnitarioAlumno01Controller : ControllerBase
     {
         private readonly PrecioUnitarioProceso<Alumno01Context> _precioUnitarioProceso;
@@ -131,6 +131,12 @@ namespace ERP_TECKIO
         public async Task<ActionResult<List<InsumoParaExplosionDTO>>> ObtenerExplosion(int IdProyecto)
         {
             return await _precioUnitarioProceso.obtenerExplosion(IdProyecto);
+        }
+
+        [HttpPost("editarCostoDesdeExplosion")]
+        public async Task<ActionResult<List<InsumoParaExplosionDTO>>> EditarCostoDesdeExplosion(InsumoParaExplosionDTO registro)
+        {
+            return await _precioUnitarioProceso.EditarInsumoDesdeExplosion(registro);
         }
 
         [HttpGet("obtenerExplosionDeInsumosXEmpleado/{IdProyecto}/{IdEmpleado}")]

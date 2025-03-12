@@ -33,6 +33,8 @@ namespace ERP_TECKIO
         private readonly IPrecioUnitarioXEmpleadoService<TContext> _precioUnitarioXEmpleadoService;
         private readonly IDetalleXContratoService<TContext> _detalleXContratoService;
         private readonly IOperacionesXPrecioUnitarioDetalleService<TContext> _OperacionXPUService;
+        private readonly FactorSalarioRealProceso<TContext> _fsrProceso;
+        private readonly IFsrxinsummoMdOService<TContext> _FsrxinsummoMdOService;
         private readonly IMapper _Mapper;
         private readonly TContext _dbContex;
         public PrecioUnitarioProceso(
@@ -50,6 +52,8 @@ namespace ERP_TECKIO
             , IPrecioUnitarioXEmpleadoService<TContext> precioUnitarioXEmpleadoService
             , IDetalleXContratoService<TContext> detalleXContratoService
             , IOperacionesXPrecioUnitarioDetalleService<TContext> operacionXPUService
+            , FactorSalarioRealProceso<TContext> fsrProceso
+            , IFsrxinsummoMdOService<TContext> fsrxinsummoMdOService
             , IMapper mapper
             , TContext dbContex
 
@@ -71,6 +75,8 @@ namespace ERP_TECKIO
             _Mapper = mapper;
             _dbContex = dbContex;
             _OperacionXPUService = operacionXPUService;
+            _fsrProceso = fsrProceso;
+            _FsrxinsummoMdOService = fsrxinsummoMdOService;
         }
 
         public async Task RecalcularPrecioUnitario(PrecioUnitarioDTO registro)
@@ -3283,6 +3289,21 @@ namespace ERP_TECKIO
         public async Task<ActionResult<List<OperacionesXPrecioUnitarioDetalleDTO>>> ObtenerOperaciones(int IdPrecioUnitarioDetalle)
         {
             return await _OperacionXPUService.ObtenerXIdPrecioUnitarioDetalle(IdPrecioUnitarioDetalle);
+        }
+
+        public async Task<ActionResult<List<InsumoParaExplosionDTO>>> EditarInsumoDesdeExplosion(InsumoParaExplosionDTO registro)
+        {
+            var insumo = await _InsumoService.ObtenXId(registro.id);
+            var fsr = await _FsrxinsummoMdOService.ObtenerXIdInsumo(registro.id);
+            fsr.CostoDirecto = registro.CostoBase;
+            fsr.CostoFinal = registro.CostoBase * fsr.Fsr;
+            var editado = await _FsrxinsummoMdOService.Editar(fsr);
+            if(editado == true)
+            {
+                insumo.CostoUnitario = fsr.CostoFinal;
+                var insumoEditado = await _InsumoService.Editar(insumo);
+            }
+            return await obtenerExplosion(insumo.IdProyecto);
         }
     }
 }
