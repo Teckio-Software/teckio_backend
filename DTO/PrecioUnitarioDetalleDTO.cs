@@ -10,7 +10,7 @@
         public string? CostoUnitarioConFormato { get; set; } //Se genera
         public bool CostoUnitarioEditado { get; set; } //Se genera
         public decimal CostoBase { get; set; }
-        public string? CostoBaseConFromato { get; set; }
+        public string? CostoBaseConFormato { get; set; }
         public decimal Cantidad { get; set; }
         public string? CantidadConFormato { get; set; } //Se genera
         public bool CantidadEditado { get; set; } //Se genera

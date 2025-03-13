@@ -1097,31 +1097,18 @@ namespace ERP_TECKIO
 
         public async Task<List<PrecioUnitarioDetalleDTO>> ObtenerDetallesHijos(PrecioUnitarioDetalleDTO registro, DbContext db)
         {
-            var items = db.Database.SqlQueryRaw<string>(""""select Id, IdPrecioUnitario, IdInsumo, EsCompuesto, Cantidad, CantidadExcedente, IdPrecioUnitarioDetallePerteneciente from PrecioUnitarioDetalle where IdPrecioUnitario = '"""" + registro.IdPrecioUnitario + """"' for json path"""").ToList();
-            if (items.Count() <= 0)
-            {
-                return new List<PrecioUnitarioDetalleDTO>();
-            }
-            string json = string.Join("", items);
-            var datos = JsonSerializer.Deserialize<List<PrecioUnitarioDetalle>>(json);
-            var lista = _Mapper.Map<List<PrecioUnitarioDetalleDTO>>(datos);
+            //var items = db.Database.SqlQueryRaw<string>(""""select Id, IdPrecioUnitario, IdInsumo, EsCompuesto, Cantidad, CantidadExcedente, IdPrecioUnitarioDetallePerteneciente from PrecioUnitarioDetalle where IdPrecioUnitario = '"""" + registro.IdPrecioUnitario + """"' for json path"""").ToList();
+            //if (items.Count() <= 0)
+            //{
+            //    return new List<PrecioUnitarioDetalleDTO>();
+            //}
+            //string json = string.Join("", items);
+            //var datos = JsonSerializer.Deserialize<List<PrecioUnitarioDetalle>>(json);
+            //var lista = _Mapper.Map<List<PrecioUnitarioDetalleDTO>>(datos);
+            var lista = await ObtenerDetallesPorPU(registro.IdPrecioUnitario, _dbContex);
             var PU = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
             var insumos = await _InsumoService.ObtenXIdProyecto(PU.IdProyecto);
             var listaFiltrada = lista.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.Id).ToList();
-            for (int i = 0; i < listaFiltrada.Count; i++)
-            {
-                var insumo = insumos.Where(z => z.id == listaFiltrada[i].IdInsumo).FirstOrDefault();
-                listaFiltrada[i].Codigo = insumo.Codigo;
-                listaFiltrada[i].Descripcion = insumo.Descripcion;
-                listaFiltrada[i].Unidad = insumo.Unidad;
-                listaFiltrada[i].CostoUnitario = insumo.CostoUnitario;
-                listaFiltrada[i].IdTipoInsumo = insumo.idTipoInsumo;
-                listaFiltrada[i].IdFamiliaInsumo = insumo.idFamiliaInsumo;
-                listaFiltrada[i].Importe = listaFiltrada[i].Cantidad * listaFiltrada[i].CostoUnitario;
-                listaFiltrada[i].ImporteConFormato = String.Format("{0:#,##0.00}", listaFiltrada[i].Importe);
-                listaFiltrada[i].CantidadConFormato = String.Format("{0:#,##0.0000}", listaFiltrada[i].Cantidad);
-                listaFiltrada[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", listaFiltrada[i].CostoUnitario);
-            }
             return listaFiltrada;
         }
 
@@ -1374,6 +1361,18 @@ namespace ERP_TECKIO
         {
             try
             {
+                if(registro.IdInsumo != 0)
+                {
+                    var fsr = await _FsrxinsummoMdOService.ObtenerXIdInsumo(registro.IdInsumo);
+                    if(fsr.Id > 0)
+                    {
+                        registro.CostoUnitario = registro.CostoBase * fsr.Fsr;
+                    }
+                    else
+                    {
+                        registro.CostoUnitario = registro.CostoBase;
+                    }
+                }
                 var insumoOriginal = await _InsumoService.ObtenXId(registro.IdInsumo);
                 if (insumoOriginal.CostoUnitario != registro.CostoUnitario)
                 {
@@ -1389,6 +1388,7 @@ namespace ERP_TECKIO
                 insumo.idTipoInsumo = registro.IdTipoInsumo;
                 insumo.idFamiliaInsumo = registro.IdFamiliaInsumo;
                 insumo.CostoUnitario = registro.CostoUnitario;
+                insumo.CostoBase = registro.CostoBase;
                 insumo.IdProyecto = PU.IdProyecto;
                 var insumoEditado = await _InsumoService.Editar(insumo);
                 //await RecalcularAfectados(insumo.id);
@@ -1715,7 +1715,8 @@ namespace ERP_TECKIO
                                 detalles[j].Unidad = insumo.Unidad;
                                 detalles[j].IdTipoInsumo = insumo.idTipoInsumo;
                                 detalles[j].IdFamiliaInsumo = insumo.idFamiliaInsumo;
-                                detalles[j].CostoUnitario = insumo.CostoUnitario;
+                                detalles[j].CostoUnitario = insumo.CostoBase;
+                                detalles[j].CostoBase = insumo.CostoBase;
                             }
                             await CrearDetalles(detalles, IdProyecto);
                             var insumosParaRecalculo = await _InsumoService.ObtenXIdProyecto(IdProyecto);
@@ -1729,7 +1730,8 @@ namespace ERP_TECKIO
                                 detallesParaRecalculo[j].Unidad = insumo.Unidad;
                                 detallesParaRecalculo[j].IdTipoInsumo = insumo.idTipoInsumo;
                                 detallesParaRecalculo[j].IdFamiliaInsumo = insumo.idFamiliaInsumo;
-                                detallesParaRecalculo[j].CostoUnitario = insumo.CostoUnitario;
+                                detallesParaRecalculo[j].CostoUnitario = insumo.CostoBase;
+                                detallesParaRecalculo[j].CostoBase = insumo.CostoBase;
                             }
                             var datosObtenidos = await RecalcularDetalles(nuevoRegistro.Id, detallesParaRecalculo, insumosParaRecalculo);
                             var nuevoRegistroBuscado = await _PrecioUnitarioService.ObtenXId(nuevoRegistro.Id);
@@ -1890,7 +1892,8 @@ namespace ERP_TECKIO
                             nuevoInsumo.Descripcion = detallesFiltrados[i].Descripcion;
                             nuevoInsumo.Unidad = detallesFiltrados[i].Unidad;
                             nuevoInsumo.idFamiliaInsumo = detallesFiltrados[i].IdFamiliaInsumo;
-                            nuevoInsumo.CostoUnitario = detallesFiltrados[i].CostoUnitario;
+                            nuevoInsumo.CostoUnitario = detallesFiltrados[i].CostoBase;
+                            nuevoInsumo.CostoBase = detallesFiltrados[i].CostoBase;
                             nuevoInsumo.IdProyecto = IdProyecto;
                             var nuevoInsumoCreado = await _InsumoService.CrearYObtener(nuevoInsumo);
                             detallesFiltrados[i].Id = 0;
@@ -1906,7 +1909,8 @@ namespace ERP_TECKIO
                         nuevoInsumo.Descripcion = detallesFiltrados[i].Descripcion;
                         nuevoInsumo.Unidad = detallesFiltrados[i].Unidad;
                         nuevoInsumo.idFamiliaInsumo = detallesFiltrados[i].IdFamiliaInsumo;
-                        nuevoInsumo.CostoUnitario = detallesFiltrados[i].CostoUnitario;
+                        nuevoInsumo.CostoUnitario = detallesFiltrados[i].CostoBase;
+                        nuevoInsumo.CostoBase = detallesFiltrados[i].CostoBase;
                         nuevoInsumo.IdProyecto = IdProyecto;
                         var nuevoInsumoCreado = await _InsumoService.CrearYObtener(nuevoInsumo);
                         detallesFiltrados[i].Id = 0;
@@ -1932,7 +1936,8 @@ namespace ERP_TECKIO
                         nuevoInsumo.Descripcion = detallesFiltrados[i].Descripcion;
                         nuevoInsumo.Unidad = detallesFiltrados[i].Unidad;
                         nuevoInsumo.idFamiliaInsumo = detallesFiltrados[i].IdFamiliaInsumo;
-                        nuevoInsumo.CostoUnitario = detallesFiltrados[i].CostoUnitario;
+                        nuevoInsumo.CostoUnitario = detallesFiltrados[i].CostoBase;
+                        nuevoInsumo.CostoBase = detallesFiltrados[i].CostoBase;
                         nuevoInsumo.IdProyecto = IdProyecto;
                         var nuevoInsumoCreado = await _InsumoService.CrearYObtener(nuevoInsumo);
                         detallesFiltrados[i].IdInsumo = nuevoInsumoCreado.id;
@@ -1987,7 +1992,8 @@ namespace ERP_TECKIO
                             nuevoInsumo.Descripcion = detallesFiltrados[i].Descripcion;
                             nuevoInsumo.Unidad = detallesFiltrados[i].Unidad;
                             nuevoInsumo.idFamiliaInsumo = detallesFiltrados[i].IdFamiliaInsumo;
-                            nuevoInsumo.CostoUnitario = detallesFiltrados[i].CostoUnitario;
+                            nuevoInsumo.CostoUnitario = detallesFiltrados[i].CostoBase;
+                            nuevoInsumo.CostoBase = detallesFiltrados[i].CostoBase;
                             nuevoInsumo.IdProyecto = IdProyecto;
                             var nuevoInsumoCreado = await _InsumoService.CrearYObtener(nuevoInsumo);
                             detallesFiltrados[i].Id = 0;
@@ -2006,7 +2012,8 @@ namespace ERP_TECKIO
                         nuevoInsumo.Descripcion = detallesFiltrados[i].Descripcion;
                         nuevoInsumo.Unidad = detallesFiltrados[i].Unidad;
                         nuevoInsumo.idFamiliaInsumo = detallesFiltrados[i].IdFamiliaInsumo;
-                        nuevoInsumo.CostoUnitario = detallesFiltrados[i].CostoUnitario;
+                        nuevoInsumo.CostoUnitario = detallesFiltrados[i].CostoBase;
+                        nuevoInsumo.CostoBase = detallesFiltrados[i].CostoBase;
                         nuevoInsumo.IdProyecto = IdProyecto;
                         var nuevoInsumoCreado = await _InsumoService.CrearYObtener(nuevoInsumo);
                         detallesFiltrados[i].Id = 0;
@@ -2034,7 +2041,8 @@ namespace ERP_TECKIO
                         nuevoInsumo.Descripcion = detallesFiltrados[i].Descripcion;
                         nuevoInsumo.Unidad = detallesFiltrados[i].Unidad;
                         nuevoInsumo.idFamiliaInsumo = detallesFiltrados[i].IdFamiliaInsumo;
-                        nuevoInsumo.CostoUnitario = detallesFiltrados[i].CostoUnitario;
+                        nuevoInsumo.CostoUnitario = detallesFiltrados[i].CostoBase;
+                        nuevoInsumo.CostoBase = detallesFiltrados[i].CostoBase;
                         nuevoInsumo.IdProyecto = IdProyecto;
                         var nuevoInsumoCreado = await _InsumoService.CrearYObtener(nuevoInsumo);
                         detallesFiltrados[i].IdInsumo = nuevoInsumoCreado.id;
@@ -2116,7 +2124,8 @@ namespace ERP_TECKIO
                     nuevoDetalleCopia.IdPrecioUnitario = detalle.IdPrecioUnitario;
                     nuevoDetalleCopia.IdInsumo = detalle.IdInsumo;
                     nuevoDetalleCopia.EsCompuesto = detalle.EsCompuesto;
-                    nuevoDetalleCopia.CostoUnitario = detalle.CostoUnitario;
+                    nuevoDetalleCopia.CostoUnitario = detalle.CostoBase;
+                    nuevoDetalleCopia.CostoBase = detalle.CostoBase;
                     nuevoDetalleCopia.Cantidad = detalle.Cantidad;
                     nuevoDetalleCopia.CantidadExcedente = detalle.CantidadExcedente;
                     nuevoDetalleCopia.Codigo = detalle.Codigo;
@@ -2174,7 +2183,8 @@ namespace ERP_TECKIO
                     registros[i].Descripcion = insumo.Descripcion;
                     registros[i].Codigo = insumo.Codigo;
                     registros[i].Unidad = insumo.Unidad;
-                    registros[i].CostoUnitario = insumo.CostoUnitario;
+                    registros[i].CostoUnitario = insumo.CostoBase;
+                    registros[i].CostoBase = insumo.CostoBase;
                     registros[i].IdFamiliaInsumo = insumo.idFamiliaInsumo;
                     registros[i].IdTipoInsumo = insumo.idTipoInsumo;
                 }
@@ -2202,7 +2212,8 @@ namespace ERP_TECKIO
                             nuevoInsumo.Descripcion = registrosFiltrados[i].Descripcion;
                             nuevoInsumo.Unidad = registrosFiltrados[i].Unidad;
                             nuevoInsumo.idFamiliaInsumo = registrosFiltrados[i].IdFamiliaInsumo;
-                            nuevoInsumo.CostoUnitario = registrosFiltrados[i].CostoUnitario;
+                            nuevoInsumo.CostoUnitario = registrosFiltrados[i].CostoBase;
+                            nuevoInsumo.CostoBase = registrosFiltrados[i].CostoBase;
                             nuevoInsumo.IdProyecto = IdProyecto;
                             var nuevoInsumoCreado = await _InsumoService.CrearYObtener(nuevoInsumo);
                             registrosFiltrados[i].Id = 0;
@@ -2220,7 +2231,8 @@ namespace ERP_TECKIO
                         nuevoInsumo.Descripcion = registrosFiltrados[i].Descripcion;
                         nuevoInsumo.Unidad = registrosFiltrados[i].Unidad;
                         nuevoInsumo.idFamiliaInsumo = registrosFiltrados[i].IdFamiliaInsumo;
-                        nuevoInsumo.CostoUnitario = registrosFiltrados[i].CostoUnitario;
+                        nuevoInsumo.CostoUnitario = registrosFiltrados[i].CostoBase;
+                        nuevoInsumo.CostoBase = registrosFiltrados[i].CostoBase;
                         nuevoInsumo.IdProyecto = IdProyecto;
                         var nuevoInsumoCreado = await _InsumoService.CrearYObtener(nuevoInsumo);
                         detallesFiltrados[i].Id = 0;
@@ -2265,7 +2277,8 @@ namespace ERP_TECKIO
                             nuevoInsumo.Descripcion = registrosFiltrados[i].Descripcion;
                             nuevoInsumo.Unidad = registrosFiltrados[i].Unidad;
                             nuevoInsumo.idFamiliaInsumo = registrosFiltrados[i].IdFamiliaInsumo;
-                            nuevoInsumo.CostoUnitario = registrosFiltrados[i].CostoUnitario;
+                            nuevoInsumo.CostoUnitario = registrosFiltrados[i].CostoBase;
+                            nuevoInsumo.CostoBase = registrosFiltrados[i].CostoBase;
                             nuevoInsumo.IdProyecto = IdProyecto;
                             var nuevoInsumoCreado = await _InsumoService.CrearYObtener(nuevoInsumo);
                             registrosFiltrados[i].Id = 0;
@@ -2293,7 +2306,8 @@ namespace ERP_TECKIO
                             nuevoInsumo.Descripcion = registrosFiltrados[i].Descripcion;
                             nuevoInsumo.Unidad = registrosFiltrados[i].Unidad;
                             nuevoInsumo.idFamiliaInsumo = registrosFiltrados[i].IdFamiliaInsumo;
-                            nuevoInsumo.CostoUnitario = registrosFiltrados[i].CostoUnitario;
+                            nuevoInsumo.CostoUnitario = registrosFiltrados[i].CostoBase;
+                            nuevoInsumo.CostoBase = registrosFiltrados[i].CostoBase;
                             nuevoInsumo.IdProyecto = IdProyecto;
                             var nuevoInsumoCreado = await _InsumoService.CrearYObtener(nuevoInsumo);
                             detallesFiltrados[i].IdInsumo = nuevoInsumoCreado.id;
@@ -3150,7 +3164,8 @@ namespace ERP_TECKIO
                                 detalles[j].Unidad = insumo.Unidad;
                                 detalles[j].IdTipoInsumo = insumo.idTipoInsumo;
                                 detalles[j].IdFamiliaInsumo = insumo.idFamiliaInsumo;
-                                detalles[j].CostoUnitario = insumo.CostoUnitario;
+                                detalles[j].CostoUnitario = insumo.CostoBase;
+                                detalles[j].CostoBase = insumo.CostoBase;
                             }
                             await CrearDetalles(detalles, IdProyecto);
                             var insumosParaRecalculo = await _InsumoService.ObtenXIdProyecto(IdProyecto);
@@ -3164,7 +3179,8 @@ namespace ERP_TECKIO
                                 detallesParaRecalculo[j].Unidad = insumo.Unidad;
                                 detallesParaRecalculo[j].IdTipoInsumo = insumo.idTipoInsumo;
                                 detallesParaRecalculo[j].IdFamiliaInsumo = insumo.idFamiliaInsumo;
-                                detallesParaRecalculo[j].CostoUnitario = insumo.CostoUnitario;
+                                detallesParaRecalculo[j].CostoUnitario = insumo.CostoBase;
+                                detallesParaRecalculo[j].CostoBase = insumo.CostoBase;
                             }
                             var datosObtenidos = await RecalcularDetalles(nuevoRegistro.Id, detallesParaRecalculo, insumosParaRecalculo);
                             var nuevoRegistroBuscado = await _PrecioUnitarioService.ObtenXId(nuevoRegistro.Id);
@@ -3292,15 +3308,25 @@ namespace ERP_TECKIO
         {
             var insumo = await _InsumoService.ObtenXId(registro.id);
             var fsr = await _FsrxinsummoMdOService.ObtenerXIdInsumo(registro.id);
-            fsr.CostoDirecto = registro.CostoBase;
-            fsr.CostoFinal = registro.CostoBase * fsr.Fsr;
-            var editado = await _FsrxinsummoMdOService.Editar(fsr);
-            if (editado == true)
+            if(fsr.Id > 0)
+            {
+                fsr.CostoDirecto = registro.CostoBase;
+                fsr.CostoFinal = registro.CostoBase * fsr.Fsr;
+                var editado = await _FsrxinsummoMdOService.Editar(fsr);
+                if (editado == true)
+                {
+                    insumo.CostoBase = registro.CostoBase;
+                    insumo.CostoUnitario = fsr.CostoFinal;
+                    var insumoEditado = await _InsumoService.Editar(insumo);
+                }
+            }
+            else
             {
                 insumo.CostoBase = registro.CostoBase;
-                insumo.CostoUnitario = fsr.CostoFinal;
+                insumo.CostoUnitario = registro.CostoBase;
                 var insumoEditado = await _InsumoService.Editar(insumo);
             }
+            
             return await obtenerExplosion(insumo.IdProyecto);
         }
     }

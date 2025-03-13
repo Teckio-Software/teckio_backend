@@ -62,20 +62,20 @@ namespace ERP_TECKIO.Servicios
             RespuestaDTO respuesta = new RespuestaDTO();
             try
             {
-                var modelo = _Mapper.Map<Insumo>(parametro);
-                var objetoEncontrado = await _Repositorio.Obtener(u => u.Id == modelo.Id);
-                if (objetoEncontrado == null)
+                var objetoEncontrado = await _Repositorio.Obtener(u => u.Id == parametro.id);
+                if (objetoEncontrado.Id <= 0)
                 {
                     respuesta.Estatus = false;
                     respuesta.Descripcion = "El insumo no existe";
                     return respuesta;
                 }
-                objetoEncontrado.Unidad = modelo.Unidad;
-                objetoEncontrado.Codigo = modelo.Codigo;
-                objetoEncontrado.Descripcion = modelo.Descripcion;
-                objetoEncontrado.IdTipoInsumo = modelo.IdTipoInsumo;
-                objetoEncontrado.IdFamiliaInsumo = modelo.IdFamiliaInsumo;
-                objetoEncontrado.CostoUnitario = modelo.CostoUnitario;
+                objetoEncontrado.Unidad = parametro.Unidad;
+                objetoEncontrado.Codigo = parametro.Codigo;
+                objetoEncontrado.Descripcion = parametro.Descripcion;
+                objetoEncontrado.IdTipoInsumo = parametro.idTipoInsumo;
+                objetoEncontrado.IdFamiliaInsumo = parametro.idFamiliaInsumo;
+                objetoEncontrado.CostoUnitario = parametro.CostoUnitario;
+                objetoEncontrado.CostoBase = parametro.CostoBase;
                 respuesta.Estatus = await _Repositorio.Editar(objetoEncontrado);
                 if (!respuesta.Estatus)
                 {

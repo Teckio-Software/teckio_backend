@@ -53,15 +53,15 @@ namespace ERP_TECKIO
         /// <summary>
         /// Codigo del insumo
         /// </summary>
-        public string Codigo { get; set; } = string.Empty;
-        /// <summary>
-        /// Descripción del insumo
-        /// </summary>
-        public string Descripcion { get; set; } = string.Empty;
+        public string Descripcion { get; set; }
         /// <summary>
         /// Unidad en la que se mide el insumo
         /// </summary>
-        public string Unidad { get; set; } = string.Empty;
+        public string Unidad { get; set; }
+        /// <summary>
+        /// Codigo del insumo
+        /// </summary>
+        public string Codigo { get; set; }
         /// <summary>
         /// Identificador unico del <c>TipoInsumo</c> <seealso cref="TipoInsumoDTO"/>
         /// </summary>
@@ -71,10 +71,16 @@ namespace ERP_TECKIO
         /// </summary>
         public int? idFamiliaInsumo { get; set; }
         /// <summary>
-        /// Código por el que se busca el nuevo insumo (new guid)
+        /// Descripcion del tipo de insumo cuyo id sea <c>idTipoInsumo</c> <seealso cref="TipoInsumoDTO"/>
         /// </summary>
-        public string? CodigoBusqueda { get; set; }
+        public string DescripcionTipoInsumo { get; set; } = string.Empty;
+        /// <summary>
+        /// Descripcion de la familia de insumo cuyo id sea <c>idFamiliaInsumo</c> <seealso cref="FamiliaInsumoCreacionDTO"/>
+        /// </summary>
+        public string DescripcionFamiliaInsumo { get; set; } = string.Empty;
         public decimal CostoUnitario { get; set; }
+        public decimal CostoBase { get; set; }
+        public bool EsFsrGlobal { get; set; }
         public int IdProyecto { get; set; }
     }
 
