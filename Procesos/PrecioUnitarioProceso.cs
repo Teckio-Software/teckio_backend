@@ -2576,6 +2576,8 @@ namespace ERP_TECKIO
             {
                 ExplosionInsumos[i].Cantidad = ExplosionInsumos[i].Cantidad * PrecioUnitario.Cantidad;
                 ExplosionInsumos[i].CantidadConFormato = String.Format("{0:#,##0.0000}", ExplosionInsumos[i].Cantidad);
+                ExplosionInsumos[i].CostoBaseConFormato = String.Format("{0:#,##0.0000}", ExplosionInsumos[i].CostoBase);
+                ExplosionInsumos[i].CostoUnitarioConFormato = String.Format("{0:#,##0.0000}", ExplosionInsumos[i].CostoUnitario);
                 ExplosionInsumos[i].Importe = ExplosionInsumos[i].Cantidad * ExplosionInsumos[i].CostoUnitario;
                 ExplosionInsumos[i].ImporteConFormato = String.Format("{0:#,##0.00}", ExplosionInsumos[i].Importe);
             }
