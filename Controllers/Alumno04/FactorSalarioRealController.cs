@@ -116,5 +116,17 @@ namespace ERP_TECKIO.Controllers.Alumno04
         {
             await _FactorSalarioRealProceso.EditarDiasFSI(diaEditado);
         }
+
+        [HttpDelete("eliminarDetalleFSI/{IdDetalleFSI:int}")]
+        public async Task EliminarDiasFSI(int IdDetalleFSI)
+        {
+            await _FactorSalarioRealProceso.EliminarDiasFSI(IdDetalleFSI);
+        }
+
+        [HttpDelete("eliminarDetalleFSR/{IdDetalleFSR:int}")]
+        public async Task EliminarDiasFSR(int IdDetalleFSR)
+        {
+            await _FactorSalarioRealProceso.EliminarDetalleFSR(IdDetalleFSR);
+        }
     }
 }

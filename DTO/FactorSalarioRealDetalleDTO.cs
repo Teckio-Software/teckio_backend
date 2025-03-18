@@ -19,5 +19,6 @@ namespace ERP_TECKIO
         public decimal PorcentajeFsrdetalle { get; set; }
 
         public string? ArticulosLey { get; set; }
+        public int IdProyecto { get; set; }
     }
 }

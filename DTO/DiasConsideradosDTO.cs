@@ -21,5 +21,6 @@ namespace ERP_TECKIO
         public bool EsLaborableOPagado { get; set; }
 
         public int IdFactorSalarioIntegrado { get; set; }
+        public int IdProyecto { get; set; }
     }
 }

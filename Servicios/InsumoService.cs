@@ -76,6 +76,7 @@ namespace ERP_TECKIO.Servicios
                 objetoEncontrado.IdFamiliaInsumo = parametro.idFamiliaInsumo;
                 objetoEncontrado.CostoUnitario = parametro.CostoUnitario;
                 objetoEncontrado.CostoBase = parametro.CostoBase;
+                objetoEncontrado.EsFsrGlobal = parametro.EsFsrGlobal;
                 respuesta.Estatus = await _Repositorio.Editar(objetoEncontrado);
                 if (!respuesta.Estatus)
                 {

@@ -21,7 +21,7 @@ namespace ERP_TECKIO
         private readonly IPrecioUnitarioDetalleService<TContext> _PUDetalle;
         private readonly IPrecioUnitarioService<TContext> _PrecioUnitarioService;
         private readonly IConceptoService<TContext> _ConceptoService;
-        private readonly PrecioUnitarioProceso<TContext> _PrecioUnitarioProceso;
+        //private readonly PrecioUnitarioProceso<TContext> _PrecioUnitarioProceso;
 
         private readonly IFsrxinsummoMdOService<TContext> _FsrxinsummoMdOService;
         private readonly IFsrxinsummoMdOdetalleService<TContext> _FsrxinsummoMdOdetalleService;
@@ -37,7 +37,7 @@ namespace ERP_TECKIO
             , IInsumoService<TContext> insumoService
             , IPrecioUnitarioDetalleService<TContext> puDetalle
             , IPrecioUnitarioService<TContext> precioUnitarioService
-            , PrecioUnitarioProceso<TContext>  precioUnitarioProceso
+            //, PrecioUnitarioProceso<TContext>  precioUnitarioProceso
             , IConceptoService<TContext> conceptoService
 
 
@@ -53,7 +53,7 @@ namespace ERP_TECKIO
             _RelacionFSRInsumoService = relacionFSRInsumoService;
             _DiasConsideradosService = diasConsideradosService;
             _InsumoService = insumoService;
-            _PrecioUnitarioProceso = precioUnitarioProceso;
+            //_PrecioUnitarioProceso = precioUnitarioProceso;
             _PUDetalle = puDetalle;
             _PrecioUnitarioService = precioUnitarioService;
             _ConceptoService = conceptoService;
@@ -452,11 +452,29 @@ namespace ERP_TECKIO
             {
                 diasPagados = diasPagados + registrosDiasPagados[i].Valor;
             }
-            decimal diasCalendario = Convert.ToDecimal(365.25);
-            decimal TI = diasCalendario - diasNoLaborados;
-            decimal FSI = (diasPagados / TI);
+
+
+            //decimal diasCalendario = Convert.ToDecimal(365.25);
+            //decimal TI = diasCalendario - diasNoLaborados;
+            //decimal FSI = (diasPagados / TI);
             var registroFSI = await _FSIService.ObtenXId(IdFSI);
-            registroFSI.Fsi = FSI;
+
+            if (diasPagados == 0 || diasNoLaborados == 0)
+            {
+                registroFSI.Fsi = 0;
+            }
+            if (diasNoLaborados != 0 && diasPagados != 0)
+            {
+                if (((decimal)365.25 - diasNoLaborados) <= 0)
+                {
+                    registroFSI.Fsi = 0;
+                }
+                else
+                {
+                    registroFSI.Fsi = diasPagados / ((decimal)365.25 - diasNoLaborados);
+                }
+            }
+            //registroFSI.Fsi = FSI;
             await _FSIService.Editar(registroFSI);
             return;
         }
@@ -465,60 +483,80 @@ namespace ERP_TECKIO
         {
             FactorSalarioIntegradoDTO FSI = new FactorSalarioIntegradoDTO();
             var FSR = await _FSRService.ObtenXId(IdFSR);
-            var FSRAnterior = FSR.PorcentajeFsr;
+            //var FSRAnterior = FSR.PorcentajeFsr;
             decimal PS = 0;
             var detallesPS = await _FSRDetalleService.ObtenerTodosXFSR(IdFSR);
             for (int i = 0; i < detallesPS.Count; i++)
             {
-                PS = PS + (detallesPS[i].PorcentajeFsrdetalle / 100);
+                PS = PS + (detallesPS[i].PorcentajeFsrdetalle);
             }
             var ExisteFSI = await _FSIService.ObtenerTodosXProyecto(FSR.IdProyecto);
             if(ExisteFSI.Count > 0)
             {
                 FSI = ExisteFSI.FirstOrDefault();
             }
-            FSR.PorcentajeFsr = (PS + FSI.Fsi);
-            await _FSRService.Editar(FSR);
-            var insumos = await _InsumoService.ObtenXIdProyecto(FSR.IdProyecto);
-            var insumoFiltrados = insumos.Where(z => z.idTipoInsumo == 10000).ToList();
-            var detalles = await _PUDetalle.ObtenerTodos();
-            for(int i = 0; i < detalles.Count; i++)
+            if (FSI.Id > 0)
             {
-                var insumo = insumos.Where(z => z.id == detalles[i].IdInsumo).FirstOrDefault();
-                if(insumo != null)
+                if (FSI.Fsi != 0)
                 {
-                    detalles[i].Codigo = insumo.Codigo;
-                    detalles[i].Descripcion = insumo.Descripcion;
-                    detalles[i].Unidad = insumo.Unidad;
-                    detalles[i].CostoUnitario = insumo.CostoUnitario;
-                    detalles[i].IdTipoInsumo = insumo.idTipoInsumo;
-                    detalles[i].IdFamiliaInsumo = insumo.idFamiliaInsumo;
+                    FSR.PorcentajeFsr = FSI.Fsi + (PS / 100);
+                }
+                else
+                {
+                    FSR.PorcentajeFsr = 1 + (PS / 100);
                 }
             }
+            else
+            {
+                FSR.PorcentajeFsr = 1 + (PS / 100);
+            }
+            //FSR.PorcentajeFsr = (PS + FSI.Fsi);
+            await _FSRService.Editar(FSR);
+            var insumos = await _InsumoService.ObtenXIdProyecto(FSR.IdProyecto);
+            var insumoFiltrados = insumos.Where(z => z.idTipoInsumo == 10000 && z.EsFsrGlobal == false).ToList();
+            //var detalles = await _PUDetalle.ObtenerTodos();
+            //for(int i = 0; i < detalles.Count; i++)
+            //{
+            //    var insumo = insumos.Where(z => z.id == detalles[i].IdInsumo).FirstOrDefault();
+            //    if(insumo != null)
+            //    {
+            //        detalles[i].Codigo = insumo.Codigo;
+            //        detalles[i].Descripcion = insumo.Descripcion;
+            //        detalles[i].Unidad = insumo.Unidad;
+            //        detalles[i].CostoUnitario = insumo.CostoUnitario;
+            //        detalles[i].IdTipoInsumo = insumo.idTipoInsumo;
+            //        detalles[i].IdFamiliaInsumo = insumo.idFamiliaInsumo;
+            //    }
+            //}
             for(int y = 0; y < insumoFiltrados.Count(); y++)
             {
-                insumoFiltrados[y].CostoUnitario = (insumoFiltrados[y].CostoUnitario / FSRAnterior);
-                insumoFiltrados[y].CostoUnitario = (insumoFiltrados[y].CostoUnitario * FSR.PorcentajeFsr);
+                //insumoFiltrados[y].CostoUnitario = (insumoFiltrados[y].CostoUnitario / FSRAnterior);
+                insumoFiltrados[y].CostoUnitario = (insumoFiltrados[y].CostoBase * FSR.PorcentajeFsr);
                 await _InsumoService.Editar(insumoFiltrados[y]);
-                var insumosRefrescados = await _InsumoService.ObtenXIdProyecto(FSR.IdProyecto);
-                var precioUnitariosDetalles = await _PUDetalle.ObtenerTodos();
-                var precioUnitariosFiltradosXInsumo = precioUnitariosDetalles.Where(z => z.IdInsumo == insumoFiltrados[y].id && z.EsCompuesto == false).ToList();
-                var detallesF = detalles.Where(z => z.IdTipoInsumo != 0).ToList();
-                for(int j = 0; j < precioUnitariosFiltradosXInsumo.Count; j++)
-                {
-                    var resultados = await _PrecioUnitarioProceso.RecalcularDetalles(precioUnitariosFiltradosXInsumo[j].IdPrecioUnitario, detallesF, insumosRefrescados);
-                    var PrecioUnitario = await _PrecioUnitarioService.ObtenXId(precioUnitariosFiltradosXInsumo[j].IdPrecioUnitario);
-                    var concepto = await _ConceptoService.ObtenXId(PrecioUnitario.IdConcepto);
-                    concepto.CostoUnitario = resultados.Total;
-                    await _ConceptoService.Editar(concepto);
-                    await _PrecioUnitarioProceso.RecalcularPrecioUnitario(PrecioUnitario);
-                }
+                //var insumosRefrescados = await _InsumoService.ObtenXIdProyecto(FSR.IdProyecto);
+                //var precioUnitariosDetalles = await _PUDetalle.ObtenerTodos();
+                //var precioUnitariosFiltradosXInsumo = precioUnitariosDetalles.Where(z => z.IdInsumo == insumoFiltrados[y].id && z.EsCompuesto == false).ToList();
+                //var detallesF = detalles.Where(z => z.IdTipoInsumo != 0).ToList();
+                //for(int j = 0; j < precioUnitariosFiltradosXInsumo.Count; j++)
+                //{
+                //    var resultados = await _PrecioUnitarioProceso.RecalcularDetalles(precioUnitariosFiltradosXInsumo[j].IdPrecioUnitario, detallesF, insumosRefrescados);
+                //    var PrecioUnitario = await _PrecioUnitarioService.ObtenXId(precioUnitariosFiltradosXInsumo[j].IdPrecioUnitario);
+                //    var concepto = await _ConceptoService.ObtenXId(PrecioUnitario.IdConcepto);
+                //    concepto.CostoUnitario = resultados.Total;
+                //    await _ConceptoService.Editar(concepto);
+                //    await _PrecioUnitarioProceso.RecalcularPrecioUnitario(PrecioUnitario);
+                //}
             }
         }
 
         public async Task CrearDetalleFSR(FactorSalarioRealDetalleDTO nuevoDetalle)
         {
+            var FSR = await ObtenerFSR(nuevoDetalle.IdProyecto);
+            nuevoDetalle.IdFactorSalarioReal = FSR.Id;
             var DetalleCreado = await _FSRDetalleService.CrearYObtener(nuevoDetalle);
+            if (DetalleCreado.Id <= 0) {
+                return;
+            }
             await RecalcularFSR(DetalleCreado.IdFactorSalarioReal);
         }
 
@@ -527,12 +565,22 @@ namespace ERP_TECKIO
             await _FSRDetalleService.Editar(detalleEditado);
             await RecalcularFSR(detalleEditado.IdFactorSalarioReal);
         }
+        public async Task EliminarDetalleFSR(int IdDetalleFSR)
+        {
+            var FSR = await _FSRDetalleService.ObtenXId(IdDetalleFSR);
+            await _FSRDetalleService.Eliminar(IdDetalleFSR);
+            await RecalcularFSR(FSR.IdFactorSalarioReal);
+        }
 
         public async Task AgregarDiasFSI(DiasConsideradosDTO nuevoDia)
         {
+            var FSI = await ObtenerFSI(nuevoDia.IdProyecto);
+            nuevoDia.IdFactorSalarioIntegrado = FSI.Id;
             var nuevoDiaCreado = await _DiasConsideradosService.CrearYObtener(nuevoDia);
+            if (nuevoDiaCreado.Id <= 0) {
+                return;
+            }
             await RecalcularFSI(nuevoDiaCreado.IdFactorSalarioIntegrado);
-            var FSI = await _FSIService.ObtenXId(nuevoDiaCreado.IdFactorSalarioIntegrado);
             var ExisteFSR = await _FSRService.ObtenerTodosXProyecto(FSI.IdProyecto);
             if(ExisteFSR.Count > 0)
             {
@@ -546,6 +594,20 @@ namespace ERP_TECKIO
             await _DiasConsideradosService.Editar(diaEditado);
             await RecalcularFSI(diaEditado.IdFactorSalarioIntegrado);
             var FSI = await _FSIService.ObtenXId(diaEditado.IdFactorSalarioIntegrado);
+            var ExisteFSR = await _FSRService.ObtenerTodosXProyecto(FSI.IdProyecto);
+            if (ExisteFSR.Count > 0)
+            {
+                var FSR = ExisteFSR.FirstOrDefault();
+                await RecalcularFSR(FSR.Id);
+            }
+        }
+
+        public async Task EliminarDiasFSI(int IdDetalleFSI)
+        {
+            var diaFSI = await _DiasConsideradosService.ObtenXId(IdDetalleFSI);
+            await _DiasConsideradosService.Eliminar(IdDetalleFSI);
+            await RecalcularFSI(diaFSI.IdFactorSalarioIntegrado);
+            var FSI = await _FSIService.ObtenXId(diaFSI.IdFactorSalarioIntegrado);
             var ExisteFSR = await _FSRService.ObtenerTodosXProyecto(FSI.IdProyecto);
             if (ExisteFSR.Count > 0)
             {

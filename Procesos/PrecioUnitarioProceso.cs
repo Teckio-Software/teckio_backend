@@ -3324,8 +3324,14 @@ namespace ERP_TECKIO
             }
             else
             {
+                FactorSalarioRealDTO FSR = new FactorSalarioRealDTO();
+                var ExisteFSR = await _FSRService.ObtenerTodosXProyecto(registro.IdProyecto);
+                if (ExisteFSR.Count > 0)
+                {
+                    FSR = ExisteFSR.FirstOrDefault();
+                }
                 insumo.CostoBase = registro.CostoBase;
-                insumo.CostoUnitario = registro.CostoBase;
+                insumo.CostoUnitario = registro.CostoBase * FSR.PorcentajeFsr;
                 var insumoEditado = await _InsumoService.Editar(insumo);
             }
             
