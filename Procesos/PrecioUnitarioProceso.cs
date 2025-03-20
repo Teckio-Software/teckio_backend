@@ -1374,11 +1374,14 @@ namespace ERP_TECKIO
                     }
                 }
                 var insumoOriginal = await _InsumoService.ObtenXId(registro.IdInsumo);
-                if (insumoOriginal.CostoUnitario != registro.CostoUnitario)
-                {
-                    var FSR = await _FSRService.ObtenerTodosXProyecto(insumoOriginal.IdProyecto);
-                    registro.CostoUnitario = registro.CostoUnitario * FSR[0].PorcentajeFsr;
-                }
+                //if (insumoOriginal.CostoUnitario != registro.CostoUnitario)
+                //{
+                //    var FSR = await _FSRService.ObtenerTodosXProyecto(insumoOriginal.IdProyecto);
+                //    if(FSR.Count > 0)
+                //    {
+                //        registro.CostoUnitario = registro.CostoUnitario * FSR[0].PorcentajeFsr;
+                //    }
+                //}
                 var PU = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
                 InsumoDTO insumo = new InsumoDTO();
                 insumo.id = registro.IdInsumo;
@@ -2607,6 +2610,7 @@ namespace ERP_TECKIO
                     insumo.Descripcion = registro.Descripcion;
                     insumo.Unidad = registro.Unidad;
                     insumo.CostoUnitario = registro.CostoUnitario;
+                    insumo.CostoBase = registro.CostoBase;
                     insumo.idTipoInsumo = registro.IdTipoInsumo;
                     insumo.idFamiliaInsumo = registro.IdFamiliaInsumo;
                     insumo.Cantidad = registro.Cantidad;
@@ -3308,34 +3312,49 @@ namespace ERP_TECKIO
 
         public async Task<ActionResult<List<InsumoParaExplosionDTO>>> EditarInsumoDesdeExplosion(InsumoParaExplosionDTO registro)
         {
-            var insumo = await _InsumoService.ObtenXId(registro.id);
+            var insumoBase = await _InsumoService.ObtenXId(registro.id);
+            var insumos = await _InsumoService.ObtenXIdProyecto(insumoBase.IdProyecto);
+            var insumosFiltrados = insumos.Where(z => z.Codigo == registro.Codigo).ToList();
             var fsr = await _FsrxinsummoMdOService.ObtenerXIdInsumo(registro.id);
             if(fsr.Id > 0)
             {
-                fsr.CostoDirecto = registro.CostoBase;
-                fsr.CostoFinal = registro.CostoBase * fsr.Fsr;
-                var editado = await _FsrxinsummoMdOService.Editar(fsr);
-                if (editado == true)
+                foreach(var insumo in insumosFiltrados)
                 {
-                    insumo.CostoBase = registro.CostoBase;
-                    insumo.CostoUnitario = fsr.CostoFinal;
-                    var insumoEditado = await _InsumoService.Editar(insumo);
+                    fsr.CostoDirecto = registro.CostoBase;
+                    fsr.CostoFinal = registro.CostoBase * fsr.Fsr;
+                    var editado = await _FsrxinsummoMdOService.Editar(fsr);
+                    if (editado == true)
+                    {
+                        insumo.CostoBase = registro.CostoBase;
+                        insumo.CostoUnitario = fsr.CostoFinal;
+                        var insumoEditado = await _InsumoService.Editar(insumo);
+                    }
                 }
             }
             else
             {
                 FactorSalarioRealDTO FSR = new FactorSalarioRealDTO();
                 var ExisteFSR = await _FSRService.ObtenerTodosXProyecto(registro.IdProyecto);
-                if (ExisteFSR.Count > 0)
+                foreach(var insumo in insumosFiltrados)
                 {
-                    FSR = ExisteFSR.FirstOrDefault();
+                    if (ExisteFSR.Count > 0)
+                    {
+                        FSR = ExisteFSR.FirstOrDefault();
+                        if (insumo.idTipoInsumo == 10000)
+                        {
+                            insumo.CostoBase = registro.CostoBase;
+                            insumo.CostoUnitario = registro.CostoBase * FSR.PorcentajeFsr;
+                        }
+                    }
+                    else
+                    {
+                        insumo.CostoBase = registro.CostoBase;
+                        insumo.CostoUnitario = registro.CostoBase;
+                    }
+                    var insumoEditado = await _InsumoService.Editar(insumo);
                 }
-                insumo.CostoBase = registro.CostoBase;
-                insumo.CostoUnitario = registro.CostoBase * FSR.PorcentajeFsr;
-                var insumoEditado = await _InsumoService.Editar(insumo);
             }
-            
-            return await obtenerExplosion(insumo.IdProyecto);
+            return await obtenerExplosion(insumoBase.IdProyecto);
         }
     }
 }
