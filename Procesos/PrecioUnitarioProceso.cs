@@ -1370,7 +1370,10 @@ namespace ERP_TECKIO
                     }
                     else
                     {
-                        registro.CostoUnitario = registro.CostoBase;
+                        if(registro.CostoBase != 0 && registro.CostoUnitario != 0)
+                        {
+                            registro.CostoUnitario = registro.CostoBase;
+                        }
                     }
                 }
                 var insumoOriginal = await _InsumoService.ObtenXId(registro.IdInsumo);
