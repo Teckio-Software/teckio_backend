@@ -552,6 +552,22 @@ namespace ERP_TECKIO
         public async Task CrearDetalleFSR(FactorSalarioRealDetalleDTO nuevoDetalle)
         {
             var FSR = await ObtenerFSR(nuevoDetalle.IdProyecto);
+            if(FSR.Id <= 0)
+            {
+                var nuevoFSR = new FactorSalarioRealDTO();
+                nuevoFSR.IdProyecto = nuevoDetalle.IdProyecto;
+                nuevoFSR.PorcentajeFsr = 1;
+                nuevoFSR = await _FSRService.CrearYObtener(FSR);
+                FSR = nuevoFSR;
+            }
+            var FSI = await ObtenerFSI(nuevoDetalle.IdProyecto);
+            if (FSI.Id <= 0)
+            {
+                var nuevoFSI = new FactorSalarioIntegradoDTO();
+                nuevoFSI.IdProyecto = nuevoDetalle.IdProyecto;
+                nuevoFSI.Fsi = 1;
+                FSI = await _FSIService.CrearYObtener(nuevoFSI);
+            }
             nuevoDetalle.IdFactorSalarioReal = FSR.Id;
             var DetalleCreado = await _FSRDetalleService.CrearYObtener(nuevoDetalle);
             if (DetalleCreado.Id <= 0) {
@@ -574,7 +590,23 @@ namespace ERP_TECKIO
 
         public async Task AgregarDiasFSI(DiasConsideradosDTO nuevoDia)
         {
+            var FSR = await ObtenerFSR(nuevoDia.IdProyecto);
+            if (FSR.Id <= 0)
+            {
+                var nuevoFSR = new FactorSalarioRealDTO();
+                nuevoFSR.IdProyecto = nuevoDia.IdProyecto;
+                nuevoFSR.PorcentajeFsr = 1;
+                nuevoFSR = await _FSRService.CrearYObtener(FSR);
+                FSR = nuevoFSR;
+            }
             var FSI = await ObtenerFSI(nuevoDia.IdProyecto);
+            if(FSI.Id <= 0)
+            {
+                var nuevoFSI = new FactorSalarioIntegradoDTO();
+                nuevoFSI.IdProyecto = nuevoDia.IdProyecto;
+                nuevoFSI.Fsi = 1;
+                FSI = await _FSIService.CrearYObtener(nuevoFSI);
+            }
             nuevoDia.IdFactorSalarioIntegrado = FSI.Id;
             var nuevoDiaCreado = await _DiasConsideradosService.CrearYObtener(nuevoDia);
             if (nuevoDiaCreado.Id <= 0) {
@@ -584,7 +616,7 @@ namespace ERP_TECKIO
             var ExisteFSR = await _FSRService.ObtenerTodosXProyecto(FSI.IdProyecto);
             if(ExisteFSR.Count > 0)
             {
-                var FSR = ExisteFSR.FirstOrDefault();
+                FSR = ExisteFSR.FirstOrDefault();
                 await RecalcularFSR(FSR.Id);
             }
         }
