@@ -250,6 +250,16 @@ namespace ERP_TECKIO
             return padres;
         }
 
+        public async Task CrearOEditarDetallePadreOHijo(DetalleXContratoParaTablaDTO registro) {
+            if (registro.TipoPrecioUnitario == 0) {
+                await CrearOEditarDetallePadre(registro);
+            }
+            else
+            {
+                await CrearOEditarDetalle(registro);
+            }
+        }
+
         public async Task CrearOEditarDetalle(DetalleXContratoParaTablaDTO registro)
         {
             if (registro.IdDetalleXContrato == 0)
@@ -317,6 +327,83 @@ namespace ERP_TECKIO
                     porcentajeAcumuladoNuevo.PorcentajeDestajoAcumulado = registro.PorcentajeDestajo;
                     porcentajeAcumuladoNuevo.IdPrecioUnitario = registro.IdPrecioUnitario;
                     var registroCreado = await _PorcentajeAcumuladoContrato.CrearYObtener(porcentajeAcumuladoNuevo);
+                }
+            }
+        }
+
+        public async Task CrearOEditarDetallePadre(DetalleXContratoParaTablaDTO registro)
+        {
+            var detallesEstructurados = await ObtenerDetallesDestajos(registro.IdContrato);
+            bool detalleEncontrado = false;
+            foreach (var detalles in detallesEstructurados)
+            {
+                if (registro.IdPrecioUnitario == detalles.IdPrecioUnitario)
+                {
+                    if (registro.AplicarPorcentajeDestajoHijos) {
+                        detalles.PorcentajeDestajo = registro.PorcentajeDestajo;
+                    }
+                    //editar registro
+                    if (registro.FactorDestajo > 0)
+                    {
+                        detalles.FactorDestajo = detalles.TipoPrecioUnitario == 0 ? 0 : registro.FactorDestajo;
+                    }
+                    await CrearOEditarDetalle(detalles);
+                    detalleEncontrado = true;
+                }
+                else
+                {
+                    detalleEncontrado = false;
+                }
+                if (detalles.Hijos.Count() > 0) {
+                    await buscandoDetalles(detalles.Hijos, registro, detalleEncontrado);
+                }
+            }
+        }
+
+        public async Task buscandoDetalles(List<DetalleXContratoParaTablaDTO> hijos, DetalleXContratoParaTablaDTO registro, bool detalleEncotrado)
+        {
+            if (detalleEncotrado) {
+                foreach (var hijo in hijos)
+                {
+                    if (registro.AplicarPorcentajeDestajoHijos)
+                    {
+                        hijo.PorcentajeDestajo = registro.PorcentajeDestajo;
+                    }
+                    // ediatr registro
+                    if (registro.FactorDestajo > 0) { 
+                        hijo.FactorDestajo = hijo.TipoPrecioUnitario == 0 ? 0 : registro.FactorDestajo;
+                    }
+                    await CrearOEditarDetalle(hijo);
+                    if (hijo.Hijos.Count() > 0) {
+                        await buscandoDetalles(hijo.Hijos, registro, detalleEncotrado);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var hijo in hijos)
+                {
+                    if (registro.IdPrecioUnitario == hijo.IdPrecioUnitario)
+                    {
+                        if (registro.AplicarPorcentajeDestajoHijos)
+                        {
+                            hijo.PorcentajeDestajo = registro.PorcentajeDestajo;
+                        }
+                        //editar registro
+                        if (registro.FactorDestajo > 0)
+                        {
+                            hijo.FactorDestajo = hijo.TipoPrecioUnitario == 0 ? 0 : registro.FactorDestajo;
+                        }
+                        await CrearOEditarDetalle(hijo);
+                        detalleEncotrado = true;
+                    }
+                    else
+                    {
+                        detalleEncotrado = false;
+                    }
+                    if (hijo.Hijos.Count() > 0) {
+                        await buscandoDetalles(hijo.Hijos, registro, detalleEncotrado);
+                    }
                 }
             }
         }

@@ -37,6 +37,7 @@ namespace ERP_TECKIO
         public decimal PorcentajeDestajoAcumulado { get; set; }
         public string PorcentajeDestajoAcumuladoConFormato { get; set; }
         public bool Expandido { get; set; }
+        public bool AplicarPorcentajeDestajoHijos { get; set; }
         public List<DetalleXContratoParaTablaDTO> Hijos { get; set; }
     }
 

@@ -49,7 +49,7 @@ namespace ERP_TECKIO.Controllers
         [HttpPost("crearOEditarDetalle")]
         public async Task<ActionResult> CrearOEditarDetalle([FromBody] DetalleXContratoParaTablaDTO registro)
         {
-            await _contratosProceso.CrearOEditarDetalle(registro);
+            await _contratosProceso.CrearOEditarDetallePadreOHijo(registro);
             return NoContent();
         }
 
