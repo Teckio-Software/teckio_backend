@@ -2651,30 +2651,48 @@ namespace ERP_TECKIO
                     }
                 }
             }
-            var agrupados = ExplosionDeInsumos.GroupBy(z => z.Codigo).ToList();
-            foreach (var item in agrupados) {
-                var insumo = new InsumoParaExplosionDTO();
-                insumo.id = item.First().id;
-                insumo.idFamiliaInsumo = item.First().idFamiliaInsumo;
-                insumo.idTipoInsumo = item.First().idTipoInsumo;
-                insumo.Unidad = item.First().Unidad;
-                insumo.Descripcion = item.First().Descripcion;
-                insumo.Codigo = item.First().Codigo;
-                insumo.IdProyecto = item.First().IdProyecto;
-                insumo.EsFsrGlobal = item.First().EsFsrGlobal;
-                insumo.CostoUnitario = item.First().CostoUnitario;
-                insumo.CostoUnitarioConFormato = item.First().CostoUnitarioConFormato;
-                insumo.CostoBase = item.First().CostoBase;
-                insumo.CostoBaseConFormato = item.First().CostoBaseConFormato;
-                decimal cantidadTotal = item.Sum(z => z.Cantidad);
-                insumo.Cantidad = cantidadTotal;
-                insumo.CantidadConFormato = String.Format("{0:#,##0.00}", cantidadTotal);
-                decimal importeTotal = item.Sum(z => z.Cantidad) * item.First().CostoUnitario;
-                insumo.ImporteConFormato = String.Format("{0:#,##0.00}", importeTotal);
-                insumo.Importe = importeTotal;
+            var agrupados = ExplosionDeInsumos.GroupBy(z => new { z.Codigo, z.Descripcion }).Select(x => new InsumoParaExplosionDTO
+            {
+                id = x.First().id,
+                idFamiliaInsumo = x.First().idFamiliaInsumo,
+                idTipoInsumo = x.First().idTipoInsumo,
+                Unidad = x.First().Unidad,
+                IdProyecto = x.First().IdProyecto,
+                EsFsrGlobal = x.First().EsFsrGlobal,
+                CostoUnitario = x.First().CostoUnitario,
+                CostoUnitarioConFormato = x.First().CostoUnitarioConFormato,
+                CostoBase = x.First().CostoBase,
+                CostoBaseConFormato = x.First().CostoBaseConFormato,
+                Codigo = x.Key.Codigo,
+                Descripcion = x.Key.Descripcion,
+                Cantidad = x.Sum(z => z.Cantidad),
+                CantidadConFormato = String.Format("{0:#,##0.00}", x.Sum(z => z.Cantidad)),
+                Importe = x.Sum(z => z.Cantidad) * x.First().CostoUnitario,
+                ImporteConFormato = String.Format("{0:#,##0.00}", x.Sum(z => z.Cantidad) * x.First().CostoUnitario)
+            }).ToList();
+            //foreach (var item in agrupados) {
+            //    var insumo = new InsumoParaExplosionDTO();
+            //    insumo.id = item.id;
+            //    insumo.idFamiliaInsumo = item.idFamiliaInsumo;
+            //    insumo.idTipoInsumo = item.idTipoInsumo;
+            //    insumo.Unidad = item.Unidad;
+            //    insumo.Descripcion = item.Descripcion;
+            //    insumo.Codigo = item.Codigo;
+            //    insumo.IdProyecto = item.IdProyecto;
+            //    insumo.EsFsrGlobal = item.EsFsrGlobal;
+            //    insumo.CostoUnitario = item.CostoUnitario;
+            //    insumo.CostoUnitarioConFormato = item.CostoUnitarioConFormato;
+            //    insumo.CostoBase = item.CostoBase;
+            //    insumo.CostoBaseConFormato = item.CostoBaseConFormato;
+            //    decimal cantidadTotal = item.Cantidad;
+            //    insumo.Cantidad = cantidadTotal;
+            //    insumo.CantidadConFormato = String.Format("{0:#,##0.00}", cantidadTotal);
+            //    decimal importeTotal = item.Importe;
+            //    insumo.ImporteConFormato = String.Format("{0:#,##0.00}", importeTotal);
+            //    insumo.Importe = importeTotal;
 
-                ExplosionDeInsumosSinRepetir.Add(insumo);
-            }
+            //    ExplosionDeInsumosSinRepetir.Add(insumo);
+            //}
             //for (int i = 0; i < ExplosionDeInsumos.Count; i++)
             //{
             //    var aux = ExplosionDeInsumosSinRepetir.Where(z => z.Codigo == ExplosionDeInsumos[i].Codigo).ToList();
@@ -2688,7 +2706,7 @@ namespace ERP_TECKIO
             //        ExplosionDeInsumosSinRepetir.Add(ExplosionDeInsumos[i]);
             //    }
             //}
-            return ExplosionDeInsumosSinRepetir.OrderBy(z => z.idTipoInsumo).ToList();
+            return agrupados.OrderBy(z => z.idTipoInsumo).ToList();
         }
 
         public async Task<List<InsumoParaExplosionDTO>> obtenerExplosionHijos(PrecioUnitarioDTO registro, List<PrecioUnitarioDTO> RegistrosHijos)
