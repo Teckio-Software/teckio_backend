@@ -147,7 +147,7 @@ namespace ERP_TECKIO
                     var insumoPorcentaje = insumos.Where(z => z.id == detallesPorcentajeManoObra[i].IdInsumo).FirstOrDefault();
                     insumoPorcentaje.CostoUnitario = total;
                     await _InsumoService.Editar(insumoPorcentaje);
-                    await _PrecioUnitarioDetalleService.Editar(detallesManoObra[i]);
+                    await _PrecioUnitarioDetalleService.Editar(detallesPorcentajeManoObra[i]);
                 }
             }
         }
