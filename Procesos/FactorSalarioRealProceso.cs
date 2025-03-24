@@ -596,7 +596,7 @@ namespace ERP_TECKIO
                 var nuevoFSR = new FactorSalarioRealDTO();
                 nuevoFSR.IdProyecto = nuevoDia.IdProyecto;
                 nuevoFSR.PorcentajeFsr = 1;
-                nuevoFSR = await _FSRService.CrearYObtener(FSR);
+                nuevoFSR = await _FSRService.CrearYObtener(nuevoFSR);
                 FSR = nuevoFSR;
             }
             var FSI = await ObtenerFSI(nuevoDia.IdProyecto);
