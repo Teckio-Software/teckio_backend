@@ -2651,7 +2651,7 @@ namespace ERP_TECKIO
                     }
                 }
             }
-            var agrupados = ExplosionDeInsumos.GroupBy(z => new { z.Codigo, z.Descripcion }).Select(x => new InsumoParaExplosionDTO
+            var agrupados = ExplosionDeInsumos.GroupBy(z => new { z.Codigo, z.Descripcion, z.CostoUnitario }).Select(x => new InsumoParaExplosionDTO
             {
                 id = x.First().id,
                 idFamiliaInsumo = x.First().idFamiliaInsumo,
