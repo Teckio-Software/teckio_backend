@@ -47,4 +47,17 @@ namespace ERP_TECKIO
         public bool Expandido { get; set; }
         public List<EstimacionesDTO> Hijos { get; set; }
     }
+
+
+    public class PeriodosXEstimacionDTO
+    {
+        public int IdEstimacion { get; set; }
+        public int IdPeriodo { get; set; }
+        public string DescripcionPeriodo { get; set; }
+        public decimal Importe { get; set; }
+        public string ImporteConFormato { get; set; }
+        public decimal Avance { get; set; }
+        public string AvanceConFormato { get; set; }
+        public int IdProyecto { get; set; }
+    }
 }

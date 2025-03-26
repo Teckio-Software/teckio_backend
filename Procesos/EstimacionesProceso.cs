@@ -262,5 +262,31 @@ namespace ERP_TECKIO
                 }
             }
         }
+
+        public async Task<List<PeriodosXEstimacionDTO>> ObtenerPeridosXEstimacion(int IdEstimacion) {
+            var periodosXEstimacion = new List<PeriodosXEstimacionDTO>();
+            var estimacion = await _EstimacionService.ObtenXId(IdEstimacion);
+            var estimaciones = await _EstimacionService.ObtenXIdPrecioUnitario(estimacion.IdPrecioUnitario);
+            var periodos = await _PeriodoEstimacionesService.ObtenTodosXIdProyecto(estimacion.IdProyecto);
+
+            foreach (var periodo in periodos) {
+                var EstimacionAsignar = estimaciones.Where(z => z.IdPeriodo == periodo.Id).First();
+                if (EstimacionAsignar.Id > 0) {
+                    periodosXEstimacion.Add(new PeriodosXEstimacionDTO()
+                    {
+                        IdEstimacion = EstimacionAsignar.Id,
+                        IdPeriodo = periodo.Id,
+                        Avance = EstimacionAsignar.CantidadAvance,
+                        AvanceConFormato = String.Format("{0:#,##0.00}", EstimacionAsignar.CantidadAvance),
+                        Importe = EstimacionAsignar.ImporteDeAvance,
+                        ImporteConFormato = String.Format("{0:#,##0.00}", EstimacionAsignar.ImporteDeAvance),
+                        DescripcionPeriodo = "Periodo " + periodo.NumeroPeriodo + " " + periodo.FechaInicio.ToString("dd/MM/yyyy") +
+                        " - " + periodo.FechaTermino.ToString("dd/MM/yyyy"),
+                        IdProyecto = periodo.IdProyecto
+                    });
+                }
+            }
+            return periodosXEstimacion;
+        }
     }
 }

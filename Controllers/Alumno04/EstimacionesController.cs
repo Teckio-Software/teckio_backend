@@ -50,5 +50,11 @@ namespace ERP_TECKIO.Controllers
             await _estimacionesProceso.EliminarPeriodo(IdPeriodo);
             return NoContent();
         }
+
+        [HttpGet("ObtenerPeriodosXEstimacion/{IdEstimacion:int}")]
+        public async Task<ActionResult<List<PeriodosXEstimacionDTO>>> ObtenerPeriodosXEstimacion(int IdEstimacion)
+        {
+            return await _estimacionesProceso.ObtenerPeridosXEstimacion(IdEstimacion);
+        }
     }
 }

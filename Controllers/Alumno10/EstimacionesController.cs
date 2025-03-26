@@ -12,7 +12,7 @@ namespace ERP_TECKIO.Controllers
     [ApiController]
     public class EstimacionesAlumno10Controller : ControllerBase
     {
-        private readonly EstimacionesProceso<Alumno10Context> _estimacionesProceso;
+        private readonly EstimacionesProceso<Alumno10Context> _estimacionesProceso; 
         public EstimacionesAlumno10Controller(
             EstimacionesProceso<Alumno10Context> estimacionesProceso
             )
@@ -49,6 +49,12 @@ namespace ERP_TECKIO.Controllers
         {
             await _estimacionesProceso.EliminarPeriodo(IdPeriodo);
             return NoContent();
+        }
+
+        [HttpGet("ObtenerPeriodosXEstimacion/{IdEstimacion:int}")]
+        public async Task<ActionResult<List<PeriodosXEstimacionDTO>>> ObtenerPeriodosXEstimacion(int IdEstimacion)
+        {
+            return await _estimacionesProceso.ObtenerPeridosXEstimacion(IdEstimacion);
         }
     }
 }
