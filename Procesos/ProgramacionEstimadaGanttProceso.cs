@@ -3,6 +3,7 @@ using ERP_TECKIO;
 using ERP_TECKIO.Procesos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,16 +17,20 @@ namespace ERP_TECKIO
         private readonly IProgramacionEstimadaGanttService<TContext> _ProgramacionEstimadaGanttService;
         private readonly IDependenciaProgramacionEstimadaService<TContext> _DependenciaProgramacionEstimadaService;
         private readonly IMapper _Mapper;
+        private readonly TContext _DbContext;
+
 
         public ProgramacionEstimadaGanttProceso(
             IProgramacionEstimadaGanttService<TContext> programacionEstimadaGanttService,
             IDependenciaProgramacionEstimadaService<TContext> dependenciaProgramacionEstimadaService,
-            IMapper mapper
+            IMapper mapper,
+            TContext context
             )
         {
             _ProgramacionEstimadaGanttService = programacionEstimadaGanttService;
             _DependenciaProgramacionEstimadaService = dependenciaProgramacionEstimadaService;
             _Mapper = mapper;
+            _DbContext = context;
         }
 
         public async Task<List<ProgramacionEstimadaGanttDTO>> ObtenerProgramacionEstimadaXIdProyecto(int IdProyecto, DbContext db)
@@ -40,7 +45,35 @@ namespace ERP_TECKIO
                 }
             }
 
-            return programacionesEstimadas;
+            var listaEnumerada = new List<ProgramacionEstimadaGanttDTO>();
+
+            var registrosPadres = programacionesEstimadas.Where(z => z.Parent == null);
+            foreach (var registro in registrosPadres)
+            {
+                listaEnumerada.Add(registro);
+                listaEnumerada[listaEnumerada.Count - 1].Numerador = listaEnumerada.Count;
+                var hijos = programacionesEstimadas.Where(z => z.Parent == registro.Id).ToList();
+                if(hijos.Count() > 0)
+                {
+                    listaEnumerada = ObtenerNumeracionHijosProgramacionEstimada(listaEnumerada, hijos, programacionesEstimadas).Result;
+                }
+            }
+            return listaEnumerada;
+        }
+
+        public async Task<List<ProgramacionEstimadaGanttDTO>> ObtenerNumeracionHijosProgramacionEstimada(List<ProgramacionEstimadaGanttDTO> listaEnumerada, List<ProgramacionEstimadaGanttDTO> hijos, List<ProgramacionEstimadaGanttDTO> programaciones)
+        {
+            foreach(var hijo in hijos)
+            {
+                listaEnumerada.Add(hijo);
+                listaEnumerada[listaEnumerada.Count - 1].Numerador = listaEnumerada.Count;
+                var subHijos = programaciones.Where(z => z.Parent == hijo.Id).ToList();
+                if(subHijos.Count() > 0)
+                {
+                    listaEnumerada = ObtenerNumeracionHijosProgramacionEstimada(listaEnumerada, subHijos, programaciones).Result;
+                }
+            }
+            return listaEnumerada;
         }
 
         public async Task<List<ProgramacionEstimadaGanttDTO>> EditarFechaProgramacionEstimada(ProgramacionEstimadaGanttDTO registro, DbContext db)
@@ -51,6 +84,11 @@ namespace ERP_TECKIO
             registro.End = Convert.ToDateTime(FT);
             if(registro.Start == registro.End)
             {
+                registro.End = registro.End.AddDays(1);
+            }
+            if(registro.End <=  registro.Start)
+            {
+                registro.End = registro.Start;
                 registro.End = registro.End.AddDays(1);
             }
             //registro.End = registro.End.AddSeconds(-1);
@@ -94,6 +132,14 @@ namespace ERP_TECKIO
         public async Task GenerarDependencia(DependenciaProgramacionEstimadaDTO registro)
         {
             await _DependenciaProgramacionEstimadaService.CrearYObtener(registro);
+            var programaciones = await ObtenerProgramacionEstimadaXIdProyecto(registro.IdProyecto, _DbContext);
+            var programacionBase = programaciones.Where(z => z.Id == Convert.ToString(registro.IdProgramacionEstimadaGantt)).FirstOrDefault();
+            var programacionDependiente = programaciones.Where(z => z.Id == registro.SourceId).FirstOrDefault();
+            var diferenciaDias = (programacionBase.End - programacionBase.Start).Days;
+            programacionBase.Comando = 2;
+            programacionBase.Start = programacionDependiente.End;
+            programacionBase.End = programacionDependiente.End.AddDays(diferenciaDias);
+            await EditarFechaProgramacionEstimada(programacionBase, _DbContext);
         }
 
         public async Task AsignarProgreso(ProgramacionEstimadaGanttDTO registro, DbContext db)
@@ -145,6 +191,144 @@ namespace ERP_TECKIO
                     {
                         await RecalcularProgresoPadre(programacionPadre, db);
                     }
+                }
+            }
+        }
+
+        public async Task GenerarDependenciaXNumerador(ProgramacionEstimadaGanttDTO registro, DbContext db)
+        {
+            var programaciones = await ObtenerProgramacionEstimadaXIdProyecto(registro.IdProyecto, db);
+            var programacionBase = programaciones.Where(z => z.Numerador == registro.Numerador).FirstOrDefault();
+            var programacionDependiente = programaciones.Where(z => z.Numerador == registro.Predecesor).FirstOrDefault();
+            var nuevaDependencia = new DependenciaProgramacionEstimadaDTO();
+            nuevaDependencia.IdProgramacionEstimadaGantt = Convert.ToInt32(programacionBase.Id);
+            nuevaDependencia.SourceId = programacionDependiente.Id;
+            nuevaDependencia.IdProyecto = registro.IdProyecto;
+            nuevaDependencia.SourceTarget = programacionDependiente.Id;
+            var nuevaDCreada = await _DependenciaProgramacionEstimadaService.CrearYObtener(nuevaDependencia);
+            registro.Comando = 2;
+            var diferenciaDias = (registro.End - registro.Start).Days;
+            var programacionDependiente1 = programaciones.Where(z => z.Id == programacionDependiente.Id).FirstOrDefault();
+            registro.Start = programacionDependiente1.End;
+            registro.End = registro.Start.AddDays(diferenciaDias);
+            await EditarFechaProgramacionEstimada(registro, db);
+        }
+
+        public async Task AsignarComando(ProgramacionEstimadaGanttDTO registro, DbContext db)
+        {
+            var diferenciaDias = (registro.End - registro.Start).Days;
+            var programaciones = await ObtenerProgramacionEstimadaXIdProyecto(registro.IdProyecto, db);
+            if(registro.Dependencies.Count > 0)
+            {
+                switch (registro.Comando)
+                {
+                    case 0://solo cuando no haya relación
+                        if(registro.Dependencies.Count > 0)
+                        {
+                            foreach(var dependencia in registro.Dependencies)
+                            {
+                                await _DependenciaProgramacionEstimadaService.Eliminar(dependencia.Id);
+                                registro.DesfaseComando = 0;
+                                await EditarFechaProgramacionEstimada(registro, db);
+                            }
+                        }
+                        else
+                        {
+                            return;
+                        }
+                        break;
+
+                    case 1://Comienzo Comienzo, por lo que inician al mismo tiempo
+                        var programacionDependiente = programaciones.Where(z => z.Id == registro.Dependencies[0].SourceId).FirstOrDefault();
+                        registro.Start = programacionDependiente.Start.AddDays(registro.DesfaseComando);
+                        registro.End = registro.Start.AddDays(diferenciaDias).AddDays(registro.DesfaseComando);
+                        await EditarFechaProgramacionEstimada(registro, db);
+                        break;
+
+                    case 2://Comienzo Fin, por lo que la actividad comienza al termino de la anterior
+                        programacionDependiente = programaciones.Where(z => z.Id == registro.Dependencies[0].SourceId).FirstOrDefault();
+                        registro.Start = programacionDependiente.End.AddDays(registro.DesfaseComando);
+                        registro.End = registro.Start.AddDays(diferenciaDias).AddDays(registro.DesfaseComando);
+                        await EditarFechaProgramacionEstimada(registro, db);
+                        break;
+
+                    case 3://Fin Comienzo, por lo que la actividad termina cuando comienza la anterior
+                        programacionDependiente = programaciones.Where(z => z.Id == registro.Dependencies[0].SourceId).FirstOrDefault();
+                        registro.End = programacionDependiente.Start.AddDays(registro.DesfaseComando);
+                        registro.Start = registro.End.AddDays(-diferenciaDias).AddDays(registro.DesfaseComando);
+                        await EditarFechaProgramacionEstimada(registro, db);
+                        break;
+
+                    case 4://Fin Fin, por lo que la actividad termina cuando termina la anterior
+                        programacionDependiente = programaciones.Where(z => z.Id == registro.Dependencies[0].SourceId).FirstOrDefault();
+                        registro.End = programacionDependiente.End.AddDays(registro.DesfaseComando);
+                        registro.Start = registro.End.AddDays(-diferenciaDias).AddDays(registro.DesfaseComando);
+                        await EditarFechaProgramacionEstimada(registro, db);
+                        break;
+
+                    default:
+                        return;
+                        break;
+                }
+            }
+        }
+
+        public async Task AsignarDesfase(ProgramacionEstimadaGanttDTO registro, DbContext db)
+        {
+            if(registro.Dependencies.Count > 0)
+            {
+                var diferenciaDias = (registro.End - registro.Start).Days;
+                var programaciones = await ObtenerProgramacionEstimadaXIdProyecto(registro.IdProyecto, db);
+
+                switch (registro.Comando)
+                {
+                    case 0://solo cuando no haya relación
+                        if (registro.Dependencies.Count > 0)
+                        {
+                            foreach (var dependencia in registro.Dependencies)
+                            {
+                                await _DependenciaProgramacionEstimadaService.Eliminar(dependencia.Id);
+                                registro.DesfaseComando = 0;
+                                await EditarFechaProgramacionEstimada(registro, db);
+                            }
+                        }
+                        else
+                        {
+                            return;
+                        }
+                        break;
+
+                    case 1://Comienzo Comienzo, por lo que inician al mismo tiempo
+                        var programacionDependiente = programaciones.Where(z => z.Id == registro.Dependencies[0].SourceId).FirstOrDefault();
+                        registro.Start = programacionDependiente.Start.AddDays(registro.DesfaseComando);
+                        registro.End = registro.Start.AddDays(diferenciaDias).AddDays(registro.DesfaseComando);
+                        await EditarFechaProgramacionEstimada(registro, db);
+                        break;
+
+                    case 2://Comienzo Fin, por lo que la actividad comienza al termino de la anterior
+                        programacionDependiente = programaciones.Where(z => z.Id == registro.Dependencies[0].SourceId).FirstOrDefault();
+                        registro.Start = programacionDependiente.End.AddDays(registro.DesfaseComando);
+                        registro.End = registro.Start.AddDays(diferenciaDias).AddDays(registro.DesfaseComando);
+                        await EditarFechaProgramacionEstimada(registro, db);
+                        break;
+
+                    case 3://Fin Comienzo, por lo que la actividad termina cuando comienza la anterior
+                        programacionDependiente = programaciones.Where(z => z.Id == registro.Dependencies[0].SourceId).FirstOrDefault();
+                        registro.End = programacionDependiente.Start.AddDays(registro.DesfaseComando);
+                        registro.Start = registro.End.AddDays(-diferenciaDias).AddDays(registro.DesfaseComando);
+                        await EditarFechaProgramacionEstimada(registro, db);
+                        break;
+
+                    case 4://Fin Fin, por lo que la actividad termina cuando termina la anterior
+                        programacionDependiente = programaciones.Where(z => z.Id == registro.Dependencies[0].SourceId).FirstOrDefault();
+                        registro.End = programacionDependiente.End.AddDays(registro.DesfaseComando);
+                        registro.Start = registro.End.AddDays(-diferenciaDias).AddDays(registro.DesfaseComando);
+                        await EditarFechaProgramacionEstimada(registro, db);
+                        break;
+
+                    default:
+                        return;
+                        break;
                 }
             }
         }

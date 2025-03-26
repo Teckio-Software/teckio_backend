@@ -29,7 +29,7 @@ namespace SistemaERP.API.Controllers.Alumno09
         {
             using (var db = new Alumno09Context(_Options.Options))
             {
-                var programacionesEstimadas = _ProgramacionEstimadaGanttProceso.ObtenerProgramacionEstimadaXIdProyecto(IdProyecto, db).Result;
+                var programacionesEstimadas = await _ProgramacionEstimadaGanttProceso.ObtenerProgramacionEstimadaXIdProyecto(IdProyecto, db);
                 return programacionesEstimadas;
             }
         }
@@ -46,8 +46,8 @@ namespace SistemaERP.API.Controllers.Alumno09
         {
             using (var db = new Alumno09Context(_Options.Options))
             {
-                var programaciones = _ProgramacionEstimadaGanttProceso.EditarFechaProgramacionEstimada(registro, db);
-                return programaciones.Result;
+                var programaciones = await _ProgramacionEstimadaGanttProceso.EditarFechaProgramacionEstimada(registro, db);
+                return programaciones;
             }
         }
 
@@ -69,6 +69,33 @@ namespace SistemaERP.API.Controllers.Alumno09
             using (var db = new Alumno09Context(_Options.Options))
             {
                 await _ProgramacionEstimadaGanttProceso.AsignarProgreso(registro, db);
+            }
+        }
+
+        [HttpPut("generarDependenciaXNumerador")]
+        public async Task AsignarDependenciaXNumerador(ProgramacionEstimadaGanttDTO registro)
+        {
+            using (var db = new Alumno09Context(_Options.Options))
+            {
+                await _ProgramacionEstimadaGanttProceso.GenerarDependenciaXNumerador(registro, db);
+            }
+        }
+
+        [HttpPut("asignarComando")]
+        public async Task AsignarComando(ProgramacionEstimadaGanttDTO registro)
+        {
+            using (var db = new Alumno09Context(_Options.Options))
+            {
+                await _ProgramacionEstimadaGanttProceso.AsignarComando(registro, db);
+            }
+        }
+
+        [HttpPut("asignarDesfase")]
+        public async Task AsignarDesfase(ProgramacionEstimadaGanttDTO registro)
+        {
+            using (var db = new Alumno09Context(_Options.Options))
+            {
+                await _ProgramacionEstimadaGanttProceso.AsignarDesfase(registro, db);
             }
         }
     }

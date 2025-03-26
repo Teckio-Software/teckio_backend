@@ -11,6 +11,7 @@ namespace ERP_TECKIO
     public class ProgramacionEstimadaGanttDTO
     {
         public string Id { get; set; }
+        public int Numerador { get; set; }
         public string Name { get; set; }
         public int IdProyecto { get; set; }
         public bool EsSabado { get; set; }
@@ -31,6 +32,7 @@ namespace ERP_TECKIO
         public int DesfaseComando { get; set; }
         public string? Parent { get; set; }
         public string Type { get; set;  }
+        public int Predecesor { get; set; }
         public List<DependenciaProgramacionEstimadaDTO> Dependencies { get; set; }
     }
 
