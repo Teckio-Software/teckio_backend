@@ -67,15 +67,6 @@ namespace ERP_TECKIO
                 objetoEncontrado.Municipio = modelo.Municipio;
                 objetoEncontrado.CodigoPostal = modelo.CodigoPostal;
                 objetoEncontrado.RepresentanteLegal = modelo.RepresentanteLegal;
-                objetoEncontrado.IdCuentaContable = modelo.IdCuentaContable;
-                objetoEncontrado.IdIvaAcreditableContable = modelo.IdIvaAcreditableContable;
-                objetoEncontrado.IdIvaPorAcreditar = modelo.IdIvaPorAcreditar;
-                objetoEncontrado.IdCuentaAnticipos = modelo.IdCuentaAnticipos;
-                objetoEncontrado.IdCuentaRetencionIsr = modelo.IdCuentaRetencionIsr;
-                objetoEncontrado.IdCuentaRetencionIva = modelo.IdCuentaRetencionIva;
-                objetoEncontrado.IdEgresosIvaExento = modelo.IdEgresosIvaExento;
-                objetoEncontrado.IdEgresosIvaGravable = modelo.IdEgresosIvaGravable;
-                objetoEncontrado.IdIvaAcreditableFiscal = modelo.IdIvaAcreditableFiscal;
                 respuesta.Estatus = await _Repositorio.Editar(objetoEncontrado);
                 if (!respuesta.Estatus)
                 {
