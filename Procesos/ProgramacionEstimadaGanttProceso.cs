@@ -241,14 +241,14 @@ namespace ERP_TECKIO
                     case 1://Comienzo Comienzo, por lo que inician al mismo tiempo
                         var programacionDependiente = programaciones.Where(z => z.Id == registro.Dependencies[0].SourceId).FirstOrDefault();
                         registro.Start = programacionDependiente.Start.AddDays(registro.DesfaseComando);
-                        registro.End = registro.Start.AddDays(diferenciaDias).AddDays(registro.DesfaseComando);
+                        registro.End = registro.Start.AddDays(diferenciaDias);
                         await EditarFechaProgramacionEstimada(registro, db);
                         break;
 
                     case 2://Comienzo Fin, por lo que la actividad comienza al termino de la anterior
                         programacionDependiente = programaciones.Where(z => z.Id == registro.Dependencies[0].SourceId).FirstOrDefault();
                         registro.Start = programacionDependiente.End.AddDays(registro.DesfaseComando);
-                        registro.End = registro.Start.AddDays(diferenciaDias).AddDays(registro.DesfaseComando);
+                        registro.End = registro.Start.AddDays(diferenciaDias);
                         await EditarFechaProgramacionEstimada(registro, db);
                         break;
 
@@ -262,7 +262,7 @@ namespace ERP_TECKIO
                     case 4://Fin Fin, por lo que la actividad termina cuando termina la anterior
                         programacionDependiente = programaciones.Where(z => z.Id == registro.Dependencies[0].SourceId).FirstOrDefault();
                         registro.End = programacionDependiente.End.AddDays(registro.DesfaseComando);
-                        registro.Start = registro.End.AddDays(-diferenciaDias).AddDays(registro.DesfaseComando);
+                        registro.Start = registro.End.AddDays(-diferenciaDias);
                         await EditarFechaProgramacionEstimada(registro, db);
                         break;
 
@@ -301,28 +301,28 @@ namespace ERP_TECKIO
                     case 1://Comienzo Comienzo, por lo que inician al mismo tiempo
                         var programacionDependiente = programaciones.Where(z => z.Id == registro.Dependencies[0].SourceId).FirstOrDefault();
                         registro.Start = programacionDependiente.Start.AddDays(registro.DesfaseComando);
-                        registro.End = registro.Start.AddDays(diferenciaDias).AddDays(registro.DesfaseComando);
+                        registro.End = registro.Start.AddDays(diferenciaDias);
                         await EditarFechaProgramacionEstimada(registro, db);
                         break;
 
                     case 2://Comienzo Fin, por lo que la actividad comienza al termino de la anterior
                         programacionDependiente = programaciones.Where(z => z.Id == registro.Dependencies[0].SourceId).FirstOrDefault();
                         registro.Start = programacionDependiente.End.AddDays(registro.DesfaseComando);
-                        registro.End = registro.Start.AddDays(diferenciaDias).AddDays(registro.DesfaseComando);
+                        registro.End = registro.Start.AddDays(diferenciaDias);
                         await EditarFechaProgramacionEstimada(registro, db);
                         break;
 
                     case 3://Fin Comienzo, por lo que la actividad termina cuando comienza la anterior
                         programacionDependiente = programaciones.Where(z => z.Id == registro.Dependencies[0].SourceId).FirstOrDefault();
                         registro.End = programacionDependiente.Start.AddDays(registro.DesfaseComando);
-                        registro.Start = registro.End.AddDays(-diferenciaDias).AddDays(registro.DesfaseComando);
+                        registro.Start = registro.End.AddDays(-diferenciaDias);
                         await EditarFechaProgramacionEstimada(registro, db);
                         break;
 
                     case 4://Fin Fin, por lo que la actividad termina cuando termina la anterior
                         programacionDependiente = programaciones.Where(z => z.Id == registro.Dependencies[0].SourceId).FirstOrDefault();
                         registro.End = programacionDependiente.End.AddDays(registro.DesfaseComando);
-                        registro.Start = registro.End.AddDays(-diferenciaDias).AddDays(registro.DesfaseComando);
+                        registro.Start = registro.End.AddDays(-diferenciaDias);
                         await EditarFechaProgramacionEstimada(registro, db);
                         break;
 
