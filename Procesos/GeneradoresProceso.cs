@@ -1,7 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+using Microsoft.AspNetCore.Mvc;
+using ERP_TECKIO;
+using System.Data;
+using DocumentFormat.OpenXml.Spreadsheet;
+using ERP_TECKIO.Modelos;
 
 namespace ERP_TECKIO
 {
@@ -27,6 +31,11 @@ namespace ERP_TECKIO
         {
             try
             {
+                if (parametro.CantidadOperacion != "") {
+                    DataTable table = new DataTable();
+                    object result = table.Compute(parametro.CantidadOperacion, string.Empty);
+                    parametro.Cantidad = Convert.ToDecimal(result);
+                }
                 var Generador = await _Service.CrearYObtener(parametro);
                 var precioUnitario = await _PrecioUnitarioService.ObtenXId(parametro.IdPrecioUnitario);
                 var Generadores = await _Service.ObtenerTodosXIdPrecioUnitario(parametro.IdPrecioUnitario);
@@ -55,6 +64,12 @@ namespace ERP_TECKIO
         {
             try
             {
+                if (parametros.CantidadOperacion != "")
+                {
+                    DataTable table = new DataTable();
+                    object result = table.Compute(parametros.CantidadOperacion, string.Empty);
+                    parametros.Cantidad = Convert.ToDecimal(result);
+                }
                 var resultado = await _Service.Editar(parametros);
                 var generador = await _Service.ObtenXId(parametros.Id);
                 var precioUnitario = await _PrecioUnitarioService.ObtenXId(parametros.IdPrecioUnitario);

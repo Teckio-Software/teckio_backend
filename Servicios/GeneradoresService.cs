@@ -89,21 +89,21 @@ namespace ERP_TECKIO.Servicios
             try
             {
                 var modelo = _Mapper.Map<Generadores>(parametro);
-                var objetoEncontrado = await _Repositorio.Obtener(u => u.Id == modelo.Id);
+                var objetoEncontrado = await _Repositorio.Obtener(u => u.Id == parametro.Id);
                 if (objetoEncontrado == null)
                 {
                     respuesta.Estatus = false;
                     respuesta.Descripcion = "El insumo no existe";
                     return respuesta;
                 }
-                objetoEncontrado.Codigo = modelo.Codigo;
-                objetoEncontrado.EjeX = modelo.EjeX;
-                objetoEncontrado.EjeY = modelo.EjeY;
-                objetoEncontrado.EjeZ = modelo.EjeZ;
-                objetoEncontrado.Cantidad = modelo.Cantidad;
-                objetoEncontrado.X = modelo.X;
-                objetoEncontrado.Y = modelo.Y;
-                objetoEncontrado.Z = modelo.Z;
+                objetoEncontrado.Codigo = parametro.Codigo;
+                objetoEncontrado.EjeX = parametro.EjeX;
+                objetoEncontrado.EjeY = parametro.EjeY;
+                objetoEncontrado.EjeZ = parametro.EjeZ;
+                objetoEncontrado.Cantidad = parametro.Cantidad;
+                objetoEncontrado.X = parametro.X;
+                objetoEncontrado.Y = parametro.Y;
+                objetoEncontrado.Z = parametro.Z;
                 respuesta.Estatus = await _Repositorio.Editar(objetoEncontrado);
                 if (!respuesta.Estatus)
                 {

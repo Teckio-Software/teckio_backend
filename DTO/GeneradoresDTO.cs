@@ -28,5 +28,6 @@ namespace ERP_TECKIO
 
         public decimal Z { get; set; }
         public decimal CantidadTotal { get; set; }
+        public string CantidadOperacion { get; set; }
     }
 }
