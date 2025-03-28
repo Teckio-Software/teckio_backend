@@ -1361,7 +1361,8 @@ namespace ERP_TECKIO
         {
             try
             {
-                if(registro.IdInsumo != 0)
+                var insumoOriginal = await _InsumoService.ObtenXId(registro.IdInsumo);
+                if (registro.IdInsumo != 0)
                 {
                     var fsr = await _FsrxinsummoMdOService.ObtenerXIdInsumo(registro.IdInsumo);
                     if(fsr.Id > 0)
@@ -1370,13 +1371,29 @@ namespace ERP_TECKIO
                     }
                     else
                     {
-                        if(registro.CostoBase != 0 && registro.CostoUnitario != 0)
+                        if(registro.CostoBase != 0)
                         {
-                            registro.CostoUnitario = registro.CostoBase;
+                            if(registro.IdTipoInsumo == 10000)
+                            {
+                                var FSR = await _FSRService.ObtenerTodosXProyecto(insumoOriginal.IdProyecto);
+                                if(FSR.Count > 0)
+                                {
+                                    registro.CostoUnitario = registro.CostoBase * FSR[0].PorcentajeFsr;
+                                }
+                                else
+                                {
+                                    registro.CostoUnitario = registro.CostoBase;
+                                }
+
+                            }
+                            else
+                            {
+                                registro.CostoUnitario = registro.CostoBase;
+
+                            }
                         }
                     }
                 }
-                var insumoOriginal = await _InsumoService.ObtenXId(registro.IdInsumo);
                 //if (insumoOriginal.CostoUnitario != registro.CostoUnitario)
                 //{
                 //    var FSR = await _FSRService.ObtenerTodosXProyecto(insumoOriginal.IdProyecto);
