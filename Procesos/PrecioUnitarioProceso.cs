@@ -3396,7 +3396,7 @@ namespace ERP_TECKIO
             else
             {
                 FactorSalarioRealDTO FSR = new FactorSalarioRealDTO();
-                var ExisteFSR = await _FSRService.ObtenerTodosXProyecto(registro.IdProyecto);
+                var ExisteFSR = await _FSRService.ObtenerTodosXProyecto(insumoBase.IdProyecto);
                 foreach(var insumo in insumosFiltrados)
                 {
                     if (ExisteFSR.Count > 0)
