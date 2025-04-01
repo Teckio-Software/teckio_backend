@@ -1229,45 +1229,48 @@ namespace ERP_TECKIO
                         {
                             registro.EsCompuesto = false;
                         }
-                        nuevoRegistro = await _PrecioUnitarioDetalleService.CrearYObtener(registro);
-                        if (Detalle.EsCompuesto == true)
+                        if(Detalle.IdInsumo != registro.IdInsumo)
                         {
-                            var DetllesPU = await ObtenerDetallesPorPU(Detalle.IdPrecioUnitario, _dbContex);
-                            //var DetllesPU = Detalles.Where(z => z.IdPrecioUnitario == Detalle.IdPrecioUnitario).ToList();
-                            var DetallesHijos = DetllesPU.Where(z => z.IdPrecioUnitarioDetallePerteneciente == Detalle.Id).ToList();
-                            for (int i = 0; i < DetallesHijos.Count; i++)
+                            nuevoRegistro = await _PrecioUnitarioDetalleService.CrearYObtener(registro);
+                            if (Detalle.EsCompuesto == true)
                             {
-                                PrecioUnitarioDetalleDTO DetalleAuxiliar = new PrecioUnitarioDetalleDTO();
-                                DetalleAuxiliar.Cantidad = DetallesHijos[i].Cantidad;
-                                DetalleAuxiliar.EsCompuesto = DetallesHijos[i].EsCompuesto;
-                                DetalleAuxiliar.Id = DetallesHijos[i].Id;
-                                DetalleAuxiliar.IdPrecioUnitario = DetallesHijos[i].IdPrecioUnitario;
-                                DetalleAuxiliar.IdInsumo = DetallesHijos[i].IdInsumo;
-                                DetalleAuxiliar.CantidadExcedente = DetallesHijos[i].CantidadExcedente;
-                                DetalleAuxiliar.IdPrecioUnitarioDetallePerteneciente = DetallesHijos[i].IdPrecioUnitarioDetallePerteneciente;
-                                DetallesHijos[i].Id = 0;
-                                DetallesHijos[i].IdPrecioUnitario = registro.IdPrecioUnitario;
-                                DetallesHijos[i].IdPrecioUnitarioDetallePerteneciente = nuevoRegistro.Id;
-                                if (DetallesHijos[i].IdTipoInsumo == 10001)
+                                var DetllesPU = await ObtenerDetallesPorPU(Detalle.IdPrecioUnitario, _dbContex);
+                                //var DetllesPU = Detalles.Where(z => z.IdPrecioUnitario == Detalle.IdPrecioUnitario).ToList();
+                                var DetallesHijos = DetllesPU.Where(z => z.IdPrecioUnitarioDetallePerteneciente == Detalle.Id).ToList();
+                                for (int i = 0; i < DetallesHijos.Count; i++)
                                 {
-                                    var insumoNuevo = new InsumoCreacionDTO();
-                                    insumoNuevo.IdProyecto = precioUnitario.IdProyecto;
-                                    insumoNuevo.Codigo = DetallesHijos[i].Codigo;
-                                    insumoNuevo.Descripcion = DetallesHijos[i].Descripcion;
-                                    insumoNuevo.Unidad = DetallesHijos[i].Unidad;
-                                    insumoNuevo.CostoUnitario = DetallesHijos[i].CostoUnitario;
-                                    insumoNuevo.idTipoInsumo = DetallesHijos[i].IdTipoInsumo;
-                                    var insumoCreadoNuevo = await _InsumoService.CrearYObtener(insumoNuevo);
-                                    DetallesHijos[i].IdInsumo = insumoCreadoNuevo.id;
-                                }
-                                var nuevoDetalle = await _PrecioUnitarioDetalleService.CrearYObtener(DetallesHijos[i]);
-                                if (DetallesHijos[i].IdTipoInsumo == 10000 && DetallesHijos[i].EsCompuesto == false)
-                                {
-                                    await RecalcularPorcentajeManoDeObra(nuevoDetalle);
-                                }
-                                if (DetallesHijos[i].EsCompuesto == true)
-                                {
-                                    await CrearDetallesHijosCompuestoExistente(DetalleAuxiliar, nuevoDetalle, precioUnitario.IdProyecto);
+                                    PrecioUnitarioDetalleDTO DetalleAuxiliar = new PrecioUnitarioDetalleDTO();
+                                    DetalleAuxiliar.Cantidad = DetallesHijos[i].Cantidad;
+                                    DetalleAuxiliar.EsCompuesto = DetallesHijos[i].EsCompuesto;
+                                    DetalleAuxiliar.Id = DetallesHijos[i].Id;
+                                    DetalleAuxiliar.IdPrecioUnitario = DetallesHijos[i].IdPrecioUnitario;
+                                    DetalleAuxiliar.IdInsumo = DetallesHijos[i].IdInsumo;
+                                    DetalleAuxiliar.CantidadExcedente = DetallesHijos[i].CantidadExcedente;
+                                    DetalleAuxiliar.IdPrecioUnitarioDetallePerteneciente = DetallesHijos[i].IdPrecioUnitarioDetallePerteneciente;
+                                    DetallesHijos[i].Id = 0;
+                                    DetallesHijos[i].IdPrecioUnitario = registro.IdPrecioUnitario;
+                                    DetallesHijos[i].IdPrecioUnitarioDetallePerteneciente = nuevoRegistro.Id;
+                                    if (DetallesHijos[i].IdTipoInsumo == 10001)
+                                    {
+                                        var insumoNuevo = new InsumoCreacionDTO();
+                                        insumoNuevo.IdProyecto = precioUnitario.IdProyecto;
+                                        insumoNuevo.Codigo = DetallesHijos[i].Codigo;
+                                        insumoNuevo.Descripcion = DetallesHijos[i].Descripcion;
+                                        insumoNuevo.Unidad = DetallesHijos[i].Unidad;
+                                        insumoNuevo.CostoUnitario = DetallesHijos[i].CostoUnitario;
+                                        insumoNuevo.idTipoInsumo = DetallesHijos[i].IdTipoInsumo;
+                                        var insumoCreadoNuevo = await _InsumoService.CrearYObtener(insumoNuevo);
+                                        DetallesHijos[i].IdInsumo = insumoCreadoNuevo.id;
+                                    }
+                                    var nuevoDetalle = await _PrecioUnitarioDetalleService.CrearYObtener(DetallesHijos[i]);
+                                    if (DetallesHijos[i].IdTipoInsumo == 10000 && DetallesHijos[i].EsCompuesto == false)
+                                    {
+                                        await RecalcularPorcentajeManoDeObra(nuevoDetalle);
+                                    }
+                                    if (DetallesHijos[i].EsCompuesto == true)
+                                    {
+                                        await CrearDetallesHijosCompuestoExistente(DetalleAuxiliar, nuevoDetalle, precioUnitario.IdProyecto);
+                                    }
                                 }
                             }
                         }
@@ -1332,6 +1335,7 @@ namespace ERP_TECKIO
                     detallesFiltrados[i].Id = 0;
                     detallesFiltrados[i].IdPrecioUnitario = nuevoDetalle.IdPrecioUnitario;
                     detallesFiltrados[i].IdPrecioUnitarioDetallePerteneciente = nuevoDetalle.Id;
+                    if (detallesFiltrados[i].IdTipoInsumo == 10001)
                     {
                         var insumoNuevo = new InsumoCreacionDTO();
                         insumoNuevo.IdProyecto = IdProyecto;
