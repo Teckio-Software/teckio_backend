@@ -1128,7 +1128,7 @@ namespace ERP_TECKIO
 
                 if (registro.IdTipoInsumo == 10000)
                 {
-                    registro.CostoUnitario = registro.CostoUnitario * FSR[0].PorcentajeFsr;
+                    registro.CostoUnitario = registro.CostoBase * FSR[0].PorcentajeFsr;
                 }
                 if (registro.IdTipoInsumo == 10001)
                 {
@@ -1155,7 +1155,15 @@ namespace ERP_TECKIO
                     insumo.Descripcion = registro.Descripcion;
                     insumo.Unidad = registro.Unidad;
                     insumo.idTipoInsumo = registro.IdTipoInsumo;
-                    insumo.CostoUnitario = registro.CostoUnitario;
+                    insumo.CostoBase = registro.CostoBase;
+                    if(insumo.idTipoInsumo != 10000 && insumo.idTipoInsumo != 10001 && insumo.idTipoInsumo != 10006)
+                    {
+                        insumo.CostoUnitario = registro.CostoBase;
+                    }
+                    else
+                    {
+                        insumo.CostoUnitario = registro.CostoUnitario;
+                    }
                     insumo.IdProyecto = PU.IdProyecto;
                     if (registro.IdFamiliaInsumo == 0)
                     {
