@@ -1,14 +1,18 @@
 ﻿using AutoMapper;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using ERP_TECKIO.DTO;
 using ERP_TECKIO.Modelos;
 using ERP_TECKIO.Procesos;
 using ERP_TECKIO.Servicios;
 using ERP_TECKIO.Servicios.Contratos;
+using ExcelDataReader;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Writers;
 using Microsoft.Win32;
+using OfficeOpenXml;
 using SpreadsheetLight;
 using System.Collections.Generic;
 using System.Data;
@@ -2500,6 +2504,126 @@ namespace ERP_TECKIO
             return total;
         }
 
+        public async Task CrearPresupuestoConExel(List<IFormFile> files, int IdProyecto)
+        {
+            foreach (var document in files) {
+                var PreciosImportados = new List<PrecioUnitarioDTO>();
+                var nombreDocument = document.FileName;
+                using (var stream = new MemoryStream())
+                {
+                    await document.CopyToAsync(stream); // Copiar el archivo al MemoryStream
+                    stream.Position = 0; // Reiniciar la posición del stream
+
+                    // Registrar codificación para evitar problemas con caracteres especiales
+                    System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+                    using (var reader = ExcelReaderFactory.CreateReader(stream))
+                    {
+                        do
+                        {
+                            while (reader.Read())
+                            {
+                                if (reader.GetValue(0) == null)
+                                {
+                                    continue;
+                                }
+                                if (reader.GetValue(0).ToString().ToUpper() == "CLAVE")
+                                {
+                                    continue;
+                                }
+                                var nuevoPU = new PrecioUnitarioDTO
+                                {
+                                    Codigo = reader.GetValue(0) != null? reader.GetValue(0)?.ToString() : "",
+                                    Descripcion = reader.GetValue(1) != null? reader.GetValue(1)?.ToString() : "",
+                                    Unidad = reader.GetValue(1) != null? reader.GetValue(2)?.ToString() : "",
+                                    Cantidad = Convert.ToInt32(reader.GetValue(3) ?? 0),
+                                    CodigoPadre = reader.GetValue(4) != null? reader.GetValue(4)?.ToString() : "",
+                                    IdProyecto = IdProyecto
+                                };
+                                PreciosImportados.Add(nuevoPU);
+                            }
+                        } while (reader.NextResult());
+                    }
+
+                }
+
+                var padres = PreciosImportados.Where(z => z.CodigoPadre == "").ToList();
+                foreach (var item in padres)
+                {
+                    item.Hijos = await EstructurarPresupuestoExcelHijos(PreciosImportados, item);
+                    if (item.Hijos.Count() > 0)
+                    {
+                        item.TipoPrecioUnitario = 0;
+                        item.Cantidad = 1;
+                    }
+                    else
+                    {
+                        item.TipoPrecioUnitario = 1;
+                    }
+                }
+                var NuevaPartidas = new List<PrecioUnitarioDTO>();
+                NuevaPartidas.Add(new PrecioUnitarioDTO()
+                {
+                    Codigo = document.FileName,
+                    Descripcion = "Presupuesto importado de " + document.FileName,
+                    TipoPrecioUnitario = 0,
+                    Cantidad = 1,
+                    IdProyecto = IdProyecto,
+                    Hijos = padres,
+                });
+
+                var paraetros = new PreciosParaEditarPosicionDTO();
+                paraetros.Seleccionado = new PrecioUnitarioDTO();
+                paraetros.Seleccionado.IdProyecto = IdProyecto;
+
+                var registrosSinEstructurar = await ObtenerPrecioUnitarioSinEstructurar(IdProyecto);
+
+                await CopiarPU(NuevaPartidas, 0, paraetros, registrosSinEstructurar, _dbContex);
+            }
+            
+            return;
+        }
+
+        public async Task<List<PrecioUnitarioDTO>> EstructurarPresupuestoExcel(List<PrecioUnitarioDTO> lista) {
+            var listaEstructurada = new List<PrecioUnitarioDTO>();
+            var padres = lista.Where(z => z.CodigoPadre == "").ToList();
+            foreach (var item in padres) {
+                 item.Hijos = await EstructurarPresupuestoExcelHijos(lista, item);
+                if (item.Hijos.Count()>0) {
+                    item.TipoPrecioUnitario = 0;
+                    item.Cantidad = 1;
+                }
+                else
+                {
+                    item.TipoPrecioUnitario = 1;
+                }
+            }
+
+            return padres;
+        }
+
+        public async Task<List<PrecioUnitarioDTO>> EstructurarPresupuestoExcelHijos(List<PrecioUnitarioDTO> lista, PrecioUnitarioDTO padre)
+        {
+            var listaEstructurada = new List<PrecioUnitarioDTO>();
+            var hijos = lista.Where(z => z.CodigoPadre == padre.Codigo).ToList();
+            foreach (var item in hijos)
+            {
+                item.TipoPrecioUnitario = 0;
+                item.Hijos = await EstructurarPresupuestoExcelHijos(lista, item);
+                if (item.Hijos.Count() > 0)
+                {
+                    item.TipoPrecioUnitario = 0;
+                    item.Cantidad = 1;
+                }
+                else
+                {
+                    item.TipoPrecioUnitario = 1;
+                }
+            }
+
+            return hijos;
+        }
+
         public async Task CreardeExcel(int numero)
         {
             string path = @"D:\ExcelBimsa\Libro1.xlsx";
@@ -3332,30 +3456,35 @@ namespace ERP_TECKIO
                     precios[i].IdProyecto = IdProyecto;
                     var Id = precios[i].Id;
                     precios[i].Id = 0;
+                    var nuevoConcepto = new ConceptoDTO();
+                    nuevoConcepto.IdProyecto = IdProyecto;
+                    nuevoConcepto.Codigo = precios[i].Codigo;
+                    nuevoConcepto.Descripcion = precios[i].Descripcion;
+                    nuevoConcepto.Unidad = precios[i].Unidad;
+                    nuevoConcepto.CostoUnitario = 0;
+                    var conceptoCreado = await _ConceptoService.CrearYObtener(nuevoConcepto);
+                    precios[i].IdConcepto = conceptoCreado.Id;
                     var nuevoRegistro = await _PrecioUnitarioService.CrearYObtener(precios[i]);
                     var Proyecto = await _ProyectoService.ObtenXId(IdProyecto);
-                    ProgramacionEstimadaDTO nuevaProgramacion = new ProgramacionEstimadaDTO();
+                    ProgramacionEstimadaGanttDTO nuevaProgramacion = new ProgramacionEstimadaGanttDTO();
                     nuevaProgramacion.IdConcepto = nuevoRegistro.IdConcepto;
-                    nuevaProgramacion.Inicio = Proyecto.FechaInicio;
-                    nuevaProgramacion.Termino = Proyecto.FechaInicio;
+                    nuevaProgramacion.Start = Proyecto.FechaInicio;
+                    nuevaProgramacion.End = Proyecto.FechaInicio;
                     nuevaProgramacion.IdProyecto = Proyecto.Id;
                     nuevaProgramacion.IdPrecioUnitario = nuevoRegistro.Id;
-                    nuevaProgramacion.DiasTranscurridos = 1;
-                    nuevaProgramacion.Nivel = nuevoRegistro.Nivel;
-                    nuevaProgramacion.Progreso = 0;
-                    nuevaProgramacion.IdPredecesora = 0;
+                    nuevaProgramacion.Duracion = 1;
+                    nuevaProgramacion.Progress = 0;
                     if (nuevoRegistro.IdPrecioUnitarioBase != 0)
                     {
                         var programacionesEstimadas = await _ProgramacionEstimadaService.ObtenerTodosXProyecto(Proyecto.Id);
                         var programacionEstimadaPadre = programacionesEstimadas.Where(z => z.IdPrecioUnitario == nuevoRegistro.IdPrecioUnitarioBase).FirstOrDefault();
-                        nuevaProgramacion.IdPadre = programacionEstimadaPadre.Id;
+                        nuevaProgramacion.Parent = Convert.ToString(programacionEstimadaPadre.Id);
                     }
                     else
                     {
-                        nuevaProgramacion.IdPadre = 0;
+                        nuevaProgramacion.Parent = "0";
                     }
-                    await _ProgramacionEstimadaService.CrearYObtener(nuevaProgramacion);
-                    nuevaProgramacion.Predecesor = "";
+                    await _ProgramacionEstimadaGanttService.CrearYObtener(nuevaProgramacion);
                     if (precios[i].Hijos.Count > 0)
                     {
                         await CopiarPU(precios[i].Hijos, nuevoRegistro.Id, registros, registrosSinEstructurar, db);

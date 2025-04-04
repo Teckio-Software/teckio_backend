@@ -34,6 +34,7 @@ namespace ERP_TECKIO
         public string ImporteSeriesConFormato { get; set; }
         public bool Expandido { get; set; }
         public int Posicion { get; set; }
+        public string CodigoPadre { get; set; }
     }
 
     public class PrecioUnitarioDTO : PrecioUnitarioAbstractaDTO

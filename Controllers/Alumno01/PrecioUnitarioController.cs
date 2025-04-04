@@ -120,6 +120,13 @@ namespace ERP_TECKIO
             return NoContent();
         }
 
+        [HttpPost("importarPresupuestoExcel")]
+        public async Task<ActionResult> Excel([FromForm] List<IFormFile> files, [FromForm] int idProyecto)
+        {
+            await _precioUnitarioProceso.CrearPresupuestoConExel(files, idProyecto);
+            return NoContent();
+        }
+
         [HttpPost("excelInsumos")]
         public async Task<ActionResult> ExcelInsumos(int i)
         {
