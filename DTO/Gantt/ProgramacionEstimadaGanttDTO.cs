@@ -34,6 +34,7 @@ namespace ERP_TECKIO
         public string Type { get; set;  }
         public int Predecesor { get; set; }
         public List<DependenciaProgramacionEstimadaDTO> Dependencies { get; set; }
+        public string CadenaDependencias { get; set; }
     }
 
     public class ProgramacionEstimadaGanttDeserealizadaDTO

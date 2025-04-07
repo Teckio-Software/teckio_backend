@@ -72,6 +72,17 @@ namespace SistemaERP.API.Controllers.Alumno03
             }
         }
 
+        [HttpPut("asignarDuracion")]
+        public async Task<List<ProgramacionEstimadaGanttDTO>> AsignarDuracion(ProgramacionEstimadaGanttDTO registro)
+        {
+            using (var db = new Alumno03Context(_Options.Options))
+            {
+                registro.End = registro.Start.AddDays(registro.Duracion);
+                var programaciones = await _ProgramacionEstimadaGanttProceso.EditarFechaProgramacionEstimada(registro, db);
+                return programaciones;
+            }
+        }
+
         [HttpPut("generarDependenciaXNumerador")]
         public async Task AsignarDependenciaXNumerador(ProgramacionEstimadaGanttDTO registro)
         {

@@ -39,6 +39,7 @@ namespace ERP_TECKIO
             var dependencias = await _DependenciaProgramacionEstimadaService.ObtenerXIdProyecto(IdProyecto, db);
             foreach(ProgramacionEstimadaGanttDTO registro in programacionesEstimadas)
             {
+                registro.Duracion = (registro.End - registro.Start).Days;
                 if(registro.TipoPrecioUnitario == 1)
                 {
                     registro.Dependencies = dependencias.Where(z => z.IdProgramacionEstimadaGantt == Convert.ToInt32(registro.Id)).ToList();
@@ -58,6 +59,22 @@ namespace ERP_TECKIO
                     listaEnumerada = ObtenerNumeracionHijosProgramacionEstimada(listaEnumerada, hijos, programacionesEstimadas).Result;
                 }
             }
+
+            foreach (ProgramacionEstimadaGanttDTO registro in listaEnumerada)
+            {
+                registro.Duracion = (registro.End - registro.Start).Days;
+                if (registro.TipoPrecioUnitario == 1)
+                {
+                    registro.Dependencies = dependencias.Where(z => z.IdProgramacionEstimadaGantt == Convert.ToInt32(registro.Id)).ToList();
+                    var Cadena = "";
+                    foreach (var dependencia in registro.Dependencies) {
+                        var numero = listaEnumerada.Where(z => z.Id == dependencia.SourceId).First();
+                        Cadena = Cadena + numero.Numerador +",";
+                    }
+                    registro.CadenaDependencias = Cadena;
+                }
+            }
+
             return listaEnumerada;
         }
 
@@ -169,6 +186,7 @@ namespace ERP_TECKIO
                 }
             }
         }
+
 
         public async Task RecalcularProgresoPadre(ProgramacionEstimadaGanttDTO registro, DbContext db)
         {
