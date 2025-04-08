@@ -7,8 +7,7 @@ public partial class FacturaDetalle
 
     public int IdFactura { get; set; }
 
-    public string Descripcion { get; set; } = null!;
-
+    public string Descripcion { get; set; }
     public decimal Cantidad { get; set; }
 
     public decimal PrecioUnitario { get; set; }
@@ -18,7 +17,11 @@ public partial class FacturaDetalle
     public decimal Importe { get; set; }
 
     public decimal Descuento { get; set; }
+    public int IdProductoYservicio { get; set; }
+
 
     public virtual ICollection<FacturaDetalleImpuesto> FacturaDetalleImpuestos { get; set; } = new List<FacturaDetalleImpuesto>();
     public virtual Factura IdFacturaNavigation { get; set; } = null!;
+    public virtual ProductoYservicio IdProductoYservicioNavigation { get; set; } = null!;
+
 }

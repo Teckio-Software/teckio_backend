@@ -14,6 +14,15 @@ public partial class Factura : FacturaAbstract
     public virtual ICollection<FacturaEmisor> FacturaEmisors { get; set; } = new List<FacturaEmisor>();
     public virtual ICollection<FacturaReceptor> FacturaReceptors { get; set; } = new List<FacturaReceptor>();
     public virtual ICollection<MovimientoBancario> MovimientosBancarios { get; set; } = new List<MovimientoBancario>();
+    public virtual Clientes IdClienteNavigation { get; set; } = null!;
+
+    public virtual FormaPagoSat IdFormaPagoNavigation { get; set; } = null!;
+
+    public virtual MonedaSat IdMonedaSatNavigation { get; set; } = null!;
+
+    public virtual RegimenFiscalSat IdRegimenFiscalSatNavigation { get; set; } = null!;
+
+    public virtual UsoCfdiSat IdUsoCfdiNavigation { get; set; } = null!;
 }
 
 public abstract class FacturaAbstract
@@ -30,8 +39,6 @@ public abstract class FacturaAbstract
 
     public string RfcEmisor { get; set; } = null!;
 
-    public string RfcReceptor { get; set; } = null!;
-
     public decimal Subtotal { get; set; }
 
     public decimal Total { get; set; }
@@ -40,11 +47,9 @@ public abstract class FacturaAbstract
 
     public string FolioCfdi { get; set; } = null!;
 
-    public bool Estatus { get; set; }
+    public int Estatus { get; set; }
 
     public int Tipo { get; set; }
-
-    public string Moneda { get; set; } = null!;
 
     public int Modalidad { get; set; }
 
@@ -52,12 +57,30 @@ public abstract class FacturaAbstract
 
     public string MetodoPago { get; set; } = null!;
 
-    public string FormaPago { get; set; } = null!;
+    public decimal Descuento { get; set; }
+
+    public long? IdArchivoPdf { get; set; }
 
     public bool? EstatusEnviadoCentroCostos { get; set; }
-    public decimal Descuento { get; set; }
-    public long? IdArchivoPdf { get; set; } = null!;
+
     public string VersionFactura { get; set; } = null!;
+
     public string CodigoPostal { get; set; } = null!;
+
+    public decimal TipoCambio { get; set; }
+
+    public string FormaPago { get; set; } = null!;
+    public string Moneda { get; set; } = null!;
+    public string RfcReceptor { get; set; } = null!;
+
+    public int IdCliente { get; set; }
+
+    public int IdFormaPago { get; set; }
+
+    public int IdRegimenFiscalSat { get; set; }
+
+    public int IdUsoCfdi { get; set; }
+
+    public int IdMonedaSat { get; set; }
 
 }

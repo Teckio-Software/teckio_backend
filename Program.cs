@@ -116,6 +116,10 @@ builder.Services.AddDbContext<Alumno32Context>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("alumno32"));
 });
+builder.Services.AddDbContext<Alumno35Context>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno35"));
+});
 
 // Add services to the container.
 builder.Services.AddSingleton(provIder =>

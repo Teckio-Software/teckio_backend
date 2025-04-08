@@ -945,11 +945,11 @@ namespace ERP_TECKIO
             //     opt => opt.Ignore());
             #endregion
             #region FacturaCentroCostos
-            CreateMap<FacturaDetalleDTO, FacturaDetalleCentroCostosDTO>()
-           .ForMember(destino => destino.Tipo,
-                opt => opt.MapFrom(origen => origen.IdFactura > 0 ? 1 : 0))
-           .ForMember(destino => destino.CuentaContable,
-                opt => opt.MapFrom(origen => origen.IdFactura > 0 ? "" : ""));
+           // CreateMap<FacturaDetalleDTO, FacturaDetalleCentroCostosDTO>()
+           //.ForMember(destino => destino.Tipo,
+           //     opt => opt.MapFrom(origen => origen.IdFactura > 0 ? 1 : 0))
+           //.ForMember(destino => destino.CuentaContable,
+           //     opt => opt.MapFrom(origen => origen.IdFactura > 0 ? "" : ""));
             #endregion
             #region PolizaProveedores
             CreateMap<PolizaProveedores, PolizaProveedoresDTO>();
