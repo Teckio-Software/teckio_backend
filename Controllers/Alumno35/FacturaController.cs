@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static ERP_TECKIO.Procesos.ObtenFacturaProceso;
 
 namespace ERP_TECKIO.Controllers.Alumno01
 {
@@ -12,15 +11,15 @@ namespace ERP_TECKIO.Controllers.Alumno01
 
     public class FacturaAlumno35Controller : ControllerBase
     {
-        private readonly ObtenFacturaProceso _obtenFacturaProceso;
+        private readonly ObtenFacturaProceso<Alumno35Context> _obtenFacturaProceso;
         public FacturaAlumno35Controller(
-            ObtenFacturaProceso obtenFacturaProceso
+            ObtenFacturaProceso<Alumno35Context> obtenFacturaProceso
             ) {
             _obtenFacturaProceso = obtenFacturaProceso;
         }
 
         [HttpGet("obtenerProductos")]
-        public async Task<ActionResult<List<ConceptosExcelDTO>>> ObteneProductos()
+        public async Task<ActionResult<bool>> ObteneProductos()
         {
             var productos = await _obtenFacturaProceso.ObtenerProductos();
             return productos;
