@@ -1,13 +1,15 @@
 ﻿using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.EntityFrameworkCore;
 using SpreadsheetLight;
 using System.Xml;
 using System.Xml.Linq;
 
 namespace ERP_TECKIO.Procesos
 {
-    public class ObtenFacturaProceso
+    public class ObtenFacturaProceso<T> where T : DbContext
     {
+        
         public ObtenFacturaProceso()
         {
 
@@ -22,7 +24,7 @@ namespace ERP_TECKIO.Procesos
             public decimal CostoUnitario { get; set; }
         }
 
-        public async Task<List<ConceptosExcelDTO>> ObtenerProductos()
+        public async Task<bool> ObtenerProductos()
         {
             List<ConceptosExcelDTO> productos = new List<ConceptosExcelDTO>();
             string rutaExcel = @"C:\Users\dev_8\Downloads\ListadoCfdi.xlsx";
@@ -64,7 +66,7 @@ namespace ERP_TECKIO.Procesos
             var conceptosOrdenados = productos.OrderBy(z => z.ClaveProducto).ToList();
             await GenerarExcelConceptos(conceptosOrdenados);
 
-            return conceptosOrdenados;
+            return true;
         }
 
         private List<string> LeerExcelConClosedXml(string rutaExcel)

@@ -141,7 +141,6 @@ public partial class Alumno35Context : DbContext
     public virtual DbSet<FsrxinsummoMdO> FsrxinsummoMdOs { get; set; }
 
     public virtual DbSet<FsrxinsummoMdOdetalle> FsrxinsummoMdOdetalles { get; set; }
-    public virtual DbSet<Producto> Productos { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<FsixinsummoMdO>(entity =>
@@ -1767,17 +1766,6 @@ public partial class Alumno35Context : DbContext
 
             entity.Property(e => e.Codigo).HasMaxLength(20);
             entity.Property(e => e.Descripcion).HasMaxLength(50);
-        });
-
-        modelBuilder.Entity<Producto>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK_TipoPoliza_2024_05_14");
-
-            entity.ToTable("Producto");
-
-            entity.Property(e => e.Clave).HasMaxLength(8);
-            entity.Property(e => e.UnidadSat).HasMaxLength(5);
-            entity.Property(e => e.Descripcion).HasMaxLength(200);
         });
 
         base.OnModelCreating(modelBuilder);
