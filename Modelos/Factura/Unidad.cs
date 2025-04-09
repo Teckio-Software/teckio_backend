@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ERP_TECKIO;
+namespace ERP_TECKIO.Modelos.Factura;
 
 public partial class Unidad
 {

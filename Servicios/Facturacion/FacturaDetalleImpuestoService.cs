@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using ERP_TECKIO.Modelos;
+using ERP_TECKIO.Servicios.Contratos.Facturacion;
 using Microsoft.EntityFrameworkCore;
 
-namespace ERP_TECKIO.Servicios
+namespace ERP_TECKIO.Servicios.Facturacion
 {
     public class FacturaDetalleImpuestoService<T> : IFacturaDetalleImpuestoService<T> where T : DbContext
     {

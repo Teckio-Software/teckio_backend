@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace ERP_TECKIO;
+namespace ERP_TECKIO.Modelos.Factura;
 
-public partial class RegimenFiscalSat
+public partial class UsoCfdiSat
 {
     public int Id { get; set; }
 
@@ -12,7 +12,7 @@ public partial class RegimenFiscalSat
 
     public string Descripcion { get; set; } = null!;
 
-    public int TipoRegimenFiscal { get; set; }
+    public int TipoPersona { get; set; }
 
     public virtual ICollection<Factura> Facturas { get; set; } = new List<Factura>();
 }

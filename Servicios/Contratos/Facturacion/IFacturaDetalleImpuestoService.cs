@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 
-namespace ERP_TECKIO
+namespace ERP_TECKIO.Servicios.Contratos.Facturacion
 {
     public interface IFacturaDetalleImpuestoService<TContext> where TContext : DbContext
     {

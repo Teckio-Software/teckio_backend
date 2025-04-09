@@ -5,11 +5,11 @@ using SpreadsheetLight;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace ERP_TECKIO.Procesos
+namespace ERP_TECKIO.Procesos.Facturacion
 {
     public class ObtenFacturaProceso<T> where T : DbContext
     {
-        
+
         public ObtenFacturaProceso()
         {
 
@@ -104,7 +104,8 @@ namespace ERP_TECKIO.Procesos
             };
         }
 
-        public async Task GenerarExcelConceptos(List<ConceptosExcelDTO> conceptos) {
+        public async Task GenerarExcelConceptos(List<ConceptosExcelDTO> conceptos)
+        {
             var path = @"C:\Users\dev_8\Downloads\Conceptos\";
             string carpeta = Path.GetDirectoryName(path);
             if (!Directory.Exists(carpeta))
