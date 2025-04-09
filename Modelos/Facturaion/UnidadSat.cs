@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ERP_TECKIO.Modelos.Factura;
+namespace ERP_TECKIO.Modelos.Facturacion;
 
 public partial class UnidadSat
 {

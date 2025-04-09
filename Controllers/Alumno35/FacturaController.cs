@@ -1,4 +1,4 @@
-﻿using ERP_TECKIO.Procesos;
+﻿using ERP_TECKIO.Procesos.Facturacion;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

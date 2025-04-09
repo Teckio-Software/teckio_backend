@@ -2,17 +2,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace ERP_TECKIO.Modelos.Factura;
+namespace ERP_TECKIO.Modelos.Facturacion;
 
-public partial class UsoCfdiSat
+public partial class FormaPagoSat
 {
     public int Id { get; set; }
 
     public string Clave { get; set; } = null!;
 
-    public string Descripcion { get; set; } = null!;
-
-    public int TipoPersona { get; set; }
+    public string Concepto { get; set; } = null!;
 
     public virtual ICollection<Factura> Facturas { get; set; } = new List<Factura>();
 }

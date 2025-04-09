@@ -1,17 +1,19 @@
 ﻿using AutoMapper;
 using ERP_TECKIO.Modelos;
+using ERP_TECKIO.Servicios.Contratos.Facturacion;
 using Microsoft.EntityFrameworkCore;
 
-namespace ERP_TECKIO.Servicios
+namespace ERP_TECKIO.Servicios.Facturacion
 {
-    public class FacturaService<T> : IFacturaService<T>  where T : DbContext
+    public class FacturaService<T> : IFacturaService<T> where T : DbContext
     {
         private readonly IGenericRepository<Factura, T> _repository;
         private readonly IMapper _mapper;
         public FacturaService(
             IGenericRepository<Factura, T> repository,
             IMapper mapper
-            ) {
+            )
+        {
             _repository = repository;
             _mapper = mapper;
         }

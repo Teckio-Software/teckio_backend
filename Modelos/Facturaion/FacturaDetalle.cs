@@ -1,4 +1,6 @@
-﻿namespace ERP_TECKIO.Modelos;
+﻿using ERP_TECKIO.Modelos.Facturacion;
+
+namespace ERP_TECKIO.Modelos;
 
 public partial class FacturaDetalle
 {
