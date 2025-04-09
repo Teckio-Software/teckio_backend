@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Writers;
 using Microsoft.Win32;
-using OfficeOpenXml;
+//using OfficeOpenXml;
 using SpreadsheetLight;
 using System.Collections.Generic;
 using System.Data;
@@ -225,6 +225,7 @@ namespace ERP_TECKIO
 
                         var registro2 = insumos.Where(z => z.id == detallesFiltradosSinPorcentaje[i].IdInsumo).FirstOrDefault();
                         registro2.CostoUnitario = datosDetalles.Total;
+                        registro2.CostoBase = datosDetalles.Total;
                         await _InsumoService.Editar(registro2);
                         detallesFiltradosSinPorcentaje[i].CostoUnitario = datosDetalles.Total;
                         total = total + detallesFiltradosSinPorcentaje[i].CostoUnitario * detallesFiltradosSinPorcentaje[i].Cantidad;
@@ -253,7 +254,6 @@ namespace ERP_TECKIO
                     {
                         await RecalcularPorcentajeManoDeObra(detallesFiltradosSinPorcentaje[i]);
                     }
-                    detallesFiltradosPorcentaje[i].CostoUnitario = totalAux;
                     await _PrecioUnitarioDetalleService.Editar(detallesFiltradosPorcentaje[i]);
                     total = total + detallesFiltradosPorcentaje[i].CostoUnitario * detallesFiltradosPorcentaje[i].Cantidad;
                 }
@@ -285,10 +285,13 @@ namespace ERP_TECKIO
                         if (detallesParaPrueba.Count > 0)
                         {
                             datosDetalles = await RecalcularDetallesHijos(IdPrecioUnitario, detallesFiltradosSinPorcentaje[i], detalles, insumos);
-                            insumos.Where(z => z.id == detallesFiltradosSinPorcentaje[i].IdInsumo).FirstOrDefault().CostoUnitario = datosDetalles.Total;
+                            var registro2 = insumos.Where(z => z.id == detallesFiltradosSinPorcentaje[i].IdInsumo).FirstOrDefault();
+                            registro2.CostoUnitario = datosDetalles.Total;
+                            registro2.CostoBase = datosDetalles.Total;
                             await _InsumoService.Editar(insumos.Where(z => z.id == detallesFiltradosSinPorcentaje[i].IdInsumo).FirstOrDefault());
                             //await RecalcularAfectados(insumo.id);
                             detallesFiltradosSinPorcentaje[i].CostoUnitario = datosDetalles.Total;
+                            detallesFiltradosSinPorcentaje[i].CostoBase = datosDetalles.Total;
                         }
                         total = total + detallesFiltradosSinPorcentaje[i].CostoUnitario * detallesFiltradosSinPorcentaje[i].Cantidad;
                         detalles.Where(z => z.Id == detallesFiltradosSinPorcentaje[i].Id).FirstOrDefault().CostoUnitario = datosDetalles.Total;
@@ -309,11 +312,6 @@ namespace ERP_TECKIO
                 {
                     for (int i = 0; i < detallesFiltradosPorcentaje.Count; i++)
                     {
-                        if (insumos.Where(z => z.id == detallesFiltradosSinPorcentaje[i].IdInsumo).FirstOrDefault().idTipoInsumo == 10000)
-                        {
-                            await RecalcularPorcentajeManoDeObra(detallesFiltradosSinPorcentaje[i]);
-                        }
-                        detallesFiltradosPorcentaje[i].CostoUnitario = totalAux;
                         await _PrecioUnitarioDetalleService.Editar(detallesFiltradosPorcentaje[i]);
                         total = total + totalAux * detallesFiltradosPorcentaje[i].Cantidad;
                     }
@@ -1518,6 +1516,8 @@ namespace ERP_TECKIO
                 concepto.CostoUnitario = datos.Total;
                 await _ConceptoService.Editar(concepto);
                 await RecalcularPrecioUnitario(precioUnitario);
+                detalles = await ObtenerDetallesPorPU(precioUnitario.Id, _dbContex);
+                detallesFiltrados = detalles.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.IdPrecioUnitarioDetallePerteneciente).ToList();
 
                 return detallesFiltrados;
             }
