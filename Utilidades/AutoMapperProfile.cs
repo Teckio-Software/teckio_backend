@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using ERP_TECKIO.DTO;
+using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.DTO.Usuario;
 using ERP_TECKIO.Modelos;
+using ERP_TECKIO.Modelos.Facturacion;
 using ERP_TECKIO.Modelos.Presupuesto;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -797,6 +799,30 @@ namespace ERP_TECKIO
             CreateMap<FacturaDetalleDTO, FacturaDetalle>()
            .ForMember(destino => destino.IdFacturaNavigation,
                 opt => opt.Ignore());
+            #endregion
+            #region MonedaSat
+            CreateMap<MonedaSat, MonedaSatDTO>();
+            CreateMap<MonedaSatDTO, MonedaSat>();
+            #endregion
+            #region FormaPagoSat
+            CreateMap<FormaPagoSat, FormaPagoSatDTO>();
+            CreateMap<FormaPagoSatDTO, FormaPagoSat>();
+            #endregion
+            #region RegimenFiscalSat
+            CreateMap<RegimenFiscalSat, RegimenFiscalSatDTO>();
+            CreateMap<RegimenFiscalSatDTO, RegimenFiscalSat>();
+            #endregion
+            #region UnidadSat
+            CreateMap<UnidadSat, UnidadSatDTO>();
+            CreateMap<UnidadSatDTO, UnidadSat>();
+            #endregion
+            #region ProductoYServicioSat
+            CreateMap<ProductoYservicioSat, ProductoYServicioSatDTO>();
+            CreateMap<ProductoYServicioSatDTO, ProductoYservicioSat>();
+            #endregion
+            #region UsoCfdiSat
+            CreateMap<UsoCfdiSat, UsoCfdiSatDTO>();
+            CreateMap<UsoCfdiSatDTO, UsoCfdiSat>();
             #endregion
             #region AcuseValidacion
             CreateMap<AcuseValidacion, AcuseValidacionDTO>();
