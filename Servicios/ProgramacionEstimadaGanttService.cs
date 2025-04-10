@@ -73,34 +73,40 @@ namespace ERP_TECKIO.Servicios
                 select 
                 PEG.Id
                 , PEG.IdProyecto
+                , P.EsSabado
+                , P.EsDomingo
                 , PEG.IdPrecioUnitario
                 , PU.Cantidad
                 , PU.TipoPrecioUnitario
+                , CASE WHEN PU.TipoPrecioUnitario = 1 THEN 'task' ELSE 'project' END as Type
                 , PEG.IdConcepto
                 , C.Codigo
                 , C.Descripcion
+                , C.Descripcion as Name
                 , C.CostoUnitario
                 , C.CostoUnitario * PU.Cantidad as Importe 
                 , PEG.FechaInicio
                 , PEG.FechaTermino
                 , PEG.Duracion
-                , PEG.Progreso
+                , PEG.Progreso as Progress
                 , PEG.Comando
                 , PEG.DesfaseComando
-                , PEG.IdPadre
+                , CASE WHEN PEG.IdPadre != 0 THEN PEG.IdPadre ELSE null END as IdPadre
                 from ProgramacionEstimadaGantt PEG
                 inner join PrecioUnitario PU on PEG.IdPrecioUnitario = PU.id
                 inner join Concepto C on PEG.IdConcepto = C.Id
+                inner join Proyecto P on PEG.IdProyecto = P.Id
                 where PEG.Id = 
-                """" + Id
+                """" + Id +
+                """"for json path""""
                 ).ToList();
             if (items.Count <= 0)
             {
                 return new ProgramacionEstimadaGanttDTO();
             }
             string json = string.Join("", items);
-            var datos = JsonSerializer.Deserialize<List<ProgramacionEstimadaGanttDTO>>(json);
-            return datos.FirstOrDefault();
+            var datos = JsonSerializer.Deserialize<List<ProgramacionEstimadaGanttDeserealizadaDTO>>(json);
+            return _Mapper.Map<ProgramacionEstimadaGanttDTO>(datos.FirstOrDefault());
         }
 
         public async Task<List<ProgramacionEstimadaGantt>> ObtenerProgramacionesEnModelo(int IdProyecto)

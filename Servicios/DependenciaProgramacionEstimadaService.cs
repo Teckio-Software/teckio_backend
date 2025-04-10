@@ -49,6 +49,13 @@ namespace ERP_TECKIO
             return registros;
         }
 
+        public async Task<List<DependenciaProgramacionEstimadaDTO>> ObtenerXIdPredesesora(int IdPredesesora)
+        {
+            var datos = await _Repositorio.ObtenerTodos(z => z.IdProgramacionEstimadaGanttPredecesora == IdPredesesora);
+            var registros = _Mapper.Map<List<DependenciaProgramacionEstimadaDTO>>(datos);
+            return registros;
+        }
+
         public async Task<DependenciaProgramacionEstimadaDTO> ObtenerXId(int Id)
         {
             var datos = await _Repositorio.Obtener(z => z.Id == Id);
@@ -149,5 +156,7 @@ namespace ERP_TECKIO
                 return respuesta;
             }
         }
+
+        
     }
 }

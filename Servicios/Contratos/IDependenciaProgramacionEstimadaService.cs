@@ -7,6 +7,7 @@ namespace ERP_TECKIO
     {
         Task<List<DependenciaProgramacionEstimadaDTO>> ObtenerXIdProyecto(int IdProyecto, DbContext db);
         Task<List<DependenciaProgramacionEstimadaDTO>> ObtenerXIdProgramacionEstimadaGantt(int IdProgramacionEstimadaGantt);
+        Task<List<DependenciaProgramacionEstimadaDTO>> ObtenerXIdPredesesora(int IdPredesesora);
         Task<DependenciaProgramacionEstimadaDTO> ObtenerXId(int Id);
         Task<DependenciaProgramacionEstimadaDTO> CrearYObtener(DependenciaProgramacionEstimadaDTO registro);
         Task<RespuestaDTO> Editar(DependenciaProgramacionEstimadaDTO registro);

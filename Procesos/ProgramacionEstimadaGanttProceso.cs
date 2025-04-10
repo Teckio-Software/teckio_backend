@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -99,7 +100,34 @@ namespace ERP_TECKIO
             registro.Start = Convert.ToDateTime(FI);
             var FT = registro.End.ToShortDateString();
             registro.End = Convert.ToDateTime(FT);
-            if(registro.Start == registro.End)
+
+            var programacion = await _ProgramacionEstimadaGanttService.ObtenerXId(Convert.ToInt32(registro.Id), db);
+            var dependencias = await _DependenciaProgramacionEstimadaService.ObtenerXIdPredesesora(Convert.ToInt32(registro.Id));
+            if (dependencias.Count() > 0) {
+                await ActualizarProgramacionDependienta(programacion, registro, dependencias, db);
+            }
+
+            //var programaciones = await _ProgramacionEstimadaGanttService.ObtenerXIdProyecto(registro.IdProyecto, db);
+            //var dependenciasPadre = await _DependenciaProgramacionEstimadaService.ObtenerXIdProgramacionEstimadaGantt(Convert.ToInt32(programacion.Id));
+            //var listaProDep = new List<ProgramacionEstimadaGanttDTO>();
+            //int DiasDesfase = 0;
+            //if (dependenciasPadre.Count > 0)
+            //{
+            //    foreach (var dep in dependenciasPadre)
+            //    {
+            //        var proEstimada = programaciones.Where(z => z.Id == dep.IdProgramacionEstimadaGantt.ToString());
+            //        listaProDep.AddRange(proEstimada);
+            //    }
+
+            //    var FechaMaxima = listaProDep.OrderByDescending(z => z.End).FirstOrDefault();
+
+            //    DiasDesfase = (programacion.Start - FechaMaxima.End).Days;
+            //}
+            //registro.DesfaseComando = DiasDesfase;
+            //await AsignarDesfase(registro, db);
+            //registro = await _ProgramacionEstimadaGanttService.ObtenerXId(Convert.ToInt32(registro.Id), db);
+
+            if (registro.Start == registro.End)
             {
                 registro.End = registro.End.AddDays(1);
             }
@@ -110,7 +138,13 @@ namespace ERP_TECKIO
             }
             //registro.End = registro.End.AddSeconds(-1);
             var programacionEstimada = await _ProgramacionEstimadaGanttService.Editar(registro);
+            await EditarProgramacionEstimadaPadre(registro, db);
+            return ObtenerProgramacionEstimadaXIdProyecto(registro.IdProyecto, db).Result;
+        }
+
+        public async Task EditarProgramacionEstimadaPadre(ProgramacionEstimadaGanttDTO registro, DbContext db) {
             var programaciones = await _ProgramacionEstimadaGanttService.ObtenerXIdProyecto(registro.IdProyecto, db);
+
             if (Convert.ToInt32(registro.Parent) != 0)
             {
                 var programacionPadre = programaciones.Where(z => z.Id == registro.Parent).FirstOrDefault();
@@ -122,7 +156,44 @@ namespace ERP_TECKIO
                 await _ProgramacionEstimadaGanttService.Editar(programacionPadre);
                 await RecalcularPadresProgramacionEstimada(programacionPadre, db);
             }
-            return ObtenerProgramacionEstimadaXIdProyecto(registro.IdProyecto, db).Result;
+        }
+
+        public async Task ActualizarProgramacionDependienta(ProgramacionEstimadaGanttDTO programacion, ProgramacionEstimadaGanttDTO registro, List<DependenciaProgramacionEstimadaDTO> dependencias, DbContext db) {
+
+            var programaciones = await _ProgramacionEstimadaGanttService.ObtenerXIdProyecto(programacion.IdProyecto, db);
+
+            foreach (var dpendencia in dependencias) {
+                var programacionDependiente = programaciones.Where(z => z.Id == dpendencia.IdProgramacionEstimadaGantt.ToString()).First();
+                //var FI = programacionDependiente.Start;
+                //var FF = programacionDependiente.End;
+                var programacionVieja = new ProgramacionEstimadaGanttDTO();
+                programacionVieja.Id = programacionDependiente.Id;
+                programacionVieja.Start = programacionDependiente.Start;
+                programacionVieja.End = programacionDependiente.End;
+                programacionVieja.Parent = programacionDependiente.Parent;
+                programacionVieja.IdProyecto = programacionDependiente.IdProyecto;
+                var diferencia = (programacionDependiente.End - programacionDependiente.Start).Days;
+                var diferenciaActual = (programacionDependiente.Start - programacion.End).Days;
+
+                //if (registro.End > programacion.End) {
+                    programacionDependiente.Start = registro.End.AddDays(diferenciaActual);
+                    programacionDependiente.End = programacionDependiente.Start.AddDays(diferencia);
+                //}
+                //if (registro.End < programacion.End) {
+                //    programacionDependiente.Start = registro.End.AddDays(diferenciaActual);
+                //    programacionDependiente.End = programacionDependiente.Start.AddDays(diferencia);
+                //}
+
+                var editarProDependiente = await _ProgramacionEstimadaGanttService.Editar(programacionDependiente);
+                if (programacionDependiente.Parent != programacion.Parent)
+                {
+                    await EditarProgramacionEstimadaPadre(programacionDependiente, db);
+                }
+                var dependenciasNuevas = await _DependenciaProgramacionEstimadaService.ObtenerXIdPredesesora(Convert.ToInt32(programacionDependiente.Id));
+                if (dependenciasNuevas.Count() > 0) {
+                    await ActualizarProgramacionDependienta(programacionVieja, programacionDependiente, dependenciasNuevas, db);
+                }
+            }
         }
 
         public async Task RecalcularPadresProgramacionEstimada(ProgramacionEstimadaGanttDTO registro, DbContext db)
