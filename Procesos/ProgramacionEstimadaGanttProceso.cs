@@ -108,20 +108,70 @@ namespace ERP_TECKIO
             }
 
             var programaciones = await _ProgramacionEstimadaGanttService.ObtenerXIdProyecto(registro.IdProyecto, db);
+            if (registro.Start == registro.End)
+            {
+                registro.End = registro.End.AddDays(1);
+            }
+            if (registro.End <= registro.Start)
+            {
+                registro.End = registro.Start;
+                registro.End = registro.End.AddDays(1);
+            }
+            var programacionEstimada = await _ProgramacionEstimadaGanttService.Editar(registro);
+
             var dependenciasPadre = await _DependenciaProgramacionEstimadaService.ObtenerXIdProgramacionEstimadaGantt(Convert.ToInt32(programacion.Id));
             var listaProDep = new List<ProgramacionEstimadaGanttDTO>();
             int DiasDesfase = 0;
             if (dependenciasPadre.Count > 0)
             {
-                foreach (var dep in dependenciasPadre)
+                if (registro.Comando == 1)
                 {
-                    var proEstimada = programaciones.Where(z => z.Id == dep.SourceId);
-                    listaProDep.AddRange(proEstimada);
+                    foreach (var dep in dependenciasPadre)
+                    {
+                        var proEstimada = programaciones.Where(z => z.Id == dep.SourceId);
+                        listaProDep.AddRange(proEstimada);
+                    }
+
+                    var FechaMaxima = listaProDep.OrderByDescending(z => z.End).FirstOrDefault();
+
+                    DiasDesfase = (registro.Start - FechaMaxima.Start).Days;
                 }
+                if (registro.Comando == 2)
+                {
+                    foreach (var dep in dependenciasPadre)
+                    {
+                        var proEstimada = programaciones.Where(z => z.Id == dep.SourceId);
+                        listaProDep.AddRange(proEstimada);
+                    }
 
-                var FechaMaxima = listaProDep.OrderByDescending(z => z.End).FirstOrDefault();
+                    var FechaMaxima = listaProDep.OrderByDescending(z => z.End).FirstOrDefault();
 
-                DiasDesfase = (registro.Start - FechaMaxima.End).Days;
+                    DiasDesfase = (registro.Start - FechaMaxima.End).Days;
+                }
+                if (registro.Comando == 3)
+                {
+                    foreach (var dep in dependenciasPadre)
+                    {
+                        var proEstimada = programaciones.Where(z => z.Id == dep.SourceId);
+                        listaProDep.AddRange(proEstimada);
+                    }
+
+                    var FechaMaxima = listaProDep.OrderByDescending(z => z.End).FirstOrDefault();
+
+                    DiasDesfase = (registro.End - FechaMaxima.Start).Days;
+                }
+                if (registro.Comando == 4)
+                {
+                    foreach (var dep in dependenciasPadre)
+                    {
+                        var proEstimada = programaciones.Where(z => z.Id == dep.SourceId);
+                        listaProDep.AddRange(proEstimada);
+                    }
+
+                    var FechaMaxima = listaProDep.OrderByDescending(z => z.End).FirstOrDefault();
+
+                    DiasDesfase = (registro.End - FechaMaxima.End).Days;
+                }
             }
             registro.DesfaseComando = DiasDesfase;
             //await AsignarDesfase(registro, db);
@@ -137,7 +187,7 @@ namespace ERP_TECKIO
                 registro.End = registro.End.AddDays(1);
             }
             //registro.End = registro.End.AddSeconds(-1);
-            var programacionEstimada = await _ProgramacionEstimadaGanttService.Editar(registro);
+            programacionEstimada = await _ProgramacionEstimadaGanttService.Editar(registro);
             await EditarProgramacionEstimadaPadre(registro, db);
             return ObtenerProgramacionEstimadaXIdProyecto(registro.IdProyecto, db).Result;
         }
