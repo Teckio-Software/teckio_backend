@@ -769,7 +769,9 @@ namespace ERP_TECKIO
                 .ForMember(destino => destino.IdProgramacionEstimadaGanttPredecesora,
                 opt => opt.MapFrom(origen => Convert.ToInt32(origen.SourceId)))
                 ;
-            CreateMap<DependenciaProgramacionEstimada, DependenciaProgramacionEstimadaDTO>();
+            CreateMap<DependenciaProgramacionEstimada, DependenciaProgramacionEstimadaDTO>()
+                .ForMember(destino => destino.SourceId,
+                opt => opt.MapFrom(origen => Convert.ToInt32(origen.IdProgramacionEstimadaGanttPredecesora)));
             CreateMap<DependenciaProgramacionEstimadaDeserealizadaDTO, DependenciaProgramacionEstimadaDTO>()
                 .ForMember(destino => destino.SourceId,
                 opt => opt.MapFrom(origen => Convert.ToString(origen.IdProgramacionEstimadaGanttPredecesora)));
