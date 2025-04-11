@@ -204,7 +204,10 @@ namespace ERP_TECKIO
                     if (PreciosUnitarios[i].IdPrecioUnitarioBase > 0)
                     {
                         var EstimacionPadre = NuevasEstimaciones.Where(z => z.IdPrecioUnitario == PreciosUnitarios[i].IdPrecioUnitarioBase).FirstOrDefault();
-                        nuevoRegistro.IdPadre = EstimacionPadre.Id;
+                        if(EstimacionPadre != null)
+                        {
+                            nuevoRegistro.IdPadre = EstimacionPadre.Id;
+                        }
                     }
                     var CrearRegistro = await _EstimacionService.CrearYObtener(nuevoRegistro);
                     NuevasEstimaciones.Add(CrearRegistro);
