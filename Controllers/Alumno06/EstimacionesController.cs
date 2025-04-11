@@ -32,6 +32,12 @@ namespace ERP_TECKIO.Controllers
             return await _estimacionesProceso.ObtenerEstimacionesXIdPeriodo(IdPeriodo);
         }
 
+        [HttpGet("todasEstimacionesReportes/{IdPeriodo:int}")]
+        public async Task<ActionResult<List<EstimacionesDTO>>> ObtenerEstimacionesReporte(int IdPeriodo)
+        {
+            return await _estimacionesProceso.ObtenerEstimacionesXIdPeriodoXReporte(IdPeriodo);
+        }
+
         [HttpPost("crearPeriodo")]
         public async Task<ActionResult<PeriodoEstimacionesDTO>> CrearPeriodo([FromBody] PeriodoEstimacionesDTO registro)
         {

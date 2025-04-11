@@ -104,6 +104,45 @@ namespace ERP_TECKIO
             return listaResult;
         }
 
+        public async Task<List<EstimacionesDTO>> ObtenerEstimacionesXIdPeriodoXReporte(int IdPeriodo)
+        {
+            var Periodo = await _PeriodoEstimacionesService.ObtenXId(IdPeriodo);
+            var Registros = await _EstimacionService.ObtenTodosXIdPeriodo(IdPeriodo);
+            Registros = Registros.Where(z => z.PorcentajeAvance != 0).ToList();
+            var PreciosUnitarios = await _PrecioUnitarioProceso.ObtenerPrecioUnitarioSinEstructurar(Periodo.IdProyecto);
+            for (int i = 0; i < Registros.Count; i++)
+            {
+                var PrecioUnitario = PreciosUnitarios.Where(z => z.Id == Registros[i].IdPrecioUnitario).FirstOrDefault();
+                Registros[i].Codigo = PrecioUnitario.Codigo;
+                Registros[i].Descripcion = PrecioUnitario.Descripcion;
+                Registros[i].Unidad = PrecioUnitario.Unidad;
+                Registros[i].CostoUnitario = PrecioUnitario.CostoUnitario;
+                Registros[i].Cantidad = PrecioUnitario.Cantidad;
+                Registros[i].CantidadConFormato = String.Format("{0:#,##0.00}", Registros[i].Cantidad);
+                Registros[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", Registros[i].CostoUnitario);
+                Registros[i].PorcentajeAvanceConFormato = String.Format("{0:#,##0.00}", Registros[i].PorcentajeAvance);
+                Registros[i].CantidadAvanceConFormato = String.Format("{0:#,##0.00}", Registros[i].CantidadAvance);
+                Registros[i].ImporteDeAvanceAcumuladoConFormato = String.Format("{0:#,##0.00}", Registros[i].ImporteDeAvanceAcumulado);
+                Registros[i].PorcentajeAvanceAcumuladoConFormato = String.Format("{0:#,##0.00}", Registros[i].PorcentajeAvanceAcumulado);
+                Registros[i].CantidadAvanceAcumuladoConFormato = String.Format("{0:#,##0.00}", Registros[i].CantidadAvanceAcumulado);
+                Registros[i].PorcentajeAvanceEditando = false;
+                Registros[i].CantidadAvanceEditando = false;
+                Registros[i].Importe = PrecioUnitario.Importe;
+                Registros[i].Expandido = true;
+                Registros[i].ImporteConFormato = String.Format("{0:#,##0.00}", Registros[i].Importe);
+                Registros[i].PorcentajeTotal = Registros[i].PorcentajeAvance + Registros[i].PorcentajeAvanceAcumulado;
+                Registros[i].PorcentajeTotalConFormato = String.Format("{0:#,##0.00}", Registros[i].PorcentajeTotal);
+                Registros[i].ImporteTotal = Registros[i].ImporteDeAvance + Registros[i].ImporteDeAvanceAcumulado;
+                Registros[i].ImporteTotalConFormato = String.Format("{0:#,##0.00}", Registros[i].ImporteTotal);
+                Registros[i].CantidadAvanceTotal = Registros[i].CantidadAvance + Registros[i].CantidadAvanceAcumulado;
+                Registros[i].CantidadAvanceTotalConFormato = String.Format("{0:#,##0.00}", Registros[i].CantidadAvanceTotal);
+                Registros[i].ImporteDeAvanceConFormato = String.Format("{0:#,##0.00}", Registros[i].ImporteDeAvance);
+            }
+            var listaEstructurada = await Estructurar(Registros);
+            var listaResult = listaEstructurada.OrderBy(z => z.Id).ToList();
+            return listaResult;
+        }
+
         public async Task<List<EstimacionesDTO>> ObtenerEstimacionesXIdPeriodoSinEstructurar(int IdPeriodo)
         {
             var Periodo = await _PeriodoEstimacionesService.ObtenXId(IdPeriodo);

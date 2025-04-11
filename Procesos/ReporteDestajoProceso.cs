@@ -254,6 +254,7 @@ namespace ERP_TECKIO
                     var porcentajeEstimacion = estimacion.Count() <= 0 ? 0 : estimacion[0].PorcentajeAvance;
                     detalles.Add(new AcumuladosDTO()
                     {
+                        Id = objetoAcumulado.destajos[i].IdPrecioUnitario,
                         Importe = porcentajeEstimacion == 0 ? 0 : porcentajeEstimacion / 100 * objetoAcumulado.destajos[i].ImporteDestajo,
                         ImporteConFormato = String.Format("{0:#,##0.00}", porcentajeEstimacion == 0 ? 0 : porcentajeEstimacion / 100 * objetoAcumulado.destajos[i].ImporteDestajo),
                         Avance = porcentajeEstimacion == 0 ? 0 : porcentajeEstimacion * objetoAcumulado.destajos[i].PorcentajeDestajo / 100,
@@ -273,6 +274,41 @@ namespace ERP_TECKIO
                     detalles = detalles
                 });
             }
+
+            var destajos = new List<DetalleXContratoParaTablaDTO>();
+            var destajosRemover = new List<DetalleXContratoParaTablaDTO>();
+            foreach (var des in objetoAcumulado.destajos) {
+                if (des.ImporteDestajo != 0) {
+                    destajos.Add(des);
+                }
+                //decimal destajoTotal = 0;
+
+                //foreach (var per in objetoAcumulado.periodos) {
+                //    foreach (var det in per.detalles) {
+                //        if (des.IdPrecioUnitario == det.Id) {
+                //            destajoTotal += det.Importe;
+                //        }
+                //    }
+                //}
+                if (des.ImporteDestajo == 0) {
+                    destajosRemover.Add(des);
+                }
+            }
+            objetoAcumulado.destajos = destajos;
+
+            var periodos = new List<PeridoAcumuladosDTO>();
+            foreach (var des in destajosRemover)
+            {
+
+                foreach (var per in objetoAcumulado.periodos)
+                {
+                    var detalleRemover = per.detalles.Where(z => z.Id == des.IdPrecioUnitario).FirstOrDefault();
+                    if (detalleRemover.Id > 0) {
+                        per.detalles.Remove(detalleRemover);
+                    }
+                }
+            }
+
             return objetoAcumulado;
 ;       }
 
