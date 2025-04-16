@@ -391,7 +391,7 @@ namespace ERP_TECKIO.Procesos
                                     }
                                     if (StartSemana == cul.Calendar.GetWeekOfYear(startOfWeek, CalendarWeekRule.FirstDay, DayOfWeek.Monday))
                                     {
-                                        indice2 = indice2 - indice2Inicio;
+                                        //indice2 = indice2 - indice2Inicio;
                                         if (indice2 == 0)
                                         {
                                             indice2 = 1;
@@ -483,7 +483,9 @@ namespace ERP_TECKIO.Procesos
                                     }
                                     if (StartSemana == cul.Calendar.GetWeekOfYear(startOfWeek, CalendarWeekRule.FirstDay, DayOfWeek.Monday))
                                     {
-                                        indice2 = indice2 - indice2Inicio;
+                                        //indice2 = indice2 - indice2Inicio;
+                                        indice2 = (registro.End - registro.Start).Days;
+
                                         if (indice2 == 0)
                                         {
                                             indice2 = 1;
