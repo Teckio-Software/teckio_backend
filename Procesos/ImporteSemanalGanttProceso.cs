@@ -491,6 +491,11 @@ namespace ERP_TECKIO.Procesos
                                             indice2 = 1;
                                         }
                                     }
+                                    if (cul.Calendar.GetWeekOfYear(registro.End, CalendarWeekRule.FirstDay, DayOfWeek.Monday) ==
+                                    cul.Calendar.GetWeekOfYear(registro.Start, CalendarWeekRule.FirstDay, DayOfWeek.Monday))
+                                    {
+                                        indice2 = (registro.End - registro.Start).Days;
+                                    }
                                     total = indice2 * costoDia;
                                     totalMDO = indice2 * costoDiaMDO;
                                     totalEquipo = indice2 * costoDiaEquipo;
