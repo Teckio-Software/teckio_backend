@@ -1511,7 +1511,7 @@ namespace ERP_TECKIO
                     detallesFiltrados[i] = detalle;
                 }
                 insumos = datos.Insumos;
-                await _PrecioUnitarioService.Editar(precioUnitario);
+                //await _PrecioUnitarioService.Editar(precioUnitario);
                 var concepto = await _ConceptoService.ObtenXId(precioUnitario.IdConcepto);
                 concepto.CostoUnitario = datos.Total;
                 await _ConceptoService.Editar(concepto);
@@ -1527,6 +1527,48 @@ namespace ERP_TECKIO
                 return new List<PrecioUnitarioDetalleDTO>();
             }
         }
+        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> EditarImporteDetalle(PrecioUnitarioDetalleDTO registro) {
+            var detallesFiltrados = new List<PrecioUnitarioDetalleDTO>();
+            var precioUnitario = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
+            var PUs = await _PrecioUnitarioService.ObtenerTodos(precioUnitario.IdProyecto);
+            var conceptos = await _ConceptoService.ObtenerTodos(precioUnitario.IdProyecto);
+            var insumos = await _InsumoService.ObtenXIdProyecto(precioUnitario.IdProyecto); //Era id del proyecto pero no lo obtengo
+            var existePadre = new PrecioUnitarioDetalleDTO();
+            if (registro.IdPrecioUnitarioDetallePerteneciente != 0) {
+                existePadre = await _PrecioUnitarioDetalleService.ObtenXId(registro.IdPrecioUnitarioDetallePerteneciente);
+            }
+            var detallesXInsumo = await ObtenerDetallesPorIdInsumo(registro.IdInsumo, _dbContex);
+            foreach (var det in detallesXInsumo) {
+                var DetallePadre = existePadre = await _PrecioUnitarioDetalleService.ObtenXId(det.IdPrecioUnitarioDetallePerteneciente);
+                if (DetallePadre.IdInsumo != existePadre.IdInsumo || DetallePadre.Id == 0 && det.Id != registro.Id) {
+                    continue;
+                }
+                var PU = PUs.Where(z => z.Id == det.IdPrecioUnitario).First();
+                if (registro.Importe > 0)
+                {
+                    det.Cantidad = registro.Importe / registro.CostoUnitario;
+                    await _PrecioUnitarioDetalleService.Editar(det);
+                    if (det.IdTipoInsumo == 10000)
+                    {
+                        await RecalcularPorcentajeManoDeObra(det);
+                    }
+                    await RecalcularPrecioUnitario(PU);
+                }
+
+                var detalles = await ObtenerDetallesPorPU(PU.Id, _dbContex);
+                var datos = await RecalcularDetalles(det.IdPrecioUnitario, detalles, insumos);
+                if (det.Id == registro.Id) {
+                    detallesFiltrados = detalles.Where(z => z.IdPrecioUnitarioDetallePerteneciente == det.IdPrecioUnitarioDetallePerteneciente).ToList();
+                }
+                var concepto = conceptos.Where(z => z.Id == PU.IdConcepto).First();
+                concepto.CostoUnitario = datos.Total;
+                await _ConceptoService.Editar(concepto);
+            }
+
+            
+            return detallesFiltrados;
+        }
+
 
         public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> PartirDetalle(PrecioUnitarioDetalleDTO registro)
         {
@@ -2536,7 +2578,7 @@ namespace ERP_TECKIO
                                     Codigo = reader.GetValue(0) != null? reader.GetValue(0)?.ToString() : "",
                                     Descripcion = reader.GetValue(1) != null? reader.GetValue(1)?.ToString() : "",
                                     Unidad = reader.GetValue(1) != null? reader.GetValue(2)?.ToString() : "",
-                                    Cantidad = Convert.ToInt32(reader.GetValue(3) ?? 0),
+                                    Cantidad = Convert.ToDecimal(reader.GetValue(3) ?? 0),
                                     CodigoPadre = reader.GetValue(4) != null? reader.GetValue(4)?.ToString() : "",
                                     IdProyecto = IdProyecto
                                 };

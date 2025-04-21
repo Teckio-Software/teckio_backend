@@ -74,6 +74,13 @@ namespace SistemaERP.API.Alumno15Controllers.Procomi
             return await _precioUnitarioProceso.EditarDetalle(registro);
         }
 
+        [HttpPost("editarImporte")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPrecioUnitario-Empresa2")]
+        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> editarImporte([FromBody] PrecioUnitarioDetalleDTO registro)
+        {
+            return await _precioUnitarioProceso.EditarImporteDetalle(registro);
+        }
+
         [HttpPost("partirDetalle")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPrecioUnitario-Empresa2")]
         public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> partirDetalle([FromBody] PrecioUnitarioDetalleDTO registro)
