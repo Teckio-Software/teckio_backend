@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using ERP_TECKIO.DTO;
@@ -1108,8 +1109,8 @@ namespace ERP_TECKIO
             //var datos = JsonSerializer.Deserialize<List<PrecioUnitarioDetalle>>(json);
             //var lista = _Mapper.Map<List<PrecioUnitarioDetalleDTO>>(datos);
             var lista = await ObtenerDetallesPorPU(registro.IdPrecioUnitario, _dbContex);
-            var PU = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
-            var insumos = await _InsumoService.ObtenXIdProyecto(PU.IdProyecto);
+            //var PU = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
+            //var insumos = await _InsumoService.ObtenXIdProyecto(PU.IdProyecto);
             var listaFiltrada = lista.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.Id).ToList();
             return listaFiltrada;
         }
@@ -1630,62 +1631,109 @@ namespace ERP_TECKIO
             return detallesFiltrados;
         }
 
+        //public async Task<List<PrecioUnitarioDetalleDTO>> EliminarDetalle(int Id, DbContext db)
+        //{
+        //    try
+        //    {
+        //        var registro = await _PrecioUnitarioDetalleService.ObtenXId(Id);
+        //        var PU = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
+        //        var resultado = await _PrecioUnitarioDetalleService.Eliminar(Id);
+        //        if (resultado.Estatus) {
+        //            var eliminaInsumo = await _InsumoService.Eliminar(registro.IdInsumo);
+        //        }
+        //        await RecalcularPorcentajeManoDeObra(registro);
+        //        //var detalles = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(registro.IdPrecioUnitario);
+        //        var detalles = await ObtenerDetallesPorPU(registro.IdPrecioUnitario, db);
+        //        var insumos = await _InsumoService.ObtenXIdProyecto(PU.IdProyecto);
+        //        //for (int i = 0; i < detalles.Count; i++)
+        //        //{
+        //        //    var insumo = insumos.Where(z => z.id == detalles[i].IdInsumo).FirstOrDefault();
+        //        //    detalles[i].Codigo = insumo.Codigo;
+        //        //    detalles[i].Descripcion = insumo.Descripcion;
+        //        //    detalles[i].Unidad = insumo.Unidad;
+        //        //    detalles[i].CostoUnitario = insumo.CostoUnitario;
+        //        //    detalles[i].IdTipoInsumo = insumo.idTipoInsumo;
+        //        //    detalles[i].IdFamiliaInsumo = insumo.idFamiliaInsumo;
+        //        //}
+        //        var datos = await RecalcularDetalles(registro.IdPrecioUnitario, detalles, insumos);
+        //        detalles = datos.Detalles;
+        //        insumos = datos.Insumos;
+        //        var precioUnitario = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
+        //        var listaHijos = await ObtenerDetalles(precioUnitario.Id, db);
+        //        decimal total = 0;
+        //        for (int i = 0; i < listaHijos.Count; i++)
+        //        {
+        //            total = total + (listaHijos[i].CostoUnitario * listaHijos[i].Cantidad);
+        //        }
+        //        var concepto = await _ConceptoService.ObtenXId(precioUnitario.IdConcepto);
+        //        concepto.CostoUnitario = total;
+        //        await _ConceptoService.Editar(concepto);
+        //        precioUnitario.CostoUnitario = total;
+        //        await _PrecioUnitarioService.Editar(precioUnitario);
+        //        await RecalcularPrecioUnitario(precioUnitario);
+        //        var detallesFiltrados = detalles.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.IdPrecioUnitarioDetallePerteneciente).ToList();
+        //        for (int i = 0; i < detallesFiltrados.Count; i++)
+        //        {
+        //            var insumo = insumos.Where(z => z.id == detallesFiltrados[i].IdInsumo).FirstOrDefault();
+        //            detallesFiltrados[i].Codigo = insumo.Codigo;
+        //            detallesFiltrados[i].Descripcion = insumo.Descripcion;
+        //            detallesFiltrados[i].Unidad = insumo.Unidad;
+        //            detallesFiltrados[i].IdTipoInsumo = insumo.idTipoInsumo;
+        //            detallesFiltrados[i].IdFamiliaInsumo = insumo.idFamiliaInsumo;
+        //            detallesFiltrados[i].CostoUnitario = insumo.CostoUnitario;
+        //            detallesFiltrados[i].Importe = detallesFiltrados[i].Cantidad * detallesFiltrados[i].CostoUnitario;
+        //            detallesFiltrados[i].CantidadConFormato = String.Format("{0:#,##0.0000}", detallesFiltrados[i].Cantidad);
+        //            detallesFiltrados[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", detallesFiltrados[i].CostoUnitario);
+        //            detallesFiltrados[i].ImporteConFormato = String.Format("{0:#,##0.00}", detallesFiltrados[i].Importe);
+        //        }
+        //        return detallesFiltrados;
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        string error = ex.Message.ToString();
+        //        return new List<PrecioUnitarioDetalleDTO>();
+        //    }
+        //}
+
         public async Task<List<PrecioUnitarioDetalleDTO>> EliminarDetalle(int Id, DbContext db)
         {
             try
             {
-                var registro = await _PrecioUnitarioDetalleService.ObtenXId(Id);
-                var PU = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
-                var resultado = await _PrecioUnitarioDetalleService.Eliminar(Id);
-                if (resultado.Estatus) {
-                    var eliminaInsumo = await _InsumoService.Eliminar(registro.IdInsumo);
-                }
-                await RecalcularPorcentajeManoDeObra(registro);
-                var detalles = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(registro.IdPrecioUnitario);
-                var insumos = await _InsumoService.ObtenXIdProyecto(PU.IdProyecto);
-                for (int i = 0; i < detalles.Count; i++)
+                var registro = await _PrecioUnitarioDetalleService.ObtenerXId(Id);
+                var registros = await ObtenerDetallesPorIdInsumo(registro.IdInsumo, db);
+                var registroPadre = new PrecioUnitarioDetalleDTO();
+                if(registro.IdPrecioUnitarioDetallePerteneciente != 0)
                 {
-                    var insumo = insumos.Where(z => z.id == detalles[i].IdInsumo).FirstOrDefault();
-                    detalles[i].Codigo = insumo.Codigo;
-                    detalles[i].Descripcion = insumo.Descripcion;
-                    detalles[i].Unidad = insumo.Unidad;
-                    detalles[i].CostoUnitario = insumo.CostoUnitario;
-                    detalles[i].IdTipoInsumo = insumo.idTipoInsumo;
-                    detalles[i].IdFamiliaInsumo = insumo.idFamiliaInsumo;
+                    registroPadre = await _PrecioUnitarioDetalleService.ObtenerXId(registro.IdPrecioUnitarioDetallePerteneciente);
+                    foreach (var detalle in registros)
+                    {
+                        if (detalle.IdPrecioUnitarioDetallePerteneciente != 0)
+                        {
+                            var detallePadre = await _PrecioUnitarioDetalleService.ObtenerXId(detalle.IdPrecioUnitarioDetallePerteneciente);
+                            if (detallePadre.IdInsumo == registroPadre.IdInsumo)
+                            {
+                                var PrecioUnitario = await _PrecioUnitarioService.ObtenXId(detalle.IdPrecioUnitario);
+                                await _PrecioUnitarioDetalleService.Eliminar(detalle.Id);
+                                var insumos = await _InsumoService.ObtenXIdProyecto(PrecioUnitario.IdProyecto);
+                                var detalles = await ObtenerDetallesPorPU(PrecioUnitario.Id, db);
+                                var valores = await RecalcularDetalles(PrecioUnitario.Id, detalles, insumos);
+                                var concepto = await _ConceptoService.ObtenXId(PrecioUnitario.IdConcepto);
+                                concepto.CostoUnitario = valores.Total;
+                                await _ConceptoService.Editar(concepto);
+                                await RecalcularPrecioUnitario(PrecioUnitario);
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+                    }
                 }
-                var datos = await RecalcularDetalles(registro.IdPrecioUnitario, detalles, insumos);
-                detalles = datos.Detalles;
-                insumos = datos.Insumos;
-                var precioUnitario = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
-                var listaHijos = await ObtenerDetalles(precioUnitario.Id, db);
-                decimal total = 0;
-                for (int i = 0; i < listaHijos.Count; i++)
-                {
-                    total = total + (listaHijos[i].CostoUnitario * listaHijos[i].Cantidad);
-                }
-                var concepto = await _ConceptoService.ObtenXId(precioUnitario.IdConcepto);
-                concepto.CostoUnitario = total;
-                await _ConceptoService.Editar(concepto);
-                precioUnitario.CostoUnitario = total;
-                await _PrecioUnitarioService.Editar(precioUnitario);
-                await RecalcularPrecioUnitario(precioUnitario);
-                var detallesFiltrados = detalles.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.IdPrecioUnitarioDetallePerteneciente).ToList();
-                for (int i = 0; i < detallesFiltrados.Count; i++)
-                {
-                    var insumo = insumos.Where(z => z.id == detallesFiltrados[i].IdInsumo).FirstOrDefault();
-                    detallesFiltrados[i].Codigo = insumo.Codigo;
-                    detallesFiltrados[i].Descripcion = insumo.Descripcion;
-                    detallesFiltrados[i].Unidad = insumo.Unidad;
-                    detallesFiltrados[i].IdTipoInsumo = insumo.idTipoInsumo;
-                    detallesFiltrados[i].IdFamiliaInsumo = insumo.idFamiliaInsumo;
-                    detallesFiltrados[i].CostoUnitario = insumo.CostoUnitario;
-                    detallesFiltrados[i].Importe = detallesFiltrados[i].Cantidad * detallesFiltrados[i].CostoUnitario;
-                    detallesFiltrados[i].CantidadConFormato = String.Format("{0:#,##0.0000}", detallesFiltrados[i].Cantidad);
-                    detallesFiltrados[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", detallesFiltrados[i].CostoUnitario);
-                    detallesFiltrados[i].ImporteConFormato = String.Format("{0:#,##0.00}", detallesFiltrados[i].Importe);
-                }
-                return detallesFiltrados;
+                
+                var lista = await ObtenerDetallesPorPU(registro.IdPrecioUnitario, _dbContex);
 
+                 return lista.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.IdPrecioUnitarioDetallePerteneciente).ToList();
             }
             catch (Exception ex)
             {
