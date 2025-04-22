@@ -35,6 +35,14 @@ namespace ERP_TECKIO
             return await _precioUnitarioProceso.ObtenerPrecioUnitario(IdProyecto);
         }
 
+        [HttpGet("obtenerConceptos/{IdProyecto:int}")]
+        public async Task<ActionResult<List<PrecioUnitarioDTO>>> obtenerConceptos(int IdProyecto)
+        {
+            var PUs = await _precioUnitarioProceso.ObtenerPrecioUnitarioSinEstructurar(IdProyecto);
+            var conceptos = PUs.Where(z => z.TipoPrecioUnitario == 1).ToList();
+            return conceptos;
+        }
+
         [HttpGet("sinestructurar/{IdProyecto:int}")]
         public async Task<ActionResult<List<PrecioUnitarioDTO>>> ObtenerSinEstructura(int IdProyecto)
         {
