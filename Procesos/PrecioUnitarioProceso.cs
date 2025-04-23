@@ -1727,10 +1727,21 @@ namespace ERP_TECKIO
                 {
                     var PrecioUnitario = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
                     var preciosUnitariosSinOrganizar = await ObtenerPrecioUnitarioSinEstructurar(PrecioUnitario.IdProyecto);
-                    var registrosFiltrados = preciosUnitariosSinOrganizar.Where(z => z.IdConcepto == PrecioUnitario.IdConcepto).ToList();
+                    var registrosFiltrados = preciosUnitariosSinOrganizar.Where(z => z.IdConcepto == PrecioUnitario.IdConcepto && z.TipoPrecioUnitario == 1).ToList();
                     foreach(var partida in registrosFiltrados)
                     {
-                        
+                        var detalles = await ObtenerDetallesPorPU(partida.Id, db);
+                        var detEliminar = detalles.Where(z => z.IdInsumo == registro.IdInsumo && z.IdPrecioUnitarioDetallePerteneciente == 0).ToList();
+                        foreach (var det in detEliminar) {
+                            await _PrecioUnitarioDetalleService.Eliminar(det.Id);
+                        }
+                        var insumos = await _InsumoService.ObtenXIdProyecto(PrecioUnitario.IdProyecto);
+                        detalles = await ObtenerDetallesPorPU(partida.Id, db);
+                        var valores = await RecalcularDetalles(partida.Id, detalles, insumos);
+                        var concepto = await _ConceptoService.ObtenXId(partida.IdConcepto);
+                        concepto.CostoUnitario = valores.Total;
+                        await _ConceptoService.Editar(concepto);
+                        await RecalcularPrecioUnitario(partida);
                     }
                 }
                 var lista = await ObtenerDetallesPorPU(registro.IdPrecioUnitario, _dbContex);
