@@ -1524,37 +1524,63 @@ namespace ERP_TECKIO
             {
                 var detallesFiltrados = new List<PrecioUnitarioDetalleDTO>();
                 var precioUnitario = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
-                var PUs = await _PrecioUnitarioService.ObtenerTodos(precioUnitario.IdProyecto);
+                var PUs = await ObtenerPrecioUnitarioSinEstructurar(precioUnitario.IdProyecto);
                 var conceptos = await _ConceptoService.ObtenerTodos(precioUnitario.IdProyecto);
                 var insumos = await _InsumoService.ObtenXIdProyecto(precioUnitario.IdProyecto); //Era id del proyecto pero no lo obtengo
                 var existePadre = new PrecioUnitarioDetalleDTO();
                 if (registro.IdPrecioUnitarioDetallePerteneciente != 0)
                 {
                     existePadre = await _PrecioUnitarioDetalleService.ObtenXId(registro.IdPrecioUnitarioDetallePerteneciente);
-                }
-                var detallesXInsumo = await ObtenerDetallesPorIdInsumo(registro.IdInsumo, _dbContex);
-                foreach (var det in detallesXInsumo)
-                {
-                    var DetallePadre = await _PrecioUnitarioDetalleService.ObtenXId(det.IdPrecioUnitarioDetallePerteneciente);
-                    if (DetallePadre.IdInsumo != existePadre.IdInsumo || DetallePadre.Id == 0 && det.Id != registro.Id)
+                    var detallesXInsumo = await ObtenerDetallesPorIdInsumo(registro.IdInsumo, _dbContex);
+                    foreach (var det in detallesXInsumo)
                     {
-                        continue;
-                    }
-                    var PU = PUs.Where(z => z.Id == det.IdPrecioUnitario).First();
-                    det.Cantidad = registro.Importe / registro.CostoUnitario;
-                    await _PrecioUnitarioDetalleService.Editar(det);
-                    if (det.IdTipoInsumo == 10000)
-                    {
-                        await RecalcularPorcentajeManoDeObra(det);
-                    }
+                        var DetallePadre = await _PrecioUnitarioDetalleService.ObtenXId(det.IdPrecioUnitarioDetallePerteneciente);
+                        if (DetallePadre.IdInsumo != existePadre.IdInsumo || DetallePadre.Id == 0 && det.Id != registro.Id)
+                        {
+                            continue;
+                        }
+                        var PU = PUs.Where(z => z.Id == det.IdPrecioUnitario).First();
+                        det.Cantidad = registro.Importe / registro.CostoUnitario;
+                        await _PrecioUnitarioDetalleService.Editar(det);
+                        if (det.IdTipoInsumo == 10000)
+                        {
+                            await RecalcularPorcentajeManoDeObra(det);
+                        }
 
-                    var detalles = await ObtenerDetallesPorPU(PU.Id, _dbContex);
-                    var datos = await RecalcularDetalles(det.IdPrecioUnitario, detalles, insumos);
-                    var concepto = conceptos.Where(z => z.Id == PU.IdConcepto).First();
-                    concepto.CostoUnitario = datos.Total;
-                    await _ConceptoService.Editar(concepto);
-                    await RecalcularPrecioUnitario(PU);
+                        var detalles = await ObtenerDetallesPorPU(PU.Id, _dbContex);
+                        var datos = await RecalcularDetalles(det.IdPrecioUnitario, detalles, insumos);
+                        var concepto = conceptos.Where(z => z.Id == PU.IdConcepto).First();
+                        concepto.CostoUnitario = datos.Total;
+                        await _ConceptoService.Editar(concepto);
+                        await RecalcularPrecioUnitario(PU);
+                    }
                 }
+                else
+                {
+                    var partidas = PUs.Where(z => z.IdConcepto == precioUnitario.IdConcepto && z.TipoPrecioUnitario == 1);
+                    foreach (var partida in partidas)
+                    {
+                        var detalles = await ObtenerDetallesPorPU(partida.Id, _dbContex);
+                        var detEditar = detalles.Where(z => z.IdInsumo == registro.IdInsumo && z.IdPrecioUnitarioDetallePerteneciente == 0).ToList();
+                        foreach (var det in detEditar)
+                        {
+                            det.Cantidad = registro.Importe / registro.CostoUnitario;
+                            await _PrecioUnitarioDetalleService.Editar(det);
+                            if (det.IdTipoInsumo == 10000)
+                            {
+                                await RecalcularPorcentajeManoDeObra(det);
+                            }
+                        }
+
+                        detalles = await ObtenerDetallesPorPU(partida.Id, _dbContex);
+                        var datos = await RecalcularDetalles(partida.Id, detalles, insumos);
+                        var concepto = conceptos.Where(z => z.Id == partida.IdConcepto).First();
+                        concepto.CostoUnitario = datos.Total;
+                        await _ConceptoService.Editar(concepto);
+                        await RecalcularPrecioUnitario(partida);
+                    }
+                }
+                
             }
             var lista = await ObtenerDetallesPorPU(registro.IdPrecioUnitario, _dbContex);
             return lista.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.IdPrecioUnitarioDetallePerteneciente).ToList();
