@@ -96,7 +96,7 @@ namespace ERP_TECKIO.Servicios.Facturacion
             RespuestaDTO respuesta = new RespuestaDTO();
             try
             {
-                var objetoEncontrado = await ObtenerXId(registro.Id);
+                var objetoEncontrado = await ObtenXId(registro.Id);
                 if (objetoEncontrado == null || objetoEncontrado.Id <= 0)
                 {
                     respuesta.Estatus = false;
@@ -128,7 +128,7 @@ namespace ERP_TECKIO.Servicios.Facturacion
         public async Task<RespuestaDTO> Eliminar(int Id)
         {
             RespuestaDTO respuesta = new RespuestaDTO();
-            var objetoEncontrado = await ObtenerXId(Id);
+            var objetoEncontrado = await ObtenXId(Id);
 
             if (objetoEncontrado == null || objetoEncontrado.Id <= 0)
             {
