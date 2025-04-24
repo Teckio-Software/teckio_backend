@@ -10,9 +10,8 @@ namespace ERP_TECKIO
         Task<List<DetalleValidacionDTO>> ObtenXIdAcuseValidacion(int IdAcuseValidacion);
         Task<List<DetalleValidacionDTO>> ObtenXIdCatalogoValidacion(string CodigoCatalogoValidacion);
         Task<DetalleValidacionDTO> ObtenXId(int Id);
-        Task<bool> Crear(DetalleValidacionDTO parametro);
         Task<DetalleValidacionDTO> CrearYObtener(DetalleValidacionDTO parametro);
-        Task<bool> Editar(DetalleValidacionDTO parametro);
-        Task<bool> Eliminar(int Id);
+        Task<RespuestaDTO> Editar(DetalleValidacionDTO parametro);
+        Task<RespuestaDTO> Eliminar(int Id);
     }
 }
