@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.Modelos;
 using ERP_TECKIO.Servicios.Contratos.Facturacion;
@@ -108,6 +109,19 @@ namespace ERP_TECKIO.Servicios.Facturacion
             respuesta.Estatus = true;
             respuesta.Descripcion = "Tipo factor eliminado";
             return respuesta;
+        }
+
+        public async Task<TipoFactorDTO> ObtenerXDescripcion(string descripcion)
+        {
+            try
+            {
+                var query = await _repository.Obtener(z => z.Descripcion == descripcion);
+                return _mapper.Map<TipoFactorDTO>(query);
+            }
+            catch (Exception ex)
+            {
+                return new TipoFactorDTO();
+            }
         }
     }
 }

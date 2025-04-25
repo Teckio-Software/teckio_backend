@@ -449,8 +449,8 @@ public partial class Alumno35Context : DbContext
             entity.Property(e => e.Descuento).HasColumnType("decimal(28, 6)");
             entity.Property(e => e.Importe).HasColumnType("decimal(28, 6)");
             entity.Property(e => e.PrecioUnitario).HasColumnType("decimal(28, 6)");
-            entity.Property(e => e.UnidadSat).HasMaxLength(20);
-            entity.Ignore(e => e.Descripcion);
+            entity.Property(e => e.Descripcion).HasMaxLength(2500);
+            entity.Ignore(e => e.UnidadSat);
 
             entity.HasOne(d => d.IdFacturaNavigation).WithMany(p => p.FacturaDetalles)
                 .HasForeignKey(d => d.IdFactura)
@@ -504,13 +504,16 @@ public partial class Alumno35Context : DbContext
 
             entity.ToTable("FacturaEmisor", "Factura");
 
-            entity.Property(e => e.RegimenFiscal).HasMaxLength(4);
             entity.Property(e => e.Rfc).HasMaxLength(14);
 
             entity.HasOne(d => d.IdFacturaNavigation).WithMany(p => p.FacturaEmisors)
                 .HasForeignKey(d => d.IdFactura)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("PK_FacturaEmisor_Factura_2024_05_23");
+            entity.HasOne(d => d.IdRegimenFiscalSatNavigation).WithMany(p => p.FacturasEmisor)
+                .HasForeignKey(d => d.IdRegimenFiscalSat)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_IdRegimenFiscalSat_FacturaEmisor");
         });
 
         modelBuilder.Entity<FacturaImpuesto>(entity =>

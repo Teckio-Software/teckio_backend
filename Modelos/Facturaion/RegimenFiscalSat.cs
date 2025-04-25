@@ -15,4 +15,5 @@ public partial class RegimenFiscalSat
     public int TipoRegimenFiscal { get; set; }
 
     public virtual ICollection<Factura> Facturas { get; set; } = new List<Factura>();
+    public virtual ICollection<FacturaEmisor> FacturasEmisor { get; set; } = new List<FacturaEmisor>();
 }

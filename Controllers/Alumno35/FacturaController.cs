@@ -7,7 +7,7 @@ namespace ERP_TECKIO.Controllers.Alumno01
 {
     [Route("api/factura/1042")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
     public class FacturaAlumno35Controller : ControllerBase
     {
@@ -22,6 +22,13 @@ namespace ERP_TECKIO.Controllers.Alumno01
         public async Task<ActionResult<bool>> ObteneProductos()
         {
             var productos = await _obtenFacturaProceso.ObtenerProductos();
+            return productos;
+        }
+
+        [HttpGet("leerFacturas")]
+        public async Task<ActionResult<bool>> leerFacturas()
+        {
+            var productos = await _obtenFacturaProceso.leerFacturas();
             return productos;
         }
     }

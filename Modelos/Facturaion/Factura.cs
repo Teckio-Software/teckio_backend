@@ -77,7 +77,7 @@ public abstract class FacturaAbstract
 
     public int IdCliente { get; set; }
 
-    public int IdFormaPago { get; set; }
+    public int? IdFormaPago { get; set; }
 
     public int IdRegimenFiscalSat { get; set; }
 

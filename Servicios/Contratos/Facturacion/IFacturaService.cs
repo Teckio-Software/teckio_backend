@@ -1,21 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ERP_TECKIO.DTO.Factura;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace ERP_TECKIO.Servicios.Contratos.Facturacion
 {
     public interface IFacturaService<TContext> where TContext : DbContext
     {
-        Task<List<FacturaBaseDTO>> ObtenTodos();
-        Task<List<FacturaBaseDTO>> ObtenTodosT();
-        Task<List<FacturaBaseDTO>> ObtenSoloValidas();
-        Task<List<FacturaBaseDTO>> ObtenXUuid(string uuid);
-        Task<List<FacturaBaseDTO>> ObtenXRfcEmisor(string rfcEmisor);
-        Task<List<FacturaBaseDTO>> ObtenXRfcReceptor(string rfcReceptor);
-        Task<FacturaBaseDTO> ObtenXId(int Id);
-        Task<FacturaBaseDTO> ObtenXIdT(int Id);
-        Task<bool> Crear(FacturaBaseDTO parametro);
-        Task<FacturaBaseDTO> CrearYObtener(FacturaBaseDTO parametro);
-        Task<bool> Editar(FacturaBaseDTO parametro);
+        Task<List<FacturaDTO>> ObtenTodos();
+        Task<List<FacturaDTO>> ObtenTodosT();
+        Task<List<FacturaDTO>> ObtenSoloValidas();
+        Task<List<FacturaDTO>> ObtenXUuid(string uuid);
+        Task<List<FacturaDTO>> ObtenXRfcEmisor(string rfcEmisor);
+        Task<List<FacturaDTO>> ObtenXRfcReceptor(string rfcReceptor);
+        Task<FacturaDTO> ObtenXId(int Id);
+        Task<FacturaDTO> ObtenXIdT(int Id);
+        Task<bool> Crear(FacturaDTO parametro);
+        Task<FacturaDTO> CrearYObtener(FacturaDTO parametro);
+        Task<bool> Editar(FacturaDTO parametro);
         Task<bool> EsEnviado(int IdFactura);
     }
 }

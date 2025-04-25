@@ -6,7 +6,7 @@ namespace ERP_TECKIO
     public interface ITipoImpuestoService<TContext> where TContext : DbContext
     {
         Task<List<TipoImpuestoDTO>> ObtenTodos();
-        Task<List<TipoImpuestoDTO>> ObtenXClave(string Clave);
+        Task<TipoImpuestoDTO> ObtenXClave(string Clave);
         Task<List<TipoImpuestoDTO>> ObtenXDescripcion(string Descripcion);
         Task<TipoImpuestoDTO> ObtenXId(int Id);
         Task<bool> Crear(TipoImpuestoDTO parametro);

@@ -67,10 +67,10 @@ namespace ERP_TECKIO
             return _Mapper.Map<List<TipoImpuestoDTO>>(lista);
         }
 
-        public async Task<List<TipoImpuestoDTO>> ObtenXClave(string Clave)
+        public async Task<TipoImpuestoDTO> ObtenXClave(string Clave)
         {
-            var lista = await _Repositorio.ObtenerTodos(z => z.ClaveImpuesto == Clave);
-            return _Mapper.Map<List<TipoImpuestoDTO>>(lista);
+            var objeto = await _Repositorio.Obtener(z => z.ClaveImpuesto == Clave);
+            return _Mapper.Map<TipoImpuestoDTO>(objeto);
         }
 
         public async Task<List<TipoImpuestoDTO>> ObtenXDescripcion(string Descripcion)

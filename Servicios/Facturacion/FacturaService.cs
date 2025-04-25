@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.Modelos;
 using ERP_TECKIO.Servicios.Contratos.Facturacion;
 using Microsoft.EntityFrameworkCore;
@@ -18,17 +19,21 @@ namespace ERP_TECKIO.Servicios.Facturacion
             _mapper = mapper;
         }
 
-        public Task<bool> Crear(FacturaBaseDTO parametro)
+        public Task<bool> Crear(FacturaDTO parametro)
         {
             throw new NotImplementedException();
         }
 
-        public Task<FacturaBaseDTO> CrearYObtener(FacturaBaseDTO parametro)
+        public async Task<FacturaDTO> CrearYObtener(FacturaDTO parametro)
         {
-            throw new NotImplementedException();
+            parametro.EstatusEnviadoCentroCostos = false;
+            var objetoCreado = await _repository.Crear(_mapper.Map<Factura>(parametro));
+            if (objetoCreado.Id == 0)
+                return new FacturaDTO();
+            return _mapper.Map<FacturaDTO>(objetoCreado);
         }
 
-        public Task<bool> Editar(FacturaBaseDTO parametro)
+        public Task<bool> Editar(FacturaDTO parametro)
         {
             throw new NotImplementedException();
         }
@@ -38,42 +43,43 @@ namespace ERP_TECKIO.Servicios.Facturacion
             throw new NotImplementedException();
         }
 
-        public Task<List<FacturaBaseDTO>> ObtenSoloValidas()
+        public Task<List<FacturaDTO>> ObtenSoloValidas()
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<FacturaBaseDTO>> ObtenTodos()
+        public async Task<List<FacturaDTO>> ObtenTodos()
+        {
+            var lista = await _repository.ObtenerTodos();
+            return _mapper.Map<List<FacturaDTO>>(lista);
+        }
+
+        public Task<List<FacturaDTO>> ObtenTodosT()
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<FacturaBaseDTO>> ObtenTodosT()
+        public Task<FacturaDTO> ObtenXId(int Id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<FacturaBaseDTO> ObtenXId(int Id)
+        public Task<FacturaDTO> ObtenXIdT(int Id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<FacturaBaseDTO> ObtenXIdT(int Id)
+        public Task<List<FacturaDTO>> ObtenXRfcEmisor(string rfcEmisor)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<FacturaBaseDTO>> ObtenXRfcEmisor(string rfcEmisor)
+        public Task<List<FacturaDTO>> ObtenXRfcReceptor(string rfcReceptor)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<FacturaBaseDTO>> ObtenXRfcReceptor(string rfcReceptor)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<FacturaBaseDTO>> ObtenXUuid(string uuid)
+        public Task<List<FacturaDTO>> ObtenXUuid(string uuid)
         {
             throw new NotImplementedException();
         }

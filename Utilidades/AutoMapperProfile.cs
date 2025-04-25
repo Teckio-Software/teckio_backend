@@ -779,6 +779,8 @@ namespace ERP_TECKIO
             #region Facturas
 
             #region Facturas
+            CreateMap<Factura, FacturaDTO>();
+            CreateMap<FacturaDTO, Factura>();
             CreateMap<Factura, FacturaBaseDTO>()
                 .ForMember(destino => destino.MetodoPago,
                 opt => opt.MapFrom(origen => origen.MetodoPago == null ? "" : origen.MetodoPago))
@@ -893,8 +895,8 @@ namespace ERP_TECKIO
             //CreateMap<CategoriaImpuestoDTO, CategoriaImpuesto>();
             #endregion
             #region Archivo
-            //CreateMap<Archivo, ArchivoDTO>();
-            //CreateMap<ArchivoDTO, Archivo>();
+            CreateMap<Archivo, ArchivoDTO>();
+            CreateMap<ArchivoDTO, Archivo>();
             #endregion
             #region TipoImpuesto
             CreateMap<TipoImpuesto, TipoImpuestoDTO>();
@@ -995,57 +997,57 @@ namespace ERP_TECKIO
 
             #endregion
             #region PolizaOc
-           // CreateMap<PolizaOc, PolizaOcDTO>();
-           // CreateMap<PolizaOcDTO, PolizaOc>()
-           //.ForMember(destino => destino.IdPolizaNavigation,
-           //     opt => opt.Ignore());
+            // CreateMap<PolizaOc, PolizaOcDTO>();
+            // CreateMap<PolizaOcDTO, PolizaOc>()
+            //.ForMember(destino => destino.IdPolizaNavigation,
+            //     opt => opt.Ignore());
             #endregion
             #region PolizaOcDetalle
-           // CreateMap<PolizaOcdetalle, PolizaOcdetalleDTO>();
-           // CreateMap<PolizaOcdetalleDTO, PolizaOcdetalle>()
-           //.ForMember(destino => destino.IdPolizaOcNavigation,
-           //     opt => opt.Ignore());
+            // CreateMap<PolizaOcdetalle, PolizaOcdetalleDTO>();
+            // CreateMap<PolizaOcdetalleDTO, PolizaOcdetalle>()
+            //.ForMember(destino => destino.IdPolizaOcNavigation,
+            //     opt => opt.Ignore());
             #endregion
             #region PolizaSp
-           // CreateMap<PolizaSp, PolizaSpDTO>();
-           // CreateMap<PolizaSpDTO, PolizaSp>()
-           //.ForMember(destino => destino.IdPolizaNavigation,
-           //     opt => opt.Ignore()); ;
+            // CreateMap<PolizaSp, PolizaSpDTO>();
+            // CreateMap<PolizaSpDTO, PolizaSp>()
+            //.ForMember(destino => destino.IdPolizaNavigation,
+            //     opt => opt.Ignore()); ;
 
-           // CreateMap<PolizaSpDetalle, PolizaSpDetalleDTO>();
-           // CreateMap<PolizaSpDetalleDTO, PolizaSpDetalle>()
-           //.ForMember(destino => destino.IdCentroCostosNavigation,
-           //     opt => opt.Ignore())
-           //.ForMember(destino => destino.IdConceptoNavigation,
-           //     opt => opt.Ignore())
-           //.ForMember(destino => destino.IdCuentaContableNavigation,
-           //     opt => opt.Ignore())
-           //.ForMember(destino => destino.IdPolizaSpNavigation,
-           //     opt => opt.Ignore())
-           //.ForMember(destino => destino.IdOrdenInternaNavigation,
-           //     opt => opt.Ignore());
+            // CreateMap<PolizaSpDetalle, PolizaSpDetalleDTO>();
+            // CreateMap<PolizaSpDetalleDTO, PolizaSpDetalle>()
+            //.ForMember(destino => destino.IdCentroCostosNavigation,
+            //     opt => opt.Ignore())
+            //.ForMember(destino => destino.IdConceptoNavigation,
+            //     opt => opt.Ignore())
+            //.ForMember(destino => destino.IdCuentaContableNavigation,
+            //     opt => opt.Ignore())
+            //.ForMember(destino => destino.IdPolizaSpNavigation,
+            //     opt => opt.Ignore())
+            //.ForMember(destino => destino.IdOrdenInternaNavigation,
+            //     opt => opt.Ignore());
             #endregion
             #region InformacionAdicional
-           // CreateMap<InformacionAdicional, InformacionAdicionalDTO>()
-           //.ForMember(destino => destino.TipoOcString,
-           //     opt => opt.Ignore());
-           // CreateMap<InformacionAdicionalDTO, InformacionAdicional>()
-           //.ForMember(destino => destino.IdOrdenCompraNavigation,
-           //     opt => opt.Ignore());
+            // CreateMap<InformacionAdicional, InformacionAdicionalDTO>()
+            //.ForMember(destino => destino.TipoOcString,
+            //     opt => opt.Ignore());
+            // CreateMap<InformacionAdicionalDTO, InformacionAdicional>()
+            //.ForMember(destino => destino.IdOrdenCompraNavigation,
+            //     opt => opt.Ignore());
 
             #endregion
             #region FacturaEmisor
-           // CreateMap<FacturaEmisor, FacturaEmisorDTO>();
-           // CreateMap<FacturaEmisorDTO, FacturaEmisor>()
-           //.ForMember(destino => destino.IdFacturaNavigation,
-           //     opt => opt.Ignore()); ;
+            CreateMap<FacturaEmisor, FacturaEmisorDTO>();
+            CreateMap<FacturaEmisorDTO, FacturaEmisor>()
+           .ForMember(destino => destino.IdFacturaNavigation,
+                opt => opt.Ignore()); 
 
             #endregion
             #region FacturaReceptor
-           // CreateMap<FacturaReceptor, FacturaReceptorDTO>();
-           // CreateMap<FacturaReceptorDTO, FacturaReceptor>()
-           //.ForMember(destino => destino.IdFacturaNavigation,
-           //     opt => opt.Ignore()); ;
+            // CreateMap<FacturaReceptor, FacturaReceptorDTO>();
+            // CreateMap<FacturaReceptorDTO, FacturaReceptor>()
+            //.ForMember(destino => destino.IdFacturaNavigation,
+            //     opt => opt.Ignore()); ;
 
             #endregion
 

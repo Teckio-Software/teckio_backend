@@ -18,9 +18,14 @@ namespace ERP_TECKIO.Servicios.Facturacion
             _mapper = mapper;
         }
 
-        public Task<bool> Crear(FacturaDetalleImpuestoDTO parametro)
+        public async Task<bool> Crear(FacturaDetalleImpuestoDTO parametro)
         {
-            throw new NotImplementedException();
+            var objetoCreado = await _repository.Crear(_mapper.Map<FacturaDetalleImpuesto>(parametro));
+            if (objetoCreado.Id <= 0)
+            {
+                return false;
+            }
+            return true;
         }
 
         public Task<FacturaDetalleImpuestoDTO> CrearYObtener(FacturaDetalleImpuestoDTO parametro)
