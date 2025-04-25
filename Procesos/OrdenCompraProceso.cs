@@ -300,7 +300,8 @@ namespace ERP_TECKIO
                         Observaciones = oc.Observaciones,
                         FechaRegistro = oc.FechaRegistro,
                         Estatus = oc.Estatus,
-                        EstatusInsumosSurtidosDescripcion = descripcionEstatus
+                        EstatusInsumosSurtidosDescripcion = descripcionEstatus,
+                        IdContratista = oc.IdContratista
                     });
             }
             return lista;
