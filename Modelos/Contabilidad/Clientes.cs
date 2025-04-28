@@ -42,6 +42,7 @@ public abstract class ClientesAbstarct
 
     public string? RepresentanteLegal { get; set; }
     public string Domicilio { get; set; } = null!;
+    public string Direccion { get; set; }
     public string Colonia { get; set; } = null!;
     public string Municipio { get; set; } = null!;
 

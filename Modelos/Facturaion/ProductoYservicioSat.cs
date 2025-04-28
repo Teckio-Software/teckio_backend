@@ -11,7 +11,5 @@ public partial class ProductoYservicioSat
 
     public string Descripcion { get; set; } = null!;
 
-    public bool Tipo { get; set; }
-
     public virtual ICollection<ProductoYservicio> ProductoYservicios { get; set; } = new List<ProductoYservicio>();
 }

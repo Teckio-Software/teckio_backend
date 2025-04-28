@@ -13,11 +13,11 @@ public partial class ProductoYservicioAbstract
 
     public string Descripcion { get; set; } = null!;
 
-    public int IdUnidad { get; set; }
+    public int? IdUnidad { get; set; }
 
     public int IdProductoYservicioSat { get; set; }
 
-    public int IdUnidadSat { get; set; }
+    public int? IdUnidadSat { get; set; }
     public int IdCategoriaProductoYServicio { get; set; }
 }
 public partial class ProductoYservicio: ProductoYservicioAbstract
@@ -30,4 +30,5 @@ public partial class ProductoYservicio: ProductoYservicioAbstract
 
     public virtual UnidadSat IdUnidadSatNavigation { get; set; } = null!;
     public virtual CategoriaProductoYServicio IdCategoriaProductoYServicioNavigation { get; set; } = null!;
+    public virtual SubcategoriaProductoYServicio IdSubcategoriaProductoYServicioNavigation { get; set; } = null!;
 }

@@ -20,4 +20,5 @@ public abstract class FacturaEmisorAbstract
     public int IdRegimenFiscalSat { get; set; }
 
     public string Rfc { get; set; } = null!;
+    public string RegimenFiscal = null!;
 }

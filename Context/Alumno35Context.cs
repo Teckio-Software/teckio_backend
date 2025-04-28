@@ -4,6 +4,8 @@ using ERP_TECKIO.Modelos;
 
 using ERP_TECKIO;
 using ERP_TECKIO.Modelos.Presupuesto;
+using ERP_TECKIO.Modelos.Facturacion;
+using ERP_TECKIO.Modelos.Facturaion;
 
 
 public partial class Alumno35Context : DbContext
@@ -141,6 +143,19 @@ public partial class Alumno35Context : DbContext
     public virtual DbSet<FsrxinsummoMdO> FsrxinsummoMdOs { get; set; }
 
     public virtual DbSet<FsrxinsummoMdOdetalle> FsrxinsummoMdOdetalles { get; set; }
+    public virtual DbSet<FormaPagoSat> FormaPagoSats { get; set; }
+    public virtual DbSet<MonedaSat> MonedaSats { get; set; }
+    public virtual DbSet<ProductoYservicio> ProductoYservicios { get; set; }
+
+    public virtual DbSet<ProductoYservicioSat> ProductoYservicioSats { get; set; }
+    public virtual DbSet<RegimenFiscalSat> RegimenFiscalSats { get; set; }
+    public virtual DbSet<SubcategoriaProductoYServicio> SubcategoriaProductoYservicios { get; set; }
+    public virtual DbSet<CategoriaProductoYServicio> CategoriaProductoYservicios { get; set; }
+    public virtual DbSet<Unidad> Unidads { get; set; }
+    public virtual DbSet<UnidadSat> UnidadSats { get; set; }
+
+    public virtual DbSet<UsoCfdiSat> UsoCfdiSats { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<FsixinsummoMdO>(entity =>
@@ -164,6 +179,116 @@ public partial class Alumno35Context : DbContext
                 .HasForeignKey(d => d.IdProyecto)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_FSIXInsummoMdO_IdProyecto");
+        });
+        modelBuilder.Entity<UnidadSat>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__UnidadSa__3214EC071F7FFC83");
+
+            entity.ToTable("UnidadSat", "Factura");
+
+            entity.Property(e => e.Clave).HasMaxLength(3);
+            entity.Property(e => e.Nombre).HasMaxLength(200);
+            entity.Property(e => e.Tipo).HasMaxLength(200);
+        });
+
+        modelBuilder.Entity<UsoCfdiSat>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__UsoCfdiS__3214EC075164CB71");
+
+            entity.ToTable("UsoCfdiSat", "Factura");
+
+            entity.Property(e => e.Clave).HasMaxLength(5);
+            entity.Property(e => e.Descripcion).HasMaxLength(200);
+        });
+        modelBuilder.Entity<CategoriaProductoYServicio>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Categori__3214EC070901B952");
+
+            entity.ToTable("CategoriaProductoYServicio", "Factura");
+
+            entity.Property(e => e.Descripcion).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<Unidad>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Unidad__3214EC075C74CC95");
+
+            entity.ToTable("Unidad", "Factura");
+
+            entity.Property(e => e.Descripcion).HasMaxLength(5);
+        });
+
+        modelBuilder.Entity<SubcategoriaProductoYServicio>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Subcateg__3214EC075ED39141");
+
+            entity.ToTable("SubcategoriaProductoYServicio", "Factura");
+
+            entity.Property(e => e.Descripcion).HasMaxLength(100);
+        });
+
+        modelBuilder.Entity<ProductoYservicio>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Producto__3214EC0738FB77AA");
+
+            entity.ToTable("ProductoYServicio", "Factura");
+
+            entity.Property(e => e.Codigo).HasMaxLength(50);
+            entity.Property(e => e.Descripcion).HasMaxLength(200);
+
+            entity.HasOne(d => d.IdCategoriaProductoYServicioNavigation).WithMany(p => p.PorductoYservicios)
+                .HasForeignKey(d => d.IdCategoriaProductoYServicio)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__ProductoY__IdCat__5B988E2F");
+
+            entity.HasOne(d => d.IdProductoYservicioSatNavigation).WithMany(p => p.ProductoYservicios)
+                .HasForeignKey(d => d.IdProductoYservicioSat)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ProductoYServicio_IdProductoYServicioSat");
+
+            entity.HasOne(d => d.IdSubcategoriaProductoYServicioNavigation).WithMany(p => p.PorductoYservicios)
+                .HasForeignKey(d => d.IdCategoriaProductoYServicio)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ProductoYServicio_IdSubategoriaProductoYServicio");
+
+            entity.HasOne(d => d.IdUnidadNavigation).WithMany(p => p.ProductoYservicios)
+                .HasForeignKey(d => d.IdUnidad)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ProductoYServicio_IdUnidad");
+
+            entity.HasOne(d => d.IdUnidadSatNavigation).WithMany(p => p.ProductoYservicios)
+                .HasForeignKey(d => d.IdUnidadSat)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ProductoYServicio_IdUnidadSat");
+        });
+        modelBuilder.Entity<RegimenFiscalSat>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__RegimenF__3214EC078F758608");
+
+            entity.ToTable("RegimenFiscalSat", "Factura");
+
+            entity.Property(e => e.Clave).HasMaxLength(3);
+            entity.Property(e => e.Descripcion).HasMaxLength(200);
+        });
+
+        modelBuilder.Entity<ProductoYservicioSat>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Producto__3214EC07EFCEB7D3");
+
+            entity.ToTable("ProductoYServicioSat", "Factura");
+
+            entity.Property(e => e.Clave).HasMaxLength(8);
+            entity.Property(e => e.Descripcion).HasMaxLength(200);
+        });
+
+        modelBuilder.Entity<MonedaSat>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__MonedaSa__3214EC07D20CEEC0");
+
+            entity.ToTable("MonedaSat", "Factura");
+
+            entity.Property(e => e.Codigo).HasMaxLength(3);
+            entity.Property(e => e.Moneda).HasMaxLength(200);
         });
 
         modelBuilder.Entity<FsixinsummoMdOdetalle>(entity =>
@@ -446,16 +571,18 @@ public partial class Alumno35Context : DbContext
             entity.ToTable("FacturaDetalle", "Factura");
 
             entity.Property(e => e.Cantidad).HasColumnType("decimal(28, 6)");
+            entity.Ignore(e => e.Descripcion);
+            entity.Ignore(e => e.UnidadSat);
             entity.Property(e => e.Descuento).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.IdProductoYservicio).HasColumnName("IdProductoYServicio");
             entity.Property(e => e.Importe).HasColumnType("decimal(28, 6)");
             entity.Property(e => e.PrecioUnitario).HasColumnType("decimal(28, 6)");
-            entity.Property(e => e.Descripcion).HasMaxLength(2500);
-            entity.Ignore(e => e.UnidadSat);
 
             entity.HasOne(d => d.IdFacturaNavigation).WithMany(p => p.FacturaDetalles)
                 .HasForeignKey(d => d.IdFactura)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_FacturaDetalle_Factura_2024_02_15");
+
             entity.HasOne(d => d.IdProductoYservicioNavigation).WithMany(p => p.FacturaDetalles)
                 .HasForeignKey(d => d.IdProductoYservicio)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -510,6 +637,7 @@ public partial class Alumno35Context : DbContext
                 .HasForeignKey(d => d.IdFactura)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("PK_FacturaEmisor_Factura_2024_05_23");
+
             entity.HasOne(d => d.IdRegimenFiscalSatNavigation).WithMany(p => p.FacturasEmisor)
                 .HasForeignKey(d => d.IdRegimenFiscalSat)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -860,7 +988,8 @@ public partial class Alumno35Context : DbContext
 
             entity.Property(e => e.CodigoPostal).HasMaxLength(6);
             entity.Property(e => e.Email).HasMaxLength(150);
-            entity.Property(e => e.Domicilio).HasMaxLength(100);
+            entity.Property(e => e.Domicilio).HasMaxLength(500);
+            entity.Property(e => e.Direccion).HasMaxLength(500);
             entity.Property(e => e.Colonia).HasMaxLength(100);
             entity.Property(e => e.Municipio).HasMaxLength(100);
             entity.Property(e => e.NoExterior).HasMaxLength(25);
@@ -1416,6 +1545,16 @@ public partial class Alumno35Context : DbContext
             entity.HasOne(d => d.IdRequisicionNavigation).WithMany(p => p.InsumoXrequisicions)
                 .HasForeignKey(d => d.IdRequisicion)
                 .HasConstraintName("FK__InsumoXRe__IdReq__0C85DE4D");
+        });
+
+        modelBuilder.Entity<FormaPagoSat>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__FormaPag__3214EC07C018D665");
+
+            entity.ToTable("FormaPagoSat", "Factura");
+
+            entity.Property(e => e.Clave).HasMaxLength(3);
+            entity.Property(e => e.Concepto).HasMaxLength(50);
         });
 
         modelBuilder.Entity<OrdenCompra>(entity =>

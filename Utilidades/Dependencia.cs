@@ -1,7 +1,10 @@
-﻿using ERP_TECKIO.Procesos;
+﻿using ERP_TECKIO.Modelos.Facturacion;
+using ERP_TECKIO.Procesos;
 using ERP_TECKIO.Procesos.Facturacion;
 using ERP_TECKIO.Servicios;
 using ERP_TECKIO.Servicios.Contratos;
+using ERP_TECKIO.Servicios.Contratos.Facturacion;
+using ERP_TECKIO.Servicios.Facturacion;
 using Microsoft.EntityFrameworkCore;
 namespace ERP_TECKIO
 {
@@ -131,7 +134,29 @@ namespace ERP_TECKIO
 
             //Facturas
             services.AddScoped(typeof(ITipoImpuestoService<>), typeof(TipoImpuestoService<>));
-
+            services.AddScoped(typeof(IUsoCfdiSatService<>), typeof(UsoCfdiSatService<>));
+            services.AddScoped(typeof(IUnidadSatService<>), typeof(UnidadSatService<>));
+            services.AddScoped(typeof(IUnidadService<>), typeof(UnidadService<>));
+            services.AddScoped(typeof(ITipoFactorService<>), typeof(TipoFactorService<>));
+            services.AddScoped(typeof(ISubcategoriaProdutoYServicio<>), typeof(SubcategoriaProductoYServicioService<>));
+            services.AddScoped(typeof(ICategoriaProductoYServicioService<>), typeof(CategoriaProductoYServicioService<>));
+            services.AddScoped(typeof(IRegimenFiscalSatService<>), typeof(RegimenFiscalSatService<>));
+            services.AddScoped(typeof(IProductoYServicioSatService<>), typeof(ProductoYServicioSatService<>));
+            services.AddScoped(typeof(IProductoYservicioService<>), typeof(ProductoYservicio<>));
+            services.AddScoped(typeof(IMonedaSatService<>), typeof(MonedaSatService<>));
+            services.AddScoped(typeof(IFormaPagoSatService<>), typeof(FormaPagoSatService<>));
+            services.AddScoped(typeof(IFacturaEmisorService<>), typeof(FacturaEmisorService<>));
+            services.AddScoped(typeof(IFacturaImpuestoLocalService<>), typeof(FacturaImpuestoLocalService<>));
+            services.AddScoped(typeof(IFacturaImpuestosService<>), typeof(FacturaImpuestosService<>));
+            services.AddScoped(typeof(IFacturaDetalleService<>), typeof(FacturaDetalleService<>));
+            services.AddScoped(typeof(IFacturaDetalleImpuestoService<>), typeof(FacturaDetalleImpuestoService<>));
+            services.AddScoped(typeof(IFacturaComplementoPagoService<>), typeof(FacturaComplementoPagoService<>));
+            services.AddScoped(typeof(IFacturaService<>), typeof(FacturaService<>));
+            services.AddScoped(typeof(IDetalleValidacionService<>), typeof(DetalleValidacionService<>));
+            services.AddScoped(typeof(IClasificacionImpuestoService<>), typeof(ClasificacionImpuestoService<>));
+            services.AddScoped(typeof(ICategoriaImpuestoService<>), typeof(CategoriaImpuestoService<>));
+            services.AddScoped(typeof(IAcuseValidacionService<>), typeof(AcuseValidacionService<>));
+            services.AddScoped(typeof(IArchivoService<>), typeof(ArchivoService<>));
         }
     }
 }

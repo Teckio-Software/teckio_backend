@@ -33,6 +33,8 @@ namespace ERP_TECKIO.Procesos.Facturacion
         private readonly IFacturaEmisorService<T> _factsuraEmisorService;
         private readonly IFacturaImpuestosService<T> _facturaImpuestosService;
         private readonly IFacturaComplementoPagoService<T> _facturaComplementoPagoService;
+        private readonly IProductoYservicioService<T> _productoYservicioService;
+        private readonly IProductoYServicioSatService<T> _productoYservicioSatService;
         public ObtenFacturaProceso(
             IWebHostEnvironment env, IHttpContextAccessor httpContextAccessor,
             IArchivoService<T> ArchivoService,
@@ -50,7 +52,9 @@ namespace ERP_TECKIO.Procesos.Facturacion
             IFacturaDetalleImpuestoService<T> facturaDetalleImpuestoService,
             IFacturaEmisorService<T> factsuraEmisorService,
             IFacturaImpuestosService<T> facturaImpuestosService,
-            IFacturaComplementoPagoService<T> facturaComplementoPagoService
+            IFacturaComplementoPagoService<T> facturaComplementoPagoService,
+            IProductoYservicioService<T> productoYservicioService,
+            IProductoYServicioSatService<T> productoYservicioSatService
             )
         {
             this.env = env;
@@ -71,6 +75,8 @@ namespace ERP_TECKIO.Procesos.Facturacion
             _factsuraEmisorService = factsuraEmisorService;
             _facturaImpuestosService = facturaImpuestosService;
             _facturaComplementoPagoService = facturaComplementoPagoService; 
+            _productoYservicioService = productoYservicioService;
+            _productoYservicioSatService = productoYservicioSatService;
         }
 
         public class ConceptosExcelDTO
@@ -110,7 +116,9 @@ namespace ERP_TECKIO.Procesos.Facturacion
                     DateTime fechaValidacion = DateTime.Now;
                     var comprobante = documento.Descendants(ns + "Comprobante").FirstOrDefault();
                     var complemento = documento.Descendants(ns + "Complemento").FirstOrDefault();
-                    var timbreFiscalDigital = complemento.Descendants().FirstOrDefault().Element(ns + "TimbreFiscalDigital");
+                    var nodoTimbre = complemento.Elements().FirstOrDefault(e => e.Name.LocalName == "TimbreFiscalDigital");
+                    XNamespace tfd = nodoTimbre.Name.Namespace;
+                    var timbreFiscalDigital = complemento.Element(tfd+"TimbreFiscalDigital");
                     var uuid = timbreFiscalDigital.Attribute("UUID")?.Value;
                     var fechaTimbrado = timbreFiscalDigital.Attribute("FechaTimbrado")?.Value;
 
@@ -118,9 +126,9 @@ namespace ERP_TECKIO.Procesos.Facturacion
                     var numeroFacturas = numArchivos.Count() + 1;
 
                     var tipoComprobante = comprobante.Attribute("TipoDeComprobante")?.Value;
-                    var facturaEmisor = documento.Element(ns + "Emisor");
-                    var facturaReceptor = documento.Element(ns + "Receptor");
-                    var descuento = documento.Element(ns + "Descuento");
+                    var facturaEmisor = documento.Descendants(ns + "Emisor").FirstOrDefault();
+                    var facturaReceptor = documento.Descendants(ns + "Receptor").FirstOrDefault();
+                    var descuento = documento.Descendants(ns + "Descuento").FirstOrDefault();
 
                     var resultadoRutaArchivo = await GuardarArchivoFactura(facturaReceptor.Attribute("Rfc")?.Value, facturaEmisor.Attribute("Rfc")?.Value,
                     fechaValidacion.Year.ToString(), fechaValidacion.Month.ToString(), uuid, numeroFacturas, archivo);
@@ -168,11 +176,13 @@ namespace ERP_TECKIO.Procesos.Facturacion
 
                     //await leerFacturaReceptor(facturaReceptor, IdFactura);
 
-                    var facturaImpuestos = documento.Element(ns + "Impuestos");
+                    var facturaImpuestos = documento.Descendants(ns + "Impuestos").FirstOrDefault();
                     await leerFacturaImpuestos(facturaImpuestos, ns, IdFactura);
 
                     var facturaComplementoPago = documento.Descendants(ns + "Complemento").FirstOrDefault();
-
+                    var nodoPagos = complemento.Elements().FirstOrDefault(e => e.Name.LocalName == "Pagos");
+                    XNamespace pago20 = nodoTimbre.Name.Namespace;
+                    await leerFacturaComplementoPago(facturaComplementoPago, pago20, IdFactura);
                 }
             }
 
@@ -221,12 +231,12 @@ namespace ERP_TECKIO.Procesos.Facturacion
             nuevaFactura.Modalidad = 1;
             nuevaFactura.IdArchivo = IdArchivo;
             nuevaFactura.Descuento = descuento != null ? Convert.ToDecimal(descuento.Attribute("Descuento")?.Value) : 0;
-            nuevaFactura.IdArchivoPdf = 0;
+            nuevaFactura.IdArchivoPdf = null;
             nuevaFactura.EstatusEnviadoCentroCostos = false;
 
             var clientes = await _clientesService.ObtenTodos();
             var existeCliente = clientes.Where(z => z.Rfc == FacturaReceptor.Attribute("Rfc")?.Value).FirstOrDefault();
-            if (existeCliente.Id <= 0 || existeCliente == null) {
+            if (existeCliente == null) {
                 var nuevoCliente = new ClienteDTO();
                 nuevoCliente.RazonSocial = FacturaReceptor.Attribute("Nombre")?.Value;
                 nuevoCliente.Rfc = FacturaReceptor.Attribute("Rfc")?.Value;
@@ -234,6 +244,7 @@ namespace ERP_TECKIO.Procesos.Facturacion
                 nuevoCliente.Email = "";
                 nuevoCliente.Telefono = "";
                 nuevoCliente.Domicilio = "";
+                nuevoCliente.Direccion = "";
                 nuevoCliente.Colonia = "";
                 nuevoCliente.Municipio = "";
                 nuevoCliente.NoExterior = "";
@@ -259,27 +270,64 @@ namespace ERP_TECKIO.Procesos.Facturacion
             nuevaFactura.IdMonedaSat = moneda.Id;
 
             var guardarFactura = await _facturaService.CrearYObtener(nuevaFactura);
-            return nuevaFactura;
+            return guardarFactura;
         }
 
         public async Task<string> GuardarArchivoFactura(string rfcEmpresa, string rfcProveedor, string anio, string mes, string uuid, int numeroRepetido, IFormFile archivo)
         {
-            var extension = Path.GetExtension(archivo.FileName);
-            var nombreArchivo = $"{uuid + "-" + numeroRepetido.ToString()}{extension}";
-            string folder = Path.Combine(env.WebRootPath, rfcEmpresa, rfcProveedor, anio, mes);
+            //var extension = Path.GetExtension(archivo.FileName);
+            //var nombreArchivo = $"{uuid + "-" + numeroRepetido.ToString()}{extension}";
+            //string folder = Path.Combine(env.WebRootPath, rfcEmpresa, rfcProveedor, anio, mes);
+            //if (!Directory.Exists(folder))
+            //{
+            //    Directory.CreateDirectory(folder);
+            //}
+            //string ruta = Path.Combine(folder, nombreArchivo);
+            //using (var memoryStream = new MemoryStream())
+            //{
+            //    await archivo.CopyToAsync(memoryStream);
+            //    var contenido = memoryStream.ToArray();
+            //    await File.WriteAllBytesAsync(ruta, contenido);
+            //}
+            //var urlActual = $"{httpContextAccessor.HttpContext.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host}";
+            //var rutaParaDB = Path.Combine(urlActual, folder, nombreArchivo).Replace("\\", "/");
+            //return rutaParaDB;
+
+            // Usar WebRootPath seguro
+            string webRootPath = env.WebRootPath ?? Path.Combine(env.ContentRootPath, "wwwroot");
+
+            // Construir la ruta de carpetas físicas
+            string folder = Path.Combine(webRootPath, rfcEmpresa, rfcProveedor, anio, mes);
+
             if (!Directory.Exists(folder))
             {
                 Directory.CreateDirectory(folder);
             }
-            string ruta = Path.Combine(folder, nombreArchivo);
+
+            // Nombre único para el archivo
+            var extension = Path.GetExtension(archivo.FileName);
+            var nombreArchivo = $"{uuid}-{numeroRepetido}{extension}";
+
+            string rutaFisica = Path.Combine(folder, nombreArchivo);
+
+            // Copiar el contenido del archivo a la ruta
             using (var memoryStream = new MemoryStream())
             {
                 await archivo.CopyToAsync(memoryStream);
                 var contenido = memoryStream.ToArray();
-                await File.WriteAllBytesAsync(ruta, contenido);
+                await File.WriteAllBytesAsync(rutaFisica, contenido);
             }
+
+            // Armar URL para guardar en base de datos
+            if (httpContextAccessor.HttpContext == null)
+                throw new InvalidOperationException("No hay HttpContext disponible.");
+
             var urlActual = $"{httpContextAccessor.HttpContext.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host}";
-            var rutaParaDB = Path.Combine(urlActual, folder, nombreArchivo).Replace("\\", "/");
+
+            // Armamos la ruta pública relativa
+            var rutaRelativa = Path.Combine(rfcEmpresa, rfcProveedor, anio, mes, nombreArchivo).Replace("\\", "/");
+            var rutaParaDB = $"{urlActual}/{rutaRelativa}";
+
             return rutaParaDB;
         }
 
@@ -335,10 +383,17 @@ namespace ERP_TECKIO.Procesos.Facturacion
                     nuevaFacturaDetalle.Importe = Convert.ToDecimal(facturaDetalle.Attribute("Importe")?.Value);
                     var existeDescuento = facturaDetalle.Attribute("Descuento")?.Value;
                     nuevaFacturaDetalle.Descuento = existeDescuento != null ? Convert.ToDecimal(existeDescuento) : 0;
-                    nuevaFacturaDetalle.IdProductoYservicio = 
-                    int IdFacturaDetalle = 0;
-                    var facturaDetalleImpuestos = facturaDetalle.Descendants(ns + "Impuestos").FirstOrDefault();
-                    await leerFacturaDetalleImpuestos(facturaDetalleImpuestos, ns, IdFacturaDetalle);
+
+                    var claveProductos = await _productoYservicioSatService.ObtenerXClave(facturaDetalle.Attribute("ClaveProdServ")?.Value);
+                    var productoOServicio = await _productoYservicioService.ObtenerXDescripcionYClave(facturaDetalle.Attribute("Descripcion")?.Value, claveProductos.Id);
+
+                    nuevaFacturaDetalle.IdProductoYservicio = productoOServicio.Id;
+                    var crearFacturaDetalle = await _facturaDetalleService.CrearYObtener(nuevaFacturaDetalle);
+                    if (crearFacturaDetalle.Id > 0) {
+                        int IdFacturaDetalle = crearFacturaDetalle.Id;
+                        var facturaDetalleImpuestos = facturaDetalle.Descendants(ns + "Impuestos").FirstOrDefault();
+                        await leerFacturaDetalleImpuestos(facturaDetalleImpuestos, ns, IdFacturaDetalle);
+                    }
                 }
             }
         }
@@ -390,12 +445,12 @@ namespace ERP_TECKIO.Procesos.Facturacion
             }
         }
 
-        public async Task leerFacturaComplementoPago(XElement complemento, XNamespace ns, int IdFactura) {
+        public async Task leerFacturaComplementoPago(XElement complemento, XNamespace pago20, int IdFactura) {
             if (complemento != null) { 
-                var pagos = complemento.Descendants("pago20:Pagos").FirstOrDefault();
+                var pagos = complemento.Descendants(pago20 + "Pagos").FirstOrDefault();
                 if (pagos != null) { 
-                    foreach(var pago in pagos.Elements("pago20:Pago")) {
-                        foreach (var doctoRelacionado in pago.Elements("pago20:DoctoRelacionado")) { 
+                    foreach(var pago in pagos.Elements(pago20 + "Pago")) {
+                        foreach (var doctoRelacionado in pago.Elements(pago20 + "DoctoRelacionado")) { 
                             var nuevaFacturaComplementoPago = new FacturaComplementoPagoDTO();
                             nuevaFacturaComplementoPago.IdFactura = IdFactura;
                             nuevaFacturaComplementoPago.Uuid = doctoRelacionado.Attribute("IdDocumento")?.Value;

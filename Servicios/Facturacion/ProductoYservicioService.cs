@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.Modelos;
 using ERP_TECKIO.Modelos.Facturacion;
@@ -114,6 +115,12 @@ namespace ERP_TECKIO.Servicios.Facturacion
             respuesta.Estatus = true;
             respuesta.Descripcion = "Producto y servicio eliminado";
             return respuesta;
+        }
+
+        public async Task<ProductoYservicioDTO> ObtenerXDescripcionYClave(string descripcion, int Idclave)
+        {
+            var query = await _repository.Obtener(z => z.Descripcion == descripcion && z.IdProductoYservicioSat == Idclave);
+            return _mapper.Map<ProductoYservicioDTO>(query);
         }
     }
 }
