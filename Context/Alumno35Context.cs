@@ -993,8 +993,8 @@ public partial class Alumno35Context : DbContext
             entity.Property(e => e.Colonia).HasMaxLength(100);
             entity.Property(e => e.Municipio).HasMaxLength(100);
             entity.Property(e => e.NoExterior).HasMaxLength(25);
-            entity.Property(e => e.RazonSocial).HasMaxLength(150);
-            entity.Property(e => e.RepresentanteLegal).HasMaxLength(150);
+            entity.Property(e => e.RazonSocial).HasMaxLength(500);
+            entity.Property(e => e.RepresentanteLegal).HasMaxLength(500);
             entity.Property(e => e.Rfc).HasMaxLength(15);
             entity.Property(e => e.Telefono).HasMaxLength(25);
 

@@ -1,4 +1,5 @@
-﻿using ERP_TECKIO.Procesos.Facturacion;
+﻿using ERP_TECKIO.DTO.Factura;
+using ERP_TECKIO.Procesos.Facturacion;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,13 @@ namespace ERP_TECKIO.Controllers.Alumno01
             ObtenFacturaProceso<Alumno35Context> obtenFacturaProceso
             ) {
             _obtenFacturaProceso = obtenFacturaProceso;
+        }
+
+        [HttpGet("ObtenFacturas")]
+        public async Task<ActionResult<List<FacturaDTO>>> ObtenerFacturas()
+        {
+            var facturas = await _obtenFacturaProceso.ObtenerFacturas();
+            return facturas;
         }
 
         [HttpGet("obtenerProductos")]

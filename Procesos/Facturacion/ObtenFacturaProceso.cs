@@ -94,6 +94,37 @@ namespace ERP_TECKIO.Procesos.Facturacion
             public string EstatusFactura { get; set; }
         }
 
+        public async Task<List<FacturaDTO>> ObtenerFacturas()
+        {
+            var facturas = new List<FacturaDTO>();
+
+            facturas = await _facturaService.ObtenTodos();
+            foreach (var factura in facturas) {
+                var cliente = await _clientesService.ObtenXId(factura.IdCliente);
+                factura.RazonSocialCliente = cliente.RazonSocial;
+
+                if (factura.IdFormaPago == 0 || factura.IdFormaPago == null) {
+                    factura.FormaPago = "";
+                }
+                else
+                {
+                    var formaPago = await _formaPagoSatService.ObtenerXId((int) factura.IdFormaPago);
+                    factura.FormaPago = formaPago.Clave;
+                }
+
+                var regimenFiscal = await _regimenFiscalSatService.ObtenerXId(factura.IdRegimenFiscalSat);
+                factura.RegimenFiscal = regimenFiscal.Descripcion;
+
+                var usoCdfi = await _usoCfdiSatService.ObtenerXId(factura.IdUsoCfdi);
+                factura.UsoCfdi = usoCdfi.Descripcion;
+
+                var moneda = await _monedaSatService.ObtenerXId(factura.IdMonedaSat);
+                factura.MonedaSat = moneda.Moneda;
+            }
+
+            return facturas;
+        }
+
         public async Task<bool> leerFacturas()
         {
             string rutaExcel = @"C:\Users\dev_8\Downloads\ListadoCfdi.xlsx";
@@ -224,6 +255,20 @@ namespace ERP_TECKIO.Procesos.Facturacion
                 nuevaFactura.MetodoPago = "PUE";
                 nuevaFactura.IdFormaPago = null;
             }
+            if (comprobante.Attribute("TipoDeComprobante")?.Value == "T")
+            {
+                nuevaFactura.Tipo = 4;
+                nuevaFactura.MetodoPago = "NA";
+                if (comprobante.Attribute("FormaPago")?.Value != null) {
+                    var FormaPago = await _formaPagoSatService.ObtenerXClave(comprobante.Attribute("FormaPago")?.Value);
+                    nuevaFactura.IdFormaPago = FormaPago.Id;
+                }
+                else
+                {
+                    nuevaFactura.IdFormaPago = null;
+                }
+            }
+
 
             //1 = Cargada por proveedor
             //2 = Carga masiva ftp
@@ -383,11 +428,15 @@ namespace ERP_TECKIO.Procesos.Facturacion
                     nuevaFacturaDetalle.Importe = Convert.ToDecimal(facturaDetalle.Attribute("Importe")?.Value);
                     var existeDescuento = facturaDetalle.Attribute("Descuento")?.Value;
                     nuevaFacturaDetalle.Descuento = existeDescuento != null ? Convert.ToDecimal(existeDescuento) : 0;
-
+                    nuevaFacturaDetalle.Descripcion = facturaDetalle.Attribute("Descripcion")?.Value;
                     var claveProductos = await _productoYservicioSatService.ObtenerXClave(facturaDetalle.Attribute("ClaveProdServ")?.Value);
                     var productoOServicio = await _productoYservicioService.ObtenerXDescripcionYClave(facturaDetalle.Attribute("Descripcion")?.Value, claveProductos.Id);
 
                     nuevaFacturaDetalle.IdProductoYservicio = productoOServicio.Id;
+                    if (nuevaFacturaDetalle.IdProductoYservicio == 0)
+                    {
+                        var mensaje = "objeto vacio";
+                    }
                     var crearFacturaDetalle = await _facturaDetalleService.CrearYObtener(nuevaFacturaDetalle);
                     if (crearFacturaDetalle.Id > 0) {
                         int IdFacturaDetalle = crearFacturaDetalle.Id;

@@ -782,22 +782,29 @@ namespace ERP_TECKIO
             #region Facturas
 
             #region Facturas
-            CreateMap<Factura, FacturaDTO>();
+            CreateMap<Factura, FacturaDTO>()
+                .ForMember(destino => destino.IdFormaPago,
+                opt => opt.MapFrom(origien => origien.IdFormaPago == null ? 0 : origien.IdFormaPago))
+                .ForMember(destino => destino.IdArchivo,
+                opt => opt.MapFrom(origien => origien.IdArchivo == null ? 0 : origien.IdArchivo))
+                .ForMember(destino => destino.EstatusEnviadoCentroCostos,
+                opt => opt.MapFrom(origien => origien.EstatusEnviadoCentroCostos == null ? false : origien.EstatusEnviadoCentroCostos));
             CreateMap<FacturaDTO, Factura>();
-            CreateMap<Factura, FacturaBaseDTO>()
-                .ForMember(destino => destino.MetodoPago,
-                opt => opt.MapFrom(origen => origen.MetodoPago == null ? "" : origen.MetodoPago))
-                .ForMember(destino => destino.FormaPago,
-                opt => opt.MapFrom(origen => origen.FormaPago == null ? "" : origen.FormaPago));
-            CreateMap<FacturaBaseDTO, Factura>()
-                .ForMember(destino => destino.MetodoPago,
-                opt => opt.MapFrom(origen => string.IsNullOrEmpty(origen.MetodoPago) ? "" : origen.MetodoPago))
-                .ForMember(destino => destino.FormaPago,
-                opt => opt.MapFrom(origen => string.IsNullOrEmpty(origen.FormaPago) ? "" : origen.FormaPago))
-           .ForMember(destino => destino.IdArchivoNavigation,
-                opt => opt.Ignore())
-           .ForMember(destino => destino.IdArchivoPdfNavigation,
-                opt => opt.Ignore());
+
+           // CreateMap<Factura, FacturaBaseDTO>()
+           //     .ForMember(destino => destino.MetodoPago,
+           //     opt => opt.MapFrom(origen => origen.MetodoPago == null ? "" : origen.MetodoPago))
+           //     .ForMember(destino => destino.FormaPago,
+           //     opt => opt.MapFrom(origen => origen.FormaPago == null ? "" : origen.FormaPago));
+           // CreateMap<FacturaBaseDTO, Factura>()
+           //     .ForMember(destino => destino.MetodoPago,
+           //     opt => opt.MapFrom(origen => string.IsNullOrEmpty(origen.MetodoPago) ? "" : origen.MetodoPago))
+           //     .ForMember(destino => destino.FormaPago,
+           //     opt => opt.MapFrom(origen => string.IsNullOrEmpty(origen.FormaPago) ? "" : origen.FormaPago))
+           //.ForMember(destino => destino.IdArchivoNavigation,
+           //     opt => opt.Ignore())
+           //.ForMember(destino => destino.IdArchivoPdfNavigation,
+           //     opt => opt.Ignore());
             #endregion
             #region FacturaDetalles
             CreateMap<FacturaDetalle, FacturaDetalleDTO>();
