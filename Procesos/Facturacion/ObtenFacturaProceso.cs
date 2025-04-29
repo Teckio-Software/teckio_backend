@@ -97,29 +97,33 @@ namespace ERP_TECKIO.Procesos.Facturacion
         public async Task<List<FacturaDTO>> ObtenerFacturas()
         {
             var facturas = new List<FacturaDTO>();
-
+            var clientes = await _clientesService.ObtenTodos();
+            var formaPagos = await _formaPagoSatService.ObtenerTodos();
+            var regimenFiscales = await _regimenFiscalSatService.ObtenerTodos();
+            var usosCdfi = await _usoCfdiSatService.ObtenerTodos();
+            var monedas = await _monedaSatService.ObtenerTodos();
             facturas = await _facturaService.ObtenTodos();
             foreach (var factura in facturas) {
-                var cliente = await _clientesService.ObtenXId(factura.IdCliente);
+                var cliente = clientes.Where(z => z.Id == factura.IdCliente).FirstOrDefault();
                 factura.RazonSocialCliente = cliente.RazonSocial;
-
+                factura.RfcReceptor = cliente.Rfc;
                 if (factura.IdFormaPago == 0 || factura.IdFormaPago == null) {
                     factura.FormaPago = "";
                 }
                 else
                 {
-                    var formaPago = await _formaPagoSatService.ObtenerXId((int) factura.IdFormaPago);
+                    var formaPago = formaPagos.Where(z => z.Id == factura.IdFormaPago).FirstOrDefault();
                     factura.FormaPago = formaPago.Clave;
                 }
 
-                var regimenFiscal = await _regimenFiscalSatService.ObtenerXId(factura.IdRegimenFiscalSat);
+                var regimenFiscal = regimenFiscales.Where(z => z.Id == factura.IdRegimenFiscalSat).FirstOrDefault();
                 factura.RegimenFiscal = regimenFiscal.Descripcion;
 
-                var usoCdfi = await _usoCfdiSatService.ObtenerXId(factura.IdUsoCfdi);
+                var usoCdfi = usosCdfi.Where(z => z.Id == factura.IdUsoCfdi).FirstOrDefault();
                 factura.UsoCfdi = usoCdfi.Descripcion;
 
-                var moneda = await _monedaSatService.ObtenerXId(factura.IdMonedaSat);
-                factura.MonedaSat = moneda.Moneda;
+                var moneda = monedas.Where(z => z.Id == factura.IdMonedaSat).FirstOrDefault();
+                factura.MonedaSat = moneda.Codigo;
             }
 
             return facturas;

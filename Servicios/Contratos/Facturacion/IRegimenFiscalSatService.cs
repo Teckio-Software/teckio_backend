@@ -8,5 +8,6 @@ namespace ERP_TECKIO.Servicios.Contratos.Facturacion
         Task<bool> Crear(RegimenFiscalSatDTO parametro);
         Task<RegimenFiscalSatDTO> ObtenerXClave(string clave);
         Task<RegimenFiscalSatDTO> ObtenerXId(int Id);
+        Task<List<RegimenFiscalSatDTO>> ObtenerTodos();
     }
 }

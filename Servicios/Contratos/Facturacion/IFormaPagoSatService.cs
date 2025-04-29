@@ -8,6 +8,7 @@ namespace ERP_TECKIO.Servicios.Contratos.Facturacion
         Task<bool> Crear(FormaPagoSatDTO parametro);
         Task<FormaPagoSatDTO> ObtenerXClave(string clave);
         Task<FormaPagoSatDTO> ObtenerXId(int Id);
+        Task<List<FormaPagoSatDTO>> ObtenerTodos();
 
     }
 }

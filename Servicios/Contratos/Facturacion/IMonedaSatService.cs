@@ -8,6 +8,7 @@ namespace ERP_TECKIO.Servicios.Contratos.Facturacion
         Task<bool> Crear(MonedaSatDTO parametro);
         Task<MonedaSatDTO> ObtenerXClave(string clave);
         Task<MonedaSatDTO> ObtenerXId(int Id);
+        Task<List<MonedaSatDTO>> ObtenerTodos();
 
     }
 }
