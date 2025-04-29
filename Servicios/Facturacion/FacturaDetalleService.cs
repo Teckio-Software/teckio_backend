@@ -56,9 +56,10 @@ namespace ERP_TECKIO.Servicios.Facturacion
             throw new NotImplementedException();
         }
 
-        public Task<List<FacturaDetalleDTO>> ObtenXIdFactura(int IdFactura)
+        public async Task<List<FacturaDetalleDTO>> ObtenXIdFactura(int IdFactura)
         {
-            throw new NotImplementedException();
+            var lista = await _repository.ObtenerTodos(z => z.IdFactura == IdFactura);
+            return _mapper.Map<List<FacturaDetalleDTO>>(lista);
         }
 
         public Task<List<FacturaDetalleDTO>> ObtenXImporte(decimal Importe)

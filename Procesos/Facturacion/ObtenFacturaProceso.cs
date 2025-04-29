@@ -637,5 +637,25 @@ namespace ERP_TECKIO.Procesos.Facturacion
             }
             return;
         }
+
+        public async Task<List<FacturaDetalleDTO>> ObtenFacturaDetalleXIdFactura(int IdFactura){
+            var facturaDetalles = new List<FacturaDetalleDTO>();
+            var productosYServicios = await _productoYservicioService.ObtenerTodos();
+            facturaDetalles = await _facturaDetalleService.ObtenXIdFactura(IdFactura);
+            foreach (var facturaDetalle in facturaDetalles) {
+                var productoYServicio = productosYServicios.Where(z => z.Id == facturaDetalle.IdProductoYservicio).FirstOrDefault();
+
+                facturaDetalle.IdCategoriaProductoYServicio = productoYServicio.IdCategoriaProductoYServicio;
+                facturaDetalle.IdSubcategoriaProductoYServicio = productoYServicio.IdSubcategoriaProductoYServicio;
+            }
+            return facturaDetalles;
+        }
+
+        public async Task<List<FacturaComplementoPagoDTO>> ObtenComplementoPagoXIdFactura(int IdFactura)
+        {
+            var complementoPagos = new List<FacturaComplementoPagoDTO>();
+            complementoPagos = await _facturaComplementoPagoService.ObtenXIdFactura(IdFactura);
+            return complementoPagos;
+        }
     }
 }

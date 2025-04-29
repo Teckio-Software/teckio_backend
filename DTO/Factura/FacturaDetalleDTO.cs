@@ -36,6 +36,8 @@ namespace ERP_TECKIO
 
         public decimal Descuento { get; set; }
         public int IdProductoYservicio { get; set; }
+        public int IdCategoriaProductoYServicio { get; set; }
+        public int IdSubcategoriaProductoYServicio { get; set; }
     }
     //public class FacturaDetalleCentroCostosDTO : FacturaDetalleAbstract
     //{

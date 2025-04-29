@@ -1,5 +1,6 @@
 ﻿using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.Procesos.Facturacion;
+using ERP_TECKIO.Servicios.Contratos.Facturacion;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,13 @@ namespace ERP_TECKIO.Controllers.Alumno01
     public class FacturaAlumno35Controller : ControllerBase
     {
         private readonly ObtenFacturaProceso<Alumno35Context> _obtenFacturaProceso;
+        private readonly ICategoriaProductoYServicioService<Alumno35Context> _categoriaProductoYServicioService;
         public FacturaAlumno35Controller(
-            ObtenFacturaProceso<Alumno35Context> obtenFacturaProceso
+            ObtenFacturaProceso<Alumno35Context> obtenFacturaProceso,
+            ICategoriaProductoYServicioService<Alumno35Context> categoriaProductoYServicioService
             ) {
             _obtenFacturaProceso = obtenFacturaProceso;
+            _categoriaProductoYServicioService = categoriaProductoYServicioService;
         }
 
         [HttpGet("ObtenFacturas")]
@@ -24,6 +28,27 @@ namespace ERP_TECKIO.Controllers.Alumno01
         {
             var facturas = await _obtenFacturaProceso.ObtenerFacturas();
             return facturas;
+        }
+
+        [HttpGet("ObtenFacturaDetalleXIdFactura/{IdFactura:int}")]
+        public async Task<ActionResult<List<FacturaDetalleDTO>>> ObtenFacturaDetalleXIdFactura(int IdFactura)
+        {
+            var facturaDetalles = await _obtenFacturaProceso.ObtenFacturaDetalleXIdFactura(IdFactura);
+            return facturaDetalles;
+        }
+
+        [HttpGet("ObtenComplementoPagoXIdFactura/{IdFactura:int}")]
+        public async Task<ActionResult<List<FacturaComplementoPagoDTO>>> ObtenComplementoPagoXIdFactura(int IdFactura)
+        {
+            var complemntoPagos = await _obtenFacturaProceso.ObtenComplementoPagoXIdFactura(IdFactura);
+            return complemntoPagos;
+        }
+
+        [HttpGet("ObtenerCategorias")]
+        public async Task<ActionResult<List<CategoriaProductoYServicioDTO>>> ObtenerCategorias()
+        {
+            var categorias = await _categoriaProductoYServicioService.ObtenerTodos();
+            return categorias;
         }
 
         [HttpGet("obtenerProductos")]

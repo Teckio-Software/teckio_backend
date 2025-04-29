@@ -57,10 +57,10 @@ namespace ERP_TECKIO.Servicios.Facturacion
             return _Mapper.Map<FacturaComplementoPagoDTO>(lista);
         }
 
-        public async Task<FacturaComplementoPagoDTO> ObtenXIdFactura(int IdFactura)
+        public async Task<List<FacturaComplementoPagoDTO>> ObtenXIdFactura(int IdFactura)
         {
-            var lista = await _Repositorio.Obtener(z => z.IdFactura == IdFactura);
-            return _Mapper.Map<FacturaComplementoPagoDTO>(lista);
+            var lista = await _Repositorio.ObtenerTodos(z => z.IdFactura == IdFactura);
+            return _Mapper.Map<List<FacturaComplementoPagoDTO>>(lista);
         }
 
         public async Task<List<FacturaComplementoPagoDTO>> ObtenXUuidFactura(string Uuid)
