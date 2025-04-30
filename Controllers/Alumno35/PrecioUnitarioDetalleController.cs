@@ -1,0 +1,140 @@
+﻿using DocumentFormat.OpenXml.InkML;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using ERP_TECKIO;
+using Microsoft.EntityFrameworkCore;
+using ERP_TECKIO.DTO;
+using DocumentFormat.OpenXml.Office2010.Excel;
+
+
+
+
+
+namespace SistemaERP.API.Alumno35Controllers.Procomi
+{
+    [Route("api/preciounitariodetalle/1042")]
+    [ApiController]
+    public class PrecioUnitarioDetalleAlumno35Controller : ControllerBase
+    {
+        private readonly PrecioUnitarioProceso<Alumno35Context> _precioUnitarioProceso;
+        private readonly DbContextOptionsBuilder<Alumno35Context> _Options;
+        public PrecioUnitarioDetalleAlumno35Controller(
+            PrecioUnitarioProceso<Alumno35Context> precioUnitarioProceso,
+            DbContextOptionsBuilder<Alumno35Context> options
+            )
+        {
+            _precioUnitarioProceso = precioUnitarioProceso;
+            _Options = options;
+        }
+
+        [HttpGet("todos/{IdPrecioUnitario:int}")]
+        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> Obtener(int IdPrecioUnitario)
+        {
+            var registros = new List<PrecioUnitarioDetalleDTO>();
+            using (var db = new Alumno35Context(_Options.Options))
+            {
+                registros = await _precioUnitarioProceso.ObtenerDetalles(IdPrecioUnitario, db);
+            }
+            return registros;
+        }
+
+        [HttpGet("todosFiltrado/{IdPrecioUnitario:int}/{IdTipoInsumo}")]
+        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> ObtenerFiltrado(int IdPrecioUnitario, int IdTipoInsumo)
+        {
+            var registros = new List<PrecioUnitarioDetalleDTO>();
+            using (var db = new Alumno35Context(_Options.Options))
+            {
+                registros = await _precioUnitarioProceso.ObtenerDetallesPorTipoInsumo(IdPrecioUnitario, IdTipoInsumo, db);
+            }
+            return registros;
+        }
+
+        [HttpPost("obtenhijos")]
+        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> ObtenerHijos([FromBody] PrecioUnitarioDetalleDTO registro)
+        {
+            var registros = new List<PrecioUnitarioDetalleDTO>();
+            using (var db = new Alumno35Context(_Options.Options))
+            {
+                registros = await _precioUnitarioProceso.ObtenerDetallesHijos(registro, db);
+            }
+            return registros;
+        }
+
+        [HttpPost("crear")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearPrecioUnitario-Empresa2")]
+        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> CrearYObtener([FromBody] PrecioUnitarioDetalleDTO registro)
+        {
+            return await _precioUnitarioProceso.CrearYObtenerDetalle(registro);
+        }
+
+        [HttpPost("editar")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPrecioUnitario-Empresa2")]
+        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> Editar([FromBody] PrecioUnitarioDetalleDTO registro)
+        {
+            return await _precioUnitarioProceso.EditarDetalle(registro);
+        }
+
+        [HttpPost("partirDetalle")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPrecioUnitario-Empresa2")]
+        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> partirDetalle([FromBody] PrecioUnitarioDetalleDTO registro)
+        {
+            return await _precioUnitarioProceso.PartirDetalle(registro);
+        }
+
+        [HttpPost("eliminar")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarPrecioUnitario-Empresa2")]
+        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> Eliminar([FromBody] int Id)
+        {
+            var registros = new List<PrecioUnitarioDetalleDTO>();
+            using (var db = new Alumno35Context(_Options.Options))
+            {
+                registros = await _precioUnitarioProceso.EliminarDetalle(Id, db);
+            }
+            return registros;
+        }
+
+        [HttpPost("crearOperaciones")]
+        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> CrearOperacion([FromBody] OperacionesXPrecioUnitarioDetalleDTO registro)
+        {
+            return await _precioUnitarioProceso.CrearOperacion(registro);
+        }
+
+        [HttpPost("editarOperaciones")]
+        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> EditarOperacion([FromBody] OperacionesXPrecioUnitarioDetalleDTO registro)
+        {
+            return await _precioUnitarioProceso.EditarOperacion(registro);
+        }
+
+        [HttpPost("eliminarOperacion")]
+        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> EliminarOperacion([FromBody] int Id)
+        {
+            return await _precioUnitarioProceso.EliminarOperacion(Id);
+        }
+
+        [HttpGet("obtenerOperaciones/{IdPrecioUnitarioDetalle:int}")]
+        public async Task<ActionResult<List<OperacionesXPrecioUnitarioDetalleDTO>>> ObtenerOperaciones(int IdPrecioUnitarioDetalle)
+        {
+            return await _precioUnitarioProceso.ObtenerOperaciones(IdPrecioUnitarioDetalle);
+        }
+
+        [HttpGet("arreglarBimsa/{IdPrecioUnitarioDetalle:int}")]
+        public async Task<ActionResult<List<OperacionesXPrecioUnitarioDetalleDTO>>> ActualizarCostos(int IdPrecioUnitarioDetalle)
+        {
+                var registros = new List<PrecioUnitarioDetalleDTO>();
+            using (var db = new Alumno35Context(_Options.Options))
+            {
+                await _precioUnitarioProceso.ActualizarInsumosBimsa(2);
+                await _precioUnitarioProceso.RecalcularArmadoPrecioUnitario(2, db);
+            }
+            return await _precioUnitarioProceso.ObtenerOperaciones(IdPrecioUnitarioDetalle);
+        }
+
+        //[HttpPost("correccionBimsa")]
+        //public async Task CorreccionBimsa()
+        //{
+        //    await _precioUnitarioProceso.CorreccionBimsa();
+        //}
+    }
+
+}

@@ -35,11 +35,10 @@ namespace ERP_TECKIO.Servicios
 
         public async Task<ClienteDTO> CrearYObtener(ClienteDTO modelo)
         {
-            if (!await validacionoblogatorios(modelo))
-            {
-                return new ClienteDTO();
-            }
-            modelo = _Mapper.Map<ClienteDTO>(modelo);
+            //if (!await validacionoblogatorios(modelo))
+            //{
+            //    return new ClienteDTO();
+            //}
             var objetoCreado = await _Repositorio.Crear(_Mapper.Map<Clientes>(modelo));
                 if (objetoCreado.Id == 0)
                 {

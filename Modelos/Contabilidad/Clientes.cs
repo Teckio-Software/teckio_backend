@@ -24,6 +24,7 @@ public partial class Clientes:ClientesAbstarct
 
     public ICollection<CuentaBancariaCliente> CuentaBancariaClientes { get; set; } = new List<CuentaBancariaCliente>();
     public ICollection<MovimientoBancarioCliente> MBClientes { get; set; } = new List<MovimientoBancarioCliente>();
+    public virtual ICollection<Factura> Facturas { get; set; } = new List<Factura>();
 
 }
 
@@ -41,6 +42,7 @@ public abstract class ClientesAbstarct
 
     public string? RepresentanteLegal { get; set; }
     public string Domicilio { get; set; } = null!;
+    public string Direccion { get; set; }
     public string Colonia { get; set; } = null!;
     public string Municipio { get; set; } = null!;
 

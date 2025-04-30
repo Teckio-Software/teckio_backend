@@ -1,0 +1,75 @@
+﻿using AutoMapper;
+using ERP_TECKIO.Modelos;
+using ERP_TECKIO.Servicios.Contratos.Facturacion;
+using Microsoft.EntityFrameworkCore;
+
+namespace ERP_TECKIO.Servicios.Facturacion
+{
+    public class FacturaDetalleService<T> : IFacturaDetalleService<T> where T : DbContext
+    {
+        private readonly IGenericRepository<FacturaDetalle, T> _repository;
+        private readonly IMapper _mapper;
+        public FacturaDetalleService(
+            IGenericRepository<FacturaDetalle, T> repository,
+            IMapper mapper
+            )
+        {
+            _repository = repository;
+            _mapper = mapper;
+        }
+
+        public Task<bool> Crear(FacturaDetalleDTO parametro)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<FacturaDetalleDTO> CrearYObtener(FacturaDetalleDTO parametro)
+        {
+            var objetoCreado = await _repository.Crear(_mapper.Map<FacturaDetalle>(parametro));
+            if (objetoCreado.Id == 0)
+                return new FacturaDetalleDTO();
+            return _mapper.Map<FacturaDetalleDTO>(objetoCreado);
+        }
+
+        public Task<bool> Editar(FacturaDetalleDTO parametro)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> Eliminar(int Id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<FacturaDetalleDTO>> ObtenTodos()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<FacturaDetalleDTO>> ObtenXCantidad(decimal Cantidad)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<FacturaDetalleDTO> ObtenXId(int Id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<FacturaDetalleDTO>> ObtenXIdFactura(int IdFactura)
+        {
+            var lista = await _repository.ObtenerTodos(z => z.IdFactura == IdFactura);
+            return _mapper.Map<List<FacturaDetalleDTO>>(lista);
+        }
+
+        public Task<List<FacturaDetalleDTO>> ObtenXImporte(decimal Importe)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<FacturaDetalleDTO>> ObtenXUnidadSat(string UnidadSat)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

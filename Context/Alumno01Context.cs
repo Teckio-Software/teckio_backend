@@ -475,7 +475,7 @@ public partial class Alumno01Context : DbContext
 
             entity.ToTable("FacturaEmisor", "Factura");
 
-            entity.Property(e => e.RegimenFiscal).HasMaxLength(4);
+            entity.Ignore(e => e.RegimenFiscal);
             entity.Property(e => e.Rfc).HasMaxLength(14);
 
             entity.HasOne(d => d.IdFacturaNavigation).WithMany(p => p.FacturaEmisors)
