@@ -36,6 +36,10 @@ namespace ERP_TECKIO
         public decimal CantidadCotizada { get; set; }
         public string Unidad { get; set; }
         public decimal Cantidad { get; set; }
+        public string CantidadConFormato { get; set; }
+        public string DescuentoConFormato { get; set; }
+        public string PrecioUnitarioConFormato { get; set; }
+        public string ImporteTotalConFormato { get; set; }
         public decimal PrecioUnitario { get; set; }
         public decimal ImporteSinIva { get; set; }
         public decimal ImporteTotal { get; set; }

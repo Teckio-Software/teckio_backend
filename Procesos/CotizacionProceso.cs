@@ -403,12 +403,16 @@ namespace ERP_TECKIO
                     CantidadCotizada = IC[i].Cantidad,
                     Unidad = insumoR[0].Unidad,
                     Cantidad = IC[i].Cantidad,
+                    CantidadConFormato = String.Format("{0:#,##0.0000}", IC[i].Cantidad),
                     PrecioUnitario = IC[i].PrecioUnitario,
+                    PrecioUnitarioConFormato = String.Format("{0:#,##0.0000}", IC[i].PrecioUnitario),
                     ImporteTotal = IC[i].ImporteTotal,
+                    ImporteTotalConFormato = String.Format("{0:#,##0.0000}", IC[i].ImporteTotal),
                     ImporteSinIva = IC[i].ImporteSinIva,
                     EstatusInsumoCotizacion = IC[i].EstatusInsumoCotizacion,
                     EstatusInsumoCotizacionDescripcion = descripcionEstatus,
-                    Descuento = IC[i].Descuento
+                    Descuento = IC[i].Descuento,
+                    DescuentoConFormato = String.Format("{0:#,##0.0000}", IC[i].Descuento),
                 });
             }
 
