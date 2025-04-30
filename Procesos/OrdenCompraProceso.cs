@@ -479,8 +479,11 @@ namespace ERP_TECKIO
                         Descripcion = insumo[0].Descripcion,
                         Unidad = insumo[0].Unidad,
                         Cantidad = ioc.Cantidad,
+                        CantidadConFormato = String.Format("{0:#,##0.00}", ioc.Cantidad),
                         PrecioUnitario = ioc.PrecioUnitario,
+                        PrecioUnitarioConFormato = String.Format("{0:#,##0.00}", ioc.PrecioUnitario),
                         ImporteSinIva = ioc.ImporteSinIva,
+                        ImporteSinIvaConFormato= String.Format("{0:#,##0.00}", ioc.ImporteSinIva),
                         ImporteConIva = ioc.ImporteConIva,
                         EstatusInsumoOrdenCompraDescripcion = descripcionEstatus
                     });
