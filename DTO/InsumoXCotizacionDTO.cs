@@ -52,6 +52,8 @@ namespace ERP_TECKIO
         public decimal Descuento { get; set; }
 
         public bool esSeleccionada { get; set; }
+        public string PIvaConFormato { get; set; }
+
     }
 
     public class InsumoXCotizacionCreacionDTO

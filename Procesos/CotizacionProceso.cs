@@ -391,6 +391,13 @@ namespace ERP_TECKIO
 
                 }
 
+                decimal porcentajeIVA = 0;
+                var impuestos = await _impuestoInsumoCotizadoService.ObtenerXIdInsumoCotizado(IC[i].Id);
+                var iva = impuestos.Where(z => z.IdImpuesto == 1).FirstOrDefault();
+                if (iva != null) {
+                    porcentajeIVA = iva.Porcentaje;
+                }
+
                 listIC.Add(new ListaInsumoXCotizacionDTO()
                 {
                     Id = IC[i].Id,
@@ -403,16 +410,17 @@ namespace ERP_TECKIO
                     CantidadCotizada = IC[i].Cantidad,
                     Unidad = insumoR[0].Unidad,
                     Cantidad = IC[i].Cantidad,
-                    CantidadConFormato = String.Format("{0:#,##0.0000}", IC[i].Cantidad),
+                    CantidadConFormato = String.Format("{0:#,##0.00}", IC[i].Cantidad),
                     PrecioUnitario = IC[i].PrecioUnitario,
-                    PrecioUnitarioConFormato = String.Format("{0:#,##0.0000}", IC[i].PrecioUnitario),
+                    PrecioUnitarioConFormato = String.Format("{0:#,##0.00}", IC[i].PrecioUnitario),
                     ImporteTotal = IC[i].ImporteTotal,
-                    ImporteTotalConFormato = String.Format("{0:#,##0.0000}", IC[i].ImporteTotal),
+                    ImporteTotalConFormato = String.Format("{0:#,##0.00}", IC[i].ImporteTotal),
                     ImporteSinIva = IC[i].ImporteSinIva,
                     EstatusInsumoCotizacion = IC[i].EstatusInsumoCotizacion,
                     EstatusInsumoCotizacionDescripcion = descripcionEstatus,
                     Descuento = IC[i].Descuento,
-                    DescuentoConFormato = String.Format("{0:#,##0.0000}", IC[i].Descuento),
+                    DescuentoConFormato = String.Format("{0:#,##0.00}", IC[i].Descuento),
+                    PIvaConFormato = String.Format("{0:#,##0.00}", porcentajeIVA),
                 });
             }
 
