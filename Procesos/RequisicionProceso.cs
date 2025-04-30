@@ -383,7 +383,7 @@ namespace ERP_TECKIO
                     return respuesta;
                 }
             }
-            ActualizarEstatusRequisicion(idRequisicion);
+            await ActualizarEstatusRequisicion(idRequisicion);
             respuesta.Estatus = true;
             respuesta.Descripcion = "Insumos autorizados";
             return respuesta;

@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+using Microsoft.AspNetCore.Mvc;
+using ERP_TECKIO;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 
 namespace ERP_TECKIO
 {
@@ -10,15 +12,21 @@ namespace ERP_TECKIO
         private readonly IProyectoService<TContext> _proyectoService;
         private readonly IFactorSalarioRealService<TContext> _fsrService;
         private readonly IFactorSalarioIntegradoService<TContext> _fsiService;
+        private readonly ProgramacionEstimadaGanttProceso<TContext> _ProgramacionEstimadaGantt;
+        private readonly TContext _context;
 
         public ProyectoProceso(
             IProyectoService<TContext> proyectoService
             , IFactorSalarioRealService<TContext> fsrService
-            , IFactorSalarioIntegradoService<TContext> fsiService)
+            , IFactorSalarioIntegradoService<TContext> fsiService
+            , ProgramacionEstimadaGanttProceso<TContext> programacionEstimadaProceso
+            , TContext context)
         {
             _proyectoService = proyectoService;
             _fsrService = fsrService;
             _fsiService = fsiService;
+            _context = context;
+            _ProgramacionEstimadaGantt = programacionEstimadaProceso;
         }
 
         public async Task<RespuestaDTO> Post([FromBody] ProyectoDTO parametroCreacionDTO)
@@ -53,6 +61,15 @@ namespace ERP_TECKIO
 
         public async Task Put([FromBody] ProyectoDTO parametros)
         {
+            var programacionesGantt = await _ProgramacionEstimadaGantt.ObtenerProgramacionEstimadaXIdProyecto(parametros.Id, _context);
+            var inicio = parametros.FechaInicio.ToShortDateString();
+            var termino = parametros.FechaInicio.AddDays(1).ToShortDateString();
+            foreach(var gantt in programacionesGantt)
+            {
+                gantt.Start = Convert.ToDateTime(inicio);
+                gantt.End = Convert.ToDateTime(termino);
+                await _ProgramacionEstimadaGantt.editarFechaProyectoGantt(gantt);
+            }
             try
             {
                 var resultado = await _proyectoService.Editar(parametros);

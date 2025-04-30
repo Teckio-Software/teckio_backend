@@ -493,6 +493,11 @@ namespace ERP_TECKIO
                 }
             }
         }
+
+        public async Task editarFechaProyectoGantt(ProgramacionEstimadaGanttDTO registro)
+        {
+            await _ProgramacionEstimadaGanttService.Editar(registro);
+        }
     }
 }
 
