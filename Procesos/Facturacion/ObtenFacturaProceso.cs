@@ -35,6 +35,7 @@ namespace ERP_TECKIO.Procesos.Facturacion
         private readonly IFacturaComplementoPagoService<T> _facturaComplementoPagoService;
         private readonly IProductoYservicioService<T> _productoYservicioService;
         private readonly IProductoYServicioSatService<T> _productoYservicioSatService;
+        private readonly IUnidadService<T> _unidadService;
         public ObtenFacturaProceso(
             IWebHostEnvironment env, IHttpContextAccessor httpContextAccessor,
             IArchivoService<T> ArchivoService,
@@ -54,7 +55,8 @@ namespace ERP_TECKIO.Procesos.Facturacion
             IFacturaImpuestosService<T> facturaImpuestosService,
             IFacturaComplementoPagoService<T> facturaComplementoPagoService,
             IProductoYservicioService<T> productoYservicioService,
-            IProductoYServicioSatService<T> productoYservicioSatService
+            IProductoYServicioSatService<T> productoYservicioSatService,
+            IUnidadService<T> unidadService
             )
         {
             this.env = env;
@@ -77,6 +79,7 @@ namespace ERP_TECKIO.Procesos.Facturacion
             _facturaComplementoPagoService = facturaComplementoPagoService; 
             _productoYservicioService = productoYservicioService;
             _productoYservicioSatService = productoYservicioSatService;
+            _unidadService = unidadService;
         }
 
         public class ConceptosExcelDTO
@@ -644,9 +647,18 @@ namespace ERP_TECKIO.Procesos.Facturacion
             facturaDetalles = await _facturaDetalleService.ObtenXIdFactura(IdFactura);
             foreach (var facturaDetalle in facturaDetalles) {
                 var productoYServicio = productosYServicios.Where(z => z.Id == facturaDetalle.IdProductoYservicio).FirstOrDefault();
-
+                if (productoYServicio.IdUnidad == null || productoYServicio.IdUnidad == 0)
+                {
+                    facturaDetalle.UnidadSat = "";
+                }
+                else
+                {
+                    var unidad = await _unidadService.ObtenerXId((int)productoYServicio.IdUnidad);
+                    facturaDetalle.UnidadSat = unidad.Descripcion;
+                }
+                facturaDetalle.Descripcion = productoYServicio.Descripcion;
                 facturaDetalle.IdCategoriaProductoYServicio = productoYServicio.IdCategoriaProductoYServicio;
-                facturaDetalle.IdSubcategoriaProductoYServicio = productoYServicio.IdSubcategoriaProductoYServicio;
+                facturaDetalle.IdSubategoriaProductoYServicio = productoYServicio.IdSubategoriaProductoYServicio;
             }
             return facturaDetalles;
         }

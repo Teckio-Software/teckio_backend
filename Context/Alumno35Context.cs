@@ -247,7 +247,7 @@ public partial class Alumno35Context : DbContext
                 .HasConstraintName("FK_ProductoYServicio_IdProductoYServicioSat");
 
             entity.HasOne(d => d.IdSubcategoriaProductoYServicioNavigation).WithMany(p => p.PorductoYservicios)
-                .HasForeignKey(d => d.IdCategoriaProductoYServicio)
+                .HasForeignKey(d => d.IdSubategoriaProductoYServicio)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ProductoYServicio_IdSubategoriaProductoYServicio");
 

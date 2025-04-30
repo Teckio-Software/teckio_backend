@@ -19,7 +19,7 @@ public partial class ProductoYservicioAbstract
 
     public int? IdUnidadSat { get; set; }
     public int IdCategoriaProductoYServicio { get; set; }
-    public int IdSubcategoriaProductoYServicio { get; set; }
+    public int IdSubategoriaProductoYServicio { get; set; }
 }
 public partial class ProductoYservicio: ProductoYservicioAbstract
 {
