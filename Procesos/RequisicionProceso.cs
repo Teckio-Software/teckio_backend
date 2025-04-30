@@ -14,14 +14,17 @@ namespace ERP_TECKIO
         private readonly IInsumoService<T> _insumoService;
         private readonly IProyectoService<T> _proyectoService;
         private readonly ActualizaEstatusSubProceso<T> _actualizaEstatusSubProceso;
+        private readonly ICotizacionService<T> _cotizacionService;
         public RequisicionProceso(IInsumoXRequisicionService<T> insumoXRequisicionService, IRequisicionService<T> requisicionService, IInsumoService<T> insumoService
-            , IProyectoService<T> proyectoService, ActualizaEstatusSubProceso<T> actualizaEstatusSubProceso)
+            , IProyectoService<T> proyectoService, ActualizaEstatusSubProceso<T> actualizaEstatusSubProceso
+            , ICotizacionService<T> cotizacionService)
         {
             _insumoXRequisicionService = insumoXRequisicionService;
             _requisicionService = requisicionService;
             _insumoService = insumoService;
             _proyectoService = proyectoService;
             _actualizaEstatusSubProceso = actualizaEstatusSubProceso;
+            _cotizacionService = cotizacionService;
         }
 
         public async Task<RespuestaDTO> CrearRequisicion(RequisicionCreacionDTO parametros, List<System.Security.Claims.Claim> claims)
@@ -521,6 +524,25 @@ namespace ERP_TECKIO
             respuesta.Estatus = true;
             respuesta.Descripcion = "Los insumos han sido autorizados";
             return respuesta;
+        }
+
+        public async Task<RespuestaDTO> EliminarRequisicion(int IdRequisicion) {
+            var respuesta = new RespuestaDTO();
+
+            var requisicion = await _requisicionService.ObtenXId(IdRequisicion);
+            var cotizaciones = await _cotizacionService.ObtenXIdRequision(IdRequisicion);
+            if (cotizaciones.Count() > 0) {
+                respuesta.Descripcion = "Existen cotizaciones";
+                respuesta.Estatus = false;
+                return respuesta;
+            }
+            var insumosXRequisicion = await _insumoXRequisicionService.ObtenXIdRequisicion(IdRequisicion);
+            foreach (var insumoRequisicion in insumosXRequisicion) {
+                var eliminarInsumoXRequisicion = await _insumoXRequisicionService.Eliminar(insumoRequisicion.Id);
+            }
+
+            var eliminarRequisicion = await _requisicionService.Eliminar(requisicion);
+            return eliminarRequisicion;
         }
     }
 }

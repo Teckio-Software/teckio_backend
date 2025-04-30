@@ -503,5 +503,32 @@ namespace ERP_TECKIO.Servicios
                 return respuesta;
             }
         }
+
+        public async Task<RespuestaDTO> Eliminar(RequisicionDTO modelo)
+        {
+            var respuesta = new RespuestaDTO();
+            var objetoEncontrado = await _Repositorio.Obtener(z => z.Id == modelo.Id);
+            if (objetoEncontrado == null || objetoEncontrado.Id <= 0)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "La requisición no existe";
+                return respuesta;
+            }
+            if (objetoEncontrado.EstatusRequisicion != 1)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Solo se puede eliminar si esta capturado";
+                return respuesta;
+            }
+            var elimianr = await _Repositorio.Eliminar(objetoEncontrado);
+            if (!elimianr) {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No se pudo eliminar";
+                return respuesta;
+            }
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Requisición elimianda";
+            return respuesta;
+        }
     }
 }

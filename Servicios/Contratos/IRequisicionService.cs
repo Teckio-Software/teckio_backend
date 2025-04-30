@@ -14,6 +14,7 @@ namespace ERP_TECKIO
         Task<RespuestaDTO> Crear(RequisicionDTO modelo);
         Task<RequisicionDTO> CrearYObtener(RequisicionDTO modelo);
         Task<RespuestaDTO> Editar(RequisicionDTO modelo);
+        Task<RespuestaDTO> Eliminar(RequisicionDTO modelo);
         Task<RespuestaDTO> ActualizarRequisicionInsumosSurtidos(int Id, int estatus);
         Task<RespuestaDTO> ActualizarRequisicionInsumosComprados(int Id, int estatus);
         Task<RespuestaDTO> ActualizarEstatusAutorizar(int Id);

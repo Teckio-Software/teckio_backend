@@ -306,5 +306,11 @@ namespace ERP_TECKIO.Controllers
             return listaInsumos;
         }
 
+        [HttpDelete("eliminar/{IdRequisicion:int}")]
+        public async Task<ActionResult<RespuestaDTO>> eliminar(int IdRequisicion)
+        {
+            var eliminar = await _Proceso.EliminarRequisicion(IdRequisicion);
+            return eliminar;
+        }
     }
 }
