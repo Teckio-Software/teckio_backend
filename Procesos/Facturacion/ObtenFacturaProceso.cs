@@ -502,8 +502,9 @@ namespace ERP_TECKIO.Procesos.Facturacion
         }
 
         public async Task leerFacturaComplementoPago(XElement complemento, XNamespace pago20, int IdFactura) {
-            if (complemento != null) { 
-                var pagos = complemento.Descendants(pago20 + "Pagos").FirstOrDefault();
+            pago20 = "http://www.sat.gob.mx/Pagos20";
+            if (complemento != null) {
+                var pagos = complemento.Element(pago20 + "Pagos");
                 if (pagos != null) { 
                     foreach(var pago in pagos.Elements(pago20 + "Pago")) {
                         foreach (var doctoRelacionado in pago.Elements(pago20 + "DoctoRelacionado")) { 
