@@ -17,7 +17,7 @@ namespace ERP_TECKIO.Controllers
     public class CuentaContableAlumno18Controller : ControllerBase
     {
         private readonly ICuentaContableService<Alumno18Context> _Service;
-        private readonly ICodigoAgrupadorService _CodigoAgrupadorService;
+        private readonly ICodigoAgrupadorService<Alumno18Context> _CodigoAgrupadorService;
         private readonly IRubroService<Alumno18Context> _RubroService;
         /// <summary>
         /// Se usa para mostrar errores en consola
@@ -36,7 +36,7 @@ namespace ERP_TECKIO.Controllers
             ILogger<CuentaContableAlumno18Controller> logger,
             Alumno18Context context
             , ICuentaContableService<Alumno18Context> Service
-            , ICodigoAgrupadorService CodigoAgrupadorService
+            , ICodigoAgrupadorService<Alumno18Context> CodigoAgrupadorService
             , IRubroService<Alumno18Context> RubroService
             )
         {

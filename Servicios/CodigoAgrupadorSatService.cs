@@ -6,7 +6,7 @@ using ERP_TECKIO.Modelos;
 
 namespace ERP_TECKIO.Servicios
 {
-    public class CodigoAgrupadorSatService : ICodigoAgrupadorService
+    public class CodigoAgrupadorSatService<T> : ICodigoAgrupadorService<T> where T : DbContext
     {
         private readonly IGenericRepository<CodigoAgrupadorSat, Alumno01Context> _Repositorio;
         private readonly IMapper _Mapper;

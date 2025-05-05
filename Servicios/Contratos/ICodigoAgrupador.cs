@@ -6,7 +6,7 @@ namespace ERP_TECKIO
     /// <summary>
     /// Interfaz del código agrupador del SAT
     /// </summary>
-    public interface ICodigoAgrupadorService
+    public interface ICodigoAgrupadorService<T> where T : DbContext
     {
         Task<List<CodigoAgrupadorSatDTO>> ObtenTodos();
         Task<CodigoAgrupadorSatDTO> ObtenXId(int Id);

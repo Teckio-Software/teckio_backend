@@ -71,7 +71,7 @@ namespace ERP_TECKIO
             services.AddScoped(typeof(IRubroService<>), typeof(RubroService<>));
             services.AddScoped(typeof(ITipoPolizaService<>), typeof(TipoPolizaService<>));
             services.AddScoped(typeof(ICuentaContableService<>), typeof(CuentaContableService<>));
-            services.AddScoped(typeof(ICodigoAgrupadorService), typeof(CodigoAgrupadorSatService));
+            services.AddScoped(typeof(ICodigoAgrupadorService<>), typeof(CodigoAgrupadorSatService<>));
             services.AddScoped(typeof(IPolizaService<>), typeof(PolizaService<>));
             services.AddScoped(typeof(IPolizaDetalleService<>), typeof(PolizaDetalleService<>));
             services.AddScoped(typeof(ISaldosBalanzaComprobacionService<>), typeof(SaldosBalanzaComrpobacionService<>));
