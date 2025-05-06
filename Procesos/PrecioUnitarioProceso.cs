@@ -3086,7 +3086,7 @@ namespace ERP_TECKIO
             //        ExplosionDeInsumosSinRepetir.Add(ExplosionDeInsumos[i]);
             //    }
             //}
-            return agrupados.OrderBy(z => z.idTipoInsumo).ToList();
+            return agrupados.Where(z => z.id != 0).OrderBy(z => z.idTipoInsumo).ToList();
         }
 
         public async Task<List<InsumoParaExplosionDTO>> obtenerExplosionHijos(PrecioUnitarioDTO registro, List<PrecioUnitarioDTO> RegistrosHijos)
