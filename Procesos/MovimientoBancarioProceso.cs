@@ -135,7 +135,7 @@ namespace ERP_TECKIO
 
             foreach (var grupo in MBAgrupados)
             {
-                saldo = await ObtenUltimoSaldo(IdCuentaBancaria, grupo.fecha.Year, grupo.fecha.Month, MBsaldo);
+                saldo += await ObtenUltimoSaldo(IdCuentaBancaria, grupo.fecha.Year, grupo.fecha.Month, MBsaldo);
                 foreach (var mb in grupo.datos)
                 {
                     if (mb.Estatus == 1)

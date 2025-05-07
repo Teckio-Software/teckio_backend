@@ -830,6 +830,8 @@ public partial class Alumno03Context : DbContext
             entity.Property(e => e.CodigoPostal).HasMaxLength(6);
             entity.Property(e => e.Email).HasMaxLength(150);
             entity.Property(e => e.Domicilio).HasMaxLength(100);
+            entity.Ignore(e => e.Direccion);
+
             entity.Property(e => e.Colonia).HasMaxLength(100);
             entity.Property(e => e.Municipio).HasMaxLength(100);
             entity.Property(e => e.NoExterior).HasMaxLength(25);
