@@ -81,4 +81,6 @@ public abstract class CuentaContableAbstract
     public int Nivel { get; set; }
     public bool ExisteMovimiento { get; set; }
     public bool ExistePoliza { get; set; }
+    public bool? EsCuentaContableEmpresa { get; set; }
+    public int? TipoCuentaContable {  get; set; }
 }

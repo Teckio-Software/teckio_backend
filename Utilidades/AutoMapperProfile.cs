@@ -603,7 +603,9 @@ namespace ERP_TECKIO
             CreateMap<TipoPolizaDTO, TipoPoliza>();
             CreateMap<TipoPolizaCreacionDTO, TipoPoliza>();
             ///////////////////////////////////////////////////////////////
-            CreateMap<CuentaContable, CuentaContableDTO>();
+            CreateMap<CuentaContable, CuentaContableDTO>()
+                .ForMember(detino => detino.TipoCuentaContable, 
+                opt => opt.MapFrom(origen => origen.TipoCuentaContable == null ? 0 : origen.TipoCuentaContable));
             CreateMap<CuentaContableDTO, CuentaContable>()
                 .ForMember(destino => destino.IdRubroNavigation,
                 opt => opt.Ignore());

@@ -1043,6 +1043,8 @@ public partial class Alumno03Context : DbContext
             entity.Property(e => e.Presupuesto).HasColumnType("decimal(28, 6)");
             entity.Property(e => e.SaldoFinal).HasColumnType("decimal(28, 6)");
             entity.Property(e => e.SaldoInicial).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.EsCuentaContableEmpresa).HasColumnName("EsCuentaContableEmpresa");
+            entity.Property(e => e.TipoCuentaContable).HasColumnName("TipoCuentaContable");
 
             entity.HasOne(d => d.IdRubroNavigation).WithMany(p => p.CuentaContables)
                 .HasForeignKey(d => d.IdRubro)

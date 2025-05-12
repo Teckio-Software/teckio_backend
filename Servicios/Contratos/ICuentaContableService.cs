@@ -10,6 +10,7 @@ namespace ERP_TECKIO
     public interface ICuentaContableService<T> where T : DbContext
     {
         Task<List<CuentaContableDTO>> ObtenTodos();
+        Task<List<CuentaContableDTO>> ObtenXEmpresa();
         Task<List<CuentaContableDTO>> ObtenAsignables();
         Task<CuentaContableDTO> ObtenXId(int Id);
         Task<CuentaContableDTO> Crear(CuentaContableCreacionDTO modelo);

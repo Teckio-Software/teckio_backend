@@ -50,7 +50,7 @@ namespace ERP_TECKIO.Procesos
             if (contratista.IdCuentaContable != null)
             {
                 cuentaContable = await _cuentaContableService.ObtenXId(Convert.ToInt32(contratista.IdCuentaContable));
-                cuentaContable.TipoCuentaContable = "Cuenta Contable";
+                cuentaContable.TipoCuentaContableDescripcion = "Cuenta Contable";
                 if (cuentaContable.Id != 0)
                 {
                     cuentas.Add(cuentaContable);
@@ -59,7 +59,7 @@ namespace ERP_TECKIO.Procesos
             if (contratista.IdIvaAcreditableContable != null)
             {
                 cuentaContable = await _cuentaContableService.ObtenXId(Convert.ToInt32(contratista.IdIvaAcreditableContable));
-                cuentaContable.TipoCuentaContable = "IVA Acreditable";
+                cuentaContable.TipoCuentaContableDescripcion = "IVA Acreditable";
                 if (cuentaContable.Id != 0)
                 {
                     cuentas.Add(cuentaContable);
@@ -68,7 +68,7 @@ namespace ERP_TECKIO.Procesos
             if (contratista.IdIvaPorAcreditar != null)
             {
                 cuentaContable = await _cuentaContableService.ObtenXId(Convert.ToInt32(contratista.IdIvaPorAcreditar));
-                cuentaContable.TipoCuentaContable = "IVA Por Acreditar";
+                cuentaContable.TipoCuentaContableDescripcion = "IVA Por Acreditar";
                 if (cuentaContable.Id != 0)
                 {
                     cuentas.Add(cuentaContable);
@@ -77,7 +77,7 @@ namespace ERP_TECKIO.Procesos
             if (contratista.IdCuentaAnticipos != null)
             {
                 cuentaContable = await _cuentaContableService.ObtenXId(Convert.ToInt32(contratista.IdCuentaAnticipos));
-                cuentaContable.TipoCuentaContable = "Anticipos";
+                cuentaContable.TipoCuentaContableDescripcion = "Anticipos";
                 if (cuentaContable.Id != 0)
                 {
                     cuentas.Add(cuentaContable);
@@ -86,7 +86,7 @@ namespace ERP_TECKIO.Procesos
             if (contratista.IdCuentaRetencionISR != null)
             {
                 cuentaContable = await _cuentaContableService.ObtenXId(Convert.ToInt32(contratista.IdCuentaRetencionISR));
-                cuentaContable.TipoCuentaContable = "Retención ISR";
+                cuentaContable.TipoCuentaContableDescripcion = "Retención ISR";
                 if (cuentaContable.Id != 0)
                 {
                     cuentas.Add(cuentaContable);
@@ -95,7 +95,7 @@ namespace ERP_TECKIO.Procesos
             if (contratista.IdCuentaRetencionIVA != null)
             {
                 cuentaContable = await _cuentaContableService.ObtenXId(Convert.ToInt32(contratista.IdCuentaRetencionIVA));
-                cuentaContable.TipoCuentaContable = "Retencón IVA";
+                cuentaContable.TipoCuentaContableDescripcion = "Retencón IVA";
                 if (cuentaContable.Id != 0)
                 {
                     cuentas.Add(cuentaContable);
@@ -104,7 +104,7 @@ namespace ERP_TECKIO.Procesos
             if (contratista.IdEgresosIvaExento != null)
             {
                 cuentaContable = await _cuentaContableService.ObtenXId(Convert.ToInt32(contratista.IdEgresosIvaExento));
-                cuentaContable.TipoCuentaContable = "Egresos IVA Exento";
+                cuentaContable.TipoCuentaContableDescripcion = "Egresos IVA Exento";
                 if (cuentaContable.Id != 0)
                 {
                     cuentas.Add(cuentaContable);
@@ -113,7 +113,7 @@ namespace ERP_TECKIO.Procesos
             if (contratista.IdEgresosIvaGravable != null)
             {
                 cuentaContable = await _cuentaContableService.ObtenXId(Convert.ToInt32(contratista.IdEgresosIvaGravable));
-                cuentaContable.TipoCuentaContable = "Egresos IVA Gravable";
+                cuentaContable.TipoCuentaContableDescripcion = "Egresos IVA Gravable";
                 if (cuentaContable.Id != 0)
                 {
                     cuentas.Add(cuentaContable);
@@ -122,7 +122,7 @@ namespace ERP_TECKIO.Procesos
             if (contratista.IdIvaAcreditableFiscal != null)
             {
                 cuentaContable = await _cuentaContableService.ObtenXId(Convert.ToInt32(contratista.IdIvaAcreditableFiscal));
-                cuentaContable.TipoCuentaContable = "IVA Acreditable Fiscal";
+                cuentaContable.TipoCuentaContableDescripcion = "IVA Acreditable Fiscal";
                 if (cuentaContable.Id != 0)
                 {
                     cuentas.Add(cuentaContable);

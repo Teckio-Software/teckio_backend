@@ -131,6 +131,7 @@ namespace ERP_TECKIO
             services.AddScoped(typeof(DbContextOptionsBuilder<>));
             services.AddScoped(typeof(ContratistaCuentasContablesProceso<>));
             services.AddScoped(typeof(ClienteCuentasContablesProceso<>));
+            services.AddScoped(typeof(PolizaProceso<>));
 
             //Facturas
             services.AddScoped(typeof(ITipoImpuestoService<>), typeof(TipoImpuestoService<>));

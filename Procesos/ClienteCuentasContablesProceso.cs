@@ -32,7 +32,7 @@ namespace ERP_TECKIO.Procesos
             if (cliente.IdCuentaContable != null)
             {
                 cuentaContable = await _cuentaContableService.ObtenXId(Convert.ToInt32(cliente.IdCuentaContable));
-                cuentaContable.TipoCuentaContable = "Cuenta Contable";
+                cuentaContable.TipoCuentaContableDescripcion = "Cuenta Contable";
                 if (cuentaContable.Id != 0)
                 {
                     cuentas.Add(cuentaContable);
@@ -41,7 +41,7 @@ namespace ERP_TECKIO.Procesos
             if (cliente.IdIvaTrasladado != null)
             {
                 cuentaContable = await _cuentaContableService.ObtenXId(Convert.ToInt32(cliente.IdIvaTrasladado));
-                cuentaContable.TipoCuentaContable = "IVA Trasladado";
+                cuentaContable.TipoCuentaContableDescripcion = "IVA Trasladado";
                 if (cuentaContable.Id != 0)
                 {
                     cuentas.Add(cuentaContable);
@@ -50,7 +50,7 @@ namespace ERP_TECKIO.Procesos
             if (cliente.IdIvaPorTrasladar != null)
             {
                 cuentaContable = await _cuentaContableService.ObtenXId(Convert.ToInt32(cliente.IdIvaPorTrasladar));
-                cuentaContable.TipoCuentaContable = "IVA Por Trasladar";
+                cuentaContable.TipoCuentaContableDescripcion = "IVA Por Trasladar";
                 if (cuentaContable.Id != 0)
                 {
                     cuentas.Add(cuentaContable);
@@ -59,7 +59,7 @@ namespace ERP_TECKIO.Procesos
             if (cliente.IdCuentaAnticipos != null)
             {
                 cuentaContable = await _cuentaContableService.ObtenXId(Convert.ToInt32(cliente.IdCuentaAnticipos));
-                cuentaContable.TipoCuentaContable = "Anticipos";
+                cuentaContable.TipoCuentaContableDescripcion = "Anticipos";
                 if (cuentaContable.Id != 0)
                 {
                     cuentas.Add(cuentaContable);
@@ -68,7 +68,7 @@ namespace ERP_TECKIO.Procesos
             if (cliente.IdIvaExento != null)
             {
                 cuentaContable = await _cuentaContableService.ObtenXId(Convert.ToInt32(cliente.IdIvaExento));
-                cuentaContable.TipoCuentaContable = "IVA Exento";
+                cuentaContable.TipoCuentaContableDescripcion = "IVA Exento";
                 if (cuentaContable.Id != 0)
                 {
                     cuentas.Add(cuentaContable);
@@ -77,7 +77,7 @@ namespace ERP_TECKIO.Procesos
             if (cliente.IdIvaGravable != null)
             {
                 cuentaContable = await _cuentaContableService.ObtenXId(Convert.ToInt32(cliente.IdIvaGravable));
-                cuentaContable.TipoCuentaContable = "IVA Gravable";
+                cuentaContable.TipoCuentaContableDescripcion = "IVA Gravable";
                 if (cuentaContable.Id != 0)
                 {
                     cuentas.Add(cuentaContable);
@@ -86,7 +86,7 @@ namespace ERP_TECKIO.Procesos
             if (cliente.IdRetensionIsr != null)
             {
                 cuentaContable = await _cuentaContableService.ObtenXId(Convert.ToInt32(cliente.IdRetensionIsr));
-                cuentaContable.TipoCuentaContable = "Retencón ISR";
+                cuentaContable.TipoCuentaContableDescripcion = "Retencón ISR";
                 if (cuentaContable.Id != 0)
                 {
                     cuentas.Add(cuentaContable);
@@ -95,7 +95,7 @@ namespace ERP_TECKIO.Procesos
             if (cliente.IdIeps != null)
             {
                 cuentaContable = await _cuentaContableService.ObtenXId(Convert.ToInt32(cliente.IdIeps));
-                cuentaContable.TipoCuentaContable = "IEPS";
+                cuentaContable.TipoCuentaContableDescripcion = "IEPS";
                 if (cuentaContable.Id != 0)
                 {
                     cuentas.Add(cuentaContable);
@@ -104,7 +104,7 @@ namespace ERP_TECKIO.Procesos
             if (cliente.IdIvaRetenido != null)
             {
                 cuentaContable = await _cuentaContableService.ObtenXId(Convert.ToInt32(cliente.IdIvaRetenido));
-                cuentaContable.TipoCuentaContable = "IVA Retenido";
+                cuentaContable.TipoCuentaContableDescripcion = "IVA Retenido";
                 if (cuentaContable.Id != 0)
                 {
                     cuentas.Add(cuentaContable);

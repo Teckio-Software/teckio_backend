@@ -104,6 +104,14 @@ namespace ERP_TECKIO.Servicios
             {
                 var modelo = _Mapper.Map<CuentaContable>(parametro);
                 var objetoEncontrado = await _Repositorio.Obtener(u => u.Id == modelo.Id);
+                if (parametro.EsCuentaContableEmpresa == true && parametro.TipoCuentaContable != 0) {
+                    var existeTipo = await _Repositorio.ObtenerTodos(z => z.EsCuentaContableEmpresa == true && z.TipoCuentaContable == parametro.TipoCuentaContable);
+                    if (existeTipo.Count() > 0) {
+                        respuesta.Estatus = false;
+                        respuesta.Descripcion = "Ya existe una cuenta con este tipo";
+                        return respuesta;
+                    }
+                }
                 if (objetoEncontrado == null)
                 {
                     respuesta.Estatus = false;
@@ -116,6 +124,8 @@ namespace ERP_TECKIO.Servicios
                 objetoEncontrado.IdCodigoAgrupadorSat = modelo.IdCodigoAgrupadorSat;
                 objetoEncontrado.ExisteMovimiento = parametro.ExisteMovimiento;
                 objetoEncontrado.ExistePoliza = parametro.ExistePoliza;
+                objetoEncontrado.EsCuentaContableEmpresa = parametro.EsCuentaContableEmpresa;
+                objetoEncontrado.TipoCuentaContable = parametro.TipoCuentaContable;
                 respuesta.Estatus = await _Repositorio.Editar(objetoEncontrado);
                 if (!respuesta.Estatus)
                 {
@@ -231,6 +241,12 @@ namespace ERP_TECKIO.Servicios
         {
             var lista = await _Repositorio.ObtenerTodos(z => z.ExisteMovimiento == false);
             lista = lista.OrderBy(z => z.Codigo).ToList();
+            return _Mapper.Map<List<CuentaContableDTO>>(lista);
+        }
+
+        public async Task<List<CuentaContableDTO>> ObtenXEmpresa()
+        {
+            var lista = await _Repositorio.ObtenerTodos(z => z.EsCuentaContableEmpresa == true);
             return _Mapper.Map<List<CuentaContableDTO>>(lista);
         }
     }

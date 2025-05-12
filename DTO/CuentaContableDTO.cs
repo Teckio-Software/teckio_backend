@@ -45,7 +45,7 @@ namespace ERP_TECKIO
         /// </summary>
         public List<CuentaContableDTO> Hijos { get; set; }
 
-        public string TipoCuentaContable { get; set; }
+        public string TipoCuentaContableDescripcion { get; set; }
     }
     /// <summary>
     /// Clase para las cuentas contables hijos de las cuentas contables madre
@@ -170,6 +170,8 @@ namespace ERP_TECKIO
         /// Presupuesto actual de la cuenta contable
         /// </summary>
         public decimal Presupuesto { get; set; }
+        public bool? EsCuentaContableEmpresa { get; set; }
+        public int? TipoCuentaContable { get; set; }
     }
     /// <summary>
     /// Clase para la creación de una nueva cuenta 
