@@ -542,7 +542,9 @@ namespace ERP_TECKIO
             CreateMap<CuentaBancariaEmpresa, CuentaBancariaEmpresasDTO>();
             CreateMap<CuentaBancariaDTO, CuentaBancaria>();
             CreateMap<CuentaBancariaClienteDTO, CuentaBancariaCliente>();
-            CreateMap<CuentaBancariaEmpresasDTO, CuentaBancariaEmpresa>();
+            CreateMap<CuentaBancariaEmpresasDTO, CuentaBancariaEmpresa>()
+                .ForMember(destino => destino.IdBancoNavigation,
+                opt => opt.Ignore());
             CreateMap<CuentaBancariaCreacionDTO, CuentaBancaria>()
                 .ForMember(destino => destino.IdBancoNavigation,
                 opt => opt.Ignore())

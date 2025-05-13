@@ -421,6 +421,7 @@ namespace ERP_TECKIO
                     Descuento = IC[i].Descuento,
                     DescuentoConFormato = String.Format("{0:#,##0.00}", IC[i].Descuento),
                     PIvaConFormato = String.Format("{0:#,##0.00}", porcentajeIVA),
+                    
                 });
             }
 
