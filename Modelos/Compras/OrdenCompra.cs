@@ -1,4 +1,6 @@
 ﻿
+using ERP_TECKIO.Modelos.Facturaion;
+
 namespace ERP_TECKIO.Modelos;
 
 public partial class OrdenCompra
@@ -38,4 +40,6 @@ public partial class OrdenCompra
     public virtual Requisicion? IdRequisicionNavigation { get; set; }
 
     public virtual ICollection<InsumoXOrdenCompra> InsumoXordenCompras { get; set; } = new List<InsumoXOrdenCompra>();
+    public virtual ICollection<FacturaXOrdenCompra> FacturaXOrdenCompras { get; set; } = new List<FacturaXOrdenCompra>();
+
 }

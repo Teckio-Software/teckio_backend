@@ -1,5 +1,6 @@
 ﻿using ERP_TECKIO.Modelos;
 using ERP_TECKIO.Modelos.Facturacion;
+using ERP_TECKIO.Modelos.Facturaion;
 
 namespace ERP_TECKIO.Modelos;
 
@@ -16,6 +17,7 @@ public partial class Factura : FacturaAbstract
     public virtual ICollection<FacturaEmisor> FacturaEmisors { get; set; } = new List<FacturaEmisor>();
     public virtual ICollection<FacturaReceptor> FacturaReceptors { get; set; } = new List<FacturaReceptor>();
     public virtual ICollection<MovimientoBancario> MovimientosBancarios { get; set; } = new List<MovimientoBancario>();
+    public virtual ICollection<FacturaXOrdenCompra> FacturaXOrdenCompras { get; set; } = new List<FacturaXOrdenCompra>();
     public virtual Clientes IdClienteNavigation { get; set; } = null!;
 
     public virtual FormaPagoSat IdFormaPagoNavigation { get; set; } = null!;

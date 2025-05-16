@@ -1,4 +1,5 @@
-﻿using ERP_TECKIO.Servicios;
+﻿using ERP_TECKIO.DTO.Factura;
+using ERP_TECKIO.Servicios;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,16 +39,22 @@ namespace ERP_TECKIO.Procesos
             _insumoXOrdenCompraService = insumoXOrdenCompraService;
         }
 
-        public async Task<ActionResult<RespuestaDTO>> GenerarPolizaxOrdenCompra(int IdOrdenCompra)
+        public async Task<ActionResult<RespuestaDTO>> GenerarPolizaXFactura(FacturaDTO factura, OrdenCompraDTO ordenCompra)
         {
             var respuesta = new RespuestaDTO();
 
-            var ordenCompra = await _ordenCompraService.ObtenXId(IdOrdenCompra);
-            var proveedor = await _ContratistaService.ObtenXId((int)ordenCompra.IdContratista);
-            var cuentasContablesProveedores = await _contratistaCuentasContablesProceso.obtenerXContratista(proveedor.Id);
+            //var proveedor = await _ContratistaService.ObtenXId((int)ordenCompra.IdContratista);
+            var cuentasContablesProveedores = await _contratistaCuentasContablesProceso.obtenerXContratista((int)ordenCompra.IdContratista);
             if (cuentasContablesProveedores.Count <= 0) {
                 respuesta.Estatus = false;
                 respuesta.Descripcion = "No hay cuentas asignadas al proveedor";
+                return respuesta;
+            }
+            var cuentasContableEmpresa = await _CuentaContableService.ObtenXEmpresa();
+            if (cuentasContableEmpresa.Count <= 0)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No hay cuentas asignadas a la empresa";
                 return respuesta;
             }
             var nuevaPoliza = new PolizaDTO();
@@ -97,7 +104,7 @@ namespace ERP_TECKIO.Procesos
                     saldoCreacion.Mes = crearPoliza.FechaPoliza.Month;
                     saldoCreacion.IdCuentaContable = detallePoliza.IdCuentaContable;
                     var creado = await _SaldosService.Crear(saldoCreacion);
-                }
+                }                                                      
                 saldos = await _SaldosService.ObtenTodos();
                 var saldoCreado = saldos.Where(z => z.Anio == crearPoliza.FechaPoliza.Year && z.Mes == crearPoliza.FechaPoliza.Month && z.IdCuentaContable == detallePoliza.IdCuentaContable).FirstOrDefault();
 

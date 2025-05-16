@@ -59,9 +59,10 @@ namespace ERP_TECKIO.Servicios.Facturacion
             throw new NotImplementedException();
         }
 
-        public Task<FacturaDTO> ObtenXId(int Id)
+        public async Task<FacturaDTO> ObtenXId(int Id)
         {
-            throw new NotImplementedException();
+            var objeto = await _repository.Obtener(z => z.Id == Id);
+            return _mapper.Map<FacturaDTO>(objeto);
         }
 
         public Task<FacturaDTO> ObtenXIdT(int Id)
@@ -79,9 +80,10 @@ namespace ERP_TECKIO.Servicios.Facturacion
             throw new NotImplementedException();
         }
 
-        public Task<List<FacturaDTO>> ObtenXUuid(string uuid)
+        public async Task<List<FacturaDTO>> ObtenXUuid(string uuid)
         {
-            throw new NotImplementedException();
+            var lsita = await _repository.ObtenerTodos(z => z.Uuid == uuid);
+            return _mapper.Map<List<FacturaDTO>>(lsita);
         }
     }
 }

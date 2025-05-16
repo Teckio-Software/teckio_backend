@@ -36,6 +36,11 @@ namespace ERP_TECKIO.Procesos.Facturacion
         private readonly IProductoYservicioService<T> _productoYservicioService;
         private readonly IProductoYServicioSatService<T> _productoYservicioSatService;
         private readonly IUnidadService<T> _unidadService;
+        private readonly IUnidadSatService<T> _unidadSatService;
+        private readonly IFacturaXOrdenCompraService<T> _facturaXOrdenCompraService;
+        private readonly IOrdenCompraService<T> _ordenCompraService;
+        private readonly IContratistaService<T> _contratistaService;
+        private readonly OrdenCompraProceso<T> _ordenCompraProceso;
         public ObtenFacturaProceso(
             IWebHostEnvironment env, IHttpContextAccessor httpContextAccessor,
             IArchivoService<T> ArchivoService,
@@ -56,7 +61,12 @@ namespace ERP_TECKIO.Procesos.Facturacion
             IFacturaComplementoPagoService<T> facturaComplementoPagoService,
             IProductoYservicioService<T> productoYservicioService,
             IProductoYServicioSatService<T> productoYservicioSatService,
-            IUnidadService<T> unidadService
+            IUnidadService<T> unidadService,
+            IUnidadSatService<T> unidadSatService,
+            IFacturaXOrdenCompraService<T> facturaXOrdenCompraService,
+            IOrdenCompraService<T> ordenCompraService,
+            IContratistaService<T> contratistaService,
+            OrdenCompraProceso<T> ordenCompraProceso
             )
         {
             this.env = env;
@@ -80,6 +90,11 @@ namespace ERP_TECKIO.Procesos.Facturacion
             _productoYservicioService = productoYservicioService;
             _productoYservicioSatService = productoYservicioSatService;
             _unidadService = unidadService;
+            _unidadSatService = unidadSatService;
+            _facturaXOrdenCompraService = facturaXOrdenCompraService;
+            _ordenCompraService = ordenCompraService;
+            _contratistaService = contratistaService;
+            _ordenCompraProceso = ordenCompraProceso;
         }
 
         public class ConceptosExcelDTO
@@ -130,6 +145,132 @@ namespace ERP_TECKIO.Procesos.Facturacion
             }
 
             return facturas;
+        }
+
+        public async Task<bool> validaFactura(ContratistaDTO proveedor, XElement comprobante, XElement facturaEmisor)
+        {
+            if (facturaEmisor.Attribute("Rfc")?.Value != proveedor.Rfc) {
+                return false;
+            }
+            if (comprobante.Attribute("TipoDeComprobante")?.Value != "I") { 
+                return false;
+            }
+
+
+            return true;
+        }
+
+        public async Task<RespuestaDTO> CargarFacturaXOrdenCompra(List<IFormFile> archivos, int IdOrdenCompra)
+        {
+            var respuesta = new RespuestaDTO();
+            var xmls = archivos.Where(file => string.Equals(Path.GetExtension(file.FileName), ".xml", StringComparison.OrdinalIgnoreCase));
+            if (xmls.Count() <= 0)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No se han cargado comprobantes";
+                return respuesta;
+            }
+
+            var pdfs = archivos.Where(file => string.Equals(Path.GetExtension(file.FileName), ".pdf", StringComparison.OrdinalIgnoreCase));
+            var ordenCompra = await _ordenCompraService.ObtenXId(IdOrdenCompra);
+            var proveedor = await _contratistaService.ObtenXId((int)ordenCompra.IdContratista);
+
+            foreach (IFormFile archivo in xmls) {
+                using (var memorystream = new MemoryStream())
+                {
+                    await archivo.CopyToAsync(memorystream);
+                    byte[] xmlFile = memorystream.ToArray();
+
+                    XDocument documento = XDocument.Load(new MemoryStream(xmlFile), System.Xml.Linq.LoadOptions.None);
+
+                    var ns = documento.Root.GetNamespaceOfPrefix("cfdi");
+                    DateTime fechaValidacion = DateTime.Now;
+                    var comprobante = documento.Descendants(ns + "Comprobante").FirstOrDefault();
+                    var complemento = documento.Descendants(ns + "Complemento").FirstOrDefault();
+                    var nodoTimbre = complemento.Elements().FirstOrDefault(e => e.Name.LocalName == "TimbreFiscalDigital");
+                    XNamespace tfd = nodoTimbre.Name.Namespace;
+                    var timbreFiscalDigital = complemento.Element(tfd + "TimbreFiscalDigital");
+                    var uuid = timbreFiscalDigital.Attribute("UUID")?.Value;
+
+                    var existeFactura = await _facturaService.ObtenXUuid(uuid);
+                    if (existeFactura.Count() > 0 ) {
+                        respuesta.Estatus = true;
+                        respuesta.Descripcion = "Alguna factura ya habia sido cargada anteriormente";
+                        continue;
+                    }
+
+                    var fechaTimbrado = timbreFiscalDigital.Attribute("FechaTimbrado")?.Value;
+
+                    var numArchivos = await _ArchivoService.ObtenXContenido(uuid);
+                    var numeroFacturas = numArchivos.Count() + 1;
+
+                    var tipoComprobante = comprobante.Attribute("TipoDeComprobante")?.Value;
+                    var facturaEmisor = documento.Descendants(ns + "Emisor").FirstOrDefault();
+                    var respuestaValidacion = await validaFactura(proveedor, comprobante, facturaEmisor);
+                    if (!respuestaValidacion) {
+                        respuesta.Estatus = true;
+                        respuesta.Descripcion = "La factura no coincide con la orden de compra";
+                        continue;
+                    }
+
+                    var facturaReceptor = documento.Descendants(ns + "Receptor").FirstOrDefault();
+                    var descuento = documento.Descendants(ns + "Descuento").FirstOrDefault();
+
+                    var resultadoRutaArchivo = await GuardarArchivoFactura(facturaReceptor.Attribute("Rfc")?.Value, facturaEmisor.Attribute("Rfc")?.Value,
+                    fechaValidacion.Year.ToString(), fechaValidacion.Month.ToString(), uuid, numeroFacturas, archivo);
+                    if (string.IsNullOrEmpty(resultadoRutaArchivo))
+                    {
+                        continue;
+                    }
+                    var extension = Path.GetExtension(archivo.FileName);
+                    var nombreArchivo = $"{uuid}{extension}";
+                    var resultadoArchivoXml = await _ArchivoService.CrearYObtener(new ArchivoDTO()
+                    {
+                        Nombre = nombreArchivo,
+                        Ruta = resultadoRutaArchivo
+                    });
+                    if (resultadoArchivoXml.Id <= 0)
+                    {
+                        continue;
+                    }
+                    int estatusFactura = 1;
+
+                    var registrarFactura = await RegistrarFactura(comprobante, ns, resultadoArchivoXml.Id, uuid, fechaValidacion, Convert.ToDateTime(fechaTimbrado),
+                        facturaEmisor, facturaReceptor, estatusFactura, descuento);
+
+                    if (registrarFactura.Id <= 0)
+                    {
+                        continue;
+                    }
+
+                    //RegistrarRelacion con Factura y Orden de Compra
+                    var nuevaFacturaXOrdenCompra = await _facturaXOrdenCompraService.Crear(new FacturaXOrdenCompraDTO()
+                    {
+                        IdOrdenCompra = IdOrdenCompra,
+                        IdFactura = registrarFactura.Id
+                    });
+
+                    int IdFactura = registrarFactura.Id;
+
+                    var facturaDetalles = documento.Descendants(ns + "Conceptos").FirstOrDefault();
+                    await leerFacturaDetalleOrdenCompra(facturaDetalles, ns, IdFactura);
+
+                    await leerFacturaEmisor(facturaEmisor, IdFactura);
+
+                    var facturaImpuestos = documento.Descendants(ns + "Impuestos").FirstOrDefault();
+                    await leerFacturaImpuestos(facturaImpuestos, ns, IdFactura);
+
+                    var facturaComplementoPago = documento.Descendants(ns + "Complemento").FirstOrDefault();
+                    var nodoPagos = complemento.Elements().FirstOrDefault(e => e.Name.LocalName == "Pagos");
+                    XNamespace pago20 = nodoTimbre.Name.Namespace;
+                    await leerFacturaComplementoPago(facturaComplementoPago, pago20, IdFactura);
+
+                    //Crear Poliza
+
+                }
+            }
+
+            return respuesta;
         }
 
         public async Task<bool> leerFacturas()
@@ -454,6 +595,53 @@ namespace ERP_TECKIO.Procesos.Facturacion
             }
         }
 
+        public async Task leerFacturaDetalleOrdenCompra(XElement facturaDetalles, XNamespace ns, int IdFactura)
+        {
+            if (facturaDetalles != null)
+            {
+                foreach (var facturaDetalle in facturaDetalles.Elements(ns + "Concepto"))
+                {
+                    var nuevaFacturaDetalle = new FacturaDetalleDTO();
+                    nuevaFacturaDetalle.IdFactura = IdFactura;
+                    nuevaFacturaDetalle.Cantidad = Convert.ToDecimal(facturaDetalle.Attribute("Cantidad")?.Value);
+                    nuevaFacturaDetalle.PrecioUnitario = Convert.ToDecimal(facturaDetalle.Attribute("ValorUnitario")?.Value);
+                    nuevaFacturaDetalle.Importe = Convert.ToDecimal(facturaDetalle.Attribute("Importe")?.Value);
+                    var existeDescuento = facturaDetalle.Attribute("Descuento")?.Value;
+                    nuevaFacturaDetalle.Descuento = existeDescuento != null ? Convert.ToDecimal(existeDescuento) : 0;
+                    nuevaFacturaDetalle.Descripcion = facturaDetalle.Attribute("Descripcion")?.Value;
+                    var claveProductos = await _productoYservicioSatService.ObtenerXClave(facturaDetalle.Attribute("ClaveProdServ")?.Value);
+                    var claveUnidadSat = await _unidadSatService.ObtenerXClave(facturaDetalle.Attribute("ClaveUnidad")?.Value);
+
+                    var productoOServicio = await _productoYservicioService.ObtenerXDescripcionYClave(facturaDetalle.Attribute("Descripcion")?.Value, claveProductos.Id);
+                    if (productoOServicio.Id <= 0) {
+                        productoOServicio = await _productoYservicioService.CrearYObtener(new ProductoYservicioDTO()
+                        {
+                            Codigo = claveProductos.Clave,
+                            Descripcion = nuevaFacturaDetalle.Descripcion,
+                            IdUnidad = 1,
+                            IdProductoYservicioSat = claveProductos.Id,
+                            IdUnidadSat = claveUnidadSat.Id,
+                            IdCategoriaProductoYServicio = 100,
+                            IdSubategoriaProductoYServicio = 100
+                        });
+                    }
+
+                    nuevaFacturaDetalle.IdProductoYservicio = productoOServicio.Id;
+                    if (nuevaFacturaDetalle.IdProductoYservicio == 0)
+                    {
+                        var mensaje = "objeto vacio";
+                    }
+                    var crearFacturaDetalle = await _facturaDetalleService.CrearYObtener(nuevaFacturaDetalle);
+                    if (crearFacturaDetalle.Id > 0)
+                    {
+                        int IdFacturaDetalle = crearFacturaDetalle.Id;
+                        var facturaDetalleImpuestos = facturaDetalle.Descendants(ns + "Impuestos").FirstOrDefault();
+                        await leerFacturaDetalleImpuestos(facturaDetalleImpuestos, ns, IdFacturaDetalle);
+                    }
+                }
+            }
+        }
+
         public async Task leerFacturaDetalleImpuestos(XElement facturaDetalleImpuestos, XNamespace ns, int IdFacturaDetalle)
         {
             if(facturaDetalleImpuestos != null)
@@ -669,6 +857,37 @@ namespace ERP_TECKIO.Procesos.Facturacion
             var complementoPagos = new List<FacturaComplementoPagoDTO>();
             complementoPagos = await _facturaComplementoPagoService.ObtenXIdFactura(IdFactura);
             return complementoPagos;
+        }
+
+        public async Task<OrdenCompraFacturasDTO> ObtenFacturaXOrdenCompra(int IdOrdenCompra)
+        {
+            var ordenCompraFacturas = new OrdenCompraFacturasDTO();
+            ordenCompraFacturas.FacturasXOrdenCompra = new List<FacturaXOrdenCompraDTO>();
+            decimal MontoTotalOC = 0;
+            decimal MontoTotalFactura = 0;
+
+            var insumosXOrdenCompra = await _ordenCompraProceso.InsumosOrdenCompraXIdOrdenCompra(IdOrdenCompra);
+            foreach (var ixoc in insumosXOrdenCompra) {
+                MontoTotalOC += ixoc.ImporteConIva;
+            }
+
+            var facturasXOrdenCompra = await _facturaXOrdenCompraService.ObtenerXIdOrdenCompra(IdOrdenCompra);
+
+            foreach (var fxoc in facturasXOrdenCompra) {
+                var factura = await _facturaService.ObtenXId(fxoc.IdFactura);
+                MontoTotalFactura += factura.Total;
+                var detallesFactura = await _facturaDetalleService.ObtenXIdFactura(factura.Id);
+                fxoc.FechaEmision = factura.FechaEmision;
+                fxoc.Uuid = factura.Uuid;
+                fxoc.Total = factura.Total;
+                fxoc.DetalleFactura.AddRange(detallesFactura);
+            }
+
+            ordenCompraFacturas.MontoTotalFactura = MontoTotalFactura;
+            ordenCompraFacturas.MontoTotalOrdenCompra = MontoTotalOC;
+            ordenCompraFacturas.FacturasXOrdenCompra = facturasXOrdenCompra;
+
+            return ordenCompraFacturas;
         }
     }
 }

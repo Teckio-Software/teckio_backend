@@ -954,7 +954,10 @@ namespace ERP_TECKIO
             //.ForMember(destino => destino.IdTipoDocumentoNavigation,
             //     opt => opt.Ignore());
             #endregion
-
+            #region FacturaXOrdenCompra
+            CreateMap<FacturaXOrdenCompraDTO, FacturaXOrdenCompra>();
+            CreateMap<FacturaXOrdenCompra, FacturaXOrdenCompraDTO>();
+            #endregion
             #region FacturaEntradaMaterial
             // CreateMap<FacturaEntradaMaterial, FacturaEntradaMaterialDTO>();
             // CreateMap<FacturaEntradaMaterialDTO, FacturaEntradaMaterial>()

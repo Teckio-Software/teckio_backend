@@ -1,4 +1,7 @@
-﻿namespace ERP_TECKIO
+﻿using ERP_TECKIO.DTO.Factura;
+using ERP_TECKIO.Modelos.Facturaion;
+
+namespace ERP_TECKIO
 {
     public class OrdenCompraDTO
     {
@@ -45,5 +48,13 @@
         public string? Chofer { get; set; }
         public string? Observaciones { get; set; }
         public List<InsumoXOrdenCompraCreacionDTO> ListaInsumosOrdenCompra { get; set; }
+    }
+
+    public class OrdenCompraFacturasDTO 
+    {
+        public int IdOrdenCompra { get; set; }
+        public decimal MontoTotalOrdenCompra { get; set; }
+        public decimal MontoTotalFactura { get; set; }
+        public List<FacturaXOrdenCompraDTO> FacturasXOrdenCompra { get; set; } = new List<FacturaXOrdenCompraDTO>();
     }
 }

@@ -1,4 +1,7 @@
-﻿using ERP_TECKIO.Procesos;
+﻿using ERP_TECKIO.DTO.Factura;
+using ERP_TECKIO.Procesos;
+using ERP_TECKIO.Procesos.Facturacion;
+using ERP_TECKIO.Servicios.Contratos.Facturacion;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,18 +15,42 @@ namespace ERP_TECKIO.Controllers.Alumno01
 
     public class FacturaAlumno01Controller : ControllerBase
     {
-        //private readonly ObtenFacturaProceso _obtenFacturaProceso;
-        //public FacturaAlumno01Controller(
-        //    ObtenFacturaProceso obtenFacturaProceso
-        //    ) {
-        //    _obtenFacturaProceso = obtenFacturaProceso;
-        //}
+        private readonly ObtenFacturaProceso<Alumno01Context> _obtenFacturaProceso;
+        private readonly ICategoriaProductoYServicioService<Alumno01Context> _categoriaProductoYServicioService;
+        public FacturaAlumno01Controller(
+            ObtenFacturaProceso<Alumno01Context> obtenFacturaProceso,
+            ICategoriaProductoYServicioService<Alumno01Context> categoriaProductoYServicioService
+            )
+        {
+            _obtenFacturaProceso = obtenFacturaProceso;
+            _categoriaProductoYServicioService = categoriaProductoYServicioService;
+        }
+        [HttpGet("ObtenFacturas")]
+        public async Task<ActionResult<List<FacturaDTO>>> ObtenerFacturas()
+        {
+            var facturas = await _obtenFacturaProceso.ObtenerFacturas();
+            return facturas;
+        }
 
-        //[HttpGet("obtenerProductos")]
-        //public async Task<ActionResult<List<ProductoYServicioDTO>>> ObteneProductos()
-        //{
-        //    var productos = await _obtenFacturaProceso.ObtenerProductos();
-        //    return productos;
-        //}
+        [HttpGet("ObtenFacturaDetalleXIdFactura/{IdFactura:int}")]
+        public async Task<ActionResult<List<FacturaDetalleDTO>>> ObtenFacturaDetalleXIdFactura(int IdFactura)
+        {
+            var facturaDetalles = await _obtenFacturaProceso.ObtenFacturaDetalleXIdFactura(IdFactura);
+            return facturaDetalles;
+        }
+
+        [HttpGet("ObtenComplementoPagoXIdFactura/{IdFactura:int}")]
+        public async Task<ActionResult<List<FacturaComplementoPagoDTO>>> ObtenComplementoPagoXIdFactura(int IdFactura)
+        {
+            var complemntoPagos = await _obtenFacturaProceso.ObtenComplementoPagoXIdFactura(IdFactura);
+            return complemntoPagos;
+        }
+
+        [HttpGet("ObtenerCategorias")]
+        public async Task<ActionResult<List<CategoriaProductoYServicioDTO>>> ObtenerCategorias()
+        {
+            var categorias = await _categoriaProductoYServicioService.ObtenerTodos();
+            return categorias;
+        }
     }
 }

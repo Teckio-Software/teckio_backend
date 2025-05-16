@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+﻿using Microsoft.AspNetCore.Mvc;
+using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
 
 
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ERP_TECKIO.Procesos;
+using ERP_TECKIO.Procesos.Facturacion;
 
 
 namespace ERP_TECKIO.Controllers
@@ -17,16 +20,23 @@ namespace ERP_TECKIO.Controllers
         private readonly OrdenCompraProceso<Alumno01Context> _Proceso;
         private readonly ILogger<OrdenCompraAlumno01Controller> _Logger;
         private readonly Alumno01Context Context;
+        private readonly PolizaProceso<Alumno01Context> _polizaProceso;
+        private readonly ObtenFacturaProceso<Alumno01Context> _obtenFacturaProceso;
+
         public OrdenCompraAlumno01Controller(
             ILogger<OrdenCompraAlumno01Controller> Logger
             , Alumno01Context Context
             , IOrdenCompraService<Alumno01Context> Service
-            , OrdenCompraProceso<Alumno01Context> Proceso)
+            , OrdenCompraProceso<Alumno01Context> Proceso
+            , PolizaProceso<Alumno01Context> polizaProceso
+            , ObtenFacturaProceso<Alumno01Context> obtenFacturaProceso)
         {
             _Logger = Logger;
             this.Context = Context;
             _Service = Service;
             _Proceso = Proceso;
+            _polizaProceso = polizaProceso;
+            _obtenFacturaProceso = obtenFacturaProceso;
         }
         [HttpPost]
         [Route("CrearOrdenCompra")]
@@ -139,6 +149,16 @@ namespace ERP_TECKIO.Controllers
         {
             var lista = await _Service.ObtenXId(Id);
             return lista;
+        }
+
+        [HttpPost("cargarFacturasXOrdenCompra")]
+        public async Task<ActionResult<RespuestaDTO>> CargarFacturaXOrdenCompra([FromForm] List<IFormFile> files ,[FromForm] int IdOrdenCompra) {
+            return await _obtenFacturaProceso.CargarFacturaXOrdenCompra(files, IdOrdenCompra);
+        }
+
+        [HttpGet("obtenerFacturasXOrdenCompra/{IdOrdenCompra:int}")]
+        public async Task<ActionResult<OrdenCompraFacturasDTO>> obtenerFacturasXOrdenCompra(int IdOrdenCompra) {
+            return await _obtenFacturaProceso.ObtenFacturaXOrdenCompra(IdOrdenCompra);
         }
     }
 }
