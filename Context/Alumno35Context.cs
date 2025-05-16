@@ -155,6 +155,7 @@ public partial class Alumno35Context : DbContext
     public virtual DbSet<UnidadSat> UnidadSats { get; set; }
 
     public virtual DbSet<UsoCfdiSat> UsoCfdiSats { get; set; }
+    public virtual DbSet<FacturaXOrdenCompra> FacturaXOrdenCompras { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -502,9 +503,9 @@ public partial class Alumno35Context : DbContext
             entity.Property(e => e.SerieCfdi).HasMaxLength(25);
             entity.Property(e => e.Subtotal).HasColumnType("decimal(28, 6)");
             entity.Property(e => e.Total).HasColumnType("decimal(28, 6)");
-            entity.Ignore(e => e.FormaPago);
-            entity.Ignore(e => e.Moneda);
-            entity.Ignore(e => e.RfcReceptor);
+            //entity.Ignore(e => e.FormaPago);
+            //entity.Ignore(e => e.Moneda);
+            //entity.Ignore(e => e.RfcReceptor);
             entity.Property(e => e.Uuid)
                 .HasMaxLength(36)
                 .HasColumnName("UUID");
@@ -1910,6 +1911,26 @@ public partial class Alumno35Context : DbContext
 
             entity.Property(e => e.Codigo).HasMaxLength(20);
             entity.Property(e => e.Descripcion).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<FacturaXOrdenCompra>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__PrecioUn__3214EC0770A8B9AE");
+
+            entity.ToTable("FacturaXOrdenCompra");
+
+            entity.Property(e => e.Estatus).HasColumnName("Estatus");
+
+
+            entity.HasOne(d => d.IdFacturaNavigation).WithMany(p => p.FacturaXOrdenCompras)
+                .HasForeignKey(d => d.IdFactura)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_FacturaXOrdenCompra_IdFactura");
+
+            entity.HasOne(d => d.IdOrdenCompraNavigation).WithMany(p => p.FacturaXOrdenCompras)
+                .HasForeignKey(d => d.IdOrdenCompra)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_FacturaXOrdenCompra_IdOrdenCompra");
         });
 
         base.OnModelCreating(modelBuilder);
