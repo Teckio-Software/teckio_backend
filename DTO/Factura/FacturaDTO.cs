@@ -8,5 +8,7 @@ namespace ERP_TECKIO.DTO.Factura
         public string RegimenFiscal { get; set; }
         public string UsoCfdi { get; set; }
         public string MonedaSat { get; set; }
+        public string RfcReceptor { get; set; } = null!;
+        public string FormaPago { get; set; } = null!;
     }
 }

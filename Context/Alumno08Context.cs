@@ -8,13 +8,13 @@ using ERP_TECKIO.Modelos.Facturacion;
 using ERP_TECKIO.Modelos.Facturaion;
 
 
-public partial class Alumno04Context : DbContext
+public partial class Alumno08Context : DbContext
 {
-    public Alumno04Context()
+    public Alumno08Context()
     {
     }
 
-    public Alumno04Context(DbContextOptions<Alumno04Context> options)
+    public Alumno08Context(DbContextOptions<Alumno08Context> options)
         : base(options)
     {
     }

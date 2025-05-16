@@ -73,9 +73,9 @@ public abstract class FacturaAbstract
 
     public decimal TipoCambio { get; set; }
 
-    public string FormaPago { get; set; } = null!;
-    public string Moneda { get; set; } = null!;
-    public string RfcReceptor { get; set; } = null!;
+
+    //public string Moneda { get; set; } = null!;
+
 
     public int IdCliente { get; set; }
 

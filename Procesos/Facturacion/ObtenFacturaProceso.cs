@@ -265,8 +265,6 @@ namespace ERP_TECKIO.Procesos.Facturacion
                     XNamespace pago20 = nodoTimbre.Name.Namespace;
                     await leerFacturaComplementoPago(facturaComplementoPago, pago20, IdFactura);
 
-                    //Crear Poliza
-
                 }
             }
 
@@ -376,7 +374,7 @@ namespace ERP_TECKIO.Procesos.Facturacion
             nuevaFactura.FechaTimbrado = fechaTimbrado;
             nuevaFactura.FechaEmision = Convert.ToDateTime(comprobante.Attribute("Fecha")?.Value);
             nuevaFactura.RfcEmisor = FacturaEmisor.Attribute("Rfc")?.Value;
-            nuevaFactura.RfcReceptor = FacturaReceptor.Attribute("Rfc")?.Value;
+            //nuevaFactura.RfcReceptor = FacturaReceptor.Attribute("Rfc")?.Value;
             nuevaFactura.Subtotal = Convert.ToDecimal(comprobante.Attribute("SubTotal")?.Value);
             nuevaFactura.Total = Convert.ToDecimal(comprobante.Attribute("Total")?.Value);
             nuevaFactura.SerieCfdi = comprobante.Attribute("Serie")?.Value;
