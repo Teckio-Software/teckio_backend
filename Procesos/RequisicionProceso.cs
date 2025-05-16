@@ -339,7 +339,9 @@ namespace ERP_TECKIO
                         FechaEntrega = item.FechaEntrega,
                         EstatusInsumoCompradoDescripcion = descripcionEstatusInsumoComprado,
                         EstatusInsumoSurtidoDescripcion = descripcionEstatusInsumoSurtido,
-                        IdInsumo = item.IdInsumo
+                        IdInsumo = item.IdInsumo,
+                        CUnitario = filtro[0].CostoUnitario
+                        
                     });
                 }
             }

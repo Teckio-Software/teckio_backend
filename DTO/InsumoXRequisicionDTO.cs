@@ -79,6 +79,7 @@ namespace ERP_TECKIO
         public string EstatusInsumoSurtidoDescripcion { get; set; }
 
         public DateTime FechaEntrega { get; set; }
+        public decimal CUnitario { get; set; }
     }
 
     /// <summary>

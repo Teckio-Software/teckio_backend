@@ -53,6 +53,8 @@ namespace ERP_TECKIO
 
         public bool esSeleccionada { get; set; }
         public string PIvaConFormato { get; set; }
+        public decimal PCotizado { get; set; }
+        public string PCotizadoConFormato { get; set; }
 
     }
 
@@ -67,8 +69,9 @@ namespace ERP_TECKIO
         public decimal PrecioUnitario { get; set; }
         public int TipoImpuesto { get; set; }
         public decimal Descuento { get; set; }
-
         public decimal PIVA {  get; set; }
+        public decimal PCotizado { get; set; }
+        public decimal PCotizadoConFormato { get; set; }
     }
 
     public class InsumoXCotizacionEditaEstatusDTO
