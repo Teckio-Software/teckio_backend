@@ -634,9 +634,7 @@ namespace ERP_TECKIO
                 .ForMember(destino => destino.IdIepsNavigation,
                 opt => opt.Ignore())
                 .ForMember(destino => destino.IdIvaRetenidoNavigation,
-                opt => opt.Ignore())
-                .ForMember(destino => destino.Direccion,
-                opt => opt.MapFrom(origen => origen.Direccion == null? "" : origen.Direccion));
+                opt => opt.Ignore());
             CreateMap<ClienteDTO, ClienteDTO>()
                 .ForMember(destino => destino.IdCuentaContable,
                 opt => opt.MapFrom(origen => origen.IdCuentaContable <= 0 ? null : origen.IdCuentaContable))

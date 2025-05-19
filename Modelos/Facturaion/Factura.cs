@@ -77,7 +77,7 @@ public abstract class FacturaAbstract
     //public string Moneda { get; set; } = null!;
 
 
-    public int IdCliente { get; set; }
+    public int? IdCliente { get; set; }
 
     public int? IdFormaPago { get; set; }
 
