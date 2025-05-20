@@ -160,6 +160,8 @@ namespace ERP_TECKIO.Procesos.Facturacion
         public async Task<RespuestaDTO> CargarFacturaXOrdenCompra(List<IFormFile> archivos, int IdOrdenCompra)
         {
             var respuesta = new RespuestaDTO();
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Se ha cargado correctamente la factura";
             var xmls = archivos.FirstOrDefault(file => string.Equals(Path.GetExtension(file.FileName), ".xml", StringComparison.OrdinalIgnoreCase));
             if (xmls == null)
             {
@@ -192,7 +194,7 @@ namespace ERP_TECKIO.Procesos.Facturacion
                 if (existeFactura.Count() > 0)
                 {
                     respuesta.Estatus = false;
-                    respuesta.Descripcion = "Alguna factura ya habia sido cargada anteriormente";
+                    respuesta.Descripcion = "Alguna factura ya habia sido cargada con el mismo identificador";
                     return respuesta;
                 }
 
@@ -962,6 +964,8 @@ namespace ERP_TECKIO.Procesos.Facturacion
                 {
                     var producto = await _productoYservicioService.ObtenerXId(det.IdProductoYservicio);
                     det.Descripcion = producto.Descripcion;
+                    var unidad = await _unidadSatService.ObtenerXId((int)producto.IdUnidadSat);
+                    det.UnidadSat = unidad.Clave;
                 }
                 fxoc.FechaEmision = factura.FechaEmision;
                 fxoc.Uuid = factura.Uuid;

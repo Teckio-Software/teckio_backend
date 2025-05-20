@@ -29,7 +29,8 @@ namespace ERP_TECKIO.Controllers
             , IOrdenCompraService<Alumno01Context> Service
             , OrdenCompraProceso<Alumno01Context> Proceso
             , PolizaProceso<Alumno01Context> polizaProceso
-            , ObtenFacturaProceso<Alumno01Context> obtenFacturaProceso)
+            , ObtenFacturaProceso<Alumno01Context> obtenFacturaProceso
+            )
         {
             _Logger = Logger;
             this.Context = Context;

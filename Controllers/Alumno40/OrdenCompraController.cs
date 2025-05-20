@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ERP_TECKIO.Procesos.Facturacion;
 
 
 namespace ERP_TECKIO.Controllers
@@ -17,16 +18,20 @@ namespace ERP_TECKIO.Controllers
         private readonly OrdenCompraProceso<Alumno40Context> _Proceso;
         private readonly ILogger<OrdenCompraAlumno40Controller> _Logger;
         private readonly Alumno40Context Context;
+        private readonly ObtenFacturaProceso<Alumno40Context> _obtenFacturaProceso;
+
         public OrdenCompraAlumno40Controller(
             ILogger<OrdenCompraAlumno40Controller> Logger
             , Alumno40Context Context
             , IOrdenCompraService<Alumno40Context> Service
-            , OrdenCompraProceso<Alumno40Context> Proceso)
+            , OrdenCompraProceso<Alumno40Context> Proceso,
+ObtenFacturaProceso<Alumno40Context> obtenFacturaProceso)
         {
             _Logger = Logger;
             this.Context = Context;
             _Service = Service;
             _Proceso = Proceso;
+            _obtenFacturaProceso = obtenFacturaProceso;
         }
         [HttpPost]
         [Route("CrearOrdenCompra")]
@@ -139,6 +144,18 @@ namespace ERP_TECKIO.Controllers
         {
             var lista = await _Service.ObtenXId(Id);
             return lista;
+        }
+
+        [HttpPost("cargarFacturasXOrdenCompra")]
+        public async Task<ActionResult<RespuestaDTO>> CargarFacturaXOrdenCompra([FromForm] List<IFormFile> files, [FromForm] int IdOrdenCompra)
+        {
+            return await _obtenFacturaProceso.CargarFacturaXOrdenCompra(files, IdOrdenCompra);
+        }
+
+        [HttpGet("obtenerFacturasXOrdenCompra/{IdOrdenCompra:int}")]
+        public async Task<ActionResult<OrdenCompraFacturasDTO>> obtenerFacturasXOrdenCompra(int IdOrdenCompra)
+        {
+            return await _obtenFacturaProceso.ObtenFacturaXOrdenCompra(IdOrdenCompra);
         }
     }
 }

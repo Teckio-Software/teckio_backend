@@ -25,28 +25,6 @@ namespace ERP_TECKIO.Procesos
 
             var cuentaContable = new CuentaContableDTO();
 
-            //List<int> idCuentas = new List<int>();
-            //idCuentas.Add(Convert.ToInt32(contratista.IdCuentaContable));
-            //idCuentas.Add(Convert.ToInt32(contratista.IdIvaAcreditableContable));
-            //idCuentas.Add(Convert.ToInt32(contratista.IdIvaPorAcreditar));
-            //idCuentas.Add(Convert.ToInt32(contratista.IdCuentaAnticipos));
-            //idCuentas.Add(Convert.ToInt32(contratista.IdCuentaRetencionISR));
-            //idCuentas.Add(Convert.ToInt32(contratista.IdCuentaRetencionIVA));
-            //idCuentas.Add(Convert.ToInt32(contratista.IdEgresosIvaExento));
-            //idCuentas.Add(Convert.ToInt32(contratista.IdEgresosIvaGravable));
-            //idCuentas.Add(Convert.ToInt32(contratista.IdIvaAcreditableFiscal));
-
-            //foreach (var id in idCuentas) {
-            //    if (id != null && id != 0)
-            //    {
-            //        cuentaContable = await _cuentaContableService.ObtenXId(Convert.ToInt32(contratista.IdCuentaContable));
-            //        if (cuentaContable.Id != 0)
-            //        {
-            //            cuentas.Add(cuentaContable);
-            //        }
-            //    }
-            //}
-
             if (contratista.IdCuentaContable != null)
             {
                 cuentaContable = await _cuentaContableService.ObtenXId(Convert.ToInt32(contratista.IdCuentaContable));

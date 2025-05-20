@@ -43,13 +43,19 @@ namespace ERP_TECKIO.Procesos
         {
             var respuesta = new RespuestaDTO();
 
-            //var proveedor = await _ContratistaService.ObtenXId((int)ordenCompra.IdContratista);
             var cuentasContablesProveedores = await _contratistaCuentasContablesProceso.obtenerXContratista((int)ordenCompra.IdContratista);
-            if (cuentasContablesProveedores.Count <= 0) {
+            //if (cuentasContablesProveedores.Count <= 0) {
+            //    respuesta.Estatus = false;
+            //    respuesta.Descripcion = "No hay cuentas asignadas al proveedor";
+            //    return respuesta;
+            //}
+            var CuentaContableProveedor = cuentasContablesProveedores.Where(z => z.TipoCuentaContableDescripcion == "Cuenta Contable").ToList();
+            if (CuentaContableProveedor.Count() <= 0) {
                 respuesta.Estatus = false;
                 respuesta.Descripcion = "No hay cuentas asignadas al proveedor";
                 return respuesta;
             }
+
             var cuentasContableEmpresa = await _CuentaContableService.ObtenXEmpresa();
             if (cuentasContableEmpresa.Count <= 0)
             {
@@ -92,9 +98,15 @@ namespace ERP_TECKIO.Procesos
                 detallePoliza.IdPoliza = crearPoliza.Id;
                 detallePoliza.IdCuentaContable = cuentasContables.Id;
                 detallePoliza.Concepto = "";
-                detallePoliza.Haber = 0;
-                detallePoliza.Debe = 0;
-
+                if (cuentasContables.TipoCuentaContableDescripcion == "Cuenta Contable") {
+                    detallePoliza.Haber = 0;
+                    detallePoliza.Debe = 0;
+                }
+                if (cuentasContables.TipoCuentaContableDescripcion == "IVA Acreditable")
+                {
+                    detallePoliza.Haber = 0;
+                    detallePoliza.Debe = 0;
+                }
                 var saldos = await _SaldosService.ObtenTodos();
                 var existeSaldo = saldos.Where(z => z.Anio == crearPoliza.FechaPoliza.Year && z.Mes == crearPoliza.FechaPoliza.Month && z.IdCuentaContable == detallePoliza.IdCuentaContable);
                 if (existeSaldo.Count() <= 0)
