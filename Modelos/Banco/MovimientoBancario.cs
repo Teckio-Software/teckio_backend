@@ -1,4 +1,6 @@
 ﻿
+using ERP_TECKIO.Modelos.Contabilidad;
+
 namespace ERP_TECKIO.Modelos;
 
 public partial class MovimientoBancario : MovimientoBancarioAbstract
@@ -12,6 +14,7 @@ public partial class MovimientoBancario : MovimientoBancarioAbstract
     public ICollection<MovimientoBancarioContratista> MBContratistas { get; set; } = new List<MovimientoBancarioContratista>();
     public ICollection<MovimientoBancarioCliente> MBClientes { get; set; } = new List<MovimientoBancarioCliente>();
     public ICollection<MovimientoBancarioEmpresa> MBEmpresa { get; set; } = new List<MovimientoBancarioEmpresa>();
+    public ICollection<OrdenCompraXMovimientoBancario> OrdenCompraXMovimientoBancarios { get; set; } = new List<OrdenCompraXMovimientoBancario>();
 }
 
 public abstract class MovimientoBancarioAbstract{

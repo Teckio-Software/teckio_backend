@@ -64,6 +64,8 @@ public class CuentaContable : CuentaContableAbstract
     public virtual ICollection<PolizaDetalle> PolizaDetalles { get; set; } = new List<PolizaDetalle>();
     [NotMapped]
     public virtual ICollection<SaldosBalanzaComprobacion> SaldosBalanzaComprobacions { get; set; } = new List<SaldosBalanzaComprobacion>();
+    public virtual ICollection<CuentaBancariaEmpresa> CuentaBancariaEmpresas { get; set; } = new List<CuentaBancariaEmpresa>();
+
 
 }
 

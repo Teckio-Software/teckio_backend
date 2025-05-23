@@ -3,6 +3,7 @@ using ERP_TECKIO.DTO;
 using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.DTO.Usuario;
 using ERP_TECKIO.Modelos;
+using ERP_TECKIO.Modelos.Contabilidad;
 using ERP_TECKIO.Modelos.Facturacion;
 using ERP_TECKIO.Modelos.Facturaion;
 using ERP_TECKIO.Modelos.Presupuesto;
@@ -576,6 +577,10 @@ namespace ERP_TECKIO
             CreateMap<MovimientoBancarioEmpresa, MBancarioBeneficiarioDTO>();
             CreateMap<MBancarioBeneficiarioDTO, MovimientoBancarioEmpresa>();
             #endregion
+            #region OrdenCompraXMovimientoBancario
+            CreateMap<OrdenCompraXMovimientoBancario, OrdenCompraXMovimientoBancarioDTO>();
+            CreateMap<OrdenCompraXMovimientoBancarioDTO, OrdenCompraXMovimientoBancario>();
+            #endregion
 
             #region MovimientoBancarioSaldo
             CreateMap<MovimientoBancarioSaldoDTO, MovimientoBancarioSaldo>();
@@ -956,7 +961,9 @@ namespace ERP_TECKIO
             #endregion
             #region FacturaXOrdenCompra
             CreateMap<FacturaXOrdenCompraDTO, FacturaXOrdenCompra>();
-            CreateMap<FacturaXOrdenCompra, FacturaXOrdenCompraDTO>();
+            CreateMap<FacturaXOrdenCompra, FacturaXOrdenCompraDTO>()
+                .ForMember(destino => destino.TotalSaldado, 
+                opt => opt.MapFrom(origen => origen.TotalSaldado == null ? 0 : origen.TotalSaldado ));
             #endregion
             #region FacturaEntradaMaterial
             // CreateMap<FacturaEntradaMaterial, FacturaEntradaMaterialDTO>();

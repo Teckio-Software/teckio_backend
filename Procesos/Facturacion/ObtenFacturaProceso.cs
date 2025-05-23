@@ -958,7 +958,9 @@ namespace ERP_TECKIO.Procesos.Facturacion
             foreach (var fxoc in facturasXOrdenCompra)
             {
                 var factura = await _facturaService.ObtenXId(fxoc.IdFactura);
-                MontoTotalFactura += factura.Total;
+                if (fxoc.Estatus == 2) {
+                    MontoTotalFactura += factura.Total;
+                }
                 var detallesFactura = await _facturaDetalleService.ObtenXIdFactura(factura.Id);
                 foreach (var det in detallesFactura)
                 {
@@ -978,6 +980,25 @@ namespace ERP_TECKIO.Procesos.Facturacion
             ordenCompraFacturas.FacturasXOrdenCompra = facturasXOrdenCompra;
 
             return ordenCompraFacturas;
+        }
+
+        public async Task<RespuestaDTO> AutorizarFacturaXOrdenCompra(FacturaXOrdenCompraDTO facturaXOrdenCompra) {
+            var respuesta = new RespuestaDTO();
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Se autorizo la factura";
+            if (facturaXOrdenCompra.Estatus != 1) {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "La factura debe ser capturada para poder autorizarla";
+                return respuesta;
+            }
+
+            var editaFacturaXOC = await _facturaXOrdenCompraService.Editar(facturaXOrdenCompra);
+            if (!editaFacturaXOC) {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No se pudo autorizar la facura";
+                return respuesta;
+            }
+            return respuesta;
         }
     }
 }

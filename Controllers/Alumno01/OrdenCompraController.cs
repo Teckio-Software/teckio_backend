@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using ERP_TECKIO.Procesos;
 using ERP_TECKIO.Procesos.Facturacion;
+using ERP_TECKIO.DTO.Factura;
 
 
 namespace ERP_TECKIO.Controllers
@@ -160,6 +161,28 @@ namespace ERP_TECKIO.Controllers
         [HttpGet("obtenerFacturasXOrdenCompra/{IdOrdenCompra:int}")]
         public async Task<ActionResult<OrdenCompraFacturasDTO>> obtenerFacturasXOrdenCompra(int IdOrdenCompra) {
             return await _obtenFacturaProceso.ObtenFacturaXOrdenCompra(IdOrdenCompra);
+        }
+
+
+        [HttpGet("ObtenerXIdContratistaSinPagar/{IdContratista:int}")]
+        public async Task<ActionResult<List<OrdenCompraDTO>>> ObtenerXIdContratistaSinPagar(int IdContratista)
+        {
+            var lista = await _Proceso.ObtenerXIdContratistaSinPagar(IdContratista);
+            return lista;
+        }
+
+        [HttpGet("ObtenerFacturasXIdContratistaSinPagar/{IdContratista:int}")]
+        public async Task<ActionResult<List<FacturaXOrdenCompraDTO>>> ObtenerFacturasXIdContratistaSinPagar(int IdContratista)
+        {
+            var lista = await _Proceso.ObtenerFacturasXIdContratistaSinPagar(IdContratista);
+            return lista;
+        }
+
+        [HttpPost("AutorizarFacturaXOrdenCompra")]
+        public async Task<ActionResult<RespuestaDTO>> AutorizarFacturaXOrdenCompra(FacturaXOrdenCompraDTO facturaXOrdenCompra)
+        {
+            var lista = await _obtenFacturaProceso.AutorizarFacturaXOrdenCompra(facturaXOrdenCompra);
+            return lista;
         }
     }
 }

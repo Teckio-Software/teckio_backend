@@ -18,7 +18,9 @@ public partial class CuentaBancariaCliente : CuentaBancariaAbstract
 }
 
 public partial class CuentaBancariaEmpresa : CuentaBancariaAbstract { 
+    public int? IdCuentaContable { get; set; }
     public virtual Banco? IdBancoNavigation { get; set; }
+    public virtual CuentaContable? IdCuentaContableNavigation { get; set; }
     public virtual ICollection<MovimientoBancario> MovimientosBancarios { get; set; } = new List<MovimientoBancario>();
     public virtual ICollection<MovimientoBancarioEmpresa> MBEmpresa { get; set; } = new List<MovimientoBancarioEmpresa>();
     public virtual ICollection<MovimientoBancarioSaldo> MBESaldo { get; set; } = new List<MovimientoBancarioSaldo>();

@@ -1,7 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+using Microsoft.AspNetCore.Mvc;
+using ERP_TECKIO;
+using ERP_TECKIO.DTO.Factura;
+using ERP_TECKIO.Servicios.Contratos.Facturacion;
 
 namespace ERP_TECKIO
 {
@@ -17,6 +20,8 @@ namespace ERP_TECKIO
         private readonly IImpuestoInsumoOrdenCompraService<T> _impuestoInsumoOrdenCompraService;
         private readonly IImpuestoInsumoCotizadoService<T> _impuestoInsumoCotizadoService;
         private readonly ITipoImpuestoService<T> _tipoImpuestoService;
+        private readonly IFacturaXOrdenCompraService<T> _facturaXOrdenCompraService;
+        private readonly IFacturaService<T> _facturaService;
 
         public OrdenCompraProceso(
             IOrdenCompraService<T> ordenCompraService,
@@ -29,6 +34,8 @@ namespace ERP_TECKIO
             , IImpuestoInsumoOrdenCompraService <T> impuestoInsumoOrdenCompraService
             , IImpuestoInsumoCotizadoService<T> impuestoInsumoCotizadoService
             , ITipoImpuestoService<T> tipoImpuestoService
+            , IFacturaXOrdenCompraService<T> facturaXOrdenCompraService
+            , IFacturaService<T> facturaService
             )
         {
             _ordenCompraService = ordenCompraService;
@@ -41,6 +48,8 @@ namespace ERP_TECKIO
             _impuestoInsumoOrdenCompraService = impuestoInsumoOrdenCompraService ;
             _impuestoInsumoCotizadoService = impuestoInsumoCotizadoService;
             _tipoImpuestoService = tipoImpuestoService;
+            _facturaXOrdenCompraService = facturaXOrdenCompraService;
+            _facturaService = facturaService;
         }
 
         public async Task<RespuestaDTO> CrearOrdenCompra(OrdenCompraCreacionDTO parametros, List<System.Security.Claims.Claim> claims)
@@ -574,6 +583,41 @@ namespace ERP_TECKIO
                 IIOC.DescripcionImpuesto = impuesto[0].DescripcionImpuesto;
             }
             return ImpuestosInsumosOC;
+        }
+
+        public async Task<List<OrdenCompraDTO>> ObtenerXIdContratistaSinPagar(int IdContratista)
+        {
+            var ordenesCompra = await _ordenCompraService.ObtenXIdContratista(IdContratista);
+            var ordenesPorPagar = ordenesCompra.Where(z => z.EstatusSaldado != 3).ToList();
+            foreach (var orden in ordenesPorPagar)
+            {
+                var insumosXOrdeCompra = await _insumoXOrdenCompraService.ObtenXIdOrdenCompra(orden.Id);
+                orden.Saldo = insumosXOrdeCompra.Sum(z => z.ImporteConIva) - orden.TotalSaldado;
+                orden.MontoAPagar = orden.Saldo;
+            }
+
+            return ordenesPorPagar;
+        }
+
+        public async Task<List<FacturaXOrdenCompraDTO>> ObtenerFacturasXIdContratistaSinPagar(int IdContratista)
+        {
+            var ordenesCompra = await _ordenCompraService.ObtenXIdContratista(IdContratista);
+            var ordenesPorPagar = ordenesCompra.Where(z => z.EstatusSaldado != 3).ToList();
+            var facturasPendientes = new List<FacturaXOrdenCompraDTO>();
+            foreach (var orden in ordenesPorPagar)
+            {
+                var facturaXOc = await _facturaXOrdenCompraService.ObtenerXIdOrdenCompra(orden.Id);
+                var facturasSinPagar = facturaXOc.Where(z => z.Estatus == 2 || z.Estatus == 3);
+                foreach (var FXOC in facturasSinPagar) {
+                    var factura = await _facturaService.ObtenXId(FXOC.IdFactura);
+                    FXOC.Uuid = factura.Uuid;
+                    FXOC.Saldo = factura.Total - (decimal)FXOC.TotalSaldado;
+                    FXOC.MontoAPagar = FXOC.Saldo;
+                    facturasPendientes.Add(FXOC);
+                }
+            }
+
+            return facturasPendientes;
         }
     }
 }

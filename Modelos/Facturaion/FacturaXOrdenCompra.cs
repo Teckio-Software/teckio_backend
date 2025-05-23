@@ -13,5 +13,6 @@
         public int IdOrdenCompra { get; set; }
         public int IdFactura { get; set; }
         public int Estatus { get; set; }
+        public decimal? TotalSaldado { get; set; }
     }
 }

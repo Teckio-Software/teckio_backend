@@ -26,6 +26,21 @@ namespace ERP_TECKIO.Servicios.Facturacion
             return true;
         }
 
+        public async Task<bool> Editar(FacturaXOrdenCompraDTO parametro)
+        {
+            var objetoEncontado = await _repository.Obtener(z => z.Id == parametro.Id);
+            if (objetoEncontado.Id <= 0) {
+                return false;
+            }
+            objetoEncontado.Estatus = 2;
+            objetoEncontado.TotalSaldado = parametro.TotalSaldado;
+            var respuesta = await _repository.Editar(objetoEncontado);
+            if (!respuesta) {
+                return false;
+            }
+            return true;
+        }
+
         public async Task<List<FacturaXOrdenCompraDTO>> ObtenerXIdOrdenCompra(int IdOrdenCompra)
         {
             var lista = await _repository.ObtenerTodos(z => z.IdOrdenCompra == IdOrdenCompra);

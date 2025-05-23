@@ -10,6 +10,7 @@ namespace ERP_TECKIO.Servicios.Contratos.Facturacion
     {
         Task<List<FacturaImpuestosDTO>> ObtenerTodos();
         Task<FacturaImpuestosDTO> ObtenerXId(int Id);
+        Task<List<FacturaImpuestosDTO>> ObtenerXIdFactura(int IdFactura);
         Task<FacturaImpuestosDTO> CrearYObtener(FacturaImpuestosDTO registro);
         Task<RespuestaDTO> Editar(FacturaImpuestosDTO registro);
         Task<RespuestaDTO> Eliminar(int Id);

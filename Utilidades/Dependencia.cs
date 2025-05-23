@@ -83,6 +83,7 @@ namespace ERP_TECKIO
             services.AddScoped(typeof(IMovimientoBancarioClienteService<>), typeof(MovimientoBancarioClienteService<>));
             services.AddScoped(typeof(IMovimientoBancarioEmpresaService<>), typeof(MovimientoBancarioEmpresaService<>));
             services.AddScoped(typeof(IMovimientoBancarioSaldoService<>), typeof(MovimientoBancarioSaldoService<>));
+            services.AddScoped(typeof(IOrdenCompraXMovimientoBancarioService<>), typeof(OrdenCompraXMovimientoBancarioService<>));
 
             //Estimaciones
             services.AddScoped(typeof(IEstimacionesService<>), typeof(EstimacionesService<>));

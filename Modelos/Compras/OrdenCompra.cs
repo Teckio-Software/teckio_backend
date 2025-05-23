@@ -1,4 +1,5 @@
 ﻿
+using ERP_TECKIO.Modelos.Contabilidad;
 using ERP_TECKIO.Modelos.Facturaion;
 
 namespace ERP_TECKIO.Modelos;
@@ -28,6 +29,9 @@ public partial class OrdenCompra
     public string? Observaciones { get; set; }
 
     public int? EstatusInsumosSurtidos { get; set; }
+    public int EstatusSaldado { get; set; }
+    public decimal TotalSaldado { get; set; }
+
 
     public virtual ICollection<AlmacenEntradaInsumo> AlmacenEntradaInsumos { get; set; } = new List<AlmacenEntradaInsumo>();
 
@@ -41,5 +45,7 @@ public partial class OrdenCompra
 
     public virtual ICollection<InsumoXOrdenCompra> InsumoXordenCompras { get; set; } = new List<InsumoXOrdenCompra>();
     public virtual ICollection<FacturaXOrdenCompra> FacturaXOrdenCompras { get; set; } = new List<FacturaXOrdenCompra>();
+    public ICollection<OrdenCompraXMovimientoBancario> OrdenCompraXMovimientoBancarios { get; set; } = new List<OrdenCompraXMovimientoBancario>();
+
 
 }

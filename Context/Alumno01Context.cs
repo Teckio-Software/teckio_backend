@@ -6,6 +6,7 @@ using ERP_TECKIO;
 using ERP_TECKIO.Modelos.Presupuesto;
 using ERP_TECKIO.Modelos.Facturacion;
 using ERP_TECKIO.Modelos.Facturaion;
+using ERP_TECKIO.Modelos.Contabilidad;
 
 
 public partial class Alumno01Context : DbContext
@@ -1090,6 +1091,26 @@ public partial class Alumno01Context : DbContext
             entity.HasOne(d => d.IdBancoNavigation).WithMany(p => p.cuentaBancariaEmpresas)
                 .HasForeignKey(d => d.IdBanco)
                 .HasConstraintName("FK_CuentaBanEmpresa_IdBanco");
+            entity.HasOne(d => d.IdCuentaContableNavigation).WithMany(p => p.CuentaBancariaEmpresas)
+                .HasForeignKey(d => d.IdCuentaContable)
+                .HasConstraintName("FK_CuentaBancariaEmpresa_IdCuentaContable");
+        });
+
+        modelBuilder.Entity<OrdenCompraXMovimientoBancario>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__CuentaBa__3214EC07084B3915");
+
+            entity.ToTable("OrdenCompraXMovimientoBancario");
+
+            entity.Property(e => e.Estatus).HasColumnName("Estatus");
+            entity.Property(e => e.TotalSaldado).HasColumnType("decimal(28, 6)");
+
+            entity.HasOne(d => d.IdMovimientoBancarioNavigation).WithMany(p => p.OrdenCompraXMovimientoBancarios)
+                .HasForeignKey(d => d.IdMovimientoBancario)
+                .HasConstraintName("FK_OrdenCompraXMovimientoBancario_IdMovimientoBancario");
+            entity.HasOne(d => d.IdOrdenCompraNavigation).WithMany(p => p.OrdenCompraXMovimientoBancarios)
+                .HasForeignKey(d => d.IdOrdenCompra)
+                .HasConstraintName("FK_OrdenCompraXMovimientoBancario_IdOrdenCompra");
         });
 
         modelBuilder.Entity<MovimientoBancario>(entity =>
@@ -1570,6 +1591,8 @@ public partial class Alumno01Context : DbContext
             entity.Property(e => e.FechaRegistro).HasColumnType("datetime");
             entity.Property(e => e.NoOrdenCompra).HasMaxLength(90);
             entity.Property(e => e.Observaciones).HasMaxLength(200);
+            entity.Property(e => e.EstatusSaldado).HasColumnName("EstatusSaldado");
+            entity.Property(e => e.TotalSaldado).HasColumnType("decimal(28, 6)");
 
             entity.HasOne(d => d.IdCotizacionNavigation).WithMany(p => p.OrdenCompras)
                 .HasForeignKey(d => d.IdCotizacion)
@@ -1919,6 +1942,7 @@ public partial class Alumno01Context : DbContext
             entity.ToTable("FacturaXOrdenCompra");
 
             entity.Property(e => e.Estatus).HasColumnName("Estatus");
+            entity.Property(e => e.TotalSaldado).HasColumnType("decimal(28, 6)");
 
 
             entity.HasOne(d => d.IdFacturaNavigation).WithMany(p => p.FacturaXOrdenCompras)

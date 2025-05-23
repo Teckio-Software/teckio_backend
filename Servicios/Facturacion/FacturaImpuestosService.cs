@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.Modelos;
 using ERP_TECKIO.Modelos.Facturaion;
@@ -112,6 +113,12 @@ namespace ERP_TECKIO.Servicios.Facturacion
             respuesta.Estatus = true;
             respuesta.Descripcion = "Factura impuestos eliminado";
             return respuesta;
+        }
+
+        public async Task<List<FacturaImpuestosDTO>> ObtenerXIdFactura(int IdFactura)
+        {
+            var lista = await _repository.ObtenerTodos(z => z.IdFactura == IdFactura);
+            return _mapper.Map<List<FacturaImpuestosDTO>>(lista);
         }
     }
 }
