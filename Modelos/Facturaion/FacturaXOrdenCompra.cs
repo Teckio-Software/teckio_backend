@@ -1,10 +1,12 @@
-﻿namespace ERP_TECKIO.Modelos.Facturaion
+﻿using ERP_TECKIO.Modelos.Contabilidad;
+
+namespace ERP_TECKIO.Modelos.Facturaion
 {
     public class FacturaXOrdenCompra : FacturaXOrdenCompraAbstract
     {
         public virtual Factura IdFacturaNavigation { get; set; } = null!;
         public virtual OrdenCompra IdOrdenCompraNavigation { get; set; } = null!;
-
+        public ICollection<FacturaXOrdenCompraXMovimientoBancario> FacturaXOrdenCompraXMovimientoBancarios { get; set; } = new List<FacturaXOrdenCompraXMovimientoBancario>();
     }
 
     public abstract class FacturaXOrdenCompraAbstract

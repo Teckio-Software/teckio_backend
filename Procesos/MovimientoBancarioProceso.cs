@@ -1,7 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+using Microsoft.AspNetCore.Mvc;
+using ERP_TECKIO.DTO;
+using ERP_TECKIO.Servicios.Contratos;
+using ERP_TECKIO.DTO.Factura;
+using ERP_TECKIO.Servicios.Contratos.Facturacion;
+using ERP_TECKIO.Modelos;
+using ERP_TECKIO.Modelos.Facturaion;
 
 namespace ERP_TECKIO
 {
@@ -15,6 +21,11 @@ namespace ERP_TECKIO
         private readonly IClientesService<T> _clientesService;
         private readonly MovimientoBancarioSaldoProeceso<T> _movimientoBancarioSaldoProceso;
         private readonly IMovimientoBancarioSaldoService<T> _movimientoBancarioSaldoService;
+        private readonly IOrdenCompraService<T> _ordenCompraService;
+        private readonly IInsumoXOrdenCompraService<T> _insumoXOrdenCompraService;
+        private readonly IOrdenCompraXMovimientoBancarioService<T> _ordenCompraXMovimientoBancarioService;
+        private readonly IFacturaXOrdenCompraService<T> _facturaXOrdenCompraService;
+        private readonly IFacturaXOrdenCompraXMovimientoBancarioService<T> _facturaXOrdenCompraXMovimientoBancarioService;
         public MovimientoBancarioProceso(
             IMovimientoBancarioService<T> movimientoBancarioService,
             IMBancarioContratistaService<T> mBancarioContratistaService,
@@ -23,7 +34,12 @@ namespace ERP_TECKIO
             IContratistaService<T> contratistaService,
             IClientesService<T> clientesService,
             MovimientoBancarioSaldoProeceso<T> movimientoBancarioSaldoProceso,
-            IMovimientoBancarioSaldoService<T> movimientoBancarioSaldoService
+            IMovimientoBancarioSaldoService<T> movimientoBancarioSaldoService,
+            IOrdenCompraService<T> ordenCompraService,
+            IInsumoXOrdenCompraService<T> insumoXOrdenCompraService,
+            IOrdenCompraXMovimientoBancarioService<T> ordenCompraXMovimientoBancarioService,
+            IFacturaXOrdenCompraService<T> facturaXOrdenCompraService,
+            IFacturaXOrdenCompraXMovimientoBancarioService<T> facturaXOrdenCompraXMovimientoBancarioService
             ) { 
             _mBancarioContratistaService = mBancarioContratistaService;
             _movimientoBancarioService = movimientoBancarioService;
@@ -33,6 +49,11 @@ namespace ERP_TECKIO
             _clientesService = clientesService;
             _movimientoBancarioSaldoProceso = movimientoBancarioSaldoProceso;
             _movimientoBancarioSaldoService = movimientoBancarioSaldoService;
+            _ordenCompraService = ordenCompraService;
+            _insumoXOrdenCompraService = insumoXOrdenCompraService;
+            _ordenCompraXMovimientoBancarioService = ordenCompraXMovimientoBancarioService;
+            _facturaXOrdenCompraService = facturaXOrdenCompraService;
+            _facturaXOrdenCompraXMovimientoBancarioService = facturaXOrdenCompraXMovimientoBancarioService;
         }
 
         public async Task<RespuestaDTO> CrearMoviminetoBancario(MovimientoBancarioTeckioDTO moviminetoBancario) {
@@ -52,6 +73,47 @@ namespace ERP_TECKIO
                 respuesta.Descripcion = "Llene los campos correctamente";
                 return respuesta;
             }
+            var ordenesCompraSelected = new List<OrdenCompraDTO>();
+            var facturasSelected = new List<FacturaXOrdenCompraDTO>();
+
+            if (moviminetoBancario.TipoBeneficiario == 1) {
+                if (moviminetoBancario.EsOrdenCompra) {
+                    ordenesCompraSelected = moviminetoBancario.OrdenCompras.Where(z => z.EsSeleccionado == true).ToList();
+                    if (ordenesCompraSelected.Count() <= 0) {
+                        respuesta.Estatus = false;
+                        respuesta.Descripcion = "No se han seleccionado ordenes de compra";
+                        return respuesta;
+                    }
+                    foreach (var oc in ordenesCompraSelected) {
+                        if (oc.MontoAPagar > oc.Saldo) {
+                            respuesta.Estatus = false;
+                            respuesta.Descripcion = "El total a pagar supera el saldo";
+                            return respuesta;
+                        }
+                    }
+                }
+                if (moviminetoBancario.EsFactura)
+                {
+                    facturasSelected = moviminetoBancario.FacturasXOrdenCompra.Where(z => z.EsSeleccionado == true).ToList();
+                    if (facturasSelected.Count() <= 0)
+                    {
+                        respuesta.Estatus = false;
+                        respuesta.Descripcion = "No se han seleccionado facturas";
+                        return respuesta;
+                    }
+                    foreach (var factura in facturasSelected)
+                    {
+                        if (factura.MontoAPagar > factura.Saldo)
+                        {
+                            respuesta.Estatus = false;
+                            respuesta.Descripcion = "El total a pagar supera el saldo";
+                            return respuesta;
+                        }
+                    }
+                }
+            }
+
+
             moviminetoBancario.Estatus = 0;
             moviminetoBancario.FechaAlta = DateTime.Now;
             moviminetoBancario.IdFactura = 0;
@@ -74,6 +136,14 @@ namespace ERP_TECKIO
                 return respuesta;
             }
 
+            if (moviminetoBancario.EsOrdenCompra) {
+                await crearDetallesXOrdenCompra(ordenesCompraSelected, nuevoMB.Id, facturasSelected);
+            }
+            if (moviminetoBancario.EsFactura)
+            {
+                await crearDetallesXFacturaXOrdenCompra(ordenesCompraSelected, nuevoMB.Id, facturasSelected);
+            }
+
             mBancarioBeneficiario.IdMovimientoBancario = nuevoMB.Id;
 
             var guardaDetalels = await CrearDetalleMovimientoBancario(mBancarioBeneficiario, moviminetoBancario.TipoBeneficiario);
@@ -85,6 +155,100 @@ namespace ERP_TECKIO
             respuesta.Estatus = true;
             respuesta.Descripcion = "El registro se creo con exito";
             return respuesta;
+        }
+
+
+        public async Task crearDetallesXOrdenCompra(List<OrdenCompraDTO> ordenesCompra, int IdMovimientoBancario, List<FacturaXOrdenCompraDTO> facturasXOC) {
+            foreach (var oc in ordenesCompra) {
+                var ordenCompra = await _ordenCompraService.ObtenXId(oc.Id);
+                var insumosXOrdeCompra = await _insumoXOrdenCompraService.ObtenXIdOrdenCompra(oc.Id);
+                decimal totalOC = insumosXOrdeCompra.Sum(z => z.ImporteConIva);
+                ordenCompra.TotalSaldado += oc.MontoAPagar;
+                await _ordenCompraXMovimientoBancarioService.Crear(new OrdenCompraXMovimientoBancarioDTO()
+                {
+                    IdMovimientoBancario = IdMovimientoBancario,
+                    IdOrdenCompra = ordenCompra.Id,
+                    Estatus = 1,
+                    TotalSaldado = oc.MontoAPagar
+                });
+                if (ordenCompra.TotalSaldado == totalOC) {
+                    ordenCompra.EstatusSaldado = 3;
+                    await _ordenCompraService.Pagar(ordenCompra);
+                }
+                if (ordenCompra.TotalSaldado < totalOC) {
+                    ordenCompra.EstatusSaldado = 2;
+                    await _ordenCompraService.Pagar(ordenCompra);
+                }
+
+                //var FXOC = facturasXOC.Where(z => z.IdOrdenCompra == oc.Id).OrderBy(z => z.Saldo);
+                //foreach (var fac in FXOC) {
+                //    if (oc.MontoAPagar == 0) {
+                //        continue;
+                //    }
+                //    if (fac.Saldo <= oc.MontoAPagar) {
+                //        fac.TotalSaldado += fac.Saldo;
+                //        fac.Estatus = 4;
+                //        oc.MontoAPagar -= fac.Saldo;
+                //    }else if (fac.Saldo > oc.MontoAPagar) {
+                //        fac.TotalSaldado += oc.MontoAPagar;
+                //        fac.Estatus = 3;
+                //        oc.MontoAPagar = 0;
+                //    }
+                //    var editarFXOC = await _facturaXOrdenCompraService.Editar(fac);
+                //}
+            }
+        }
+
+        public async Task crearDetallesXFacturaXOrdenCompra(List<OrdenCompraDTO> ordenesCompra, int IdMovimientoBancario, List<FacturaXOrdenCompraDTO> facturasXOC)
+        {
+            foreach (var FXOC in facturasXOC) {
+                var OCsxMB = await _ordenCompraXMovimientoBancarioService.ObtenXIdMovimientoBancario(IdMovimientoBancario);
+                var OCMoviminesto = OCsxMB.FirstOrDefault(z => z.IdOrdenCompra == FXOC.IdOrdenCompra);
+                if (OCMoviminesto == null) {
+                    await _ordenCompraXMovimientoBancarioService.Crear(new OrdenCompraXMovimientoBancarioDTO()
+                    {
+                        IdMovimientoBancario = IdMovimientoBancario,
+                        IdOrdenCompra = FXOC.IdOrdenCompra,
+                        Estatus = 1,
+                        TotalSaldado = FXOC.MontoAPagar
+                    });
+                }
+                else
+                {
+                    OCMoviminesto.TotalSaldado += FXOC.MontoAPagar;
+                    var editarOCMB = await _ordenCompraXMovimientoBancarioService.Editar(OCMoviminesto);
+                }
+                if (FXOC.MontoAPagar < FXOC.Saldo) {
+                    FXOC.Estatus = 3;
+                    FXOC.TotalSaldado += FXOC.MontoAPagar;
+                }else if (FXOC.MontoAPagar == FXOC.Saldo)
+                {
+                    FXOC.Estatus = 4;
+                    FXOC.TotalSaldado += FXOC.MontoAPagar;
+                }
+                var editarFXOC = await _facturaXOrdenCompraService.Editar(FXOC);
+
+                var ordenCompra = await _ordenCompraService.ObtenXId(FXOC.IdOrdenCompra);
+                var insumosXOrdeCompra = await _insumoXOrdenCompraService.ObtenXIdOrdenCompra(FXOC.IdOrdenCompra);
+                decimal totalOC = insumosXOrdeCompra.Sum(z => z.ImporteConIva);
+                ordenCompra.TotalSaldado += FXOC.MontoAPagar;
+                if (ordenCompra.TotalSaldado >= totalOC)
+                {
+                    ordenCompra.EstatusSaldado = 3;
+                }else if (ordenCompra.TotalSaldado < totalOC)
+                {
+                    ordenCompra.EstatusSaldado = 2;
+                }
+                await _ordenCompraService.Pagar(ordenCompra);
+
+                await _facturaXOrdenCompraXMovimientoBancarioService.Crear(new FacturaXOrdenCompraXMovimientoBancarioDTO()
+                {
+                    IdFacturaXOrdenCompra = FXOC.Id,
+                    Estatus = 1,
+                    IdMovimientoBancario = IdMovimientoBancario,
+                    TotalSaldado = FXOC.MontoAPagar,
+                });
+            }
         }
 
         public async Task<bool> CrearDetalleMovimientoBancario(MBancarioBeneficiarioDTO MBanciroBeneficiario, int TipoBeneficiario) {
@@ -330,6 +494,75 @@ namespace ERP_TECKIO
             {
                 respuesta.Descripcion = "No se cancelo el estatus";
                 return respuesta;
+            }
+
+            var OcXMBancario = await _ordenCompraXMovimientoBancarioService.ObtenXIdMovimientoBancario(IdMovimientoBancario);
+
+            if (OcXMBancario.Count() > 0) {
+                foreach (var OCXMB in OcXMBancario) {
+                    var ordenCompra = await _ordenCompraService.ObtenXId(OCXMB.IdOrdenCompra);
+                    ordenCompra.TotalSaldado -= (decimal) OCXMB.TotalSaldado;
+                    ordenCompra.EstatusSaldado = 2;
+                    await _ordenCompraService.Pagar(ordenCompra);
+
+                    var facturasXOC = await _facturaXOrdenCompraService.ObtenerXIdOrdenCompra(ordenCompra.Id);
+                    var facturasCancelar = facturasXOC.Where(z => z.Estatus == 3 || z.Estatus == 4).OrderBy(z => z.Estatus);
+                    var totalFactura = facturasCancelar.Sum(z => z.TotalSaldado);
+
+                    var FOCxMB = await _facturaXOrdenCompraXMovimientoBancarioService.ObtenXIdMovimientoBancario(IdMovimientoBancario);
+                    decimal totalFMB = 0;
+                    foreach (var fmb in FOCxMB) {
+                        foreach (var foc in facturasCancelar) {
+                            if (fmb.IdFacturaXOrdenCompra == foc.Id) {
+                                totalFMB += fmb.TotalSaldado;
+                                foc.TotalSaldado -= fmb.TotalSaldado;
+                                foc.Estatus = 3;
+                                var editaFacturaXOC = await _facturaXOrdenCompraService.Editar(foc);
+                            }
+                        }
+                    }
+
+                    facturasXOC = await _facturaXOrdenCompraService.ObtenerXIdOrdenCompra(ordenCompra.Id);
+                    facturasCancelar = facturasXOC.Where(z => z.Estatus == 3 || z.Estatus == 4).OrderBy(z => z.Estatus);
+                    totalFactura = facturasCancelar.Sum(z => z.TotalSaldado);
+                    ///despues de restar los FMB restar lo sobrante de OCMB a las FXOC  
+
+                    OCXMB.TotalSaldado -= totalFMB;
+                    if (OCXMB.TotalSaldado > totalFMB) {
+                        if (OCXMB.TotalSaldado <= totalFactura)
+                        {
+                            foreach (var fact in facturasCancelar)
+                            {
+                                if (OCXMB.TotalSaldado <= 0)
+                                {
+                                    continue;
+                                }
+                                if (OCXMB.TotalSaldado > fact.TotalSaldado)
+                                {
+                                    OCXMB.TotalSaldado -= fact.TotalSaldado;
+                                    fact.Estatus = 3;
+                                    fact.TotalSaldado = 0;
+                                }
+                                else
+                                {
+                                    fact.Estatus = 3;
+                                    fact.TotalSaldado -= OCXMB.TotalSaldado;
+                                    OCXMB.TotalSaldado = 0;
+                                }
+                                var editaFacturaXOC = await _facturaXOrdenCompraService.Editar(fact);
+                            }
+                        }
+                        else
+                        {
+                            foreach (var fact in facturasCancelar)
+                            {
+                                fact.Estatus = 3;
+                                fact.TotalSaldado = 0;
+                                var editaFacturaXOC = await _facturaXOrdenCompraService.Editar(fact);
+                            }
+                        }
+                    }
+                }
             }
 
             var agruparSaldos = await AgruparMovimientosBancarios(IdMovimientoBancario);

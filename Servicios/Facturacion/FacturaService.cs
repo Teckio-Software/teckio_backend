@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.Configuration.Annotations;
 using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.Modelos;
 using ERP_TECKIO.Servicios.Contratos.Facturacion;
@@ -17,6 +18,20 @@ namespace ERP_TECKIO.Servicios.Facturacion
         {
             _repository = repository;
             _mapper = mapper;
+        }
+
+        public async Task<bool> Cancelar(FacturaDTO parametro)
+        {
+            var objetoEncontrado = await _repository.Obtener(z => z.Id == parametro.Id);
+            if (objetoEncontrado.Id <= 0) {
+                return false;
+            }
+            objetoEncontrado.Estatus = 2;
+            var editar = await _repository.Editar(objetoEncontrado);
+            if (!editar) {
+                return false;
+            }
+            return true;
         }
 
         public Task<bool> Crear(FacturaDTO parametro)

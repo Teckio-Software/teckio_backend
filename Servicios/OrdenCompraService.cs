@@ -367,5 +367,29 @@ namespace ERP_TECKIO.Servicios
                 return respuesta;
             }
         }
+
+        public async Task<RespuestaDTO> Pagar(OrdenCompraDTO modelo)
+        {
+            var respuesta = new RespuestaDTO();
+            var objetoEncontrado = await _Repositorio.Obtener(z => z.Id == modelo.Id);
+            if (objetoEncontrado.Id <= 0)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "La orden de compra no existe";
+                return respuesta;
+            }
+            objetoEncontrado.EstatusSaldado = modelo.EstatusSaldado;
+            objetoEncontrado.TotalSaldado = modelo.TotalSaldado;
+            respuesta.Estatus = await _Repositorio.Editar(objetoEncontrado);
+            if (!respuesta.Estatus)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No se pudo saldar";
+                return respuesta;
+            }
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Orden de compra editada";
+            return respuesta;
+        }
     }
 }

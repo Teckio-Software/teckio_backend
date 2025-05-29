@@ -71,7 +71,7 @@ namespace ERP_TECKIO
         public decimal Descuento { get; set; }
         public decimal PIVA {  get; set; }
         public decimal PCotizado { get; set; }
-        public decimal PCotizadoConFormato { get; set; }
+        public string PCotizadoConFormato { get; set; }
     }
 
     public class InsumoXCotizacionEditaEstatusDTO

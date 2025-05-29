@@ -1113,6 +1113,23 @@ public partial class Alumno01Context : DbContext
                 .HasConstraintName("FK_OrdenCompraXMovimientoBancario_IdOrdenCompra");
         });
 
+        modelBuilder.Entity<FacturaXOrdenCompraXMovimientoBancario>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__CuentaBa__3214EC07084B3915");
+
+            entity.ToTable("FacturaXOrdenCompraXMovimientoBancario");
+
+            entity.Property(e => e.Estatus).HasColumnName("Estatus");
+            entity.Property(e => e.TotalSaldado).HasColumnType("decimal(28, 6)");
+
+            entity.HasOne(d => d.IdFacturaXOrdenCompraNavigation).WithMany(p => p.FacturaXOrdenCompraXMovimientoBancarios)
+                .HasForeignKey(d => d.IdFacturaXOrdenCompra)
+                .HasConstraintName("FK_FacturaXOrdenCompraXMovimientoBancario_IdFacturaXOrdenCompra");
+            entity.HasOne(d => d.IdMovimientoBancarioNavigation).WithMany(p => p.FacturaXOrdenCompraXMovimientoBancarios)
+                .HasForeignKey(d => d.IdMovimientoBancario)
+                .HasConstraintName("FK_FacturaXOrdenCompraXMovimientoBancario_IdMovimientoBancario");
+        });
+
         modelBuilder.Entity<MovimientoBancario>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Movimien__3214EC07079B9A9C");

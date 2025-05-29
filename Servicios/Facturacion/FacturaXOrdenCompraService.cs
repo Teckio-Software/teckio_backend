@@ -32,7 +32,7 @@ namespace ERP_TECKIO.Servicios.Facturacion
             if (objetoEncontado.Id <= 0) {
                 return false;
             }
-            objetoEncontado.Estatus = 2;
+            objetoEncontado.Estatus = parametro.Estatus;
             objetoEncontado.TotalSaldado = parametro.TotalSaldado;
             var respuesta = await _repository.Editar(objetoEncontado);
             if (!respuesta) {

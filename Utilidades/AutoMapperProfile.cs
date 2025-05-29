@@ -581,6 +581,10 @@ namespace ERP_TECKIO
             CreateMap<OrdenCompraXMovimientoBancario, OrdenCompraXMovimientoBancarioDTO>();
             CreateMap<OrdenCompraXMovimientoBancarioDTO, OrdenCompraXMovimientoBancario>();
             #endregion
+            #region FacturaXOrdenCompraXMovimientoBancario
+            CreateMap<FacturaXOrdenCompraXMovimientoBancario, FacturaXOrdenCompraXMovimientoBancarioDTO>();
+            CreateMap<FacturaXOrdenCompraXMovimientoBancarioDTO, FacturaXOrdenCompraXMovimientoBancario>();
+            #endregion
 
             #region MovimientoBancarioSaldo
             CreateMap<MovimientoBancarioSaldoDTO, MovimientoBancarioSaldo>();

@@ -13,6 +13,7 @@ namespace ERP_TECKIO
         Task<RespuestaDTO> Crear(OrdenCompraCreacionDTO modelo);
         Task<OrdenCompraDTO> CrearYObtener(OrdenCompraDTO modelo);
         Task<RespuestaDTO> Editar(OrdenCompraDTO modelo);
+        Task<RespuestaDTO> Pagar(OrdenCompraDTO modelo);
         Task<RespuestaDTO> ActualizarEstatusCancelar(int Id);
         Task<RespuestaDTO> ActualizarEstatusFacturado(int Id);
         Task<RespuestaDTO> ActualizarEstatusEntradaAlmacen(int Id);

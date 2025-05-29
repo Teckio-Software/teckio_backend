@@ -17,6 +17,7 @@ namespace ERP_TECKIO.Servicios.Contratos.Facturacion
         Task<bool> Crear(FacturaDTO parametro);
         Task<FacturaDTO> CrearYObtener(FacturaDTO parametro);
         Task<bool> Editar(FacturaDTO parametro);
+        Task<bool> Cancelar(FacturaDTO parametro);
         Task<bool> EsEnviado(int IdFactura);
     }
 }

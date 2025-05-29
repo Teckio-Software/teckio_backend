@@ -589,14 +589,24 @@ namespace ERP_TECKIO
         {
             var ordenesCompra = await _ordenCompraService.ObtenXIdContratista(IdContratista);
             var ordenesPorPagar = ordenesCompra.Where(z => z.EstatusSaldado != 3).ToList();
+            var OCsinFacturas = new List<OrdenCompraDTO>();
             foreach (var orden in ordenesPorPagar)
             {
                 var insumosXOrdeCompra = await _insumoXOrdenCompraService.ObtenXIdOrdenCompra(orden.Id);
+                decimal totalOc = insumosXOrdeCompra.Sum(z => z.ImporteConIva);
+                orden.EstatusInsumosSurtidosDescripcion = "";
                 orden.Saldo = insumosXOrdeCompra.Sum(z => z.ImporteConIva) - orden.TotalSaldado;
                 orden.MontoAPagar = orden.Saldo;
+
+                var FacturasxOc = await _facturaXOrdenCompraService.ObtenerXIdOrdenCompra(orden.Id);
+                var FacturasAutorizadas = FacturasxOc.Where(z => z.Estatus != 1 && z.Estatus != 5);
+                if (FacturasAutorizadas.Count() >= 1 && (orden.TotalSaldado >= totalOc)) {
+                    continue;
+                }
+                OCsinFacturas.Add(orden);
             }
 
-            return ordenesPorPagar;
+            return OCsinFacturas;
         }
 
         public async Task<List<FacturaXOrdenCompraDTO>> ObtenerFacturasXIdContratistaSinPagar(int IdContratista)

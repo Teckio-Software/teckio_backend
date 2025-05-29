@@ -27,6 +27,20 @@ namespace ERP_TECKIO.Servicios
             return true;
         }
 
+        public async Task<bool> Editar(OrdenCompraXMovimientoBancarioDTO modelo)
+        {
+            var objetoEncontrado = await _Repositorio.Obtener(z => z.Id == modelo.Id);
+            if (objetoEncontrado.Id <= 0) {
+                return false;
+            }
+            objetoEncontrado.TotalSaldado = modelo.TotalSaldado;
+            var editar = await _Repositorio.Editar(objetoEncontrado);
+            if (!editar) {
+                return false;
+            }
+            return true;
+        }
+
         public async Task<List<OrdenCompraXMovimientoBancarioDTO>> ObtenXIdMovimientoBancario(int IdMovimientoBancario)
         {
             var lista = await _Repositorio.ObtenerTodos(z => z.IdMovimientoBancario == IdMovimientoBancario);

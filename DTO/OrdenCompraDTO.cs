@@ -41,6 +41,7 @@ namespace ERP_TECKIO
         public decimal TotalSaldado { get; set; }
         public decimal Saldo { get; set; }
         public decimal MontoAPagar { get; set; }
+        public bool EsSeleccionado { get; set; }
     }
 
     public class OrdenCompraCreacionDTO
@@ -59,6 +60,7 @@ namespace ERP_TECKIO
         public int IdOrdenCompra { get; set; }
         public decimal MontoTotalOrdenCompra { get; set; }
         public decimal MontoTotalFactura { get; set; }
+        public int EstatusSaldado { get; set; }
         public List<FacturaXOrdenCompraDTO> FacturasXOrdenCompra { get; set; } = new List<FacturaXOrdenCompraDTO>();
     }
 }

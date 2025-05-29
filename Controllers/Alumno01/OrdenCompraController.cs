@@ -184,5 +184,12 @@ namespace ERP_TECKIO.Controllers
             var lista = await _obtenFacturaProceso.AutorizarFacturaXOrdenCompra(facturaXOrdenCompra);
             return lista;
         }
+
+        [HttpPost("CancelarFacturaXOrdenCompra")]
+        public async Task<ActionResult<RespuestaDTO>> CancelarFacturaXOrdenCompra(FacturaXOrdenCompraDTO facturaXOrdenCompra)
+        {
+            var lista = await _obtenFacturaProceso.CancelarFacturaXOrdenCompra(facturaXOrdenCompra);
+            return lista;
+        }
     }
 }
