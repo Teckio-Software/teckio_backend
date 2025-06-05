@@ -38,5 +38,11 @@ namespace ERP_TECKIO.Servicios
             var objetos = await _repository.ObtenerTodos();
             return _mapper.Map<List<MBancarioBeneficiarioDTO>>(objetos);
         }
+
+        public async Task<MBancarioBeneficiarioDTO> ObtenerXIdMovimientoBancario(int IdMovimientoBancario)
+        {
+            var objeto = await _repository.Obtener(z => z.IdMovimientoBancario == IdMovimientoBancario);
+            return _mapper.Map<MBancarioBeneficiarioDTO>(objeto);
+        }
     }
 }

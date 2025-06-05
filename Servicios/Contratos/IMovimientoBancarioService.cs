@@ -9,6 +9,7 @@ namespace ERP_TECKIO
     public interface IMovimientoBancarioService<T> where T : DbContext
     {
         Task<bool> Crear(MovimientoBancarioTeckioDTO modelo);
+        Task<bool> Editar(MovimientoBancarioTeckioDTO modelo);
         Task<MovimientoBancarioTeckioDTO> CrearYObtener(MovimientoBancarioTeckioDTO modelo);
         Task<List<MovimientoBancarioTeckioDTO>> ObtenerXIdCuentaBancaria(int IdCuentaBancaria);
         Task<List<MovimientoBancarioTeckioDTO>> ObtenerTodos();

@@ -1,4 +1,6 @@
 ﻿using ERP_TECKIO.DTO.Factura;
+using ERP_TECKIO.Modelos;
+using ERP_TECKIO.Modelos.Facturaion;
 using ERP_TECKIO.Servicios;
 using ERP_TECKIO.Servicios.Contratos;
 using ERP_TECKIO.Servicios.Contratos.Facturacion;
@@ -21,6 +23,12 @@ namespace ERP_TECKIO.Procesos
         private readonly IFacturaService<T> _facturaService;
         private readonly IFacturaImpuestosService<T> _facturaImpuestosService;
         private readonly IOrdenCompraXMovimientoBancarioService<T> _ordenCompraXMovimientoBancarioService;
+        private readonly IMovimientoBancarioService<T> _movimientoBancarioService;
+        private readonly IFacturaXOrdenCompraXMovimientoBancarioService<T> _facturaXOrdenCompraXMovimientoBancarioService;
+        private readonly IFacturaXOrdenCompraService<T> _facturaXOrdenCompraService;
+        private readonly IMBancarioContratistaService<T> _mbancarioContratistaService;
+        private readonly ICuentaBancariaEmpresaService<T> _cuentaBancariaEmpresaService;
+        private readonly IBancoService<T> _bancoService;
 
         public PolizaProceso(
             IOrdenCompraService<T> ordenCompraService,
@@ -34,7 +42,13 @@ namespace ERP_TECKIO.Procesos
             IInsumoXOrdenCompraService<T> insumoXOrdenCompraService,
             IFacturaService<T> facturaService,
             IFacturaImpuestosService<T> facturaImpuestosService,
-            IOrdenCompraXMovimientoBancarioService<T> ordenCompraXMovimientoBancarioService
+            IOrdenCompraXMovimientoBancarioService<T> ordenCompraXMovimientoBancarioService,
+            IMovimientoBancarioService<T> movimientoBancarioService,
+            IFacturaXOrdenCompraXMovimientoBancarioService<T> facturaXOrdenCompraXMovimientoBancarioService,
+            IFacturaXOrdenCompraService<T> facturaXOrdenCompraService,
+            IMBancarioContratistaService<T> mbancarioContratistaService,
+            ICuentaBancariaEmpresaService<T> cuentaBancariaEmpresaService,
+            IBancoService<T> bancoService
             ) { 
             _ordenCompraService = ordenCompraService;
             _polizaService = polizaService;
@@ -48,9 +62,15 @@ namespace ERP_TECKIO.Procesos
             _facturaService = facturaService;
             _facturaImpuestosService = facturaImpuestosService;
             _ordenCompraXMovimientoBancarioService = ordenCompraXMovimientoBancarioService;
+            _movimientoBancarioService = movimientoBancarioService;
+            _facturaXOrdenCompraXMovimientoBancarioService = facturaXOrdenCompraXMovimientoBancarioService;
+            _facturaXOrdenCompraService = facturaXOrdenCompraService;
+            _mbancarioContratistaService = mbancarioContratistaService;
+            _cuentaBancariaEmpresaService = cuentaBancariaEmpresaService;
+            _bancoService = bancoService;
         }
 
-        public async Task<RespuestaDTO> validaProcesoPolizaEgreso(List<CuentaContableDTO> cuentasContablesProveedores, FacturaImpuestosDTO retencion, bool existeIVA) {
+        public async Task<RespuestaDTO> validaProcesoPolizaEgreso(List<CuentaContableDTO> cuentasContablesProveedores, FacturaImpuestosDTO existeRetencionIVA, FacturaImpuestosDTO existeRetencionISR, FacturaImpuestosDTO existeIVA) {
             var respuesta = new RespuestaDTO();
             respuesta.Estatus = true;
             respuesta.Descripcion = "";
@@ -67,24 +87,7 @@ namespace ERP_TECKIO.Procesos
                 respuesta.Descripcion = "No hay cuenta contable asignada al proveedor";
                 return respuesta;
             }
-            if (existeIVA) {
-                var ivaPorAcreditar = cuentasContablesProveedores.Where(z => z.TipoCuentaContableDescripcion == "IVA Por Acreditar").ToList();
-                if (ivaPorAcreditar.Count() <= 0)
-                {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "No hay cuenta iva por acreditar asignada al proveedor";
-                    return respuesta;
-                }
-                var ivaAcreditable = cuentasContablesProveedores.Where(z => z.TipoCuentaContableDescripcion == "IVA Por Acreditar").ToList();
-                if (ivaAcreditable.Count() <= 0)
-                {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "No hay cuenta iva acreditable asignada al proveedor";
-                    return respuesta;
-                }
-            }
-            if (retencion != null)
-            {
+            if (existeIVA != null) {
                 var ivaAcreditableFiscalProveedor = cuentasContablesProveedores.Where(z => z.TipoCuentaContableDescripcion == "IVA Acreditable Fiscal").ToList();
                 if (ivaAcreditableFiscalProveedor.Count() <= 0)
                 {
@@ -92,11 +95,21 @@ namespace ERP_TECKIO.Procesos
                     respuesta.Descripcion = "No hay cuenta iva acreditable fiscal asignada al proveedor";
                     return respuesta;
                 }
-                var retencionISR = cuentasContablesProveedores.Where(z => z.TipoCuentaContableDescripcion == "Retención ISR").ToList();
-                if (retencionISR.Count() <= 0)
+                var ivaAcreditable = cuentasContablesProveedores.Where(z => z.TipoCuentaContableDescripcion == "IVA Acreditable").ToList();
+                if (ivaAcreditable.Count() <= 0)
                 {
                     respuesta.Estatus = false;
-                    respuesta.Descripcion = "No hay cuenta retención ISR asignada al proveedor";
+                    respuesta.Descripcion = "No hay cuenta iva acreditable asignada al proveedor";
+                    return respuesta;
+                }
+            }
+            if (existeRetencionIVA != null)
+            {
+                var ivaPorAcreditar = cuentasContablesProveedores.Where(z => z.TipoCuentaContableDescripcion == "IVA Por Acreditar").ToList();
+                if (ivaPorAcreditar.Count() <= 0)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "No hay cuenta iva por acreditar asignada al proveedor";
                     return respuesta;
                 }
                 var retencionIVA = cuentasContablesProveedores.Where(z => z.TipoCuentaContableDescripcion == "Retencón IVA").ToList();
@@ -107,40 +120,199 @@ namespace ERP_TECKIO.Procesos
                     return respuesta;
                 }
             }
+            if (existeRetencionISR != null)
+            {
+                var ivaPorAcreditar = cuentasContablesProveedores.Where(z => z.TipoCuentaContableDescripcion == "IVA Por Acreditar").ToList();
+                if (ivaPorAcreditar.Count() <= 0)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "No hay cuenta iva por acreditar asignada al proveedor";
+                    return respuesta;
+                }
+                var retencionISR = cuentasContablesProveedores.Where(z => z.TipoCuentaContableDescripcion == "Retención ISR").ToList();
+                if (retencionISR.Count() <= 0)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "No hay cuenta retención ISR asignada al proveedor";
+                    return respuesta;
+                }
+            }
 
             return respuesta;
         }
 
-        public async Task<ActionResult<RespuestaDTO>> GenerarPolizaXFacturaXOrdenCompra(FacturaXOrdenCompraDTO facturaXOrdenCompra)
+        public async Task<ActionResult<RespuestaDTO>> PolizaXMovimientoBancario(int IdMovimientoBancario)
         {
             var respuesta = new RespuestaDTO();
 
-            if (facturaXOrdenCompra.Estatus != 1) {
+            var movimientoBancario = await _movimientoBancarioService.ObtenerXId(IdMovimientoBancario);
+            if (movimientoBancario.IdPoliza != 0 && movimientoBancario.IdPoliza != null) {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "Solo se autorizan factura capturadas";
+                respuesta.Descripcion = "Ya existe una poliza relacionada a este movimiento";
                 return respuesta;
             }
 
-            var existeOCMovimientoBancario = await _ordenCompraXMovimientoBancarioService.ObtenXIdOrdenCompra(facturaXOrdenCompra.IdOrdenCompra);
-            if (existeOCMovimientoBancario.Count() <= 0) {
+            var cuentaBancariaEmpresa = await _cuentaBancariaEmpresaService.ObtenXId(movimientoBancario.IdCuentaBancariaEmpresa);
+            if (cuentaBancariaEmpresa.IdCuentaContable == 0 || cuentaBancariaEmpresa.IdCuentaContable == null) {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "No existe un movimiento bancario relacionado a esta orden de compra";
+                respuesta.Descripcion = "No existe una cuenta contable realacionada a la cuenta bancario de la empresa";
+                return respuesta;
+            }
+            var cuentaContableBancoEmpresa = await _CuentaContableService.ObtenXId((int)cuentaBancariaEmpresa.IdCuentaContable);
+            var banco = await _bancoService.ObtenXId(cuentaBancariaEmpresa.IdBanco);
+
+            var OCxMB = await _ordenCompraXMovimientoBancarioService.ObtenXIdMovimientoBancario(IdMovimientoBancario);
+            var FxMB = await _facturaXOrdenCompraXMovimientoBancarioService.ObtenXIdMovimientoBancario(IdMovimientoBancario);
+
+            if (FxMB.Count() <= 0)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No existen factura relacionada al movimiento bancario";
                 return respuesta;
             }
 
+            decimal totalOCMB = (decimal)OCxMB.Sum(z => z.TotalSaldado);
+            decimal totalFMB = (decimal)FxMB.Sum(z => z.TotalSaldado);
 
-
-            var factura = await _facturaService.ObtenXId(facturaXOrdenCompra.IdFactura);
-            var facturaImpuestos = await _facturaImpuestosService.ObtenerXIdFactura(factura.Id);
-            var existeRetenciones = facturaImpuestos.FirstOrDefault(z => z.IdClasificacionImpuesto == 1);
-            bool existeIva = factura.Subtotal != factura.Total ? true : false ; 
-            var ordenCompra = await _ordenCompraService.ObtenXId(facturaXOrdenCompra.IdOrdenCompra);
-            var cuentasContablesProveedores = await _contratistaCuentasContablesProceso.obtenerXContratista((int)ordenCompra.IdContratista);
-
-            var validaProcesoPoliza = await validaProcesoPolizaEgreso(cuentasContablesProveedores, existeRetenciones, existeIva);
-            if (!validaProcesoPoliza.Estatus) {
-                return validaProcesoPoliza;
+            if (totalFMB < totalOCMB) {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "El total de lo facturado no coincide con la orden de compra";
+                return respuesta;
             }
+
+            var MBProveedor = await _mbancarioContratistaService.ObtenerXIdMovimientoBancario(IdMovimientoBancario);
+            var cuentasContablesProveedores = await _contratistaCuentasContablesProceso.obtenerXContratista(MBProveedor.IdBeneficiario);
+            var proveedor = await _ContratistaService.ObtenXId(MBProveedor.IdBeneficiario);
+
+            var listFXOC = new List<FacturaXOrdenCompraDTO>();
+
+            foreach (var OCMB in OCxMB) {
+                var FXOC = await _facturaXOrdenCompraService.ObtenerXIdOrdenCompra(OCMB.IdOrdenCompra);
+                listFXOC.AddRange(FXOC);
+            }
+
+            var listDetallesPoliza = new List<PolizaDetalleDTO>();
+            var bancoProveedor = cuentasContablesProveedores.FirstOrDefault(z => z.TipoCuentaContableDescripcion == "Cuenta Contable");
+            var ivaPorAcreditar = cuentasContablesProveedores.FirstOrDefault(z => z.TipoCuentaContableDescripcion == "IVA Por Acreditar");
+            var ivaAcreditableFiscal = cuentasContablesProveedores.FirstOrDefault(z => z.TipoCuentaContableDescripcion == "IVA Acreditable Fiscal");
+            var restencionISR = cuentasContablesProveedores.FirstOrDefault(z => z.TipoCuentaContableDescripcion == "Retención ISR");
+            var restencionIVA = cuentasContablesProveedores.FirstOrDefault(z => z.TipoCuentaContableDescripcion == "Retencón IVA");
+            var ivaAcreditable = cuentasContablesProveedores.FirstOrDefault(z => z.TipoCuentaContableDescripcion == "IVA Acreditable");
+
+            decimal totalPagar = 0;
+
+            foreach (var FMB in FxMB) {
+                var FxOC = listFXOC.FirstOrDefault(z => z.Id == FMB.IdFacturaXOrdenCompra);
+                var factura = await _facturaService.ObtenXId(FxOC.IdFactura);
+                var facturaImpuestos = await _facturaImpuestosService.ObtenerXIdFactura(factura.Id);
+                var existeRetencionIVA = facturaImpuestos.FirstOrDefault(z => z.IdCategoriaImpuesto == 2 && z.IdTipoImpuesto == 1);
+                var existeRetencionISR = facturaImpuestos.FirstOrDefault(z => z.IdCategoriaImpuesto == 2 && z.IdTipoImpuesto == 2);
+                var existeRetencionIEPS = facturaImpuestos.FirstOrDefault(z => z.IdCategoriaImpuesto == 2 && z.IdTipoImpuesto == 3);
+                var existeIva = facturaImpuestos.FirstOrDefault(z => z.IdCategoriaImpuesto == 1 && z.IdTipoImpuesto == 1);
+                var validaProcesoPoliza = await validaProcesoPolizaEgreso(cuentasContablesProveedores, existeRetencionIVA, existeRetencionISR, existeIva);
+                if (!validaProcesoPoliza.Estatus)
+                {
+                    return validaProcesoPoliza;
+                }
+
+                decimal porcentajePagado = FMB.TotalSaldado / factura.Total;
+
+                if (existeIva != null) {
+                    totalPagar += ((factura.Subtotal + existeIva.TotalImpuesto) * porcentajePagado);
+
+                    var detPoliza = new PolizaDetalleDTO();
+                    detPoliza.IdCuentaContable = bancoProveedor.Id;
+                    detPoliza.Concepto = "PAGO FACTURA " + factura.Uuid +" " +proveedor.RepresentanteLegal;
+                    detPoliza.Debe = ((factura.Subtotal + existeIva.TotalImpuesto) * porcentajePagado);
+                    listDetallesPoliza.Add(detPoliza);
+
+                    var existeIvaPorAcreditar = listDetallesPoliza.FirstOrDefault(z => z.IdCuentaContable == ivaPorAcreditar.Id);
+                    if (existeIvaPorAcreditar != null)
+                    {
+                        existeIvaPorAcreditar.Debe += (existeIva.TotalImpuesto * porcentajePagado);
+                    }
+                    else
+                    {
+                        var nuevoDetallePoliza = new PolizaDetalleDTO();
+                        nuevoDetallePoliza.IdCuentaContable = ivaPorAcreditar.Id;
+                        nuevoDetallePoliza.Concepto = "IVA POR ACREDITAR " + proveedor.RepresentanteLegal;
+                        nuevoDetallePoliza.Debe = (existeIva.TotalImpuesto * porcentajePagado);
+                        listDetallesPoliza.Add(nuevoDetallePoliza);
+                    }
+                    if (existeRetencionIVA != null) {
+                        existeIvaPorAcreditar = listDetallesPoliza.FirstOrDefault(z => z.IdCuentaContable == ivaPorAcreditar.Id);
+                        if (existeIvaPorAcreditar != null) {
+                            existeIvaPorAcreditar.Debe -= (existeRetencionIVA.TotalImpuesto * porcentajePagado);
+                        }
+
+                        var existerestencionIVA = listDetallesPoliza.FirstOrDefault(z => z.IdCuentaContable == restencionIVA.Id);
+                        if (existerestencionIVA != null)
+                        {
+                            existerestencionIVA.Haber += (existeRetencionIVA.TotalImpuesto * porcentajePagado);
+                        }
+                        else
+                        {
+                            var nuevoDetallePoliza = new PolizaDetalleDTO();
+                            nuevoDetallePoliza.IdCuentaContable = restencionIVA.Id;
+                            nuevoDetallePoliza.Concepto = "IVA RETENCION " + proveedor.RepresentanteLegal;
+                            nuevoDetallePoliza.Haber = (existeRetencionIVA.TotalImpuesto * porcentajePagado);
+                            listDetallesPoliza.Add(nuevoDetallePoliza);
+                        }
+                    }
+                    if (existeRetencionISR != null)
+                    {
+                        var existerestencionISR = listDetallesPoliza.FirstOrDefault(z => z.IdCuentaContable == restencionISR.Id);
+                        if (existerestencionISR != null)
+                        {
+                            existerestencionISR.Haber += (existeRetencionISR.TotalImpuesto * porcentajePagado);
+                        }
+                        else
+                        {
+                            var nuevoDetallePoliza = new PolizaDetalleDTO();
+                            nuevoDetallePoliza.IdCuentaContable = restencionISR.Id;
+                            nuevoDetallePoliza.Concepto = "ISR RETENCION " + proveedor.RepresentanteLegal;
+                            nuevoDetallePoliza.Haber = (existeRetencionISR.TotalImpuesto * porcentajePagado);
+                            listDetallesPoliza.Add(nuevoDetallePoliza);
+
+                        }
+                    }
+
+                    var existeIvaAcreditable = listDetallesPoliza.FirstOrDefault(z => z.IdCuentaContable == ivaAcreditable.Id);
+                    if (existeIvaAcreditable != null)
+                    {
+                        existeIvaAcreditable.Haber += (existeIva.TotalImpuesto * porcentajePagado);
+                    }
+                    else
+                    {
+                        var nuevoDetallePoliza = new PolizaDetalleDTO();
+                        nuevoDetallePoliza.IdCuentaContable = restencionISR.Id;
+                        nuevoDetallePoliza.Concepto = "IVA ACREDITABLE " + proveedor.RepresentanteLegal;
+                        nuevoDetallePoliza.Haber = (existeIva.TotalImpuesto * porcentajePagado);
+                    }
+                }
+                else
+                {
+                    totalPagar = FMB.TotalSaldado;
+
+                    var detPoliza = new PolizaDetalleDTO();
+                    detPoliza.IdCuentaContable = bancoProveedor.Id;
+                    detPoliza.Concepto = "PAGO FACTURA " + factura.Uuid + " " + proveedor.RepresentanteLegal;
+                    detPoliza.Debe = FMB.TotalSaldado;
+                    listDetallesPoliza.Add(detPoliza);
+                }
+            }
+
+            var listaOrdenada = listDetallesPoliza.OrderBy(a => a.Debe).ToList();
+
+            listaOrdenada.Add(new PolizaDetalleDTO()
+            {
+                IdCuentaContable = cuentaContableBancoEmpresa.Id,
+                Concepto = banco.Nombre +" "+ cuentaBancariaEmpresa.NumeroCuenta,
+                Haber = totalPagar,
+            });
+
+
+            
 
 
             var nuevaPoliza = new PolizaDTO();
@@ -165,27 +337,8 @@ namespace ERP_TECKIO.Procesos
                 return respuesta;
             }
 
-            var listDetallesPoliza = new List<PolizaDetalleDTO>();
-
-            foreach (var cuentasContables in cuentasContablesProveedores) {
-                var detallePoliza = new PolizaDetalleDTO();
+            foreach (var detallePoliza in listaOrdenada) {
                 detallePoliza.IdPoliza = crearPoliza.Id;
-                detallePoliza.IdCuentaContable = cuentasContables.Id;
-                detallePoliza.Concepto = "";
-                if (cuentasContables.TipoCuentaContableDescripcion == "Cuenta Contable") {
-                    detallePoliza.Haber = 0;
-                    detallePoliza.Debe = factura.Subtotal;
-                    listDetallesPoliza.Add(detallePoliza);
-                }
-                if (cuentasContables.TipoCuentaContableDescripcion == "IVA Acreditable Fiscal")
-                {
-                    detallePoliza.Haber = 0;
-                    detallePoliza.Debe = factura.Total - factura.Subtotal;
-                    listDetallesPoliza.Add(detallePoliza);
-                }
-            }
-
-            foreach (var detallePoliza in listDetallesPoliza) {
                 var saldos = await _SaldosService.ObtenTodos();
                 var existeSaldo = saldos.Where(z => z.Anio == crearPoliza.FechaPoliza.Year && z.Mes == crearPoliza.FechaPoliza.Month && z.IdCuentaContable == detallePoliza.IdCuentaContable);
                 if (existeSaldo.Count() <= 0)
@@ -241,6 +394,11 @@ namespace ERP_TECKIO.Procesos
                 }
             }
 
+            movimientoBancario.IdPoliza = crearPoliza.Id;
+            var editarMB = await _movimientoBancarioService.Editar(movimientoBancario);
+
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Poliza generada";
             return respuesta;
         }
 

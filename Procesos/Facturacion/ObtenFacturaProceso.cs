@@ -673,25 +673,37 @@ namespace ERP_TECKIO.Procesos.Facturacion
         {
             if (facturaImpuestos != null)
             {
-                var traslados = facturaImpuestos.Attribute("TotalImpuestosTrasladados")?.Value;
+                var traslados = facturaImpuestos.Descendants(ns + "Traslados").FirstOrDefault();
                 if (traslados != null)
                 {
-                    var facturaImpuesto = new FacturaImpuestosDTO();
-                    facturaImpuesto.IdFactura = IdFactura;
-                    facturaImpuesto.IdClasificacionImpuesto = 2;
-                    facturaImpuesto.IdCategoriaImpuesto = 1;
-                    facturaImpuesto.TotalImpuesto = Convert.ToDecimal(traslados);
-                    await _facturaImpuestosService.CrearYObtener(facturaImpuesto);
+                    var impuestos = traslados.Elements(ns + "Traslado");
+                    foreach (var impuesto in impuestos)
+                    {
+                        var facturaImpuesto = new FacturaImpuestosDTO();
+                        facturaImpuesto.IdFactura = IdFactura;
+                        facturaImpuesto.IdClasificacionImpuesto = 2;
+                        facturaImpuesto.IdCategoriaImpuesto = 1;
+                        var tipoImpuesto = await _tipoImpuestoService.ObtenXClave(impuesto.Attribute("Impuesto")?.Value);
+                        facturaImpuesto.IdTipoImpuesto = tipoImpuesto.Id;
+                        facturaImpuesto.TotalImpuesto = Convert.ToDecimal(impuesto.Attribute("Importe")?.Value);
+                        await _facturaImpuestosService.CrearYObtener(facturaImpuesto);
+                    }
                 }
-                var Retenciones = facturaImpuestos.Attribute("TotalImpuestosRetenidos")?.Value;
+                var Retenciones = facturaImpuestos.Descendants(ns + "Retenciones").FirstOrDefault();
                 if (Retenciones != null)
                 {
-                    var facturaImpuesto = new FacturaImpuestosDTO();
-                    facturaImpuesto.IdFactura = IdFactura;
-                    facturaImpuesto.IdClasificacionImpuesto = 1;
-                    facturaImpuesto.IdCategoriaImpuesto = 1;
-                    facturaImpuesto.TotalImpuesto = Convert.ToDecimal(Retenciones);
-                    await _facturaImpuestosService.CrearYObtener(facturaImpuesto);
+                    var impuestos = Retenciones.Elements(ns + "Retencion");
+                    foreach (var impuesto in impuestos)
+                    {
+                        var facturaImpuesto = new FacturaImpuestosDTO();
+                        facturaImpuesto.IdFactura = IdFactura;
+                        facturaImpuesto.IdClasificacionImpuesto = 2;
+                        facturaImpuesto.IdCategoriaImpuesto = 2;
+                        var tipoImpuesto = await _tipoImpuestoService.ObtenXClave(impuesto.Attribute("Impuesto")?.Value);
+                        facturaImpuesto.IdTipoImpuesto = tipoImpuesto.Id;
+                        facturaImpuesto.TotalImpuesto = Convert.ToDecimal(impuesto.Attribute("Importe")?.Value);
+                        await _facturaImpuestosService.CrearYObtener(facturaImpuesto);
+                    }
                 }
             }
         }

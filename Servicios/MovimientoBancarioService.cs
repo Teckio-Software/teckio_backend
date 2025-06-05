@@ -73,5 +73,20 @@ namespace ERP_TECKIO.Servicios
             return Deposito - Retiro;
 
         }
+
+        public async Task<bool> Editar(MovimientoBancarioTeckioDTO modelo)
+        {
+            var objetoEncontrado = await _repository.Obtener(z => z.Id == modelo.Id);
+            if (objetoEncontrado.Id <= 0) {
+                return false;
+            }
+            objetoEncontrado.IdPoliza = modelo.IdPoliza;
+            objetoEncontrado.Estatus = modelo.Estatus;
+            var editar = await _repository.Editar(objetoEncontrado);
+            if (!editar) { 
+                return false;
+            }
+            return true;
+        }
     }
 }

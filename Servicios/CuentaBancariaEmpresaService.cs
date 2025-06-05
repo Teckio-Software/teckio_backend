@@ -36,9 +36,16 @@ namespace ERP_TECKIO.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<bool> Editar(CuentaBancariaEmpresasDTO modelo)
+        public async Task<bool> Editar(CuentaBancariaEmpresasDTO modelo)
         {
-            throw new NotImplementedException();
+            var objetoEncontrado = await _Repositorio.Obtener(z => z.Id == modelo.Id);
+            if (objetoEncontrado.Id <= 0) {
+                return false;
+            }
+            objetoEncontrado.IdCuentaContable = modelo.IdCuentaContable;
+
+            var editar = await _Repositorio.Editar(objetoEncontrado);
+            return editar;
         }
 
         public Task<bool> Eliminar(int Id)
@@ -52,9 +59,10 @@ namespace ERP_TECKIO.Servicios
             return _Mapper.Map<List<CuentaBancariaEmpresasDTO>>(lista);
         }
 
-        public Task<CuentaBancariaEmpresasDTO> ObtenXId(int Id)
+        public async Task<CuentaBancariaEmpresasDTO> ObtenXId(int Id)
         {
-            throw new NotImplementedException();
+            var objeto = await _Repositorio.Obtener(z => z.Id == Id);
+            return _Mapper.Map<CuentaBancariaEmpresasDTO>(objeto);
         }
     }
 }

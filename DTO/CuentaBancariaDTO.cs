@@ -18,6 +18,7 @@ namespace ERP_TECKIO
 
     public class CuentaBancariaEmpresasDTO : CuentaBancariaAbstract
     {
+        public int IdCuentaContable { get; set; }
         public string NombreBanco { get; set; }
 
     }

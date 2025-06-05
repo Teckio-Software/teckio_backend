@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+﻿using Microsoft.AspNetCore.Mvc;
+using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
 
 
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ERP_TECKIO.Procesos;
 
 
 namespace ERP_TECKIO.Controllers
@@ -20,6 +22,7 @@ namespace ERP_TECKIO.Controllers
         private readonly ISaldosBalanzaComprobacionService<Alumno01Context> _SaldosService;
         private readonly ILogger<PolizaAlumno01Controller> _Logger;
         private readonly Alumno01Context _Context;
+        private readonly PolizaProceso<Alumno01Context> _polizaProceso;
         public PolizaAlumno01Controller(
             ILogger<PolizaAlumno01Controller> logger
             , Alumno01Context context
@@ -28,6 +31,7 @@ namespace ERP_TECKIO.Controllers
             , ITipoPolizaService<Alumno01Context> tipoPolizaService
             , ISaldosBalanzaComprobacionService<Alumno01Context> saldosService
             , ICuentaContableService<Alumno01Context> cuentaContableService
+            , PolizaProceso<Alumno01Context> polizaProceso
             )
         {
             _DetalleService = detalleService;
@@ -37,6 +41,15 @@ namespace ERP_TECKIO.Controllers
             _TipoPolizaService = tipoPolizaService;
             _CuentaContableService = cuentaContableService;
             _SaldosService = saldosService;
+            _polizaProceso = polizaProceso;
+        }
+
+        [HttpGet("GenerarPolizaXIdMovimientoBancario/{IdMovimientoBancario:int}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPoliza-Empresa1")]
+
+        public async Task<ActionResult<RespuestaDTO>> GenerarPolizaXIdMovimientoBancario(int IdMovimientoBancario) {
+            var respuesta = await _polizaProceso.PolizaXMovimientoBancario(IdMovimientoBancario);
+            return respuesta;
         }
 
         [HttpPost]

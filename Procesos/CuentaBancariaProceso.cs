@@ -55,7 +55,23 @@ namespace ERP_TECKIO
                 cuentabancaria.NombreBanco = banco[0].Nombre;
             }
             return cuentasbancarias;
-        }   
+        }
+
+        public async Task<RespuestaDTO> AsignarCuentaContable(CuentaBancariaEmpresasDTO cuentaBancariaEmpresa)
+        {
+            var respuesta = new RespuestaDTO();
+            var cuentaBancaria = await _cuentaBancariaEmpresaService.ObtenXId(cuentaBancariaEmpresa.Id);
+            cuentaBancaria.IdCuentaContable = cuentaBancariaEmpresa.IdCuentaContable;
+            var editar = await _cuentaBancariaEmpresaService.Editar(cuentaBancaria);
+            if (!editar) {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No se pudo asignar la cuenta contable";
+                return respuesta;
+            }
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Se asigno la cuenta contable";
+            return respuesta;
+        }
 
         public async Task<RespuestaDTO> CrearCuentaBancaria(CuentaBancariaCreacionDTO cuentaBancariaCreacion) {
             RespuestaDTO respuesta = new RespuestaDTO();

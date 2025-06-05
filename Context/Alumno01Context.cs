@@ -668,6 +668,10 @@ public partial class Alumno01Context : DbContext
                 .HasForeignKey(d => d.IdFactura)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_FacturaImpuestos_Factura_2024_02_15");
+            entity.HasOne(d => d.IdTipoImpuestoNavigation).WithMany(p => p.FacturaImpuestos)
+                .HasForeignKey(d => d.IdTipoImpuesto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_FacturaImpuestos_IdTipoImpuesto");
         });
 
         modelBuilder.Entity<FacturaImpuestosLocal>(entity =>
