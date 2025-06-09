@@ -402,6 +402,58 @@ namespace ERP_TECKIO.Procesos
             return respuesta;
         }
 
+
+        public async Task<ActionResult<RespuestaDTO>> EliminarPolizaXMovimientoBancario(int IdMovimientoBancario)
+        {
+            var respuesta = new RespuestaDTO();
+
+            var movimientoBancario = await _movimientoBancarioService.ObtenerXId(IdMovimientoBancario);
+
+            var poliza = await _polizaService.ObtenXId((int) movimientoBancario.IdPoliza);
+            var polizaDetalles = await _DetalleService.ObtenTodosXIdPoliza(poliza.Id);
+
+            foreach (var detalle in polizaDetalles) {
+                var saldos = await _SaldosService.ObtenTodos();
+                var existeSaldo = saldos.FirstOrDefault(z => z.Anio == poliza.FechaPoliza.Year && z.Mes == poliza.FechaPoliza.Month && z.IdCuentaContable == detalle.IdCuentaContable);
+                var existenSaldosPosteriores = saldos.Where(z => (z.Anio == poliza.FechaPoliza.Year && z.Mes > poliza.FechaPoliza.Month && z.IdCuentaContable == detalle.IdCuentaContable) 
+                || (z.Anio > poliza.FechaPoliza.Year && z.IdCuentaContable == detalle.IdCuentaContable));
+
+                if (detalle.Debe > 0) {
+                    existeSaldo.Debe -= detalle.Debe;
+                    existeSaldo.SaldoFinal += detalle.Debe;
+                    var edidarSaldo = await _SaldosService.Editar(existeSaldo);
+
+                    foreach (var saldo in existenSaldosPosteriores) {
+                        saldo.Debe -= detalle.Debe;
+                        saldo.SaldoFinal += detalle.Debe;
+                        var editaSaldoPosterior = await _SaldosService.Editar(saldo);
+                    }
+                }else if (detalle.Haber > 0) {
+                    existeSaldo.Haber -= detalle.Haber;
+                    existeSaldo.SaldoFinal -= detalle.Haber;
+                    var edidarSaldo = await _SaldosService.Editar(existeSaldo);
+
+                    foreach (var saldo in existenSaldosPosteriores)
+                    {
+                        saldo.Haber -= detalle.Haber;
+                        saldo.SaldoFinal -= detalle.Haber;
+                        var editaSaldoPosterior = await _SaldosService.Editar(saldo);
+                    }
+                }
+
+            }
+
+            poliza.Estatus = 3;
+            var editarPoliza = await _polizaService.Editar(poliza);
+
+            movimientoBancario.IdPoliza = null;
+            var editaMoviminetoB = await _movimientoBancarioService.Editar(movimientoBancario);
+
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Poliza Eliminada";
+            return respuesta;
+        }
+
         public async Task<PolizaFolioCodigoDTO> GenerarFolio(PolizaDTO datos)
         {
             var resultado = await _polizaService.ObtenTodosXEmpresa();

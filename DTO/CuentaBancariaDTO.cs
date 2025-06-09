@@ -20,7 +20,7 @@ namespace ERP_TECKIO
     {
         public int IdCuentaContable { get; set; }
         public string NombreBanco { get; set; }
-
+        public bool ExisteCuentaContable { get; set; }
     }
 
     public class CuentaBancariaCreacionDTO {

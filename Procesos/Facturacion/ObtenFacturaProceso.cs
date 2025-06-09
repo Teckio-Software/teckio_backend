@@ -131,9 +131,12 @@ namespace ERP_TECKIO.Procesos.Facturacion
             facturas = await _facturaService.ObtenTodos();
             foreach (var factura in facturas)
             {
-                var cliente = clientes.Where(z => z.Id == factura.IdCliente).FirstOrDefault();
-                factura.RazonSocialCliente = cliente.RazonSocial;
-                factura.RfcReceptor = cliente.Rfc;
+                if (factura.IdCliente != null && factura.IdCliente != 0) {
+                    var cliente = clientes.Where(z => z.Id == factura.IdCliente).FirstOrDefault();
+                    factura.RazonSocialCliente = cliente.RazonSocial;
+                    factura.RfcReceptor = cliente.Rfc;
+                }
+                
                 if (factura.IdFormaPago == 0 || factura.IdFormaPago == null)
                 {
                     factura.FormaPago = "";

@@ -30,17 +30,10 @@ namespace ERP_TECKIO.Servicios
             }
         }
 
-        public async Task<PolizaDTO> ObtenXId(int IdEmpresa)
+        public async Task<PolizaDTO> ObtenXId(int IdPoliza)
         {
-            try
-            {
-                var lista = await _Repositorio.ObtenerTodos();
-                return _Mapper.Map<PolizaDTO>(lista);
-            }
-            catch
-            {
-                return new PolizaDTO();
-            }
+            var objeto = await _Repositorio.Obtener(z => z.Id == IdPoliza);
+            return _Mapper.Map<PolizaDTO>(objeto);
         }
 
         public async Task<RespuestaDTO> Crear(PolizaDTO modelo)
