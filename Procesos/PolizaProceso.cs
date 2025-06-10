@@ -1,4 +1,5 @@
-﻿using ERP_TECKIO.DTO.Factura;
+﻿using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.Modelos;
 using ERP_TECKIO.Modelos.Facturaion;
 using ERP_TECKIO.Servicios;
@@ -218,7 +219,7 @@ namespace ERP_TECKIO.Procesos
                 decimal porcentajePagado = FMB.TotalSaldado / factura.Total;
 
                 if (existeIva != null) {
-                    totalPagar += ((factura.Subtotal + existeIva.TotalImpuesto) * porcentajePagado);
+                    totalPagar += ((factura.Total) * porcentajePagado);
 
                     var detPoliza = new PolizaDetalleDTO();
                     detPoliza.IdCuentaContable = bancoProveedor.Id;
@@ -239,10 +240,21 @@ namespace ERP_TECKIO.Procesos
                         nuevoDetallePoliza.Debe = (existeIva.TotalImpuesto * porcentajePagado);
                         listDetallesPoliza.Add(nuevoDetallePoliza);
                     }
+
+                    
+
                     if (existeRetencionIVA != null) {
+                        
+                        var ivaFiscal = new PolizaDetalleDTO();
+                        ivaFiscal.IdCuentaContable = ivaAcreditableFiscal.Id;
+                        ivaFiscal.Concepto = "IVA ACREDITABLE FISCAL" + proveedor.RepresentanteLegal;
+                        ivaFiscal.Debe = (existeIva.TotalImpuesto - existeRetencionIVA.TotalImpuesto) * porcentajePagado;
+                        listDetallesPoliza.Add(ivaFiscal);
+
                         existeIvaPorAcreditar = listDetallesPoliza.FirstOrDefault(z => z.IdCuentaContable == ivaPorAcreditar.Id);
-                        if (existeIvaPorAcreditar != null) {
-                            existeIvaPorAcreditar.Debe -= (existeRetencionIVA.TotalImpuesto * porcentajePagado);
+                        if (existeIvaPorAcreditar != null)
+                        {
+                            existeIvaPorAcreditar.Debe -= (existeIva.TotalImpuesto - existeRetencionIVA.TotalImpuesto) * porcentajePagado;
                         }
 
                         var existerestencionIVA = listDetallesPoliza.FirstOrDefault(z => z.IdCuentaContable == restencionIVA.Id);
@@ -288,6 +300,7 @@ namespace ERP_TECKIO.Procesos
                         nuevoDetallePoliza.IdCuentaContable = restencionISR.Id;
                         nuevoDetallePoliza.Concepto = "IVA ACREDITABLE " + proveedor.RepresentanteLegal;
                         nuevoDetallePoliza.Haber = (existeIva.TotalImpuesto * porcentajePagado);
+                        listDetallesPoliza.Add(nuevoDetallePoliza);
                     }
                 }
                 else
