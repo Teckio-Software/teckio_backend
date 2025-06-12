@@ -11,7 +11,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de los conceptos que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/compradirecta/1040")]
+    [Route("api/compradirecta/40")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionOrdenCompra-Empresa1")]
     public class CompraDirectaAlumno40Controller : ControllerBase

@@ -11,7 +11,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador para las Salidas de almacén
     /// </summary>
-    [Route("api/almacenSalida/1042")]
+    [Route("api/almacenSalida/35")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionSalidaAlmacen-Empresa1")]
     public class AlmacenSalidaAlumno35Controller : ControllerBase

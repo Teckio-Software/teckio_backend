@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+﻿using Microsoft.AspNetCore.Mvc;
+using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
 
 
@@ -9,7 +10,7 @@ namespace ERP_TECKIO.Controllers
 {
 
 
-    [Route("api/almacen/1042")]
+    [Route("api/almacen/35")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AlmacenAlumno35Controller : ControllerBase

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SistemaERP.API.Controllers.Alumno35
 {
-    [Route("api/programacionestimadaGantt/1042")]
+    [Route("api/programacionestimadaGantt/35")]
     [ApiController]
     public class ProgramacionEstimadaGanttAlumno35Controller : ControllerBase
     {

@@ -11,7 +11,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador para las Requisiciones a las que accede el usuario
     /// </summary>
-    [Route("api/existencias/1042")]
+    [Route("api/existencias/35")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionEspecialidad-Empresa1")]
     public class ExistenciasAlumno35Controller : ControllerBase

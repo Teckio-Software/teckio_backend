@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace ERP_TECKIO.Controllers
 {
-    [Route("api/indirectosXConcepto/1042")]
+    [Route("api/indirectosXConcepto/35")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class IndirectosXConceptoAlumno35Controller : ControllerBase

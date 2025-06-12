@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace ERP_TECKIO.Controllers
 {
-    [Route("api/estimaciones/1042")]
+    [Route("api/estimaciones/35")]
     [ApiController]
     public class EstimacionesAlumno35Controller : ControllerBase
     {
@@ -30,6 +30,12 @@ namespace ERP_TECKIO.Controllers
         public async Task<ActionResult<List<EstimacionesDTO>>> ObtenerEstimaciones(int IdPeriodo)
         {
             return await _estimacionesProceso.ObtenerEstimacionesXIdPeriodo(IdPeriodo);
+        }
+
+        [HttpGet("todasEstimacionesReportes/{IdPeriodo:int}")]
+        public async Task<ActionResult<List<EstimacionesDTO>>> ObtenerEstimacionesReporte(int IdPeriodo)
+        {
+            return await _estimacionesProceso.ObtenerEstimacionesXIdPeriodoXReporte(IdPeriodo);
         }
 
         [HttpPost("crearPeriodo")]

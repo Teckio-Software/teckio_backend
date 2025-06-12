@@ -11,7 +11,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de los Insumos que hereda <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/generadores/1042")]
+    [Route("api/generadores/35")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPrecioUnitario-Empresa1")]
     public class GeneradoresAlumno35Controller : ControllerBase

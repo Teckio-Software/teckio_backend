@@ -12,7 +12,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de los rubros que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/rubro/1040")]
+    [Route("api/rubro/40")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionRubro-Empresa1")]
     public class RubroAlumno40Controller : ControllerBase

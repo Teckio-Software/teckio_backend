@@ -7,7 +7,7 @@ using ERP_TECKIO.DTO.Usuario;
 
 namespace ERP_TECKIO
 {
-    [Route("api/empleado/1042")]
+    [Route("api/empleado/35")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 

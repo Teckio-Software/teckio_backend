@@ -1,15 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+﻿using Microsoft.AspNetCore.Mvc;
+using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
 
 
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ERP_TECKIO.Procesos;
 using ERP_TECKIO.Procesos.Facturacion;
+using ERP_TECKIO.DTO.Factura;
 
 
 namespace ERP_TECKIO.Controllers
 {
-    [Route("api/ordencompra/1042")]
+    [Route("api/ordencompra/35")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class OrdenCompraAlumno35Controller : ControllerBase
@@ -18,19 +21,23 @@ namespace ERP_TECKIO.Controllers
         private readonly OrdenCompraProceso<Alumno35Context> _Proceso;
         private readonly ILogger<OrdenCompraAlumno35Controller> _Logger;
         private readonly Alumno35Context Context;
+        private readonly PolizaProceso<Alumno35Context> _polizaProceso;
         private readonly ObtenFacturaProceso<Alumno35Context> _obtenFacturaProceso;
 
         public OrdenCompraAlumno35Controller(
             ILogger<OrdenCompraAlumno35Controller> Logger
             , Alumno35Context Context
             , IOrdenCompraService<Alumno35Context> Service
-            , OrdenCompraProceso<Alumno35Context> Proceso,
-ObtenFacturaProceso<Alumno35Context> obtenFacturaProceso)
+            , OrdenCompraProceso<Alumno35Context> Proceso
+            , PolizaProceso<Alumno35Context> polizaProceso
+            , ObtenFacturaProceso<Alumno35Context> obtenFacturaProceso
+            )
         {
             _Logger = Logger;
             this.Context = Context;
             _Service = Service;
             _Proceso = Proceso;
+            _polizaProceso = polizaProceso;
             _obtenFacturaProceso = obtenFacturaProceso;
         }
         [HttpPost]
@@ -147,15 +154,42 @@ ObtenFacturaProceso<Alumno35Context> obtenFacturaProceso)
         }
 
         [HttpPost("cargarFacturasXOrdenCompra")]
-        public async Task<ActionResult<RespuestaDTO>> CargarFacturaXOrdenCompra([FromForm] List<IFormFile> files, [FromForm] int IdOrdenCompra)
-        {
+        public async Task<ActionResult<RespuestaDTO>> CargarFacturaXOrdenCompra([FromForm] List<IFormFile> files ,[FromForm] int IdOrdenCompra) {
             return await _obtenFacturaProceso.CargarFacturaXOrdenCompra(files, IdOrdenCompra);
         }
 
         [HttpGet("obtenerFacturasXOrdenCompra/{IdOrdenCompra:int}")]
-        public async Task<ActionResult<OrdenCompraFacturasDTO>> obtenerFacturasXOrdenCompra(int IdOrdenCompra)
-        {
+        public async Task<ActionResult<OrdenCompraFacturasDTO>> obtenerFacturasXOrdenCompra(int IdOrdenCompra) {
             return await _obtenFacturaProceso.ObtenFacturaXOrdenCompra(IdOrdenCompra);
+        }
+
+
+        [HttpGet("ObtenerXIdContratistaSinPagar/{IdContratista:int}")]
+        public async Task<ActionResult<List<OrdenCompraDTO>>> ObtenerXIdContratistaSinPagar(int IdContratista)
+        {
+            var lista = await _Proceso.ObtenerXIdContratistaSinPagar(IdContratista);
+            return lista;
+        }
+
+        [HttpGet("ObtenerFacturasXIdContratistaSinPagar/{IdContratista:int}")]
+        public async Task<ActionResult<List<FacturaXOrdenCompraDTO>>> ObtenerFacturasXIdContratistaSinPagar(int IdContratista)
+        {
+            var lista = await _Proceso.ObtenerFacturasXIdContratistaSinPagar(IdContratista);
+            return lista;
+        }
+
+        [HttpPost("AutorizarFacturaXOrdenCompra")]
+        public async Task<ActionResult<RespuestaDTO>> AutorizarFacturaXOrdenCompra(FacturaXOrdenCompraDTO facturaXOrdenCompra)
+        {
+            var lista = await _obtenFacturaProceso.AutorizarFacturaXOrdenCompra(facturaXOrdenCompra);
+            return lista;
+        }
+
+        [HttpPost("CancelarFacturaXOrdenCompra")]
+        public async Task<ActionResult<RespuestaDTO>> CancelarFacturaXOrdenCompra(FacturaXOrdenCompraDTO facturaXOrdenCompra)
+        {
+            var lista = await _obtenFacturaProceso.CancelarFacturaXOrdenCompra(facturaXOrdenCompra);
+            return lista;
         }
     }
 }

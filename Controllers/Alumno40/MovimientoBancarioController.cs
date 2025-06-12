@@ -11,7 +11,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de los movimientos bancarios que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/movimientobancario/1040")]
+    [Route("api/movimientobancario/40")]
     [ApiController]
     public class MovimientoBancarioAlumno40Controller : ControllerBase
     {

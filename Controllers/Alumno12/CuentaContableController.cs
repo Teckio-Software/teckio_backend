@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+﻿using Microsoft.AspNetCore.Mvc;
+using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
 
 
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ERP_TECKIO.Procesos;
 
 
 namespace ERP_TECKIO.Controllers
@@ -27,6 +29,7 @@ namespace ERP_TECKIO.Controllers
         /// Se usa para mandar en "headers" los registros totales de los registros
         /// </summary>
         private readonly Alumno12Context Context;
+        private readonly CuentaContableProceso<Alumno12Context> _proceso;
         /// <summary>
         /// Constructor del controlador de las cuentas contables
         /// </summary>
@@ -38,6 +41,7 @@ namespace ERP_TECKIO.Controllers
             , ICuentaContableService<Alumno12Context> Service
             , ICodigoAgrupadorService<Alumno12Context> CodigoAgrupadorService
             , IRubroService<Alumno12Context> RubroService
+            , CuentaContableProceso<Alumno12Context> proceso
             )
         {
             Logger = logger;
@@ -45,6 +49,7 @@ namespace ERP_TECKIO.Controllers
             _Service = Service;
             _CodigoAgrupadorService = CodigoAgrupadorService;
             _RubroService = RubroService;
+            _proceso = proceso;
         }
 
         [HttpGet("todos")]
@@ -82,8 +87,7 @@ namespace ERP_TECKIO.Controllers
         [HttpGet("Asignables")]
         public async Task<List<CuentaContableDTO>> ObtenerAsignables()
         {
-            var lista = await _Service.ObtenTodos();
-            var asignables = lista.Where(z => z.ExisteMovimiento == false).OrderBy(z => z.Codigo).ToList();
+            var asignables = await _proceso.ObtenerAsignables();
             return asignables;
         }
 

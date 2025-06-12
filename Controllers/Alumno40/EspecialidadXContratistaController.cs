@@ -11,7 +11,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de las especialIdades por contratista que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/especialIdadxcontratista/1040")]
+    [Route("api/especialIdadxcontratista/40")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionEspecialidadContratista-Empresa1")]
     public class EspecialIdadXContratistaAlumno40Controller : ControllerBase

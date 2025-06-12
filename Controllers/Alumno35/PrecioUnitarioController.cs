@@ -8,7 +8,7 @@ using System.Data;
 
 namespace ERP_TECKIO
 {
-    [Route("api/preciounitario/1042")]
+    [Route("api/preciounitario/35")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPrecioUnitario-Empresa2")]
     public class PrecioUnitarioAlumno35Controller : ControllerBase
@@ -34,6 +34,14 @@ namespace ERP_TECKIO
         public async Task<ActionResult<List<PrecioUnitarioDTO>>> Obtener(int IdProyecto)
         {
             return await _precioUnitarioProceso.ObtenerPrecioUnitario(IdProyecto);
+        }
+
+        [HttpGet("obtenerConceptos/{IdProyecto:int}")]
+        public async Task<ActionResult<List<PrecioUnitarioDTO>>> obtenerConceptos(int IdProyecto)
+        {
+            var PUs = await _precioUnitarioProceso.ObtenerPrecioUnitarioSinEstructurar(IdProyecto);
+            var conceptos = PUs.Where(z => z.TipoPrecioUnitario == 1).ToList();
+            return conceptos;
         }
 
         [HttpGet("sinestructurar/{IdProyecto:int}")]
@@ -117,6 +125,13 @@ namespace ERP_TECKIO
         public async Task<ActionResult> Excel(int i)
         {
             await _precioUnitarioProceso.CreardeExcel(i);
+            return NoContent();
+        }
+
+        [HttpPost("importarPresupuestoExcel")]
+        public async Task<ActionResult> Excel([FromForm] List<IFormFile> files, [FromForm] int idProyecto)
+        {
+            await _precioUnitarioProceso.CrearPresupuestoConExel(files, idProyecto);
             return NoContent();
         }
 

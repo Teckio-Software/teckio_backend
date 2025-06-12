@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace ERP_TECKIO
 {
     [Route("api/preciounitario/31")]
     [ApiController]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPrecioUnitario-Empresa2")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPrecioUnitario-Empresa2")]
     public class PrecioUnitarioAlumno31Controller : ControllerBase
     {
         private readonly PrecioUnitarioProceso<Alumno31Context> _precioUnitarioProceso;
@@ -127,6 +128,13 @@ namespace ERP_TECKIO
             return NoContent();
         }
 
+        [HttpPost("importarPresupuestoExcel")]
+        public async Task<ActionResult> Excel([FromForm] List<IFormFile> files, [FromForm] int idProyecto)
+        {
+            await _precioUnitarioProceso.CrearPresupuestoConExel(files, idProyecto);
+            return NoContent();
+        }
+
         [HttpPost("excelInsumos")]
         public async Task<ActionResult> ExcelInsumos(int i)
         {
@@ -151,7 +159,6 @@ namespace ERP_TECKIO
         {
             return await _explocionInsumosProceso.obtenerExplosionXEmpleado(IdProyecto, IdEmpleado);
         }
-
 
         [HttpPost("recalcularPresupuesto")]
         public async Task<ActionResult<List<PrecioUnitarioDTO>>> RecalcularPresupuest([FromBody] int IdProyecto)

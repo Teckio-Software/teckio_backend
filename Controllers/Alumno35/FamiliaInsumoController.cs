@@ -11,7 +11,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de las familias de Insumo que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/familiainsumo/1042")]
+    [Route("api/familiainsumo/35")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionFamiliaInsumo-Empresa1")]
     public class FamiliaInsumoAlumno35Controller : ControllerBase

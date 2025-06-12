@@ -285,7 +285,7 @@ namespace ERP_TECKIO.Controllers
             if (Convert.ToDateTime(FiltrarDTO.FechaFinal) != Convert.ToDateTime(null)
                 && Convert.ToDateTime(FiltrarDTO.FechaFinal) > Convert.ToDateTime(null)
                 && FiltrarDTO.EsBusquedaPorFechas
-                && Convert.ToDateTime(FiltrarDTO.FechaFinal) > Convert.ToDateTime("01/01/1/970"))
+                && Convert.ToDateTime(FiltrarDTO.FechaFinal) > Convert.ToDateTime("01/01/12/970"))
             {
                 DateTime dateTime = Convert.ToDateTime(FiltrarDTO.FechaFinal);
                 int dia = dateTime.Day;
@@ -307,10 +307,10 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpDelete("eliminar/{IdRequisicion:int}")]
-        public async Task<ActionResult<RespuestaDTO>> eliminar(int IdRequisicion)
-        {
+        public async Task<ActionResult<RespuestaDTO>> eliminar(int IdRequisicion) {
             var eliminar = await _Proceso.EliminarRequisicion(IdRequisicion);
             return eliminar;
         }
+
     }
 }

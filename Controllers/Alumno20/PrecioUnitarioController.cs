@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace ERP_TECKIO
 {
     [Route("api/preciounitario/20")]
     [ApiController]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPrecioUnitario-Empresa2")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPrecioUnitario-Empresa2")]
     public class PrecioUnitarioAlumno20Controller : ControllerBase
     {
         private readonly PrecioUnitarioProceso<Alumno20Context> _precioUnitarioProceso;
@@ -146,6 +147,7 @@ namespace ERP_TECKIO
         {
             return await _precioUnitarioProceso.obtenerExplosion(IdProyecto);
         }
+
         [HttpPost("editarCostoDesdeExplosion")]
         public async Task<ActionResult<List<InsumoParaExplosionDTO>>> EditarCostoDesdeExplosion(InsumoParaExplosionDTO registro)
         {

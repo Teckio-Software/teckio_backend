@@ -11,7 +11,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de los tipos de tipopoliza que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/tipopoliza/1040")]
+    [Route("api/tipopoliza/40")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionTipoPoliza-Empresa1")]
     public class TipoPolizaAlumno40Controller : ControllerBase

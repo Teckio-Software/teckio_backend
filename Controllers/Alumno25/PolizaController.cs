@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+﻿using Microsoft.AspNetCore.Mvc;
+using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
 
 
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ERP_TECKIO.Procesos;
 
 
 namespace ERP_TECKIO.Controllers
@@ -20,6 +22,7 @@ namespace ERP_TECKIO.Controllers
         private readonly ISaldosBalanzaComprobacionService<Alumno25Context> _SaldosService;
         private readonly ILogger<PolizaAlumno25Controller> _Logger;
         private readonly Alumno25Context _Context;
+        private readonly PolizaProceso<Alumno25Context> _polizaProceso;
         public PolizaAlumno25Controller(
             ILogger<PolizaAlumno25Controller> logger
             , Alumno25Context context
@@ -28,6 +31,7 @@ namespace ERP_TECKIO.Controllers
             , ITipoPolizaService<Alumno25Context> tipoPolizaService
             , ISaldosBalanzaComprobacionService<Alumno25Context> saldosService
             , ICuentaContableService<Alumno25Context> cuentaContableService
+            , PolizaProceso<Alumno25Context> polizaProceso
             )
         {
             _DetalleService = detalleService;
@@ -37,6 +41,22 @@ namespace ERP_TECKIO.Controllers
             _TipoPolizaService = tipoPolizaService;
             _CuentaContableService = cuentaContableService;
             _SaldosService = saldosService;
+            _polizaProceso = polizaProceso;
+        }
+
+        [HttpGet("GenerarPolizaXIdMovimientoBancario/{IdMovimientoBancario:int}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPoliza-Empresa1")]
+        public async Task<ActionResult<RespuestaDTO>> GenerarPolizaXIdMovimientoBancario(int IdMovimientoBancario) {
+            var respuesta = await _polizaProceso.PolizaXMovimientoBancario(IdMovimientoBancario);
+            return respuesta;
+        }
+
+        [HttpDelete("EliminarPolizaXIdMovimientoBancario/{IdMovimientoBancario:int}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPoliza-Empresa1")]
+        public async Task<ActionResult<RespuestaDTO>> EliminarPolizaXIdMovimientoBancario(int IdMovimientoBancario)
+        {
+            var respuesta = await _polizaProceso.EliminarPolizaXMovimientoBancario(IdMovimientoBancario);
+            return respuesta;
         }
 
         [HttpPost]

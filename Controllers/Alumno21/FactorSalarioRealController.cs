@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+﻿using Microsoft.AspNetCore.Mvc;
+using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
 
 
@@ -22,8 +23,7 @@ namespace ERP_TECKIO.Controllers.Alumno21
         }
 
         [HttpPost("crearFsrDetalleXInsumo")]
-        public async Task<ActionResult<RespuestaDTO>> CrearFsrDetalleXInsumo(FsrxinsummoMdOdetalleDTO objeto)
-        {
+        public async Task<ActionResult<RespuestaDTO>> CrearFsrDetalleXInsumo(FsrxinsummoMdOdetalleDTO objeto) { 
             return await _FactorSalarioRealProceso.CrearFsrDetalle(objeto);
         }
 

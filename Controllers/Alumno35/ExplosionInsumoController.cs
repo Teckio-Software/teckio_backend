@@ -11,7 +11,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de Explosion de Insumos que hereda <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/explosioninsumos/1042")]
+    [Route("api/explosioninsumos/35")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionInsumo-Empresa1")]
     public class ExplosionInsumoAlumno35Controller : ControllerBase

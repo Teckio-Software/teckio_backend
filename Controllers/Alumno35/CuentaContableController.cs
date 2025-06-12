@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+﻿using Microsoft.AspNetCore.Mvc;
+using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
 
 
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ERP_TECKIO.Procesos;
 
 
 namespace ERP_TECKIO.Controllers
@@ -11,7 +13,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de las cuentas contables que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/cuentacontable/1042")]
+    [Route("api/cuentacontable/35")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionCuentaContable-Empresa1")]
     public class CuentaContableAlumno35Controller : ControllerBase
@@ -27,6 +29,7 @@ namespace ERP_TECKIO.Controllers
         /// Se usa para mandar en "headers" los registros totales de los registros
         /// </summary>
         private readonly Alumno35Context Context;
+        private readonly CuentaContableProceso<Alumno35Context> _proceso;
         /// <summary>
         /// Constructor del controlador de las cuentas contables
         /// </summary>
@@ -38,6 +41,7 @@ namespace ERP_TECKIO.Controllers
             , ICuentaContableService<Alumno35Context> Service
             , ICodigoAgrupadorService<Alumno35Context> CodigoAgrupadorService
             , IRubroService<Alumno35Context> RubroService
+            , CuentaContableProceso<Alumno35Context> proceso
             )
         {
             Logger = logger;
@@ -45,6 +49,7 @@ namespace ERP_TECKIO.Controllers
             _Service = Service;
             _CodigoAgrupadorService = CodigoAgrupadorService;
             _RubroService = RubroService;
+            _proceso = proceso;
         }
 
         [HttpGet("todos")]
@@ -82,8 +87,7 @@ namespace ERP_TECKIO.Controllers
         [HttpGet("Asignables")]
         public async Task<List<CuentaContableDTO>> ObtenerAsignables()
         {
-            var lista = await _Service.ObtenTodos();
-            var asignables = lista.Where(z => z.ExisteMovimiento == false).OrderBy(z => z.Codigo).ToList();
+            var asignables = await _proceso.ObtenerAsignables();
             return asignables;
         }
 

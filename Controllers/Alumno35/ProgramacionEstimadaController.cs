@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace ERP_TECKIO.Controllers
 {
-    [Route("api/programacionestimada/1042")]
+    [Route("api/programacionestimada/35")]
     [ApiController]
     public class ProgramacionEstimadaAlumno35Controller : ControllerBase
     {

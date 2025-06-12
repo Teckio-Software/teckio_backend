@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using ERP_TECKIO;
 using Microsoft.EntityFrameworkCore;
 using ERP_TECKIO.DTO;
-using DocumentFormat.OpenXml.Office2010.Excel;
 
 
 
@@ -122,18 +121,6 @@ namespace SistemaERP.API.Alumno32Controllers.Procomi
         [HttpGet("obtenerOperaciones/{IdPrecioUnitarioDetalle:int}")]
         public async Task<ActionResult<List<OperacionesXPrecioUnitarioDetalleDTO>>> ObtenerOperaciones(int IdPrecioUnitarioDetalle)
         {
-            return await _precioUnitarioProceso.ObtenerOperaciones(IdPrecioUnitarioDetalle);
-        }
-
-        [HttpGet("arreglarBimsa/{IdPrecioUnitarioDetalle:int}")]
-        public async Task<ActionResult<List<OperacionesXPrecioUnitarioDetalleDTO>>> ActualizarCostos(int IdPrecioUnitarioDetalle)
-        {
-                var registros = new List<PrecioUnitarioDetalleDTO>();
-            using (var db = new Alumno32Context(_Options.Options))
-            {
-                await _precioUnitarioProceso.ActualizarInsumosBimsa(2);
-                await _precioUnitarioProceso.RecalcularArmadoPrecioUnitario(2, db);
-            }
             return await _precioUnitarioProceso.ObtenerOperaciones(IdPrecioUnitarioDetalle);
         }
 

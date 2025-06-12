@@ -8,7 +8,7 @@ using System.Data;
 
 namespace ERP_TECKIO
 {
-    [Route("api/preciounitario/1040")]
+    [Route("api/preciounitario/40")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPrecioUnitario-Empresa2")]
     public class PrecioUnitarioAlumno40Controller : ControllerBase
@@ -125,6 +125,13 @@ namespace ERP_TECKIO
         public async Task<ActionResult> Excel(int i)
         {
             await _precioUnitarioProceso.CreardeExcel(i);
+            return NoContent();
+        }
+
+        [HttpPost("importarPresupuestoExcel")]
+        public async Task<ActionResult> Excel([FromForm] List<IFormFile> files, [FromForm] int idProyecto)
+        {
+            await _precioUnitarioProceso.CrearPresupuestoConExel(files, idProyecto);
             return NoContent();
         }
 

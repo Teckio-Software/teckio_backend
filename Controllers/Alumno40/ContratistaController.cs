@@ -13,7 +13,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de los insumos por contratista que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/contratista/1040")]
+    [Route("api/contratista/40")]
     [ApiController]
     //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionContratista-Empresa1")]
     public class ContratistaAlumno40Controller : ControllerBase

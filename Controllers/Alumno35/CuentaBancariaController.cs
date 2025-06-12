@@ -11,7 +11,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de las cuentas bancarias de la empresa que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/cuentabancaria/1042")]
+    [Route("api/cuentabancaria/35")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CuentaBancariaAlumno35Controller : ControllerBase

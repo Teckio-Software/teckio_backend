@@ -11,7 +11,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de los proyectos que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/proyecto/1040")]
+    [Route("api/proyecto/40")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//)]//, Policy = "SeccionProyecto-Empresa1")]
     public class ProyectoAlumno40Controller : ControllerBase

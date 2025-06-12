@@ -12,7 +12,7 @@ namespace ERP_TECKIO.Controllers
     [ApiController]
     public class EstimacionesAlumno10Controller : ControllerBase
     {
-        private readonly EstimacionesProceso<Alumno10Context> _estimacionesProceso; 
+        private readonly EstimacionesProceso<Alumno10Context> _estimacionesProceso;
         public EstimacionesAlumno10Controller(
             EstimacionesProceso<Alumno10Context> estimacionesProceso
             )

@@ -11,7 +11,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador del tipo InsumoXRequisicion que hereda <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/insumoxrequisicion/1040")]
+    [Route("api/insumoxrequisicion/40")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class InsumoXRequisicionAlumno40Controller : ControllerBase

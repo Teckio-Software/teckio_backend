@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace ERP_TECKIO.Controllers
 {
-    [Route("api/cuentabancariaempresa/1042")]
+    [Route("api/cuentabancariaempresa/35")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CuentaBancariaEmpresaAlumno35Controller : ControllerBase
@@ -35,6 +35,12 @@ namespace ERP_TECKIO.Controllers
         public async Task<ActionResult<List<CuentaBancariaEmpresasDTO>>> ObtenerTodos()
         {
             return await _proceso.ObtenerXEmpresa();
+        }
+
+        [HttpPost("AsignarCuentaContable")]
+        public async Task<ActionResult<RespuestaDTO>> AsignarCuentaContable(CuentaBancariaEmpresasDTO cuentaBancariaEmpresa) {
+            var respuesta =  await _proceso.AsignarCuentaContable(cuentaBancariaEmpresa);
+            return respuesta;
         }
     }
 }

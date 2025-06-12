@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ERP_TECKIO.Controllers.Alumno40
 {
-    [Route("api/precioUnitarioXEmpleado/1040")]
+    [Route("api/precioUnitarioXEmpleado/40")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 

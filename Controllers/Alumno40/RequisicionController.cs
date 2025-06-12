@@ -11,7 +11,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador para las Requisiciones a las que accede el usuario
     /// </summary>
-    [Route("api/requisicion/1040")]
+    [Route("api/requisicion/40")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class RequisicionAlumno40Controller : ControllerBase
@@ -285,7 +285,7 @@ namespace ERP_TECKIO.Controllers
             if (Convert.ToDateTime(FiltrarDTO.FechaFinal) != Convert.ToDateTime(null)
                 && Convert.ToDateTime(FiltrarDTO.FechaFinal) > Convert.ToDateTime(null)
                 && FiltrarDTO.EsBusquedaPorFechas
-                && Convert.ToDateTime(FiltrarDTO.FechaFinal) > Convert.ToDateTime("01/01/1/970"))
+                && Convert.ToDateTime(FiltrarDTO.FechaFinal) > Convert.ToDateTime("01/01/40/970"))
             {
                 DateTime dateTime = Convert.ToDateTime(FiltrarDTO.FechaFinal);
                 int dia = dateTime.Day;
@@ -307,10 +307,10 @@ namespace ERP_TECKIO.Controllers
         }
 
         [HttpDelete("eliminar/{IdRequisicion:int}")]
-        public async Task<ActionResult<RespuestaDTO>> eliminar(int IdRequisicion)
-        {
+        public async Task<ActionResult<RespuestaDTO>> eliminar(int IdRequisicion) {
             var eliminar = await _Proceso.EliminarRequisicion(IdRequisicion);
             return eliminar;
         }
+
     }
 }

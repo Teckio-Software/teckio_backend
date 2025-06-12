@@ -1,15 +1,17 @@
 ﻿using ERP_TECKIO.DTO.Factura;
+using ERP_TECKIO.Procesos;
 using ERP_TECKIO.Procesos.Facturacion;
 using ERP_TECKIO.Servicios.Contratos.Facturacion;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+//using static ERP_TECKIO.Procesos.ObtenFacturaProceso;
 
-namespace ERP_TECKIO.Controllers.Alumno01
+namespace ERP_TECKIO.Controllers.Alumno35
 {
-    [Route("api/factura/1042")]
+    [Route("api/factura/35")]
     [ApiController]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
     public class FacturaAlumno35Controller : ControllerBase
     {
@@ -18,11 +20,11 @@ namespace ERP_TECKIO.Controllers.Alumno01
         public FacturaAlumno35Controller(
             ObtenFacturaProceso<Alumno35Context> obtenFacturaProceso,
             ICategoriaProductoYServicioService<Alumno35Context> categoriaProductoYServicioService
-            ) {
+            )
+        {
             _obtenFacturaProceso = obtenFacturaProceso;
             _categoriaProductoYServicioService = categoriaProductoYServicioService;
         }
-
         [HttpGet("ObtenFacturas")]
         public async Task<ActionResult<List<FacturaDTO>>> ObtenerFacturas()
         {
@@ -49,20 +51,6 @@ namespace ERP_TECKIO.Controllers.Alumno01
         {
             var categorias = await _categoriaProductoYServicioService.ObtenerTodos();
             return categorias;
-        }
-
-        [HttpGet("obtenerProductos")]
-        public async Task<ActionResult<bool>> ObteneProductos()
-        {
-            var productos = await _obtenFacturaProceso.ObtenerProductos();
-            return productos;
-        }
-
-        [HttpGet("leerFacturas")]
-        public async Task<ActionResult<bool>> leerFacturas()
-        {
-            var productos = await _obtenFacturaProceso.leerFacturas();
-            return productos;
         }
     }
 }

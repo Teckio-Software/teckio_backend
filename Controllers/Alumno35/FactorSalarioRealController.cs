@@ -10,7 +10,7 @@ using ERP_TECKIO.DTO;
 
 namespace ERP_TECKIO.Controllers.Alumno35
 {
-    [Route("api/fsr/1042")]
+    [Route("api/fsr/35")]
     [ApiController]
     public class FactorSalarioRealController : ControllerBase
     {

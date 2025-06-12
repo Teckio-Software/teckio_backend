@@ -11,7 +11,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de las cuentas bancarias de los contratistas que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/contratistacuentabancaria/1040")]
+    [Route("api/contratistacuentabancaria/40")]
     [ApiController]
     public class ContratistaCuentaBancariaAlumno40Controller : ControllerBase
     {

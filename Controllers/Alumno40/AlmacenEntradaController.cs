@@ -10,7 +10,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de las entradas a almacén que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/almacenentrada/1040")]
+    [Route("api/almacenentrada/40")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AlmacenEntradaAlumno40Controller : ControllerBase

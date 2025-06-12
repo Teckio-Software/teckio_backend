@@ -9,7 +9,7 @@ using ERP_TECKIO.Procesos;
 
 namespace ERP_TECKIO.Controllers
 {
-    [Route("api/cliente/1042")]
+    [Route("api/cliente/35")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ClienteAlumno35Controller : ControllerBase

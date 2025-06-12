@@ -36,5 +36,11 @@ namespace ERP_TECKIO.Controllers
         {
             return await _proceso.ObtenerXEmpresa();
         }
+
+        [HttpPost("AsignarCuentaContable")]
+        public async Task<ActionResult<RespuestaDTO>> AsignarCuentaContable(CuentaBancariaEmpresasDTO cuentaBancariaEmpresa) {
+            var respuesta =  await _proceso.AsignarCuentaContable(cuentaBancariaEmpresa);
+            return respuesta;
+        }
     }
 }

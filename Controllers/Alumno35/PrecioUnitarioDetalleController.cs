@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using ERP_TECKIO;
 using Microsoft.EntityFrameworkCore;
 using ERP_TECKIO.DTO;
-using DocumentFormat.OpenXml.Office2010.Excel;
 
 
 
@@ -13,7 +12,7 @@ using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace SistemaERP.API.Alumno35Controllers.Procomi
 {
-    [Route("api/preciounitariodetalle/1042")]
+    [Route("api/preciounitariodetalle/35")]
     [ApiController]
     public class PrecioUnitarioDetalleAlumno35Controller : ControllerBase
     {
@@ -75,6 +74,13 @@ namespace SistemaERP.API.Alumno35Controllers.Procomi
             return await _precioUnitarioProceso.EditarDetalle(registro);
         }
 
+        [HttpPost("editarImporte")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPrecioUnitario-Empresa2")]
+        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> editarImporte([FromBody] PrecioUnitarioDetalleDTO registro)
+        {
+            return await _precioUnitarioProceso.EditarImporteDetalle(registro);
+        }
+
         [HttpPost("partirDetalle")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPrecioUnitario-Empresa2")]
         public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> partirDetalle([FromBody] PrecioUnitarioDetalleDTO registro)
@@ -115,18 +121,6 @@ namespace SistemaERP.API.Alumno35Controllers.Procomi
         [HttpGet("obtenerOperaciones/{IdPrecioUnitarioDetalle:int}")]
         public async Task<ActionResult<List<OperacionesXPrecioUnitarioDetalleDTO>>> ObtenerOperaciones(int IdPrecioUnitarioDetalle)
         {
-            return await _precioUnitarioProceso.ObtenerOperaciones(IdPrecioUnitarioDetalle);
-        }
-
-        [HttpGet("arreglarBimsa/{IdPrecioUnitarioDetalle:int}")]
-        public async Task<ActionResult<List<OperacionesXPrecioUnitarioDetalleDTO>>> ActualizarCostos(int IdPrecioUnitarioDetalle)
-        {
-                var registros = new List<PrecioUnitarioDetalleDTO>();
-            using (var db = new Alumno35Context(_Options.Options))
-            {
-                await _precioUnitarioProceso.ActualizarInsumosBimsa(2);
-                await _precioUnitarioProceso.RecalcularArmadoPrecioUnitario(2, db);
-            }
             return await _precioUnitarioProceso.ObtenerOperaciones(IdPrecioUnitarioDetalle);
         }
 
