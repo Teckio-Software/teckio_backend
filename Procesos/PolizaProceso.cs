@@ -331,7 +331,7 @@ namespace ERP_TECKIO.Procesos
             var nuevaPoliza = new PolizaDTO();
             nuevaPoliza.FechaAlta = DateTime.Now;
             nuevaPoliza.FechaPoliza = DateTime.Now;
-            nuevaPoliza.IdTipoPoliza = 5;
+            nuevaPoliza.IdTipoPoliza = 3;
 
             var folioNumero = await GenerarFolio(nuevaPoliza);
 

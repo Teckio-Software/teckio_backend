@@ -28,6 +28,7 @@ namespace ERP_TECKIO.Controllers
         [Route("GuardarCuentaBancaria")]
         public async Task<ActionResult<bool>> GuardarCuentaBancaria([FromBody] CuentaBancariaEmpresasDTO cuentaBancaria)
         {
+            cuentaBancaria.IdCuentaContable = null;
             return await _cuentaBancariaEmpresaService.Crear(cuentaBancaria);
         }
 

@@ -17,7 +17,7 @@ namespace ERP_TECKIO
         public int IdPrecioUnitario { get; set; }
         public string Codigo { get; set; }
         public string Descripcion { get; set; }
-        public string Unidad { get; set; }
+        public string? Unidad { get; set; }
         public decimal CostoUnitario { get; set; }
         public string CostoUnitarioConFormato { get; set; }
         public decimal Cantidad { get; set; }

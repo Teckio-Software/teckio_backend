@@ -17,7 +17,7 @@ namespace ERP_TECKIO.Servicios
 
         public async Task<bool> Crear(CuentaBancariaDTO modelo)
         {
-            if (string.IsNullOrEmpty(modelo.NumeroCuenta) || modelo.NumeroCuenta.Length > 20
+            if (string.IsNullOrEmpty(modelo.NumeroCuenta) || modelo.NumeroCuenta.Length > 10
                 || string.IsNullOrEmpty(modelo.Clabe) || modelo.Clabe.Length > 18)
             {
                 return false;
