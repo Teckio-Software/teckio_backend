@@ -1,4 +1,5 @@
 ﻿
+
 namespace ERP_TECKIO.Modelos;
 
 public partial class Almacen : almacenAbsatract
@@ -12,7 +13,9 @@ public partial class Almacen : almacenAbsatract
     public virtual Proyecto? IdProyectoNavigation { get; set; }
 
     public virtual ICollection<InsumoExistencia> InsumoExistencia { get; set; } = new List<InsumoExistencia>();
-    
+    public virtual ICollection<EntradaProduccionAlmacen> EntradaProduccionAlmacens { get; set; } = new List<EntradaProduccionAlmacen>();
+
+
 }
 
 public abstract class almacenAbsatract

@@ -11,4 +11,6 @@ public partial class TipoFactorAbstract
 public partial class TipoFactor : TipoFactorAbstract
 {
     public virtual ICollection<FacturaDetalleImpuesto> FacturaDetalleImpuestos { get; set; } = new List<FacturaDetalleImpuesto>();
+    public virtual ICollection<ImpuestoDetalleOrdenVentum> ImpuestoDetalleOrdenVenta { get; set; } = new List<ImpuestoDetalleOrdenVentum>();
+
 }

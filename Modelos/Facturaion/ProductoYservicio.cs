@@ -32,4 +32,10 @@ public partial class ProductoYservicio: ProductoYservicioAbstract
     public virtual UnidadSat IdUnidadSatNavigation { get; set; } = null!;
     public virtual CategoriaProductoYServicio IdCategoriaProductoYServicioNavigation { get; set; } = null!;
     public virtual SubcategoriaProductoYServicio IdSubcategoriaProductoYServicioNavigation { get; set; } = null!;
+    public virtual ICollection<DetalleOrdenVentum> DetalleOrdenVenta { get; set; } = new List<DetalleOrdenVentum>();
+    public virtual ICollection<Produccion> Produccion { get; set; } = new List<Produccion>();
+    public virtual ICollection<ProductosXentradaProduccionAlmacen> ProductosXentradaProduccionAlmacens { get; set; } = new List<ProductosXentradaProduccionAlmacen>();
+    public virtual ICollection<ExistenciaProductosAlmacen> ExistenciaProductosAlmacens { get; set; } = new List<ExistenciaProductosAlmacen>();
+
+
 }

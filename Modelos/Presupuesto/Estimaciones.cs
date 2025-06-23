@@ -1,4 +1,5 @@
 ﻿
+
 namespace ERP_TECKIO.Modelos
 {
     public class Estimaciones
@@ -35,5 +36,7 @@ namespace ERP_TECKIO.Modelos
         public virtual PrecioUnitario IdPrecioUnitarioNavigation { get; set; } = null!;
 
         public virtual Proyecto IdProyectoNavigation { get; set; } = null!;
+        public virtual ICollection<DetalleOrdenVentum> DetalleOrdenVenta { get; set; } = new List<DetalleOrdenVentum>();
+
     }
 }

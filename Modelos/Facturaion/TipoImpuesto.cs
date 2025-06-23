@@ -12,5 +12,7 @@ public partial class TipoImpuesto
     public virtual ICollection<ImpuestoInsumoCotizado> ImpuestoInsumoCotizados { get; set; } = new List<ImpuestoInsumoCotizado>();
     public virtual ICollection<ImpuestoInsumoOrdenCompra> ImpuestoInsumoOrdenCompras { get; set; } = new List<ImpuestoInsumoOrdenCompra>();
     public virtual ICollection<FacturaImpuesto> FacturaImpuestos { get; set; } = new List<FacturaImpuesto>();
+    public virtual ICollection<ImpuestoDetalleOrdenVentum> ImpuestoDetalleOrdenVenta { get; set; } = new List<ImpuestoDetalleOrdenVentum>();
+
 
 }

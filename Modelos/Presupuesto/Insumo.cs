@@ -46,4 +46,5 @@ public partial class Insumo
     public virtual ICollection<PrecioUnitarioDetalle> PrecioUnitarioDetalles { get; set; } = new List<PrecioUnitarioDetalle>();
 
     public virtual ICollection<RelacionFSRInsumo> RelacionFsrinsumos { get; set; } = new List<RelacionFSRInsumo>();
+    public virtual ICollection<InsumoXproduccion> InsumoxProduccion { get; set; } = new List<InsumoXproduccion>(); 
 }

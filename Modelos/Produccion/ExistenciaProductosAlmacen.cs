@@ -1,0 +1,16 @@
+﻿using ERP_TECKIO.Modelos.Facturacion;
+using System;
+using System.Collections.Generic;
+
+namespace ERP_TECKIO;
+
+public partial class ExistenciaProductosAlmacen
+{
+    public int Id { get; set; }
+
+    public int IdProductoYservicio { get; set; }
+
+    public decimal Cantidad { get; set; }
+
+    public virtual ProductoYservicio IdProductoYservicioNavigation { get; set; } = null!;
+}

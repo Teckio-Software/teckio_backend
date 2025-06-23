@@ -157,9 +157,187 @@ public partial class Alumno01Context : DbContext
 
     public virtual DbSet<UsoCfdiSat> UsoCfdiSats { get; set; }
     public virtual DbSet<FacturaXOrdenCompra> FacturaXOrdenCompras { get; set; }
+    public virtual DbSet<OrdenVentum> OrdenVenta { get; set; }
+    public virtual DbSet<DetalleOrdenVentum> DetalleOrdenVenta { get; set; }
+    public virtual DbSet<ImpuestoDetalleOrdenVentum> ImpuestoDetalleOrdenVenta { get; set; }
+    public virtual DbSet<Produccion> Produccions { get; set; }
+    public virtual DbSet<InsumoXproduccion> InsumoXproduccions { get; set; }
+    public virtual DbSet<EntradaProduccionAlmacen> EntradaProduccionAlmacens { get; set; }
+    public virtual DbSet<ProductosXentradaProduccionAlmacen> ProductosXentradaProduccionAlmacens { get; set; }
+    public virtual DbSet<ExistenciaProductosAlmacen> ExistenciaProductosAlmacens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<OrdenVentum>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__OrdenVen__3214EC073AF330EB");
+
+            entity.ToTable("OrdenVenta", "OrdenVenta");
+
+            entity.Property(e => e.Autorizo).HasMaxLength(100);
+            entity.Property(e => e.FechaRegistro).HasColumnType("datetime");
+            entity.Property(e => e.ImporteTotal).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.NumeroOrdenVenta).HasMaxLength(50);
+            entity.Property(e => e.Observaciones).HasMaxLength(200);
+            entity.Property(e => e.Subtotal).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.TotalSaldado).HasColumnType("decimal(28, 6)");
+
+            entity.HasOne(d => d.IdClienteNavigation).WithMany(p => p.OrdenVenta)
+                .HasForeignKey(d => d.IdCliente)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_OrdenVenta_IdCliente");
+        });
+
+        modelBuilder.Entity<DetalleOrdenVentum>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__DetalleO__3214EC07F881A192");
+
+            entity.ToTable("DetalleOrdenVenta", "OrdenVenta");
+
+            entity.Property(e => e.Cantitdad).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Descuento).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.IdProductoYservicio).HasColumnName("IdProductoYServicio");
+            entity.Property(e => e.ImporteTotal).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.PrecioUnitario).HasColumnType("decimal(28, 6)");
+
+            entity.HasOne(d => d.IdEstimacionNavigation).WithMany(p => p.DetalleOrdenVenta)
+                .HasForeignKey(d => d.IdEstimacion)
+                .HasConstraintName("FK_DetalleOrdenVenta_IdEstimacion");
+
+            entity.HasOne(d => d.IdOrdenVentaNavigation).WithMany(p => p.DetalleOrdenVenta)
+                .HasForeignKey(d => d.IdOrdenVenta)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetalleOrdenVenta_IdOrdenVenta");
+
+            entity.HasOne(d => d.IdProductoYservicioNavigation).WithMany(p => p.DetalleOrdenVenta)
+                .HasForeignKey(d => d.IdProductoYservicio)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetalleOrdenVenta_IdProductoYServicio");
+        });
+
+        modelBuilder.Entity<ImpuestoDetalleOrdenVentum>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Impuesto__3214EC07D7FA9810");
+
+            entity.ToTable("ImpuestoDetalleOrdenVenta", "OrdenVenta");
+
+            entity.Property(e => e.ImporteTotal).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.TasaCuota).HasColumnType("decimal(28, 6)");
+
+            entity.HasOne(d => d.IdCategoriaImpuestoNavigation).WithMany(p => p.ImpuestoDetalleOrdenVenta)
+                .HasForeignKey(d => d.IdCategoriaImpuesto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ImpuestoDetalleOrdenVenta_IdCategoriaImpuesto");
+
+            entity.HasOne(d => d.IdClasificacionImpuestoNavigation).WithMany(p => p.ImpuestoDetalleOrdenVenta)
+                .HasForeignKey(d => d.IdClasificacionImpuesto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ImpuestoDetalleOrdenVenta_IdClasificacionImpuesto");
+
+            entity.HasOne(d => d.IdDetalleOrdenVentaNavigation).WithMany(p => p.ImpuestoDetalleOrdenVenta)
+                .HasForeignKey(d => d.IdDetalleOrdenVenta)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ImpuestoDetalleOrdenVenta_IdDetalleOrdenVenta");
+
+            entity.HasOne(d => d.IdTipoFactorNavigation).WithMany(p => p.ImpuestoDetalleOrdenVenta)
+                .HasForeignKey(d => d.IdTipoFactor)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ImpuestoDetalleOrdenVenta_IdTipoFactor");
+
+            entity.HasOne(d => d.IdTipoImpuestoNavigation).WithMany(p => p.ImpuestoDetalleOrdenVenta)
+                .HasForeignKey(d => d.IdTipoImpuesto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ImpuestoDetalleOrdenVenta_IdTipoImpuesto");
+        });
+
+        modelBuilder.Entity<Produccion>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Producci__3214EC07D07A5627");
+
+            entity.ToTable("Produccion", "Produccion");
+
+            entity.Property(e => e.Cantidad).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.FechaProduccion).HasColumnType("datetime");
+            entity.Property(e => e.IdProductoYservicio).HasColumnName("IdProductoYServicio");
+            entity.Property(e => e.Observaciones).HasMaxLength(200);
+            entity.Property(e => e.Produjo).HasMaxLength(100);
+
+            entity.HasOne(d => d.IdProductoYservicioNavigation).WithMany(p => p.Produccion)
+                .HasForeignKey(d => d.IdProductoYservicio)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Produccion_IdProductoServicio");
+        });
+
+        modelBuilder.Entity<InsumoXproduccion>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__InsumoXP__3214EC07F4AA107B");
+
+            entity.ToTable("InsumoXProduccion", "Produccion");
+
+            entity.Property(e => e.Cantidad).HasColumnType("decimal(28, 6)");
+
+            entity.HasOne(d => d.IdInsumoNavigation).WithMany(p => p.InsumoxProduccion)
+                .HasForeignKey(d => d.IdInsumo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_InsumoXProduccion_IdInsumo");
+
+            entity.HasOne(d => d.IdProduccionNavigation).WithMany(p => p.InsumoxProduccion)
+                .HasForeignKey(d => d.IdProduccion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_InsumoXProduccion_IdProduccion");
+        });
+
+        modelBuilder.Entity<EntradaProduccionAlmacen>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__EntradaP__3214EC07F9D865D3");
+
+            entity.ToTable("EntradaProduccionAlmacen", "Produccion");
+
+            entity.Property(e => e.FechaEntrada).HasColumnType("datetime");
+            entity.Property(e => e.Observaciones).HasMaxLength(200);
+            entity.Property(e => e.Recibio).HasMaxLength(100);
+
+            entity.HasOne(d => d.IdAlmacenNavigation).WithMany(p => p.EntradaProduccionAlmacens)
+                .HasForeignKey(d => d.IdAlmacen)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_EntradaProduccionAlmacen_IdAlmacen");
+        });
+
+        modelBuilder.Entity<ProductosXentradaProduccionAlmacen>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Producto__3214EC075D12C9D4");
+
+            entity.ToTable("ProductosXEntradaProduccionAlmacen", "Produccion");
+
+            entity.Property(e => e.Cantidad).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.IdProductoYservicio).HasColumnName("IdProductoYServicio");
+
+            entity.HasOne(d => d.IdEntradaProduccionAlmacenNavigation).WithMany(p => p.ProductosXentradaProduccionAlmacens)
+                .HasForeignKey(d => d.IdEntradaProduccionAlmacen)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ProductosXEntradaProduccionAlmacen_IdEntradaProduccionAlmacen");
+
+            entity.HasOne(d => d.IdProductoYservicioNavigation).WithMany(p => p.ProductosXentradaProduccionAlmacens)
+                .HasForeignKey(d => d.IdProductoYservicio)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ProductosXEntradaProduccionAlmacen_IdProductoYServicio");
+        });
+
+        modelBuilder.Entity<ExistenciaProductosAlmacen>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Existenc__3214EC07CFE5C050");
+
+            entity.ToTable("ExistenciaProductosAlmacen", "Produccion");
+
+            entity.Property(e => e.Cantidad).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.IdProductoYservicio).HasColumnName("IdProductoYServicio");
+
+            entity.HasOne(d => d.IdProductoYservicioNavigation).WithMany(p => p.ExistenciaProductosAlmacens)
+                .HasForeignKey(d => d.IdProductoYservicio)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ExistenciaProductosAlmacen_IdProductoYServicio");
+        });
+
         modelBuilder.Entity<FsixinsummoMdO>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__FSIXInsu__3214EC07D9E08BFA");
