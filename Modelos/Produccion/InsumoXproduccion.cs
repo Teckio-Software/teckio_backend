@@ -4,7 +4,16 @@ using System.Collections.Generic;
 
 namespace ERP_TECKIO;
 
-public partial class InsumoXproduccion
+public partial class InsumoXproduccion : InsumoXproduccionAbstract
+{
+    
+
+    public virtual Insumo IdInsumoNavigation { get; set; } = null!;
+
+    public virtual Produccion IdProduccionNavigation { get; set; } = null!;
+}
+
+public abstract class InsumoXproduccionAbstract
 {
     public int Id { get; set; }
 
@@ -13,8 +22,4 @@ public partial class InsumoXproduccion
     public int IdInsumo { get; set; }
 
     public decimal Cantidad { get; set; }
-
-    public virtual Insumo IdInsumoNavigation { get; set; } = null!;
-
-    public virtual Produccion IdProduccionNavigation { get; set; } = null!;
 }

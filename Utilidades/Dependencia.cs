@@ -135,6 +135,7 @@ namespace ERP_TECKIO
             services.AddScoped(typeof(ClienteCuentasContablesProceso<>));
             services.AddScoped(typeof(PolizaProceso<>));
             services.AddScoped(typeof(CuentaContableProceso<>));
+            services.AddScoped(typeof(OrdenVentaProceso<>));
 
             //Facturas
             services.AddScoped(typeof(ITipoImpuestoService<>), typeof(TipoImpuestoService<>));
@@ -162,6 +163,17 @@ namespace ERP_TECKIO
             services.AddScoped(typeof(IAcuseValidacionService<>), typeof(AcuseValidacionService<>));
             services.AddScoped(typeof(IArchivoService<>), typeof(ArchivoService<>));
             services.AddScoped(typeof(IFacturaXOrdenCompraService<>), typeof(FacturaXOrdenCompraService<>));
+
+
+            //Produccion
+            services.AddScoped(typeof(IOrdenVentaService<>), typeof(OrdenVentaService<>));
+            services.AddScoped(typeof(IDetalleOrdenVentaService<>), typeof(DetalleOrdenVentaService<>));
+            services.AddScoped(typeof(IImpuestoDetalleOrdenVentaService<>), typeof(ImpuestoDetalleOrdenVentaService<>));
+            services.AddScoped(typeof(IProduccionService<>), typeof(ProduccionService<>));
+            services.AddScoped(typeof(IInsumoXProduccionService<>), typeof(InsumoXProduccionService<>));
+            services.AddScoped(typeof(IEntradaProduccionAlmacenService<>), typeof(EntradaProduccionAlmacenService<>));
+            services.AddScoped(typeof(IProductoXEntradaProduccionAlmacenService<>), typeof(ProductoXEntradaProduccionAlmacenService<>));
+            services.AddScoped(typeof(IExistenciaProductoAlmacenService<>), typeof(ExistenciaProductoAlmacenService<>));
         }
     }
 }

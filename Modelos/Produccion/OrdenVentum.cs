@@ -4,7 +4,14 @@ using System.Collections.Generic;
 
 namespace ERP_TECKIO;
 
-public partial class OrdenVentum
+public partial class OrdenVentum : OrdenVentaAbstract
+{
+    public virtual ICollection<DetalleOrdenVentum> DetalleOrdenVenta { get; set; } = new List<DetalleOrdenVentum>();
+
+    public virtual Clientes IdClienteNavigation { get; set; } = null!;
+}
+
+public abstract class OrdenVentaAbstract
 {
     public int Id { get; set; }
 
@@ -27,8 +34,4 @@ public partial class OrdenVentum
     public decimal TotalSaldado { get; set; }
 
     public string? Observaciones { get; set; }
-
-    public virtual ICollection<DetalleOrdenVentum> DetalleOrdenVenta { get; set; } = new List<DetalleOrdenVentum>();
-
-    public virtual Clientes IdClienteNavigation { get; set; } = null!;
 }

@@ -3,7 +3,18 @@ using ERP_TECKIO.Modelos.Facturacion;
 
 namespace ERP_TECKIO.Modelos;
 
-public partial class DetalleOrdenVentum
+public partial class DetalleOrdenVentum : DetalleOrdenVentaAbstract
+{
+    public virtual Estimaciones? IdEstimacionNavigation { get; set; }
+
+    public virtual OrdenVentum IdOrdenVentaNavigation { get; set; } = null!;
+
+    public virtual ProductoYservicio IdProductoYservicioNavigation { get; set; } = null!;
+
+    public virtual ICollection<ImpuestoDetalleOrdenVentum> ImpuestoDetalleOrdenVenta { get; set; } = new List<ImpuestoDetalleOrdenVentum>();
+}
+
+public abstract class DetalleOrdenVentaAbstract
 {
     public int Id { get; set; }
 
@@ -20,12 +31,4 @@ public partial class DetalleOrdenVentum
     public decimal Descuento { get; set; }
 
     public decimal ImporteTotal { get; set; }
-
-    public virtual Estimaciones? IdEstimacionNavigation { get; set; }
-
-    public virtual OrdenVentum IdOrdenVentaNavigation { get; set; } = null!;
-
-    public virtual ProductoYservicio IdProductoYservicioNavigation { get; set; } = null!;
-
-    public virtual ICollection<ImpuestoDetalleOrdenVentum> ImpuestoDetalleOrdenVenta { get; set; } = new List<ImpuestoDetalleOrdenVentum>();
 }
