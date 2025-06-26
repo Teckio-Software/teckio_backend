@@ -7,6 +7,7 @@ namespace ERP_TECKIO.Servicios.Contratos
     {
         Task<RespuestaDTO> Crear(OrdenVentaDTO modelo);
         Task<OrdenVentaDTO> CrearYObtener(OrdenVentaDTO modelo);
+        Task<List<OrdenVentaDTO>> ObtenerTodos();
         Task<RespuestaDTO> Editar(OrdenVentaDTO modelo);
         Task<RespuestaDTO> Eliminar(OrdenVentaDTO modelo);
     }

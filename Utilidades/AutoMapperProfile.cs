@@ -791,6 +791,20 @@ namespace ERP_TECKIO
             CreateMap<DependenciaProgramacionEstimadaDeserealizadaDTO, DependenciaProgramacionEstimadaDTO>()
                 .ForMember(destino => destino.SourceId,
                 opt => opt.MapFrom(origen => Convert.ToString(origen.IdProgramacionEstimadaGanttPredecesora)));
+
+            #region OrdenVenta
+            CreateMap<OrdenVentaDTO, OrdenVentum>();
+            CreateMap<OrdenVentum, OrdenVentaDTO>();
+            #endregion
+            #region DetalleOrdenVenta
+            CreateMap<DetalleOrdenVentaDTO, DetalleOrdenVentum>();
+            CreateMap<DetalleOrdenVentum, DetalleOrdenVentaDTO>();
+            #endregion
+            #region ImpuestoDetalleOrdenVenta
+            CreateMap<ImpuestoDetalleOrdenVentaDTO, ImpuestoDetalleOrdenVentum>();
+            CreateMap<ImpuestoDetalleOrdenVentum, ImpuestoDetalleOrdenVentaDTO>();
+            #endregion
+
             #endregion
             #region Facturas
 

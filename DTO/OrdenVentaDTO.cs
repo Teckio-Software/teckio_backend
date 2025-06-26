@@ -2,7 +2,7 @@
 {
     public class OrdenVentaDTO : OrdenVentaAbstract
     {
-        public List<DetalleOrdenVentaDTO> listaDetalles { get; set; } = new List<DetalleOrdenVentaDTO>();
+        public List<DetalleOrdenVentaDTO> DetalleOrdenVenta { get; set; } = new List<DetalleOrdenVentaDTO>();
 
     }
 }

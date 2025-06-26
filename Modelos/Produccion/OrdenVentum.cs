@@ -32,6 +32,7 @@ public abstract class OrdenVentaAbstract
     public int EstatusSaldado { get; set; }
 
     public decimal TotalSaldado { get; set; }
+    public decimal Descuento { get; set; }
 
     public string? Observaciones { get; set; }
 }

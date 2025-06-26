@@ -3826,6 +3826,9 @@ namespace ERP_TECKIO
         public async Task<ActionResult<List<InsumoParaExplosionDTO>>> EditarInsumoDesdeExplosion(InsumoParaExplosionDTO registro)
         {
             var insumoBase = await _InsumoService.ObtenXId(registro.id);
+            if (registro.idTipoInsumo == 10001) {
+                return await obtenerExplosion(insumoBase.IdProyecto);
+            }
             var insumos = await _InsumoService.ObtenXIdProyecto(insumoBase.IdProyecto);
             var insumosFiltrados = insumos.Where(z => z.Codigo == registro.Codigo).ToList();
             var fsr = await _FsrxinsummoMdOService.ObtenerXIdInsumo(registro.id);
@@ -3857,6 +3860,11 @@ namespace ERP_TECKIO
                         {
                             insumo.CostoBase = registro.CostoBase;
                             insumo.CostoUnitario = registro.CostoBase * FSR.PorcentajeFsr;
+                        }
+                        else
+                        {
+                            insumo.CostoBase = registro.CostoBase;
+                            insumo.CostoUnitario = registro.CostoBase;
                         }
                     }
                     else

@@ -1,0 +1,14 @@
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace ERP_TECKIO.Controllers.Alumno01
+{
+    [Route("api/productoyservicio/1")]
+    [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public class ProductoYServicioAlumno01Controller : ControllerBase
+    {
+        public ProductoYServicioAlumno01Controller() { }
+    }
+}

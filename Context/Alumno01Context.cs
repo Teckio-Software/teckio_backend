@@ -180,6 +180,7 @@ public partial class Alumno01Context : DbContext
             entity.Property(e => e.NumeroOrdenVenta).HasMaxLength(50);
             entity.Property(e => e.Observaciones).HasMaxLength(200);
             entity.Property(e => e.Subtotal).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Descuento).HasColumnType("decimal(28, 6)");
             entity.Property(e => e.TotalSaldado).HasColumnType("decimal(28, 6)");
 
             entity.HasOne(d => d.IdClienteNavigation).WithMany(p => p.OrdenVenta)

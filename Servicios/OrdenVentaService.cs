@@ -36,5 +36,11 @@ namespace ERP_TECKIO.Servicios
         {
             throw new NotImplementedException();
         }
+
+        public async Task<List<OrdenVentaDTO>> ObtenerTodos()
+        {
+            var lista = await _repository.ObtenerTodos();
+            return _mapper.Map<List<OrdenVentaDTO>>(lista);
+        }
     }
 }
