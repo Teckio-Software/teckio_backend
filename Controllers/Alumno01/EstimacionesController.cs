@@ -62,5 +62,24 @@ namespace ERP_TECKIO.Controllers
         {
             return await _estimacionesProceso.ObtenerPeridosXEstimacion(IdEstimacion);
         }
+
+        [HttpGet("ObtenerGeneradoresXEstimacion/{IdEstimacion:int}")]
+        public async Task<ActionResult<List<GeneradoresXEstimacionDTO>>> ObtenerGeneradoresXEstimacion(int IdEstimacion)
+        {
+            return await _estimacionesProceso.ObtenerGeneradoresXEstimacion(IdEstimacion);
+        }
+
+        [HttpPost("CrearGeneradorXEstimacion")]
+        public async Task<ActionResult<List<GeneradoresXEstimacionDTO>>> CrearGeneradorXEstimacion(GeneradoresXEstimacionDTO generador)
+        {
+            return await _estimacionesProceso.CrearGeneradoresXEstimacion(generador);
+        }
+
+        [HttpDelete("EliminarGeneradorXEstimacion/{IdGenerador:int}")]
+        public async Task<ActionResult<List<GeneradoresXEstimacionDTO>>> EliminarGeneradorXEstimacion(int IdGenerador)
+        {
+            return await _estimacionesProceso.EliminarGeneradoresXEstimacion(IdGenerador);
+        }
+
     }
 }

@@ -89,6 +89,7 @@ namespace ERP_TECKIO
             //Estimaciones
             services.AddScoped(typeof(IEstimacionesService<>), typeof(EstimacionesService<>));
             services.AddScoped(typeof(IPeriodoEstimacionesService<>), typeof(PeriodoEstimacionesService<>));
+            services.AddScoped(typeof(IGeneradoresXEstimacionService<>), typeof(GeneradoresXEstimacionService<>));
             //Contratos
             services.AddScoped(typeof(IContratoService<>), typeof(ContratoService<>));
             services.AddScoped(typeof(IDetalleXContratoService<>), typeof(DetalleXContratoService<>));

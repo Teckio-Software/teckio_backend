@@ -37,6 +37,7 @@ namespace ERP_TECKIO.Modelos
 
         public virtual Proyecto IdProyectoNavigation { get; set; } = null!;
         public virtual ICollection<DetalleOrdenVentum> DetalleOrdenVenta { get; set; } = new List<DetalleOrdenVentum>();
+        public virtual ICollection<GeneradoresXEstimacion> GeneradoresXEstimacions { get; set; } = new List<GeneradoresXEstimacion>();
 
     }
 }

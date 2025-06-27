@@ -12,6 +12,8 @@ namespace ERP_TECKIO
         private readonly IPrecioUnitarioService<TContext> _PrecioUnitarioService;
         private readonly IConceptoService<TContext> _ConceptoService;
         private readonly PrecioUnitarioProceso<TContext> _PrecioUnitarioProceso;
+        private readonly IGeneradoresService<TContext> _generadoresService;
+        private readonly IGeneradoresXEstimacionService<TContext> _generadoresXEstimacionService;
 
         public EstimacionesProceso(
             IEstimacionesService<TContext> estimacionesService
@@ -19,6 +21,8 @@ namespace ERP_TECKIO
             , IPrecioUnitarioService<TContext> precioUnitarioService
             , IConceptoService<TContext> conceptoService
             , PrecioUnitarioProceso<TContext> precioUnitarioProceso
+            , IGeneradoresService<TContext> generadoresService
+            , IGeneradoresXEstimacionService<TContext> generadoresXEstimacionService
             )
         {
             _EstimacionService = estimacionesService;
@@ -26,6 +30,8 @@ namespace ERP_TECKIO
             _PrecioUnitarioService = precioUnitarioService;
             _ConceptoService = conceptoService;
             _PrecioUnitarioProceso = precioUnitarioProceso;
+            _generadoresService = generadoresService;
+            _generadoresXEstimacionService = generadoresXEstimacionService;
         }
 
         public async Task<List<PeriodoEstimacionesDTO>> ObtenerPeriodosXIdProyecto(int IdProyecto)
@@ -292,7 +298,15 @@ namespace ERP_TECKIO
             {
                 if(Periodo.EsCerrada == false)
                 {
+                    var estimaciones = await _EstimacionService.ObtenTodosXIdPeriodo(Periodo.Id);
+                    foreach (var estimacion in estimaciones) {
+                        var generadores = await _generadoresXEstimacionService.ObtenXIdEstimacion(estimacion.Id);
+                        foreach (var gen in generadores) {
+                            await _generadoresXEstimacionService.Eliminar(gen.Id);
+                        }
+                    }
                     await _EstimacionService.EliminarMultiple(IdPeriodo);
+
                     await _PeriodoEstimacionesService.Eliminar(IdPeriodo);
                 }
                 var PeriodosRestantes = await _PeriodoEstimacionesService.ObtenTodosXIdProyecto(Periodo.IdProyecto);
@@ -329,6 +343,126 @@ namespace ERP_TECKIO
                 }
             }
             return periodosXEstimacion;
+        }
+
+        public async Task<List<GeneradoresXEstimacionDTO>> ObtenerGeneradoresXEstimacion(int IdEstimacion)
+        {
+            var lista = new List<GeneradoresXEstimacionDTO>();
+            var estimacion = await _EstimacionService.ObtenXId(IdEstimacion);
+
+            var generadoresPU = await _generadoresService.ObtenerTodosXIdPrecioUnitario(estimacion.IdPrecioUnitario);
+            var generadoresXEstimacion = await _generadoresXEstimacionService.ObtenXIdEstimacion(estimacion.Id);
+            foreach (var gE in generadoresXEstimacion) {
+                if(gE.IdGenerador != 0 && gE.IdGenerador != null)
+                {
+                    var generadorPU = generadoresPU.FirstOrDefault(z => z.Id == gE.IdGenerador);
+                    gE.CantidadReferencia = generadorPU.Cantidad;
+                }
+                gE.CantidadTotal = gE.Cantidad * gE.X * gE.Y * gE.Z;
+            }
+            lista.AddRange(generadoresXEstimacion);
+
+            foreach (var genPU in generadoresPU) {
+                var existeGenEstimacion = generadoresXEstimacion.FirstOrDefault(z => z.IdGenerador == genPU.Id);
+                if (existeGenEstimacion == null) {
+                    lista.Add(new GeneradoresXEstimacionDTO()
+                    {
+                        IdEstimacion = IdEstimacion,
+                        IdGenerador = genPU.Id,
+                        Codigo = genPU.Codigo,
+                        EjeX = genPU.EjeX,
+                        EjeY = genPU.EjeY,
+                        EjeZ = genPU.EjeZ,
+                        Cantidad = 0,
+                        CantidadReferencia = genPU.Cantidad,
+                        X = genPU.X,
+                        Y = genPU.Y,
+                        Z = genPU.Z,
+                        CantidadTotal = 0,
+                        CantidadOperacion = ""
+                    });
+                }
+            }
+
+            lista.Add(new GeneradoresXEstimacionDTO()
+            {
+                IdEstimacion = IdEstimacion,
+                IdGenerador = 0,
+                Codigo = "",
+                EjeX = "",
+                EjeY = "",
+                EjeZ = "",
+                Cantidad = 0,
+                CantidadReferencia = 0,
+                X = 1,
+                Y = 1,
+                Z = 1,
+                CantidadTotal = 0,
+                CantidadOperacion = ""
+            });
+
+            return lista;
+        }
+
+        public async Task<List<GeneradoresXEstimacionDTO>> CrearGeneradoresXEstimacion(GeneradoresXEstimacionDTO generador)
+        {
+            if (generador.Id != 0) {
+                var crearGenerador = await _generadoresXEstimacionService.Editar(generador);
+            }
+            else
+            {
+                var crearGenerador = await _generadoresXEstimacionService.Crear(generador);
+            }
+
+            var estimacion = await _EstimacionService.ObtenXId(generador.IdEstimacion);
+            var PUs = await _PrecioUnitarioProceso.ObtenerPrecioUnitarioSinEstructurar(estimacion.IdProyecto);
+
+            var PU = PUs.FirstOrDefault(z => z.Id == estimacion.IdPrecioUnitario);
+
+            var generadores = await ObtenerGeneradoresXEstimacion(generador.IdEstimacion);
+
+            decimal Total = 0;
+            foreach (var gen in generadores) {
+                decimal subTotal = gen.Cantidad * gen.X * gen.Y * gen.Z;
+                Total += subTotal;
+            }
+
+            estimacion.CantidadAvance = Total;
+            estimacion.PorcentajeAvance = (Total / PU.Cantidad * 100);
+            estimacion.ImporteDeAvance = ((Total / PU.Cantidad * 100) / 100) * (PU.Cantidad * PU.PrecioUnitario);
+            await _EstimacionService.Editar(estimacion);
+            await RecalcularEstimacion(estimacion);
+            return generadores;
+        }
+
+        public async Task<List<GeneradoresXEstimacionDTO>> EliminarGeneradoresXEstimacion(int IdGenerador)
+        {
+            var generador = await _generadoresXEstimacionService.ObtenXId(IdGenerador);
+            var eliminar = await _generadoresXEstimacionService.Eliminar(generador.Id);
+            if (!eliminar.Estatus) {
+                return await ObtenerGeneradoresXEstimacion(generador.IdEstimacion);
+            }
+
+            var estimacion = await _EstimacionService.ObtenXId(generador.IdEstimacion);
+            var PUs = await _PrecioUnitarioProceso.ObtenerPrecioUnitarioSinEstructurar(estimacion.IdProyecto);
+
+            var PU = PUs.FirstOrDefault(z => z.Id == estimacion.IdPrecioUnitario);
+
+            var generadores = await ObtenerGeneradoresXEstimacion(generador.IdEstimacion);
+
+            decimal Total = 0;
+            foreach (var gen in generadores)
+            {
+                decimal subTotal = gen.Cantidad * gen.X * gen.Y * gen.Z;
+                Total += subTotal;
+            }
+
+            estimacion.CantidadAvance = Total;
+            estimacion.PorcentajeAvance = (Total / PU.Cantidad * 100);
+            estimacion.ImporteDeAvance = ((Total / PU.Cantidad * 100) / 100) * (PU.Cantidad * PU.PrecioUnitario);
+            await _EstimacionService.Editar(estimacion);
+            await RecalcularEstimacion(estimacion);
+            return generadores;
         }
     }
 }

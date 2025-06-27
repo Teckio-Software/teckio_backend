@@ -73,6 +73,7 @@ public partial class Alumno01Context : DbContext
     public virtual DbSet<FamiliaInsumo> FamiliaInsumos { get; set; }
 
     public virtual DbSet<Generadores> Generadores { get; set; }
+    public virtual DbSet<GeneradoresXEstimacion> GeneradoresXEstimacion { get; set; }
 
     public virtual DbSet<Insumo> Insumos { get; set; }
 
@@ -1589,6 +1590,30 @@ public partial class Alumno01Context : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Generador__IdPre__7849DB76");
         });
+
+        modelBuilder.Entity<GeneradoresXEstimacion>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Generado__3214EC0776619304");
+
+            entity.Property(e => e.Cantidad).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Codigo).HasMaxLength(20);
+            entity.Property(e => e.EjeX).HasMaxLength(20);
+            entity.Property(e => e.EjeY).HasMaxLength(20);
+            entity.Property(e => e.EjeZ).HasMaxLength(20);
+            entity.Property(e => e.X).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Y).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Z).HasColumnType("decimal(28, 6)");
+
+            entity.HasOne(d => d.IdGeneradoresNavigation).WithMany(p => p.GeneradoresXEstimacions)
+                .HasForeignKey(d => d.IdGenerador)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_GeneradoresXEstimacion_IdGenerador");
+            entity.HasOne(d => d.IdEstimacionesNavigation).WithMany(p => p.GeneradoresXEstimacions)
+                .HasForeignKey(d => d.IdEstimacion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Generador__IdEst__51851410");
+        });
+
         modelBuilder.Entity<TipoImpuesto>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_TipoImpuesto_2024_02_15");

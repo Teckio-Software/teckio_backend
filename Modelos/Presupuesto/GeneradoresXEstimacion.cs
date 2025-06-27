@@ -1,11 +1,12 @@
 ﻿
 namespace ERP_TECKIO.Modelos;
 
-public partial class Generadores
+public partial class GeneradoresXEstimacion
 {
     public int Id { get; set; }
 
-    public int IdPrecioUnitario { get; set; }
+    public int IdEstimacion { get; set; }
+    public int? IdGenerador { get; set; }
 
     public string Codigo { get; set; } = null!;
 
@@ -23,7 +24,6 @@ public partial class Generadores
 
     public decimal Z { get; set; }
 
-    public virtual PrecioUnitario IdPrecioUnitarioNavigation { get; set; } = null!;
-    public virtual ICollection<GeneradoresXEstimacion> GeneradoresXEstimacions { get; set; } = new List<GeneradoresXEstimacion>();
-
+    public virtual Estimaciones IdEstimacionesNavigation { get; set; } = null!;
+    public virtual Generadores IdGeneradoresNavigation { get; set; } = null!;
 }

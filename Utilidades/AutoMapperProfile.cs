@@ -104,6 +104,11 @@ namespace ERP_TECKIO
                 opt => opt.Ignore())
                 .ForMember(z => z.IdProyectoNavigation,
                 opt => opt.Ignore());
+            CreateMap<GeneradoresXEstimacion, GeneradoresXEstimacionDTO>();
+            CreateMap<GeneradoresXEstimacionDTO, GeneradoresXEstimacion>()
+                .ForMember(destino => destino.IdGenerador,
+                opt => opt.MapFrom(origen => origen.IdGenerador <= 0 ? null : origen.IdGenerador));
+
             CreateMap<PeriodoEstimaciones, PeriodoEstimacionesDTO>();
             CreateMap<PeriodoEstimacionesDTO, PeriodoEstimaciones>()
                 .ForMember(z => z.IdProyectoNavigation,
