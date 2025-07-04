@@ -29,26 +29,22 @@ namespace ERP_TECKIO
             _ProgramacionEstimadaGantt = programacionEstimadaProceso;
         }
 
-        public async Task<RespuestaDTO> Post([FromBody] ProyectoDTO parametroCreacionDTO)
+        public async Task<ProyectoDTO> Post([FromBody] ProyectoDTO parametroCreacionDTO)
         {
-            RespuestaDTO respuesta = new RespuestaDTO();
-            respuesta.Estatus = true;
-            respuesta.Descripcion = "Proyecto creado";
+            var respuesta = new ProyectoDTO();
             try
             {
                 var ExisteNombreProyecto = await _proyectoService.ObtenXNombreProyecto(parametroCreacionDTO.Nombre);
                 if (ExisteNombreProyecto.Id > 0) {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "Ya existe un proyecto con este nombre";
                     return respuesta;
                 }
-                var resultado = await _proyectoService.CrearYObtener(parametroCreacionDTO);
+                respuesta = await _proyectoService.CrearYObtener(parametroCreacionDTO);
                 FactorSalarioIntegradoDTO FSI = new FactorSalarioIntegradoDTO();
-                FSI.IdProyecto = resultado.Id;
+                FSI.IdProyecto = respuesta.Id;
                 FSI.Fsi = 1;
                 var FSICreado = await _fsiService.CrearYObtener(FSI);
                 FactorSalarioRealDTO FSR = new FactorSalarioRealDTO();
-                FSR.IdProyecto = resultado.Id;
+                FSR.IdProyecto = respuesta.Id;
                 FSR.PorcentajeFsr = 1;
                 var FSRCreado = await _fsrService.CrearYObtener(FSR);
             }
