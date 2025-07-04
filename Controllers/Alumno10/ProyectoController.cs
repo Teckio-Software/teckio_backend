@@ -29,7 +29,7 @@ namespace ERP_TECKIO.Controllers
         /// <returns>Un mensaje de resultado en headers</returns>
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//)]//, Policy = "CrearProyecto-Empresa1")]
-        public async Task<ActionResult<RespuestaDTO>> Post([FromBody] ProyectoDTO parametroCreacionDTO)
+        public async Task<ActionResult<ProyectoDTO>> Post([FromBody] ProyectoDTO parametroCreacionDTO)
         {
             var respuesta =  await _ProyectoProceso.Post(parametroCreacionDTO);
             return respuesta;
