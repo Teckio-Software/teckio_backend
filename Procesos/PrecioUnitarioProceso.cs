@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using AutoMapper.Configuration.Annotations;
+using DbfDataReader;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using DocumentFormat.OpenXml.Office2013.Excel;
 using ERP_TECKIO.DTO;
+using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.Modelos;
 using ERP_TECKIO.Procesos;
 using ERP_TECKIO.Servicios;
@@ -3876,6 +3878,284 @@ namespace ERP_TECKIO
                 }
             }
             return await obtenerExplosion(insumoBase.IdProyecto);
+        }
+
+        public async Task GuardarArchivo(IFormFile archivo, string rutaDestino)
+        {
+            using (var stream = new FileStream(rutaDestino, FileMode.Create))
+            {
+                await archivo.CopyToAsync(stream);
+            }
+        }
+
+        public async Task<List<List<ObjetoOpusDTO>>> extraerDatosDBF(IFormFile archivoDBF, IFormFile archivoFPT)
+        {
+
+            string ruta = @"C:\TempImportacionOpus";
+            Directory.CreateDirectory(ruta);
+
+            string rutaArchivo = Path.Combine(ruta, archivoDBF.FileName);
+            string rutaArchivoFPT = Path.Combine(ruta, archivoFPT.FileName);
+
+            await GuardarArchivo(archivoDBF, rutaArchivo);
+            await GuardarArchivo(archivoFPT, rutaArchivoFPT);
+
+
+            var registros = new List<List<ObjetoOpusDTO>>();
+            using (var reader = new DbfDataReader.DbfDataReader(rutaArchivo))
+            {
+                while (reader.Read())
+                {
+                    if (reader.DbfRecord.IsDeleted == false)
+                    {
+                        var nuevoObjeto = new List<ObjetoOpusDTO>();
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            var objeto = new ObjetoOpusDTO();
+                            string nombreCampo = reader.GetName(i);
+                            object valor = reader.GetValue(i);
+                            objeto.TipoCampo = nombreCampo;
+                            objeto.Valor = Convert.ToString(valor);
+                            nuevoObjeto.Add(objeto);
+                        }
+                        registros.Add(nuevoObjeto);
+                    }
+                }
+            }
+            File.Delete(rutaArchivo);
+            File.Delete(rutaArchivoFPT);
+            Directory.Delete(ruta);
+            return registros;
+        }
+
+        public async Task ImportarInsumos(IFormFile archivoDBF, IFormFile archivoFPT, int IdProyecto) //Enviar P.DBF
+        {
+            var registros = await extraerDatosDBF(archivoDBF, archivoFPT);
+            for (int i = 0; i < registros.Count(); i++)
+            {
+                var registro = registros[i].Where(z => z.TipoCampo == "PREFIJO").FirstOrDefault();
+                if(registro.Valor == "32")
+                {
+                    //CrearConcepto
+                    var Concepto = new ConceptoDTO();
+                    Concepto.Codigo = registros[i].Where(z => z.TipoCampo == "NOMBRE").FirstOrDefault().Valor;
+                    Concepto.Descripcion = registros[i].Where(z => z.TipoCampo == "DESCRIPCIO").FirstOrDefault().Valor;
+                    Concepto.Unidad = registros[i].Where(z => z.TipoCampo == "UNIDAD").FirstOrDefault().Valor;
+                    Concepto.IdEspecialidad = null;
+                    Concepto.CostoUnitario = Convert.ToDecimal(registros[i].Where(z => z.TipoCampo == "PRECIO").FirstOrDefault().Valor);
+                    Concepto.IdProyecto = IdProyecto;
+                    Concepto.PorcentajeIndirecto = 0;
+                    var ConceptoCreado = await _ConceptoService.CrearYObtener(Concepto);
+                }
+                    //CrearInsumo
+                    var insumo = new InsumoCreacionDTO();
+                    switch (registro.Valor)
+                    {
+                        case "1":
+                            //Material
+                            insumo.idTipoInsumo = 10004;
+                            break;
+
+                        case "2":
+                            //Mano de obra
+                            insumo.idTipoInsumo = 10000;
+                            break;
+
+                        case "4":
+                            //%(mo)
+                            insumo.idTipoInsumo = 10001;
+                            break;
+
+                        case "8":
+                            //Herramienta
+                            insumo.idTipoInsumo = 10002;
+                            break;
+                        case "16":
+                            //Auxiliar
+                            insumo.idTipoInsumo = 10005;
+                            break;
+
+                        default:
+                            break;
+                    }
+                    if(registros[i].Where(z => z.TipoCampo == "BASICO").FirstOrDefault().Valor != "S")
+                    {
+                        insumo.idTipoInsumo = 10006;
+                    }
+                    insumo.Codigo = registros[i].Where(z => z.TipoCampo == "NOMBRE").FirstOrDefault().Valor;
+                    insumo.Descripcion = registros[i].Where(z => z.TipoCampo == "DESCRIPCIO").FirstOrDefault().Valor;
+                    insumo.Unidad = registros[i].Where(z => z.TipoCampo == "UNIDAD").FirstOrDefault().Valor;
+                    insumo.idFamiliaInsumo = null;
+                    insumo.CostoBase = Convert.ToDecimal(registros[i].Where(z => z.TipoCampo == "PBASEMN").FirstOrDefault().Valor);
+                    insumo.CostoUnitario = insumo.CostoBase;
+                    insumo.IdProyecto = IdProyecto;
+                    var insumoCreado = await _InsumoService.CrearYObtener(insumo);
+                    if(insumoCreado.idTipoInsumo == 10000 & registros[i].Where(z => z.TipoCampo == "BASICO").FirstOrDefault().Valor == "S")
+                    {
+                        var nuevoInsumoMDO = new FsrxinsummoMdODTO();
+                        nuevoInsumoMDO.CostoDirecto = insumo.CostoBase;
+                        nuevoInsumoMDO.CostoFinal = Convert.ToDecimal(registros[i].Where(z => z.TipoCampo == "PRECIO").FirstOrDefault().Valor);
+                        nuevoInsumoMDO.Fsr = Convert.ToDecimal(registros[i].Where(z => z.TipoCampo == "FSR").FirstOrDefault().Valor);
+                        nuevoInsumoMDO.IdInsumo = insumoCreado.id;
+                        nuevoInsumoMDO.IdProyecto = IdProyecto;
+                        var FSRCreado = await _FsrxinsummoMdOService.CrearYObtener(nuevoInsumoMDO);
+                        insumoCreado.CostoUnitario = FSRCreado.CostoFinal;
+                        insumoCreado.EsFsrGlobal = true;
+                        await _InsumoService.Editar(insumoCreado);
+                    }
+            }
+        }
+
+        public async Task ImportarConceptos(IFormFile archivoDBF, IFormFile archivoFPT, int IdProyecto) //Enviar A.DBF
+        {
+            var registros = await extraerDatosDBF(archivoDBF, archivoFPT);
+            foreach(var registro in registros)
+            {
+                var Concepto = new ConceptoDTO();
+                Concepto.Codigo = registro.Where(z => z.TipoCampo == "NOMBRE").FirstOrDefault().Valor;
+                Concepto.Descripcion = registro.Where(z => z.TipoCampo == "DESC").FirstOrDefault().Valor;
+                Concepto.Unidad = "";
+                Concepto.IdEspecialidad = null;
+                Concepto.CostoUnitario = Convert.ToDecimal(registro.Where(z => z.TipoCampo == "PRECIO").FirstOrDefault().Valor);
+                Concepto.IdProyecto = IdProyecto;
+                Concepto.PorcentajeIndirecto = 0;
+                var ConceptoCreado = await _ConceptoService.CrearYObtener(Concepto);
+            }
+        }
+
+        public async Task ArmarCatalogoConceptos(IFormFile archivoDBF, IFormFile archivoFPT, int IdProyecto) //Enviar 1.DBF
+        {
+            var registros = await extraerDatosDBF(archivoDBF, archivoFPT);
+            var registrosOrdenados = registros.OrderBy(sublista => sublista.FirstOrDefault(obj => obj.TipoCampo == "PRE_ID").Valor).ToList();
+            var conceptos = await _ConceptoService.ObtenerTodos(IdProyecto);
+            var Pus = new List<PUOpusRelacionDTO>();
+            foreach (var registro in registrosOrdenados)
+            {
+                if(registro.Where(z => z.TipoCampo == "PRE_NIVEL").FirstOrDefault().Valor != "0")
+                {
+                    var PrecioUnitario = new PrecioUnitarioDTO();
+                    PrecioUnitario.IdProyecto = IdProyecto;
+                    PrecioUnitario.Cantidad = Convert.ToDecimal(registro.Where(z => z.TipoCampo == "PRE_VOL").FirstOrDefault().Valor);
+                    PrecioUnitario.CantidadExcedente = 0;
+                    if (registro.Where(z => z.TipoCampo == "PRE_TIP").FirstOrDefault().Valor == "0")
+                    {
+                        PrecioUnitario.TipoPrecioUnitario = 1;
+                    }
+                    var nivelDecimal = Convert.ToDecimal(registro.Where(z => z.TipoCampo == "PRE_NIVEL").FirstOrDefault().Valor);
+                    PrecioUnitario.Nivel = Convert.ToInt32(nivelDecimal);
+                    var concepto = conceptos.Where(z => z.Codigo == registro.Where(z => z.TipoCampo == "PRE_COM").FirstOrDefault().Valor).FirstOrDefault();
+                    PrecioUnitario.IdConcepto = concepto.Id;
+                    if(registro.Where(z => z.TipoCampo == "PRE_IDPAD").FirstOrDefault().Valor != "0")
+                    {
+                        //estructurar PrecioUnitario
+                        var relacionEncontrada = Pus.Where(z => z.IdPrecioUnitarioOpus == registro.Where(z => z.TipoCampo == "PRE_IDPAD").FirstOrDefault().Valor).FirstOrDefault();
+                        PrecioUnitario.IdPrecioUnitarioBase = relacionEncontrada.IdPrecioUnitarioTeckio;
+                    }
+                    var nuevoPU = await _PrecioUnitarioService.CrearYObtener(PrecioUnitario);
+                    var relacion = new PUOpusRelacionDTO();
+                    relacion.IdPrecioUnitarioTeckio = nuevoPU.Id;
+                    relacion.IdPrecioUnitarioOpus = registro.Where(z => z.TipoCampo == "PRE_IDUNI").FirstOrDefault().Valor;
+                    Pus.Add(relacion);
+                }
+            }
+        }
+
+        public async Task ArmarPreciosUnitarios(IFormFile archivoDBF, IFormFile archivoFPT, int IdProyecto) //enviar F.DBF
+        {
+            var registros = await extraerDatosDBF(archivoDBF, archivoFPT);
+            var conceptos = await _ConceptoService.ObtenerTodos(IdProyecto);
+            var Insumos = await _InsumoService.ObtenerInsumoXProyecto(IdProyecto);
+            var PreciosUnitariosSinEstructurar = await ObtenerPrecioUnitarioSinEstructurar(IdProyecto);
+            var registrosFiltrados = registros.Where(sublista => sublista.Any(z => z.TipoCampo == "PREF" && z.Valor == "32")).ToList();
+            foreach(var registro in registrosFiltrados)
+            {
+                var concepto = conceptos.Where(z => z.Codigo == registro.Where(z => z.TipoCampo == "NOMBRE").FirstOrDefault().Valor).FirstOrDefault();
+                var ExisteEnCatalogo = PreciosUnitariosSinEstructurar.Where(z => z.IdConcepto == concepto.Id).ToList();
+                if(ExisteEnCatalogo.Count > 0)
+                {
+                    foreach(var regCatalogo in ExisteEnCatalogo)
+                    {
+                        var insumo = Insumos.Where(z => z.Codigo == registro.Where(z => z.TipoCampo == "COMPONENTE").FirstOrDefault().Valor).FirstOrDefault();
+                        if (insumo != null)
+                        {
+                            var precioUnitarioDetalle = new PrecioUnitarioDetalleDTO();
+                            precioUnitarioDetalle.IdPrecioUnitario = regCatalogo.Id;
+                            precioUnitarioDetalle.IdPrecioUnitarioDetallePerteneciente = 0;
+                            precioUnitarioDetalle.IdInsumo = insumo.id;
+                            precioUnitarioDetalle.Cantidad = Convert.ToDecimal(registro.Where(z => z.TipoCampo == "CANTIDAD").FirstOrDefault().Valor);
+                            var RegistrosExistentesCompuesto = registros.Where(sublista => sublista.Any(z => z.TipoCampo == "NOMBRE" && z.Valor == insumo.Codigo)).ToList();
+                            if (RegistrosExistentesCompuesto.Count > 0)
+                            {
+                                precioUnitarioDetalle.EsCompuesto = true;
+                                var precioUnitarioCreado = await _PrecioUnitarioDetalleService.CrearYObtener(precioUnitarioDetalle);
+                                //Hacer metodo recursivo para armados (pasar parametros el precio creado y los registros guardados)
+                                await ArmarPreciosUnitariosDetalles(registros, IdProyecto, precioUnitarioCreado, Insumos);
+                            }
+                            else
+                            {
+                                var precioUnitarioCreado = await _PrecioUnitarioDetalleService.CrearYObtener(precioUnitarioDetalle);
+                            }
+                        }
+                    }
+                }
+            }
+            await CrearProgramacionEstimadaGantt(IdProyecto);
+
+        }
+
+        public async Task ArmarPreciosUnitariosDetalles(List<List<ObjetoOpusDTO>> registros, int IdProyecto, PrecioUnitarioDetalleDTO Padre, List<InsumoDTO> insumos) //Callback
+        {
+            var insumo = insumos.Where(z => z.id == Padre.IdInsumo).FirstOrDefault();
+            var hijos = registros.Where(sublista => sublista.Any(z => z.TipoCampo == "NOMBRE" && z.Valor == insumo.Codigo)).ToList();
+            foreach(var hijo in hijos)
+            {
+                var insumoHijo = insumos.Where(z => z.Codigo == hijo.Where(z => z.TipoCampo == "COMPONENTE").FirstOrDefault().Valor).FirstOrDefault();
+                if(insumoHijo != null)
+                {
+                    var precioUnitarioDetalle = new PrecioUnitarioDetalleDTO();
+                    precioUnitarioDetalle.IdPrecioUnitario = Padre.IdPrecioUnitario;
+                    precioUnitarioDetalle.IdPrecioUnitarioDetallePerteneciente = Padre.Id;
+                    precioUnitarioDetalle.IdInsumo = insumoHijo.id;
+                    precioUnitarioDetalle.Cantidad = Convert.ToDecimal(hijo.Where(z => z.TipoCampo == "CANTIDAD").FirstOrDefault().Valor);
+                    var RegistrosExistentesCompuesto = registros.Where(sublista => sublista.Any(z => z.TipoCampo == "NOMBRE" && z.Valor == insumoHijo.Codigo)).ToList();
+                    if (RegistrosExistentesCompuesto.Count > 0)
+                    {
+                        precioUnitarioDetalle.EsCompuesto = true;
+                        var precioUnitarioCreado = await _PrecioUnitarioDetalleService.CrearYObtener(precioUnitarioDetalle);
+                        //Hacer metodo recursivo para armados (pasar parametros el precio creado y los registros guardados)
+                        await ArmarPreciosUnitariosDetalles(registros, IdProyecto, precioUnitarioCreado, insumos);
+                    }
+                    else
+                    {
+                        var precioUnitarioCreado = await _PrecioUnitarioDetalleService.CrearYObtener(precioUnitarioDetalle);
+                    }
+                }
+            }
+
+        }
+
+        public async Task CrearProgramacionEstimadaGantt(int IdProyecto)
+        {
+            var catalogoConeptos = await ObtenerPrecioUnitarioSinEstructurar(IdProyecto);
+
+            var programacionesGantt = new List<ProgramacionEstimadaGanttDTO>();
+            foreach(var concepo in catalogoConeptos)
+            {
+                var nuevaProgramacion = new ProgramacionEstimadaGanttDTO();
+                nuevaProgramacion.IdProyecto = IdProyecto;
+                nuevaProgramacion.IdPrecioUnitario = concepo.Id;
+                nuevaProgramacion.IdConcepto = concepo.IdConcepto;
+                nuevaProgramacion.Start = DateTime.Now;
+                nuevaProgramacion.End = nuevaProgramacion.Start.AddDays(1);
+                nuevaProgramacion.Duracion = 1;
+                if(concepo.IdPrecioUnitarioBase != 0)
+                {
+                    var padre = programacionesGantt.Where(z => z.IdPrecioUnitario == concepo.IdPrecioUnitarioBase).FirstOrDefault();
+                    nuevaProgramacion.Parent = Convert.ToString(padre.Id);
+                }
+                var registroCreacion = await _ProgramacionEstimadaGanttService.CrearYObtener(nuevaProgramacion);
+                programacionesGantt.Add(registroCreacion);
+            }
         }
     }
 }

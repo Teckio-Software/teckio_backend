@@ -76,4 +76,16 @@ namespace ERP_TECKIO
         public bool EsSubnivel { get; set; }
         public bool EsCopiado { get; set; }
     }
+
+    public class ObjetoOpusDTO
+    {
+        public string TipoCampo { get; set; }
+        public string Valor { get; set; }
+    }
+
+    public class PUOpusRelacionDTO
+    {
+        public int IdPrecioUnitarioTeckio { get; set; }
+        public string IdPrecioUnitarioOpus { get; set; }
+    }
 }
