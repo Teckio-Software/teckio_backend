@@ -494,6 +494,7 @@ namespace ERP_TECKIO
         {
             RespuestaDTO respuesta = new RespuestaDTO();
             var insumoXCotizacion = await _insumoXCotizacionService.ObtenXId(idInusmoCotizado);
+            var insumo = await _inumoService.ObtenXId(insumoXCotizacion.IdInsumo);
             if(insumoXCotizacion.Id <= 0)
             {
                 respuesta.Estatus = false;
@@ -526,6 +527,10 @@ namespace ERP_TECKIO
                 await ActualizarEstatusCotizacion(cotizacion.Id);
                 await _actualizaRequsicionEstatusInsumos.ActualizaEstatusRequisicionInsumos(cotizacion.IdRequisicion);
                 respuesta.Estatus = true;
+                if (insumoXCotizacion.PrecioUnitario > insumo.CostoUnitario) {
+                    respuesta.Descripcion = "El insumo que autorizó supera el precio presupuestado";
+                    return respuesta;
+                }
                 respuesta.Descripcion = "Insumo autorizado";
                 return respuesta;
             }
