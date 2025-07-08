@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using ERP_TECKIO;
 using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.Servicios.Contratos.Facturacion;
+using ERP_TECKIO.Modelos;
 
 namespace ERP_TECKIO
 {
@@ -22,6 +23,7 @@ namespace ERP_TECKIO
         private readonly ITipoImpuestoService<T> _tipoImpuestoService;
         private readonly IFacturaXOrdenCompraService<T> _facturaXOrdenCompraService;
         private readonly IFacturaService<T> _facturaService;
+        private readonly IProyectoService<T> _proyectoService;
 
         public OrdenCompraProceso(
             IOrdenCompraService<T> ordenCompraService,
@@ -36,6 +38,7 @@ namespace ERP_TECKIO
             , ITipoImpuestoService<T> tipoImpuestoService
             , IFacturaXOrdenCompraService<T> facturaXOrdenCompraService
             , IFacturaService<T> facturaService
+            , IProyectoService<T> proyectoService
             )
         {
             _ordenCompraService = ordenCompraService;
@@ -50,6 +53,7 @@ namespace ERP_TECKIO
             _tipoImpuestoService = tipoImpuestoService;
             _facturaXOrdenCompraService = facturaXOrdenCompraService;
             _facturaService = facturaService;
+            _proyectoService = proyectoService;
         }
 
         public async Task<RespuestaDTO> CrearOrdenCompra(OrdenCompraCreacionDTO parametros, List<System.Security.Claims.Claim> claims)
@@ -628,6 +632,70 @@ namespace ERP_TECKIO
             }
 
             return facturasPendientes;
+        }
+
+        public async Task<List<OrdenCompraDTO>> ObtenerTodas() {
+            List<OrdenCompraDTO> lista = new List<OrdenCompraDTO>();
+            var proyectos = await _proyectoService.Lista();
+
+            var ordenesCompra = await _ordenCompraService.ObtenTodas();
+            var OCordenDecendente = ordenesCompra.OrderBy(x => x.FechaRegistro).Reverse();
+            foreach (var oc in OCordenDecendente)
+            {
+                var proyecto = proyectos.FirstOrDefault(z => z.Id == oc.IdProyecto);
+                string descripcionEstatus = "";
+                switch (oc.EstatusInsumosSurtidos)
+                {
+                    case 1:
+                        descripcionEstatus = "Pendiente";
+                        break;
+                    case 2:
+                        descripcionEstatus = "Surtida parcialmente";
+                        break;
+                    case 3:
+                        descripcionEstatus = "Surtida totalmente";
+                        break;
+                    default:
+                        descripcionEstatus = "";
+                        break;
+
+                }
+                string descripcionEstatusFacturado = "";
+                switch (oc.EstatusSaldado)
+                {
+                    case 1:
+                        descripcionEstatusFacturado = "Pendiente";
+                        break;
+                    case 2:
+                        descripcionEstatusFacturado = "Pagado parcialmente";
+                        break;
+                    case 3:
+                        descripcionEstatusFacturado = "Pagado totalmente";
+                        break;
+                    default:
+                        descripcionEstatusFacturado = "";
+                        break;
+                }
+                if (oc.EstatusSaldado == 0) {
+                    oc.EstatusSaldado = 1;
+                }
+                lista.Add(new OrdenCompraDTO()
+                {
+                    Id = oc.Id,
+                    NoOrdenCompra = oc.NoOrdenCompra,
+                    Chofer = oc.Chofer,
+                    Observaciones = oc.Observaciones,
+                    FechaRegistro = oc.FechaRegistro,
+                    Estatus = oc.Estatus,
+                    EstatusInsumosSurtidosDescripcion = descripcionEstatus,
+                    IdContratista = oc.IdContratista,
+                    EstatusSaldadoDescripcion = descripcionEstatusFacturado,
+                    NombreProyecto = proyecto.Nombre,
+                    EstatusSaldado = oc.EstatusSaldado,
+                    EstatusInsumosSurtidos = oc.EstatusInsumosSurtidos
+                });
+            }
+            return lista;
         }
     }
 }

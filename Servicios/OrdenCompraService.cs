@@ -391,5 +391,11 @@ namespace ERP_TECKIO.Servicios
             respuesta.Descripcion = "Orden de compra editada";
             return respuesta;
         }
+
+        public async Task<List<OrdenCompraDTO>> ObtenTodas()
+        {
+            var query = await _Repositorio.ObtenerTodos();
+            return _Mapper.Map<List<OrdenCompraDTO>>(query);
+        }
     }
 }

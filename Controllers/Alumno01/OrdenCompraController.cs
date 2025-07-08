@@ -132,6 +132,13 @@ namespace ERP_TECKIO.Controllers
             return listaResult;
         }
 
+        [HttpGet("ObtenerTodas")]
+        public async Task<ActionResult<List<OrdenCompraDTO>>> ObtenerTodas()
+        {
+            var lista = await _Proceso.ObtenerTodas();
+            return lista;
+        }
+
         [HttpGet("ObtenXIdRequisicion/{idRequisicion:int}")]
         public async Task<ActionResult<List<OrdenCompraDTO>>> ObtenXIdRequisicion(int idRequisicion)
         {

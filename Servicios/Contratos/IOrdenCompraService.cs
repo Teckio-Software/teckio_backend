@@ -5,6 +5,7 @@ namespace ERP_TECKIO
 {
     public interface IOrdenCompraService<T> where T : DbContext
     {
+        Task<List<OrdenCompraDTO>> ObtenTodas();
         Task<List<OrdenCompraDTO>> ObtenXIdProyecto(int IdProyecto);
         Task<OrdenCompraDTO> ObtenXId(int Id);
         Task<List<OrdenCompraDTO>> ObtenXIdCotizacion(int IdCotizacion);
