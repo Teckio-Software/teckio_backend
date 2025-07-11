@@ -482,7 +482,8 @@ namespace ERP_TECKIO
                     lista[i].Expandido = true;
                 }
             }
-            var indirectos = 1;
+            var indirecto = _conjuntoIndirectosService.ObtenerXIdProyecto(IdProyecto).Result;
+            var indirectos = indirecto.Porcentaje;
             for (int i = 0; i < lista.Count; i++)
             {
                 var concepto = conceptos.Where(z => z.Id == lista[i].IdConcepto).FirstOrDefault();
