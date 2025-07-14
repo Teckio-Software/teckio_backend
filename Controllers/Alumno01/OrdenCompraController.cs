@@ -198,5 +198,19 @@ namespace ERP_TECKIO.Controllers
             var lista = await _obtenFacturaProceso.CancelarFacturaXOrdenCompra(facturaXOrdenCompra);
             return lista;
         }
+
+        [HttpGet("ObtenerInsumosComprados/{IdProyecto:int}")]
+        public async Task<ActionResult<List<InsumoDTO>>> ObtenerInsumosComprados(int IdProyecto)
+        {
+            var respuesta = await _Proceso.ObtenerInsumosComprados(IdProyecto);
+            return respuesta;
+        }
+
+        [HttpGet("ObtenerOrdenesCompraXInsumo/{IdInsumo:int}")]
+        public async Task<ActionResult<List<OrdenesCompraXInsumoDTO>>> ObtenerOrdenesCompraXInsumo(int IdInsumo)
+        {
+            var respuesta = await _Proceso.ObtenerOrdenesCompraXInsumo(IdInsumo);
+            return respuesta;
+        }
     }
 }
