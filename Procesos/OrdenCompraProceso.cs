@@ -713,7 +713,7 @@ namespace ERP_TECKIO
                 left join Insumo as I on I.Id = IOC.IdInsumo
                 where Oc.IdProyecto = 
                 """" + IdProyecto +
-                """" group by I.Id, I.Codigo, I.Descripcion, I.Unidad, I.IdTipoInsumo, I.IdFamiliaInsumo, I.CostoUnitario, I.IdProyecto, I.CostoBase, I.EsFsrGlobal for json path"""").ToList();
+                """"  and I.Id is not null  group by I.Id, I.Codigo, I.Descripcion, I.Unidad, I.IdTipoInsumo, I.IdFamiliaInsumo, I.CostoUnitario, I.IdProyecto, I.CostoBase, I.EsFsrGlobal for json path"""").ToList();
             if (items.Count <= 0)
             {
                 return insumos;
