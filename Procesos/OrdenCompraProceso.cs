@@ -708,10 +708,10 @@ namespace ERP_TECKIO
 
             var items = _dbContext.Database.SqlQueryRaw<string>(""""
                 select I.Id as id, I.Codigo, I.Descripcion, I.Unidad, I.IdTipoInsumo, I.IdFamiliaInsumo, I.CostoUnitario, I.IdProyecto, I.CostoBase, I.EsFsrGlobal
-                from OrdenCompra as OC 
-                left join InsumoXOrdenCompra as IOC on IOC.IdOrdenCompra = OC.Id
+                from InsumoXOrdenCompra as IOC
+                left join OrdenCompra as OC on OC.Id = IOC.IdOrdenCompra
                 left join Insumo as I on I.Id = IOC.IdInsumo
-                where Oc.IdProyecto = 
+                where I.IdProyecto =
                 """" + IdProyecto +
                 """"  and I.Id is not null  group by I.Id, I.Codigo, I.Descripcion, I.Unidad, I.IdTipoInsumo, I.IdFamiliaInsumo, I.CostoUnitario, I.IdProyecto, I.CostoBase, I.EsFsrGlobal for json path"""").ToList();
             if (items.Count <= 0)
