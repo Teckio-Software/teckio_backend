@@ -65,4 +65,14 @@ namespace ERP_TECKIO
         public int EstatusSaldado { get; set; }
         public List<FacturaXOrdenCompraDTO> FacturasXOrdenCompra { get; set; } = new List<FacturaXOrdenCompraDTO>();
     }
+
+    public class OrdenesCompraXInsumoDTO
+    {
+        public int IdOrdenCompra { get; set; }
+        public string NoOrdenCompra { get; set; }
+        public decimal Cantidad { get; set; }
+        public decimal PrecioUnitario { get; set; }
+        public decimal ImporteSinIva { get; set; }
+        public decimal ImporteConIva { get; set; }
+    }
 }

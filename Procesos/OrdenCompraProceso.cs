@@ -6,6 +6,7 @@ using ERP_TECKIO;
 using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.Servicios.Contratos.Facturacion;
 using ERP_TECKIO.Modelos;
+using System.Text.Json;
 
 namespace ERP_TECKIO
 {
@@ -24,6 +25,7 @@ namespace ERP_TECKIO
         private readonly IFacturaXOrdenCompraService<T> _facturaXOrdenCompraService;
         private readonly IFacturaService<T> _facturaService;
         private readonly IProyectoService<T> _proyectoService;
+        private readonly T _dbContext;
 
         public OrdenCompraProceso(
             IOrdenCompraService<T> ordenCompraService,
@@ -33,12 +35,13 @@ namespace ERP_TECKIO
             , IInsumoService<T> insumos
             , CotizacionProceso<T> cotizacionProceso
             , ActualizaEstatusSubProceso<T> actualizaRequsicionEstatusInsumos
-            , IImpuestoInsumoOrdenCompraService <T> impuestoInsumoOrdenCompraService
+            , IImpuestoInsumoOrdenCompraService<T> impuestoInsumoOrdenCompraService
             , IImpuestoInsumoCotizadoService<T> impuestoInsumoCotizadoService
             , ITipoImpuestoService<T> tipoImpuestoService
             , IFacturaXOrdenCompraService<T> facturaXOrdenCompraService
             , IFacturaService<T> facturaService
             , IProyectoService<T> proyectoService
+            , T dbContext
             )
         {
             _ordenCompraService = ordenCompraService;
@@ -48,12 +51,13 @@ namespace ERP_TECKIO
             _insumos = insumos;
             _cotizacionProceso = cotizacionProceso;
             _actualizaRequsicionEstatusInsumos = actualizaRequsicionEstatusInsumos;
-            _impuestoInsumoOrdenCompraService = impuestoInsumoOrdenCompraService ;
+            _impuestoInsumoOrdenCompraService = impuestoInsumoOrdenCompraService;
             _impuestoInsumoCotizadoService = impuestoInsumoCotizadoService;
             _tipoImpuestoService = tipoImpuestoService;
             _facturaXOrdenCompraService = facturaXOrdenCompraService;
             _facturaService = facturaService;
             _proyectoService = proyectoService;
+            _dbContext = dbContext;
         }
 
         public async Task<RespuestaDTO> CrearOrdenCompra(OrdenCompraCreacionDTO parametros, List<System.Security.Claims.Claim> claims)
@@ -696,6 +700,46 @@ namespace ERP_TECKIO
                 });
             }
             return lista;
+        }
+
+        public async Task<List<InsumoDTO>> ObtenerInsumosComprados(int IdProyecto)
+        {
+            var insumos = new List<InsumoDTO>();
+
+            var items = _dbContext.Database.SqlQueryRaw<string>(""""
+                select I.Id as id, I.Codigo, I.Descripcion, I.Unidad, I.IdTipoInsumo, I.IdFamiliaInsumo, I.CostoUnitario, I.IdProyecto, I.CostoBase, I.EsFsrGlobal
+                from InsumoXOrdenCompra as IOC
+                left join OrdenCompra as OC on OC.Id = IOC.IdOrdenCompra
+                left join Insumo as I on I.Id = IOC.IdInsumo
+                where I.IdProyecto =
+                """" + IdProyecto +
+                """"  and I.Id is not null  group by I.Id, I.Codigo, I.Descripcion, I.Unidad, I.IdTipoInsumo, I.IdFamiliaInsumo, I.CostoUnitario, I.IdProyecto, I.CostoBase, I.EsFsrGlobal for json path"""").ToList();
+            if (items.Count <= 0)
+            {
+                return insumos;
+            }
+            string json = string.Join("", items);
+            var datos = JsonSerializer.Deserialize<List<InsumoDTO>>(json);
+            return datos;
+        }
+
+        public async Task<List<OrdenesCompraXInsumoDTO>> ObtenerOrdenesCompraXInsumo(int IdInsumo)
+        {
+            var ordenesXInsumo = new List<OrdenesCompraXInsumoDTO>();
+
+            var items = _dbContext.Database.SqlQueryRaw<string>(""""
+                select OC.Id as IdOrdenCompra, OC.NoOrdenCompra, IXOC.Cantidad, IXOC.PrecioUnitario, IXOC.ImporteSinIva, IXOC.ImporteConIva from InsumoXOrdenCompra as IXOC
+                left join OrdenCompra as OC on OC.Id = IXOC.IdOrdenCompra
+                where IXOC.IdInsumo = 
+                """" + IdInsumo +
+                """" for json path"""").ToList();
+            if (items.Count <= 0)
+            {
+                return ordenesXInsumo;
+            }
+            string json = string.Join("", items);
+            var datos = JsonSerializer.Deserialize<List<OrdenesCompraXInsumoDTO>>(json);
+            return datos;
         }
     }
 }
