@@ -23,6 +23,7 @@ using System.Data;
 using System.Linq.Expressions;
 using System.Text;
 using System.Text.Json;
+System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
 namespace ERP_TECKIO
 {
