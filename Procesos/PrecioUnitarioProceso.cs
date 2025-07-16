@@ -21,6 +21,7 @@ using SpreadsheetLight;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq.Expressions;
+using System.Text;
 using System.Text.Json;
 
 namespace ERP_TECKIO
@@ -44,6 +45,7 @@ namespace ERP_TECKIO
         private readonly IFsrxinsummoMdOService<TContext> _FsrxinsummoMdOService;
         private readonly IMapper _Mapper;
         private readonly TContext _dbContex;
+        private static readonly Encoding Latin1 = Encoding.GetEncoding("windows-1252");
         public PrecioUnitarioProceso(
             IProyectoService<TContext> proyectoService
             , IPrecioUnitarioService<TContext> precioUnitarioService
@@ -3900,9 +3902,15 @@ namespace ERP_TECKIO
             await GuardarArchivo(archivoDBF, rutaArchivo);
             await GuardarArchivo(archivoFPT, rutaArchivoFPT);
 
+            var opciones = new DbfDataReaderOptions
+            {
+                SkipDeletedRecords = true,
+                Encoding = Encoding.GetEncoding(1252)
+            };
+
 
             var registros = new List<List<ObjetoOpusDTO>>();
-            using (var reader = new DbfDataReader.DbfDataReader(rutaArchivo))
+            using (var reader = new DbfDataReader.DbfDataReader(rutaArchivo, opciones))
             {
                 while (reader.Read())
                 {
@@ -3928,6 +3936,20 @@ namespace ERP_TECKIO
             return registros;
         }
 
+        public static string RecuperarTextoOriginal(string raw)
+        {
+            if (string.IsNullOrEmpty(raw))
+                return raw;
+
+            // 1) Obtiene los bytes como si estuvieran en UTF-8
+            byte[] utf8Bytes = Encoding.UTF8.GetBytes(raw);
+
+            // 2) Decodifica esos bytes usando Windows-1252
+            string decoded = Latin1.GetString(utf8Bytes);
+
+            return decoded;
+        }
+
         public async Task ImportarInsumos(IFormFile archivoDBF, IFormFile archivoFPT, int IdProyecto) //Enviar P.DBF
         {
             var registros = await extraerDatosDBF(archivoDBF, archivoFPT);
@@ -3939,6 +3961,8 @@ namespace ERP_TECKIO
                     //CrearConcepto
                     var Concepto = new ConceptoDTO();
                     Concepto.Codigo = registros[i].Where(z => z.TipoCampo == "NOMBRE").FirstOrDefault().Valor;
+                    //string descipcion = RecuperarTextoOriginal(registros[i].Where(z => z.TipoCampo == "DESCRIPCIO").FirstOrDefault().Valor);
+
                     Concepto.Descripcion = registros[i].Where(z => z.TipoCampo == "DESCRIPCIO").FirstOrDefault().Valor;
                     Concepto.Unidad = registros[i].Where(z => z.TipoCampo == "UNIDAD").FirstOrDefault().Valor;
                     Concepto.IdEspecialidad = null;
@@ -3983,6 +4007,7 @@ namespace ERP_TECKIO
                         insumo.idTipoInsumo = 10006;
                     }
                     insumo.Codigo = registros[i].Where(z => z.TipoCampo == "NOMBRE").FirstOrDefault().Valor;
+                    //string descipcionInsumo = RecuperarTextoOriginal(registros[i].Where(z => z.TipoCampo == "DESCRIPCIO").FirstOrDefault().Valor);
                     insumo.Descripcion = registros[i].Where(z => z.TipoCampo == "DESCRIPCIO").FirstOrDefault().Valor;
                     insumo.Unidad = registros[i].Where(z => z.TipoCampo == "UNIDAD").FirstOrDefault().Valor;
                     insumo.idFamiliaInsumo = null;
