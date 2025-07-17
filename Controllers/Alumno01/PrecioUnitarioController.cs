@@ -1,5 +1,4 @@
 ﻿
-using DbfDataReader;
 using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.Procesos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
