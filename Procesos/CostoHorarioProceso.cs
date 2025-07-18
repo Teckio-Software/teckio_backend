@@ -79,12 +79,12 @@ namespace ERP_TECKIO.Procesos
             return detalle;
         }
 
-        public async Task<List<CostoHorarioVariableXPrecioUnitarioDetalleDTO>> ObtenerCostosVariables(PrecioUnitarioDetalleDTO registro)
-        {
-            if(registro.IdTipoInsumo == 10008) //validar que 10008 sea costo horario
-            {
+        //public async Task<List<CostoHorarioVariableXPrecioUnitarioDetalleDTO>> ObtenerCostosVariables(PrecioUnitarioDetalleDTO registro)
+        //{
+        //    if(registro.IdTipoInsumo == 10008) //validar que 10008 sea costo horario
+        //    {
 
-            }
-        }
+        //    }
+        //}
     }
 }
