@@ -1,5 +1,6 @@
 ﻿
 using ERP_TECKIO.Modelos;
+using ERP_TECKIO.Modelos.Presupuesto;
 
 
 namespace ERP_TECKIO.Modelos;
@@ -73,4 +74,6 @@ public partial class Proyecto
     public virtual ICollection<ProgramacionEstimadaGantt> ProgramacionEstimadaGantts { get; set; } = new List<ProgramacionEstimadaGantt>();
     public virtual ICollection<PrecioUnitarioXEmpleado> PrecioUnitarioXEmpleados { get; set; } = new List<PrecioUnitarioXEmpleado>();
     public virtual ICollection<DependenciaProgramacionEstimada> DependenciaProgramacionEstimadas { get; set; } = new List<DependenciaProgramacionEstimada>();
+    public virtual ICollection<ParametrosFsr> ParametrosFsrs { get; set; } = new List<ParametrosFsr>();
+    public virtual ICollection<PorcentajeCesantiaEdad> PorcentajeCesantiaEdads { get; set; } = new List<PorcentajeCesantiaEdad>();
 }

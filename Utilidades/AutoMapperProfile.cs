@@ -772,6 +772,19 @@ namespace ERP_TECKIO
             CreateMap<Empleado, EmpleadoDTO>();
             CreateMap<EmpleadoDTO, Empleado>();
 
+            CreateMap<CostoHorarioFijoXPrecioUnitarioDetalle, CostoHorarioFijoXPrecioUnitarioDetalleDTO>();
+            CreateMap<CostoHorarioFijoXPrecioUnitarioDetalleDTO, CostoHorarioFijoXPrecioUnitarioDetalle>()
+                .ForMember(z => z.IdPrecioUnitarioDetalleNavigation,
+                opt => opt.Ignore());
+
+            CreateMap<CostoHorarioVariableXPrecioUnitarioDetalle, CostoHorarioVariableXPrecioUnitarioDetalleDTO>();
+            CreateMap<CostoHorarioVariableXPrecioUnitarioDetalleDTO, CostoHorarioVariableXPrecioUnitarioDetalle>()
+                .ForMember(z => z.IdInsumoNavigation,
+                opt => opt.Ignore())
+                .ForMember(z => z.IdPrecioUnitarioDetalleNavigation,
+                opt => opt.Ignore());
+
+
             CreateMap<PrecioUnitarioXEmpleado, PrecioUnitarioXEmpleadoDTO>();
             CreateMap<PrecioUnitarioXEmpleadoDTO, PrecioUnitarioXEmpleado>();
             CreateMap<DependenciaProgramacionEstimadaDTO, DependenciaProgramacionEstimada>()

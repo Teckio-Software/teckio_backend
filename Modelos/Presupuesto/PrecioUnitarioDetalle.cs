@@ -25,5 +25,7 @@ public partial class PrecioUnitarioDetalle
 
     public virtual PrecioUnitario IdPrecioUnitarioNavigation { get; set; } = null!;
     public virtual ICollection<OperacionesXPrecioUnitarioDetalle> OperacionesXPrecioUnitarioDetalles { get; set; } = new List<OperacionesXPrecioUnitarioDetalle>();
+    public virtual ICollection<CostoHorarioFijoXPrecioUnitarioDetalle> CostoHorarioFijoXprecioUnitarioDetalles { get; set; } = new List<CostoHorarioFijoXPrecioUnitarioDetalle>();
+    public virtual ICollection<CostoHorarioVariableXPrecioUnitarioDetalle> CostoHorarioVariableXprecioUnitarioDetalles { get; set; } = new List<CostoHorarioVariableXPrecioUnitarioDetalle>();
 
 }
