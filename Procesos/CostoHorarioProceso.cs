@@ -73,8 +73,7 @@ namespace ERP_TECKIO.Procesos
             _CostoFijoService = costoFijoService;
         }
 
-        public async Task<CostoHorarioFijoXPrecioUnitarioDetalleDTO> ObtenerCostoFijoXIdDetalle(int IdPrecioUnitarioDetalle)
-        {
+        public async Task<CostoHorarioFijoXPrecioUnitarioDetalleDTO> ObtenerCostoFijoXIdDetalle(int IdPrecioUnitarioDetalle){
             var detalle = await _CostoFijoService.ObtenTodosXIdPrecioUnitarioDetalle(IdPrecioUnitarioDetalle);
             return detalle;
         }
@@ -86,5 +85,7 @@ namespace ERP_TECKIO.Procesos
 
         //    }
         //}
+
+        //
     }
 }
