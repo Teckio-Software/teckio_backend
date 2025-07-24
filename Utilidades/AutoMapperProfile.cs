@@ -54,7 +54,9 @@ namespace ERP_TECKIO
                 .ForMember(z => z.IdProyectoNavigation,
                 opt => opt.Ignore());
             //////////////////////////////////////
-            CreateMap<FactorSalarioReal, FactorSalarioRealDTO>();
+            CreateMap<FactorSalarioReal, FactorSalarioRealDTO>()
+                .ForMember(destino => destino.EsCompuesto,
+                opt => opt.MapFrom(origien => origien.EsCompuesto == null ? false : origien.EsCompuesto));
             CreateMap<FactorSalarioRealDTO, FactorSalarioReal>()
                 .ForMember(z => z.IdProyectoNavigation,
                 opt => opt.Ignore());
@@ -68,6 +70,11 @@ namespace ERP_TECKIO
             CreateMap<DiasConsideradosDTO, DiasConsiderados>()
                 .ForMember(z => z.IdFactorSalarioIntegradoNavigation,
                 opt => opt.Ignore());
+            CreateMap<ParametrosFsr, ParametrosFsrDTO>();
+            CreateMap<ParametrosFsrDTO, ParametrosFsr>();
+
+            CreateMap<PorcentajeCesantiaEdad, PorcentajeCesantiaEdadDTO>();
+            CreateMap<PorcentajeCesantiaEdadDTO, PorcentajeCesantiaEdad>();
             //////////////////////////////////////
             CreateMap<FsrxinsummoMdO, FsrxinsummoMdODTO>();
             CreateMap<FsrxinsummoMdODTO, FsrxinsummoMdO>();

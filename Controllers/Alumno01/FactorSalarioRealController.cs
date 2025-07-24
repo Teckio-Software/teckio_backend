@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using ERP_TECKIO.DTO;
+using ERP_TECKIO.Servicios.Contratos;
+using ERP_TECKIO.Modelos;
 
 
 namespace ERP_TECKIO.Controllers.Alumno01
@@ -15,11 +17,18 @@ namespace ERP_TECKIO.Controllers.Alumno01
     public class FactorSalarioRealController : ControllerBase
     {
         private readonly FactorSalarioRealProceso<Alumno01Context> _FactorSalarioRealProceso;
+        private readonly IParametrosFsrService<Alumno01Context> _parametrosFsrService;
+        private readonly IPorcentajeCesantiaEdadService<Alumno01Context> _porcentajeCesantiaEdadService;
         
         public FactorSalarioRealController(
-            FactorSalarioRealProceso<Alumno01Context> factorSalarioRealProceso)
+            FactorSalarioRealProceso<Alumno01Context> factorSalarioRealProceso,
+            IParametrosFsrService<Alumno01Context> parametrosFsrService,
+            IPorcentajeCesantiaEdadService<Alumno01Context> porcentajeCesantiaEdadService
+            )
         {
             _FactorSalarioRealProceso = factorSalarioRealProceso;
+            _parametrosFsrService = parametrosFsrService;
+            _porcentajeCesantiaEdadService = porcentajeCesantiaEdadService;
         }
 
         [HttpPost("crearFsrDetalleXInsumo")]
@@ -127,6 +136,50 @@ namespace ERP_TECKIO.Controllers.Alumno01
         public async Task EliminarDiasFSR(int IdDetalleFSR)
         {
             await _FactorSalarioRealProceso.EliminarDetalleFSR(IdDetalleFSR);
+        }
+
+        [HttpPost("FsrEsCompuesto")]
+        public async Task FsrEsCompuesto(FactorSalarioRealDTO fsr)
+        {
+            await _FactorSalarioRealProceso.FsrEsCompuesto(fsr);
+        }
+
+        [HttpGet("obtenerParametrosFrs/{IdProyecto:int}")]
+        public async Task<ActionResult<ParametrosFsrDTO>> obtenerParametrosFrs(int IdProyecto)
+        {
+            var respuesta = await _parametrosFsrService.ObtenerXIdProyecto(IdProyecto);
+            return respuesta;
+        }
+
+        [HttpPost("crearParametrosFsr")]
+        public async Task crearParametrosFsr(ParametrosFsrDTO parametrosFsr)
+        {
+            await _FactorSalarioRealProceso.CrearParametrosFsr(parametrosFsr);
+        }
+
+        [HttpPut("editarParametrosFsr")]
+        public async Task editarParametrosFsr(ParametrosFsrDTO parametrosFsr)
+        {
+            await _FactorSalarioRealProceso.EditarParametrosFsr(parametrosFsr);
+        }
+
+        [HttpGet("obtenerPorcentajeCesantiaEdad/{IdProyecto:int}")]
+        public async Task<ActionResult<List<PorcentajeCesantiaEdadDTO>>> obtenerPorcentajeCesantiaEdad(int IdProyecto)
+        {
+            var respuesta = await _porcentajeCesantiaEdadService.ObtenerXIdProyecto(IdProyecto);
+            return respuesta;
+        }
+
+        [HttpPost("crearRangoPorcentajeCesantiaEdad")]
+        public async Task crearRangoPorcentajeCesantiaEdad(PorcentajeCesantiaEdadDTO porcentaje)
+        {
+            await _FactorSalarioRealProceso.crearRangoPorcentajeCesantiaEdad(porcentaje);
+        }
+
+        [HttpPut("editarRangoPorcentajeCesantiaEdad")]
+        public async Task editarRangoPorcentajeCesantiaEdad(PorcentajeCesantiaEdadDTO porcentaje)
+        {
+            await _FactorSalarioRealProceso.editarRangoPorcentajeCesantiaEdad(porcentaje);
         }
     }
 }

@@ -40,6 +40,8 @@ namespace ERP_TECKIO
             services.AddScoped(typeof(IFsrxinsummoMdOdetalleService<>), typeof(FsrxinsummoMdOdetalleService<>));
             services.AddScoped(typeof(IFsixinsummoMdOService<>), typeof(FsixinsummoMdOService<>));
             services.AddScoped(typeof(IFsixinsummoMdOdetalleService<>), typeof(FsixinsummoMdOdetalleService<>));
+            services.AddScoped(typeof(IParametrosFsrService<>), typeof(ParametrosFsrService<>));
+            services.AddScoped(typeof(IPorcentajeCesantiaEdadService<>), typeof(PorcentajeCesantiaEdadService<>));
             //Insumos
             services.AddScoped(typeof(ITipoInsumoService<>), typeof(TipoInsumoService<>));
             services.AddScoped(typeof(IFamiliaInsumoService<>), typeof(FamiliaInsumoService<>));
@@ -137,6 +139,7 @@ namespace ERP_TECKIO
             services.AddScoped(typeof(PolizaProceso<>));
             services.AddScoped(typeof(CuentaContableProceso<>));
             services.AddScoped(typeof(OrdenVentaProceso<>));
+            services.AddScoped(typeof(FsrProceso<>));
 
             //Facturas
             services.AddScoped(typeof(ITipoImpuestoService<>), typeof(TipoImpuestoService<>));

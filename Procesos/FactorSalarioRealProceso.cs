@@ -7,6 +7,9 @@ using ERP_TECKIO.Servicios.Contratos;
 using ERP_TECKIO.DTO;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using ERP_TECKIO.Modelos;
+using AutoMapper.Configuration.Annotations;
+using ERP_TECKIO.Modelos.Presupuesto;
+using ERP_TECKIO.Servicios;
 
 namespace ERP_TECKIO
 {
@@ -27,6 +30,9 @@ namespace ERP_TECKIO
         private readonly IFsrxinsummoMdOdetalleService<TContext> _FsrxinsummoMdOdetalleService;
         private readonly IFsixinsummoMdOService<TContext> _FsixinsummoMdOService;
         private readonly IFsixinsummoMdOdetalleService<TContext> _FsixinsummoMdOdetalleService;
+        private readonly IParametrosFsrService<TContext> _parametrosFsrService;
+        private readonly IPorcentajeCesantiaEdadService<TContext> _porcentajeCesantiaEdadService;
+
 
         public FactorSalarioRealProceso(
             IFactorSalarioRealService<TContext> fsrService
@@ -45,6 +51,8 @@ namespace ERP_TECKIO
             , IFsrxinsummoMdOdetalleService<TContext> FsrxinsummoMdOdetalleService
             , IFsixinsummoMdOService<TContext> FsixinsummoMdOService
             , IFsixinsummoMdOdetalleService<TContext> FsixinsummoMdOdetalleService
+            , IParametrosFsrService<TContext> parametrosFsrService
+            , IPorcentajeCesantiaEdadService<TContext> porcentajeCesantiaEdadService
             )
         {
             _FSRService = fsrService;
@@ -62,6 +70,8 @@ namespace ERP_TECKIO
             _FsrxinsummoMdOdetalleService = FsrxinsummoMdOdetalleService;
             _FsixinsummoMdOService = FsixinsummoMdOService;
             _FsixinsummoMdOdetalleService = FsixinsummoMdOdetalleService;
+            _parametrosFsrService = parametrosFsrService;
+            _porcentajeCesantiaEdadService = porcentajeCesantiaEdadService;
         }
 
         public async Task<RespuestaDTO> CrearFsrDetalle(FsrxinsummoMdOdetalleDTO fsrdetalle) { 
@@ -617,7 +627,14 @@ namespace ERP_TECKIO
             if(ExisteFSR.Count > 0)
             {
                 FSR = ExisteFSR.FirstOrDefault();
-                await RecalcularFSR(FSR.Id);
+                if (!FSR.EsCompuesto)
+                {
+                    await RecalcularFSR(FSR.Id);
+                }
+                else
+                {
+                    await RecalcularFsrEsCompuesto(FSR);
+                }
             }
         }
 
@@ -630,7 +647,14 @@ namespace ERP_TECKIO
             if (ExisteFSR.Count > 0)
             {
                 var FSR = ExisteFSR.FirstOrDefault();
-                await RecalcularFSR(FSR.Id);
+                if (!FSR.EsCompuesto) {
+                    await RecalcularFSR(FSR.Id);
+                }
+                else
+                {
+                    await RecalcularFsrEsCompuesto(FSR);
+                }
+                
             }
         }
 
@@ -644,8 +668,157 @@ namespace ERP_TECKIO
             if (ExisteFSR.Count > 0)
             {
                 var FSR = ExisteFSR.FirstOrDefault();
-                await RecalcularFSR(FSR.Id);
+                if (!FSR.EsCompuesto)
+                {
+                    await RecalcularFSR(FSR.Id);
+                }
+                else
+                {
+                    await RecalcularFsrEsCompuesto(FSR);
+                }
             }
+        }
+
+        public async Task FsrEsCompuesto(FactorSalarioRealDTO fsr) {
+            var ediarFsr = await _FSRService.Editar(fsr);
+            if (!ediarFsr.Estatus) {
+                return;
+            }
+
+            if (fsr.EsCompuesto) {
+                await RecalcularFsrEsCompuesto(fsr);
+            }
+            else
+            {
+                await RecalcularFSR(fsr.Id);
+            }
+        }
+
+        public async Task RecalcularFsrEsCompuesto(FactorSalarioRealDTO fsr)
+        {
+            var parametros = await _parametrosFsrService.ObtenerXIdProyecto(fsr.IdProyecto);
+            if (parametros.Id <= 0) {
+                fsr.PorcentajeFsr = 1;
+            }
+            else
+            {
+                if (parametros.RiesgoTrabajo == 0 || parametros.RiesgoTrabajo < 0 || parametros.CuotaFija == 0 || parametros.CuotaFija < 0 
+                    || parametros.AplicacionExcedente == 0 || parametros.AplicacionExcedente < 0 || parametros.PrestacionDinero == 0 || parametros.PrestacionDinero < 0
+                    || parametros.GastoMedico == 0 || parametros.GastoMedico < 0 || parametros.InvalidezVida == 0 || parametros.InvalidezVida < 0
+                    || parametros.Retiro == 0 || parametros.Retiro < 0 || parametros.PrestaconSocial == 0 || parametros.PrestaconSocial < 0
+                    || parametros.Infonavit == 0 || parametros.Infonavit < 0 || parametros.UMA == 0 || parametros.UMA < 0) 
+                {
+                    fsr.PorcentajeFsr = 1;
+                }
+                else
+                {
+                    ///Proceso para asignar un valor a FSR
+                    fsr.PorcentajeFsr = 1;
+
+                }
+            }
+
+            var ediarFsr = await _FSRService.Editar(fsr);
+
+            var insumos = await _InsumoService.ObtenXIdProyecto(fsr.IdProyecto);
+            var insumoFiltrados = insumos.Where(z => z.idTipoInsumo == 10000 && z.EsFsrGlobal == false).ToList();
+            for (int y = 0; y < insumoFiltrados.Count(); y++)
+            {
+                insumoFiltrados[y].CostoUnitario = (insumoFiltrados[y].CostoBase * fsr.PorcentajeFsr);
+                await _InsumoService.Editar(insumoFiltrados[y]);
+            }
+        }
+
+        public async Task CrearParametrosFsr(ParametrosFsrDTO parametrosFsr)
+        {
+            var respuesta = await _parametrosFsrService.Crear(parametrosFsr);
+            if (!respuesta.Estatus)
+            {
+                return;
+            }
+            var ExisteFSR = await _FSRService.ObtenerTodosXProyecto(parametrosFsr.IdProyecto);
+            if (ExisteFSR.Count > 0)
+            {
+                var FSR = ExisteFSR.FirstOrDefault();
+                if (!FSR.EsCompuesto)
+                {
+                    await RecalcularFSR(FSR.Id);
+                }
+                else
+                {
+                    await RecalcularFsrEsCompuesto(FSR);
+                }
+            }
+            return;
+        }
+
+        public async Task EditarParametrosFsr(ParametrosFsrDTO parametrosFsr)
+        {
+            var respuesta = await _parametrosFsrService.Editar(parametrosFsr);
+            if (!respuesta.Estatus)
+            {
+                return;
+            }
+            var ExisteFSR = await _FSRService.ObtenerTodosXProyecto(parametrosFsr.IdProyecto);
+            if (ExisteFSR.Count > 0)
+            {
+                var FSR = ExisteFSR.FirstOrDefault();
+                if (!FSR.EsCompuesto)
+                {
+                    await RecalcularFSR(FSR.Id);
+                }
+                else
+                {
+                    await RecalcularFsrEsCompuesto(FSR);
+                }
+            }
+            return;
+        }
+
+        public async Task crearRangoPorcentajeCesantiaEdad(PorcentajeCesantiaEdadDTO porcentaje)
+        {
+            var respuesta = await _porcentajeCesantiaEdadService.Crear(porcentaje);
+            if (!respuesta.Estatus)
+            {
+                return;
+            }
+            var ExisteFSR = await _FSRService.ObtenerTodosXProyecto(porcentaje.IdProyecto);
+            if (ExisteFSR.Count > 0)
+            {
+                var FSR = ExisteFSR.FirstOrDefault();
+                if (!FSR.EsCompuesto)
+                {
+                    await RecalcularFSR(FSR.Id);
+                }
+                else
+                {
+                    await RecalcularFsrEsCompuesto(FSR);
+                }
+            }
+            return;
+        }
+
+        public async Task editarRangoPorcentajeCesantiaEdad(PorcentajeCesantiaEdadDTO porcentaje)
+        {
+            var respuesta = await _porcentajeCesantiaEdadService.Editar(porcentaje);
+            if (!respuesta.Estatus)
+            {
+                return;
+            }
+            var ExisteFSR = await _FSRService.ObtenerTodosXProyecto(porcentaje.IdProyecto);
+            if (ExisteFSR.Count > 0)
+            {
+                var FSR = ExisteFSR.FirstOrDefault();
+                if (!FSR.EsCompuesto)
+                {
+                    await RecalcularFSR(FSR.Id);
+                }
+                else
+                {
+                    await RecalcularFsrEsCompuesto(FSR);
+                }
+            }
+            return;
         }
     }
 }
