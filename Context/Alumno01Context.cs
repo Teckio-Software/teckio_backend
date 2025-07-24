@@ -1612,6 +1612,8 @@ public partial class Alumno01Context : DbContext
             entity.Property(e => e.PorcentajeFsr)
                 .HasColumnType("decimal(28, 6)")
                 .HasColumnName("PorcentajeFSR");
+            entity.Property(e => e.EsCompuesto).HasColumnName("EsCompuesto");
+
 
             entity.HasOne(d => d.IdProyectoNavigation).WithMany(p => p.FactorSalarioReals)
                 .HasForeignKey(d => d.IdProyecto)

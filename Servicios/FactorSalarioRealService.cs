@@ -76,6 +76,7 @@ namespace ERP_TECKIO.Servicios
                     return respuesta;
                 }
                 objetoEncontrado.PorcentajeFsr = registro.PorcentajeFsr;
+                objetoEncontrado.EsCompuesto = registro.EsCompuesto;
                 respuesta.Estatus = await _Repositorio.Editar(objetoEncontrado);
                 if (!respuesta.Estatus)
                 {

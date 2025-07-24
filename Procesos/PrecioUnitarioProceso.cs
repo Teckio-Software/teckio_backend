@@ -46,6 +46,7 @@ namespace ERP_TECKIO
         private readonly IMapper _Mapper;
         private readonly TContext _dbContex;
         private static readonly Encoding Latin1 = Encoding.GetEncoding("windows-1252");
+        private readonly FactorSalarioRealProceso<TContext> _factorSalarioRealProceso;
         public PrecioUnitarioProceso(
             IProyectoService<TContext> proyectoService
             , IPrecioUnitarioService<TContext> precioUnitarioService
@@ -64,6 +65,7 @@ namespace ERP_TECKIO
             , IFsrxinsummoMdOService<TContext> fsrxinsummoMdOService
             , IMapper mapper
             , TContext dbContex
+            , FactorSalarioRealProceso<TContext> factorSalarioRealProceso
 
             )
         {
@@ -84,6 +86,7 @@ namespace ERP_TECKIO
             _dbContex = dbContex;
             _OperacionXPUService = operacionXPUService;
             _FsrxinsummoMdOService = fsrxinsummoMdOService;
+            _factorSalarioRealProceso = factorSalarioRealProceso;
         }
 
         public async Task RecalcularPrecioUnitario(PrecioUnitarioDTO registro)
@@ -3862,21 +3865,29 @@ namespace ERP_TECKIO
                         FSR = ExisteFSR.FirstOrDefault();
                         if (insumo.idTipoInsumo == 10000)
                         {
-                            insumo.CostoBase = registro.CostoBase;
-                            insumo.CostoUnitario = registro.CostoBase * FSR.PorcentajeFsr;
+                            if (!FSR.EsCompuesto) {
+                                insumo.CostoBase = registro.CostoBase;
+                                insumo.CostoUnitario = registro.CostoBase * FSR.PorcentajeFsr;
+                            }
+                            else
+                            {
+                                insumo.CostoBase = registro.CostoBase;
+                                await _factorSalarioRealProceso.actualizarCostoUnitarioInsumoMO(insumo, FSR);
+                            }
                         }
                         else
                         {
                             insumo.CostoBase = registro.CostoBase;
                             insumo.CostoUnitario = registro.CostoBase;
+                            var insumoEditado = await _InsumoService.Editar(insumo);
                         }
                     }
                     else
                     {
                         insumo.CostoBase = registro.CostoBase;
                         insumo.CostoUnitario = registro.CostoBase;
+                        var insumoEditado = await _InsumoService.Editar(insumo);
                     }
-                    var insumoEditado = await _InsumoService.Editar(insumo);
                 }
             }
             return await obtenerExplosion(insumoBase.IdProyecto);

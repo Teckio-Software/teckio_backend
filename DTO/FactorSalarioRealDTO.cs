@@ -13,5 +13,6 @@ namespace ERP_TECKIO
         public int IdProyecto { get; set; }
 
         public decimal PorcentajeFsr { get; set; }
+        public bool EsCompuesto { get; set; }
     }
 }
