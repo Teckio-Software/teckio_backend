@@ -181,5 +181,18 @@ namespace ERP_TECKIO.Controllers.Alumno01
         {
             await _FactorSalarioRealProceso.editarRangoPorcentajeCesantiaEdad(porcentaje);
         }
+
+        [HttpPost("obtenerParametrosXInsumo")]
+        public async Task<ActionResult<List<ParametrosFsrXInsumoDTO>>> obtenerParametrosXInsumo(FactorSalarioRealDTO fsr)
+        {
+            var respuesta = await _FactorSalarioRealProceso.obtenerParametrosXInsumo(fsr);
+            return respuesta;
+        }
+
+        [HttpPost("actualizarCostoBaseInsumo")]
+        public async Task actualizarCostoBaseInsumo(ParametrosFsrXInsumoDTO parametrosXInsumo)
+        {
+            await _FactorSalarioRealProceso.actualizarCostoBaseInsumo(parametrosXInsumo);
+        }
     }
 }

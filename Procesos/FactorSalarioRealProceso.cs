@@ -977,5 +977,178 @@ namespace ERP_TECKIO
                 }
             }
         }
+
+        public async Task<List<ParametrosFsrXInsumoDTO>> obtenerParametrosXInsumo(FactorSalarioRealDTO fsr) {
+            var parametrosXInsumo = new List<ParametrosFsrXInsumoDTO>();
+
+            var parametros = await _parametrosFsrService.ObtenerXIdProyecto(fsr.IdProyecto);
+            if (parametros.Id <= 0)
+            {
+                var insumos = await _InsumoService.ObtenXIdProyecto(fsr.IdProyecto);
+                var insumoFiltrados = insumos.Where(z => z.idTipoInsumo == 10000 && z.EsFsrGlobal == false).ToList();
+                for (int y = 0; y < insumoFiltrados.Count(); y++)
+                {
+                    parametrosXInsumo.Add(new ParametrosFsrXInsumoDTO()
+                    {
+                        IdInsumo = insumoFiltrados[y].id,
+                        Descripcion = insumoFiltrados[y].Descripcion,
+                        CostoBase = insumoFiltrados[y].CostoBase,
+                        CostoUnitario = insumoFiltrados[y].CostoUnitario,
+                        RiesgoTrabajo = 0,
+                        CuotaFija = 0,
+                        AplicacionExcedente = 0,
+                        PrestacionDinero = 0,
+                        GastoMedico = 0,
+                        InvalidezVida = 0,
+                        Retiro = 0,
+                        PrestaconSocial = 0,
+                        Infonavit = 0
+                    });
+                }
+            }
+            else
+            {
+                if (parametros.RiesgoTrabajo == 0 || parametros.RiesgoTrabajo < 0 || parametros.CuotaFija == 0 || parametros.CuotaFija < 0
+                    || parametros.AplicacionExcedente == 0 || parametros.AplicacionExcedente < 0 || parametros.PrestacionDinero == 0 || parametros.PrestacionDinero < 0
+                    || parametros.GastoMedico == 0 || parametros.GastoMedico < 0 || parametros.InvalidezVida == 0 || parametros.InvalidezVida < 0
+                    || parametros.Retiro == 0 || parametros.Retiro < 0 || parametros.PrestaconSocial == 0 || parametros.PrestaconSocial < 0
+                    || parametros.Infonavit == 0 || parametros.Infonavit < 0 || parametros.UMA == 0 || parametros.UMA < 0)
+                {
+                    var insumos = await _InsumoService.ObtenXIdProyecto(fsr.IdProyecto);
+                    var insumoFiltrados = insumos.Where(z => z.idTipoInsumo == 10000 && z.EsFsrGlobal == false).ToList();
+                    for (int y = 0; y < insumoFiltrados.Count(); y++)
+                    {
+                        parametrosXInsumo.Add(new ParametrosFsrXInsumoDTO()
+                        {
+                            IdInsumo = insumoFiltrados[y].id,
+                            Descripcion = insumoFiltrados[y].Descripcion,
+                            CostoBase = insumoFiltrados[y].CostoBase,
+                            CostoUnitario = insumoFiltrados[y].CostoUnitario,
+                            RiesgoTrabajo = 0,
+                            CuotaFija = 0,
+                            AplicacionExcedente = 0,
+                            PrestacionDinero = 0,
+                            GastoMedico = 0,
+                            InvalidezVida = 0,
+                            Retiro = 0,
+                            PrestaconSocial = 0,
+                            Infonavit = 0
+                        });
+                    }
+                }
+                else
+                {
+                    ///Proceso para asignar un valor a FSR
+                    var FSIs = await _FSIService.ObtenerTodosXProyecto(fsr.IdProyecto);
+                    var FSI = FSIs.FirstOrDefault();
+                    decimal diasPagados = 0;
+                    decimal diasNoLaborados = 0;
+                    decimal diasLaborales;
+                    var registrosDiasNoLaborables = await ObtenerDiasNoLaborables(FSI.Id);
+                    var registrosDiasPagados = await ObtenerDiasPagados(FSI.Id);
+                    for (int i = 0; i < registrosDiasNoLaborables.Count; i++)
+                    {
+                        diasNoLaborados = diasNoLaborados + registrosDiasNoLaborables[i].Valor;
+                    }
+                    for (int i = 0; i < registrosDiasPagados.Count; i++)
+                    {
+                        diasPagados = diasPagados + registrosDiasPagados[i].Valor;
+                    }
+
+                    diasLaborales = 365 - diasNoLaborados;
+                    decimal pagadosSOBREnolaborales = diasPagados / diasLaborales;
+
+
+                    var insumos = await _InsumoService.ObtenXIdProyecto(fsr.IdProyecto);
+                    var insumoFiltrados = insumos.Where(z => z.idTipoInsumo == 10000 && z.EsFsrGlobal == false).ToList();
+                    for (int y = 0; y < insumoFiltrados.Count(); y++)
+                    {
+                        decimal FSBaseCotizacion = diasPagados / 365;
+                        decimal SalarioBaseCotizacion = insumoFiltrados[y].CostoBase * FSBaseCotizacion;
+
+                        decimal excedente = SalarioBaseCotizacion - (3 * parametros.UMA);
+                        decimal riesgoTrabajo = SalarioBaseCotizacion * parametros.RiesgoTrabajo / 100;
+                        decimal cuotaFija = parametros.UMA * parametros.CuotaFija / 100;
+                        decimal aplicacionExcedente = 0;
+                        if (excedente > 0)
+                        {
+                            aplicacionExcedente = excedente * parametros.AplicacionExcedente / 100;
+                        }
+                        decimal prestacionDinero = SalarioBaseCotizacion * parametros.PrestacionDinero / 100;
+                        decimal gastoMedico = SalarioBaseCotizacion * parametros.GastoMedico / 100;
+                        decimal invalidezVida = SalarioBaseCotizacion * parametros.InvalidezVida / 100;
+                        decimal retiro = SalarioBaseCotizacion * parametros.Retiro / 100;
+                        decimal prestacionSocial = SalarioBaseCotizacion * parametros.PrestaconSocial / 100;
+                        decimal infinavit = SalarioBaseCotizacion * parametros.Infonavit / 100;
+                        decimal cesantiaEdad = 0;
+
+                        var pocentajesCesantia = await _porcentajeCesantiaEdadService.ObtenerXIdProyecto(fsr.IdProyecto);
+                        if (pocentajesCesantia.Count() <= 0)
+                        {
+                            fsr.PorcentajeFsr = 1;
+                        }
+                        else
+                        {
+                            decimal rangoUma = insumoFiltrados[y].CostoBase / parametros.UMA;
+                            var rangoActuales = pocentajesCesantia.Where(z => z.RangoUMA <= rangoUma);
+                            var ordenado = rangoActuales.OrderByDescending(z => z.RangoUMA);
+                            var rangoUbicado = ordenado.FirstOrDefault();
+
+                            cesantiaEdad = SalarioBaseCotizacion * rangoUbicado.Porcentaje / 100;
+                        }
+
+                        decimal sumaPresataciones = riesgoTrabajo + cuotaFija + aplicacionExcedente + prestacionDinero + gastoMedico + invalidezVida + retiro + prestacionSocial + infinavit + cesantiaEdad;
+                        decimal sumaSOBREcostoBase = sumaPresataciones / SalarioBaseCotizacion;
+
+                        decimal FsrInsumo = sumaSOBREcostoBase * pagadosSOBREnolaborales + pagadosSOBREnolaborales;
+
+                        parametrosXInsumo.Add(new ParametrosFsrXInsumoDTO()
+                        {
+                            IdInsumo = insumoFiltrados[y].id,
+                            Descripcion = insumoFiltrados[y].Descripcion,
+                            CostoBase = insumoFiltrados[y].CostoBase,
+                            CostoUnitario = insumoFiltrados[y].CostoUnitario,
+                            RiesgoTrabajo = riesgoTrabajo,
+                            CuotaFija = cuotaFija,
+                            AplicacionExcedente = aplicacionExcedente,
+                            PrestacionDinero = prestacionDinero,
+                            GastoMedico = gastoMedico,
+                            InvalidezVida = invalidezVida,
+                            Retiro = retiro,
+                            CesantiaEdad = cesantiaEdad,
+                            PrestaconSocial = prestacionSocial,
+                            Infonavit = infinavit,
+                            SalarioBaseCotizacion = SalarioBaseCotizacion,
+                            SumaPrestaciones = sumaPresataciones,
+                            SumaSOBRECostoBase = sumaSOBREcostoBase,
+                            FsrInsumo = FsrInsumo,
+                            IdProyecto = insumoFiltrados[y].IdProyecto
+                        });
+                    }
+                }
+            }
+
+            return parametrosXInsumo;
+        }
+
+        public async Task actualizarCostoBaseInsumo(ParametrosFsrXInsumoDTO parametroXInsumo) {
+            
+
+            var insumos = await _InsumoService.ObtenXIdProyecto(parametroXInsumo.IdProyecto);
+            var insumo = insumos.FirstOrDefault(z => z.id == parametroXInsumo.IdInsumo);
+
+            var insumosFiltrados = insumos.Where(z => z.Codigo == insumo.Codigo);
+
+            var FSRs = await _FSRService.ObtenerTodosXProyecto(parametroXInsumo.IdProyecto);
+            if (FSRs.Count <= 0) {
+                return;
+            }
+            var fsr = FSRs.FirstOrDefault();
+
+            foreach (var insumoF in insumosFiltrados) {
+                insumoF.CostoBase = parametroXInsumo.CostoBase;
+                await actualizarCostoUnitarioInsumoMO(insumoF, fsr);
+            }
+        }
     }
 }
