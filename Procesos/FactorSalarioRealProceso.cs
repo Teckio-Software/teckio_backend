@@ -1150,5 +1150,93 @@ namespace ERP_TECKIO
                 await actualizarCostoUnitarioInsumoMO(insumoF, fsr);
             }
         }
+
+        public async Task<decimal> obtenerCostoUnitarioConFsrXCostoBase(decimal costoBase, FactorSalarioRealDTO fsr) {
+            decimal costoUnitario = 0;
+            var parametros = await _parametrosFsrService.ObtenerXIdProyecto(fsr.IdProyecto);
+            if (parametros.Id <= 0)
+            {
+                fsr.PorcentajeFsr = 1;
+                costoUnitario = (costoBase * fsr.PorcentajeFsr);
+                return costoUnitario;
+            }
+            else
+            {
+                if (parametros.RiesgoTrabajo == 0 || parametros.RiesgoTrabajo < 0 || parametros.CuotaFija == 0 || parametros.CuotaFija < 0
+                    || parametros.AplicacionExcedente == 0 || parametros.AplicacionExcedente < 0 || parametros.PrestacionDinero == 0 || parametros.PrestacionDinero < 0
+                    || parametros.GastoMedico == 0 || parametros.GastoMedico < 0 || parametros.InvalidezVida == 0 || parametros.InvalidezVida < 0
+                    || parametros.Retiro == 0 || parametros.Retiro < 0 || parametros.PrestaconSocial == 0 || parametros.PrestaconSocial < 0
+                    || parametros.Infonavit == 0 || parametros.Infonavit < 0 || parametros.UMA == 0 || parametros.UMA < 0)
+                {
+                    fsr.PorcentajeFsr = 1;
+                    costoUnitario = (costoBase * fsr.PorcentajeFsr);
+                    return costoUnitario;
+                }
+                else
+                {
+                    ///Proceso para asignar un valor a FSR
+                    var FSIs = await _FSIService.ObtenerTodosXProyecto(fsr.IdProyecto);
+                    var FSI = FSIs.FirstOrDefault();
+                    decimal diasPagados = 0;
+                    decimal diasNoLaborados = 0;
+                    decimal diasLaborales;
+                    var registrosDiasNoLaborables = await ObtenerDiasNoLaborables(FSI.Id);
+                    var registrosDiasPagados = await ObtenerDiasPagados(FSI.Id);
+                    for (int i = 0; i < registrosDiasNoLaborables.Count; i++)
+                    {
+                        diasNoLaborados = diasNoLaborados + registrosDiasNoLaborables[i].Valor;
+                    }
+                    for (int i = 0; i < registrosDiasPagados.Count; i++)
+                    {
+                        diasPagados = diasPagados + registrosDiasPagados[i].Valor;
+                    }
+
+                    diasLaborales = 365 - diasNoLaborados;
+                    decimal pagadosSOBREnolaborales = diasPagados / diasLaborales;
+
+                    decimal FSBaseCotizacion = diasPagados / 365;
+                    decimal SalarioBaseCotizacion = costoBase * FSBaseCotizacion;
+
+                    decimal excedente = SalarioBaseCotizacion - (3 * parametros.UMA);
+                    decimal riesgoTrabajo = SalarioBaseCotizacion * parametros.RiesgoTrabajo / 100;
+                    decimal cuotaFija = parametros.UMA * parametros.CuotaFija / 100;
+                    decimal aplicacionExcedente = 0;
+                    if (excedente > 0)
+                    {
+                        aplicacionExcedente = excedente * parametros.AplicacionExcedente / 100;
+                    }
+                    decimal prestacionDinero = SalarioBaseCotizacion * parametros.PrestacionDinero / 100;
+                    decimal gastoMedico = SalarioBaseCotizacion * parametros.GastoMedico / 100;
+                    decimal invalidezVida = SalarioBaseCotizacion * parametros.InvalidezVida / 100;
+                    decimal retiro = SalarioBaseCotizacion * parametros.Retiro / 100;
+                    decimal prestacionSocial = SalarioBaseCotizacion * parametros.PrestaconSocial / 100;
+                    decimal infinavit = SalarioBaseCotizacion * parametros.Infonavit / 100;
+                    decimal cesantiaEdad = 0;
+
+                    var pocentajesCesantia = await _porcentajeCesantiaEdadService.ObtenerXIdProyecto(fsr.IdProyecto);
+                    if (pocentajesCesantia.Count() <= 0)
+                    {
+                        fsr.PorcentajeFsr = 1;
+                    }
+                    else
+                    {
+                        decimal rangoUma = costoBase / parametros.UMA;
+                        var rangoActuales = pocentajesCesantia.Where(z => z.RangoUMA <= rangoUma);
+                        var ordenado = rangoActuales.OrderByDescending(z => z.RangoUMA);
+                        var rangoUbicado = ordenado.FirstOrDefault();
+
+                        cesantiaEdad = SalarioBaseCotizacion * rangoUbicado.Porcentaje / 100;
+                    }
+
+                    decimal sumaPresataciones = riesgoTrabajo + cuotaFija + aplicacionExcedente + prestacionDinero + gastoMedico + invalidezVida + retiro + prestacionSocial + infinavit + cesantiaEdad;
+                    decimal sumaSOBREcostoBase = sumaPresataciones / SalarioBaseCotizacion;
+
+                    decimal FsrInsumo = sumaSOBREcostoBase * pagadosSOBREnolaborales + pagadosSOBREnolaborales;
+
+                    costoUnitario = (costoBase * FsrInsumo);
+                    return costoUnitario;
+                }
+            }
+        }
     }
 }

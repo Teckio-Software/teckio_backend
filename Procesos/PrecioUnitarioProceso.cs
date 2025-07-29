@@ -1163,6 +1163,24 @@ namespace ERP_TECKIO
                 if (registro.IdTipoInsumo == 10000)
                 {
                     registro.CostoUnitario = registro.CostoBase * FSR[0].PorcentajeFsr;
+                    if (FSR.Count > 0)
+                    {
+                        var factorSR = FSR.FirstOrDefault();
+
+                        if (!factorSR.EsCompuesto)
+                        {
+                            registro.CostoUnitario = registro.CostoBase * factorSR.PorcentajeFsr;
+                        }
+                        else
+                        {
+                            registro.CostoBase = registro.CostoBase;
+                            registro.CostoUnitario = await _factorSalarioRealProceso.obtenerCostoUnitarioConFsrXCostoBase(registro.CostoBase, factorSR);
+                        }
+                    }
+                    else
+                    {
+                        registro.CostoUnitario = registro.CostoBase;
+                    }
                 }
                 if (registro.IdTipoInsumo == 10001)
                 {
@@ -1206,7 +1224,7 @@ namespace ERP_TECKIO
                     else
                     {
                         insumo.idFamiliaInsumo = registro.IdFamiliaInsumo;
-                    }
+                    } 
                     var nuevoInsumo = await _InsumoService.CrearYObtener(insumo);
                     registro.IdInsumo = nuevoInsumo.id;
                     var PrecioUnitario = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
@@ -1492,38 +1510,40 @@ namespace ERP_TECKIO
             try
             {
                 var insumoOriginal = await _InsumoService.ObtenXId(registro.IdInsumo);
-                if (registro.IdInsumo != 0)
-                {
-                    var fsr = await _FsrxinsummoMdOService.ObtenerXIdInsumo(registro.IdInsumo);
-                    if (fsr.Id > 0)
-                    {
-                        registro.CostoUnitario = registro.CostoBase * fsr.Fsr;
-                    }
-                    else
-                    {
-                        if (registro.CostoBase != 0)
-                        {
-                            if (registro.IdTipoInsumo == 10000)
-                            {
-                                var FSR = await _FSRService.ObtenerTodosXProyecto(insumoOriginal.IdProyecto);
-                                if (FSR.Count > 0)
-                                {
-                                    registro.CostoUnitario = registro.CostoBase * FSR[0].PorcentajeFsr;
-                                }
-                                else
-                                {
-                                    registro.CostoUnitario = registro.CostoBase;
-                                }
 
-                            }
-                            else
-                            {
-                                registro.CostoUnitario = registro.CostoBase;
+                //if (registro.IdInsumo != 0)
+                //{
+                //    var fsr = await _FsrxinsummoMdOService.ObtenerXIdInsumo(registro.IdInsumo);
+                //    if (fsr.Id > 0)
+                //    {
+                //        registro.CostoUnitario = registro.CostoBase * fsr.Fsr;
+                //    }
+                //    else
+                //    {
+                //        if (registro.CostoBase != 0)
+                //        {
+                //            if (registro.IdTipoInsumo == 10000)
+                //            {
+                //                var FSR = await _FSRService.ObtenerTodosXProyecto(insumoOriginal.IdProyecto);
+                //                if (FSR.Count > 0)
+                //                {
+                //                    var factorSR = FSR.FirstOrDefault();
+                //                    registro.CostoUnitario = registro.CostoBase * FSR[0].PorcentajeFsr;
+                //                }
+                //                else
+                //                {
+                //                    registro.CostoUnitario = registro.CostoBase;
+                //                }
 
-                            }
-                        }
-                    }
-                }
+                //            }
+                //            else
+                //            {
+                //                registro.CostoUnitario = registro.CostoBase;
+
+                //            }
+                //        }
+                //    }
+                //}
                 var PU = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
                 InsumoDTO insumo = new InsumoDTO();
                 insumo.id = registro.IdInsumo;
@@ -1535,7 +1555,38 @@ namespace ERP_TECKIO
                 insumo.CostoUnitario = registro.CostoUnitario;
                 insumo.CostoBase = registro.CostoBase;
                 insumo.IdProyecto = PU.IdProyecto;
-                var insumoEditado = await _InsumoService.Editar(insumo);
+
+                if (registro.IdTipoInsumo == 10000)
+                {
+                    var FSR = await _FSRService.ObtenerTodosXProyecto(insumoOriginal.IdProyecto);
+                    if (FSR.Count > 0)
+                    {
+                        var factorSR = FSR.FirstOrDefault();
+
+                        if (!factorSR.EsCompuesto)
+                        {
+                            insumo.CostoUnitario = registro.CostoBase * factorSR.PorcentajeFsr;
+                            var insumoEditado = await _InsumoService.Editar(insumo);
+                        }
+                        else
+                        {
+                            insumo.CostoBase = registro.CostoBase;
+                            await _factorSalarioRealProceso.actualizarCostoUnitarioInsumoMO(insumo, factorSR);
+                        }
+                    }
+                    else
+                    {
+                        insumo.CostoUnitario = registro.CostoBase;
+                        var insumoEditado = await _InsumoService.Editar(insumo);
+                    }
+
+                }
+                else
+                {
+                    insumo.CostoUnitario = registro.CostoBase;
+                    var insumoEditado = await _InsumoService.Editar(insumo);
+                }
+
                 await _PrecioUnitarioDetalleService.Editar(registro);
                 if (registro.IdTipoInsumo == 10000)
                 {
