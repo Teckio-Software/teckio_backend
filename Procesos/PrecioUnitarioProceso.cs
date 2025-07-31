@@ -771,6 +771,31 @@ namespace ERP_TECKIO
             }
         }
 
+        public async Task<ActionResult<List<PrecioUnitarioDTO>>> PartirConcepto(PrecioUnitarioDTO registro)
+        {
+            try
+            {
+                var obtenconcepto = await _ConceptoService.ObtenXId(registro.IdConcepto);
+                obtenconcepto.Id = 0;
+
+                var crearConcepto = await _ConceptoService.CrearYObtener(obtenconcepto);
+                if (crearConcepto.Id <= 0) {
+                    return await ObtenerPrecioUnitario(registro.IdProyecto);
+                }
+
+                registro.IdConcepto = crearConcepto.Id;
+
+                await _PrecioUnitarioService.Editar(registro);
+                var lista = await ObtenerPrecioUnitario(registro.IdProyecto);
+                return lista;
+            }
+            catch (Exception ex)
+            {
+                string error = ex.Message.ToString();
+                return new List<PrecioUnitarioDTO>();
+            }
+        }
+
         public async Task<List<PrecioUnitarioDTO>> Eliminar(int Id)
         {
             return new List<PrecioUnitarioDTO>();
