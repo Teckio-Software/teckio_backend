@@ -9,13 +9,13 @@ using ERP_TECKIO.Modelos.Facturaion;
 using ERP_TECKIO.Modelos.Contabilidad;
 
 
-public partial class Alumno02Context : DbContext
+public partial class DemoTeckioContext : DbContext
 {
-    public Alumno02Context()
+    public DemoTeckioContext()
     {
     }
 
-    public Alumno02Context(DbContextOptions<Alumno02Context> options)
+    public DemoTeckioContext(DbContextOptions<DemoTeckioContext> options)
         : base(options)
     {
     }

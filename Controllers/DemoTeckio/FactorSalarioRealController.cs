@@ -10,20 +10,20 @@ using ERP_TECKIO.Servicios.Contratos;
 using ERP_TECKIO.Modelos;
 
 
-namespace ERP_TECKIO.Controllers.Alumno02
+namespace ERP_TECKIO.Controllers.DemoTeckio
 {
-    [Route("api/fsr/2")]
+    [Route("api/fsr/3")]
     [ApiController]
     public class FactorSalarioRealController : ControllerBase
     {
-        private readonly FactorSalarioRealProceso<Alumno02Context> _FactorSalarioRealProceso;
-        private readonly IParametrosFsrService<Alumno02Context> _parametrosFsrService;
-        private readonly IPorcentajeCesantiaEdadService<Alumno02Context> _porcentajeCesantiaEdadService;
+        private readonly FactorSalarioRealProceso<DemoTeckioContext> _FactorSalarioRealProceso;
+        private readonly IParametrosFsrService<DemoTeckioContext> _parametrosFsrService;
+        private readonly IPorcentajeCesantiaEdadService<DemoTeckioContext> _porcentajeCesantiaEdadService;
 
         public FactorSalarioRealController(
-            FactorSalarioRealProceso<Alumno02Context> factorSalarioRealProceso,
-            IParametrosFsrService<Alumno02Context> parametrosFsrService,
-            IPorcentajeCesantiaEdadService<Alumno02Context> porcentajeCesantiaEdadService
+            FactorSalarioRealProceso<DemoTeckioContext> factorSalarioRealProceso,
+            IParametrosFsrService<DemoTeckioContext> parametrosFsrService,
+            IPorcentajeCesantiaEdadService<DemoTeckioContext> porcentajeCesantiaEdadService
             )
         {
             _FactorSalarioRealProceso = factorSalarioRealProceso;
