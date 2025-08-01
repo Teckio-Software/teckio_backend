@@ -1238,5 +1238,83 @@ namespace ERP_TECKIO
                 }
             }
         }
+
+        public async Task importarFsr(int IdProyecto, int IdProyectoImportar) {
+            var FsrActuales = await _FSRService.ObtenerTodosXProyecto(IdProyecto);
+            var FsrImporars = await _FSRService.ObtenerTodosXProyecto(IdProyectoImportar);
+            var FSIActuales = await _FSIService.ObtenerTodosXProyecto(IdProyecto); 
+            var FsiImportars = await _FSIService.ObtenerTodosXProyecto(IdProyectoImportar);
+
+            var FsrActual = FsrActuales.FirstOrDefault();
+            var FsiActual = FSIActuales.FirstOrDefault();
+            var FsrImportado = FsrImporars.FirstOrDefault();
+            var FsiImportado = FsiImportars.FirstOrDefault();
+
+            var FsrDetallesActuales = await _FSRDetalleService.ObtenerTodosXFSR(FsrActual.Id);
+            foreach (var det in FsrDetallesActuales) {
+                await _FSRDetalleService.Eliminar(det.Id);
+            }
+
+            var FsiDetallesActuales = await _DiasConsideradosService.ObtenerTodosXFSI(FsiActual.Id);
+            foreach (var det in FsiDetallesActuales)
+            {
+                await _DiasConsideradosService.Eliminar(det.Id);
+            }
+
+            var parametros = await _parametrosFsrService.ObtenerXIdProyecto(IdProyecto);
+            if (parametros.Id > 0) {
+                await _parametrosFsrService.Eliminar(parametros.Id);
+            }
+
+            var porcentajesCesantia = await _porcentajeCesantiaEdadService.ObtenerXIdProyecto(IdProyecto);
+            foreach (var porcentaje in porcentajesCesantia) {
+                await _porcentajeCesantiaEdadService.Eliminar(porcentaje.Id);
+            }
+
+            FsrActual.PorcentajeFsr = FsrImportado.PorcentajeFsr;
+            FsrActual.EsCompuesto = FsrImportado.EsCompuesto;
+            await _FSRService.Editar(FsrActual);
+
+            FsiActual.Fsi = FsiImportado.Fsi;
+            await _FSIService.Editar(FsiActual);
+
+            var FsrDetallesImportado = await _FSRDetalleService.ObtenerTodosXFSR(FsrImportado.Id);
+            foreach (var det in FsrDetallesImportado) {
+                det.Id = 0;
+                det.IdProyecto = FsrActual.IdProyecto;
+                det.IdFactorSalarioReal = FsrActual.Id;
+                await _FSRDetalleService.CrearYObtener(det);
+            }
+
+            var FsiDetallesImportado = await _DiasConsideradosService.ObtenerTodosXFSI(FsiImportado.Id);
+            foreach (var det in FsiDetallesImportado)
+            {
+                det.Id = 0;
+                det.IdProyecto = FsiActual.IdProyecto;
+                det.IdFactorSalarioIntegrado = FsiActual.Id;
+                await _DiasConsideradosService.CrearYObtener(det);
+            }
+
+            var parametrosImportados = await _parametrosFsrService.ObtenerXIdProyecto(IdProyectoImportar);
+            parametrosImportados.Id = 0;
+            parametrosImportados.IdProyecto = IdProyecto;
+            await _parametrosFsrService.Crear(parametrosImportados);
+
+            var porcentajes = await _porcentajeCesantiaEdadService.ObtenerXIdProyecto(IdProyectoImportar);
+            foreach (var porcentaje in porcentajes) {
+                porcentaje.Id = 0;
+                porcentaje.IdProyecto = IdProyecto;
+                await _porcentajeCesantiaEdadService.Crear(porcentaje);
+            }
+
+            if (FsrActual.EsCompuesto)
+            {
+                await RecalcularFsrEsCompuesto(FsrActual);
+            }
+            else
+            {
+                await RecalcularFSR(FsrActual.Id);
+            }
+        }
     }
 }

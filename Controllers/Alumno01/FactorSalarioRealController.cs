@@ -194,5 +194,11 @@ namespace ERP_TECKIO.Controllers.Alumno01
         {
             await _FactorSalarioRealProceso.actualizarCostoBaseInsumo(parametrosXInsumo);
         }
+
+        [HttpGet("importarFsr/{IdProyecto:int}/{IdProyectoImportar:int}")]
+        public async Task importarFsr(int IdProyecto, int IdProyectoImportar)
+        {
+            await _FactorSalarioRealProceso.importarFsr(IdProyecto, IdProyectoImportar);
+        }
     }
 }
