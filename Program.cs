@@ -12,11 +12,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<Alumno01Context>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno01"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("IyAToluca"));
 });
 builder.Services.AddDbContext<Alumno02Context>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno02"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("GrupoTeckio"));
+});
+builder.Services.AddDbContext<DemoTeckioContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DemoTeckio"));
 });
 
 // Add services to the container.

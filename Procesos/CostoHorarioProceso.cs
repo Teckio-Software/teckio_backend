@@ -29,6 +29,7 @@ namespace ERP_TECKIO.Procesos
         private readonly ICostoHorarioVariableXPrecioUnitarioDetalleService<TContext> _CostoVariableService;
         private readonly IMapper _Mapper;
         private readonly TContext _dbContext;
+        private readonly FactorSalarioRealProceso<TContext> _fsrProceso;
 
         public CostoHorarioProceso(
             IProyectoService<TContext> proyectoService
@@ -50,6 +51,7 @@ namespace ERP_TECKIO.Procesos
             , ICostoHorarioVariableXPrecioUnitarioDetalleService<TContext> costoVariableService
             , IMapper mapper
             , TContext dbContext
+            , FactorSalarioRealProceso<TContext> fsrProceso
 
             )
         {
@@ -72,6 +74,7 @@ namespace ERP_TECKIO.Procesos
             _FsrxinsummoMdOService = fsrxinsummoMdOService;
             _CostoVariableService = costoVariableService;
             _CostoFijoService = costoFijoService;
+            _fsrProceso = fsrProceso;
         }
 
         public async Task<CostoHorarioFijoXPrecioUnitarioDetalleDTO> ObtenerCostoFijoXIdDetalle(int IdPrecioUnitarioDetalle){
@@ -142,6 +145,23 @@ namespace ERP_TECKIO.Procesos
         public async Task EditarCostoVariable(CostoHorarioVariableXPrecioUnitarioDetalleDTO registro)
         {
             var insumo = await _InsumoService.ObtenXId(registro.IdInsumo);
+            var precioUnitarioDetalle = await _PrecioUnitarioDetalleService.ObtenerXId(registro.IdPrecioUnitarioDetalle);
+            insumo.Codigo = registro.Codigo;
+            insumo.idTipoInsumo = registro.IdTipoInsumo;
+            insumo.Descripcion = registro.Descripcion;
+            insumo.Unidad = registro.Unidad;
+            insumo.CostoBase = registro.CostoBase;
+            var insumoEditado = await _InsumoService
+            if(insumo.idTipoInsumo == 10000)
+            {
+                var fsrRecalculado = await _FSRService.ObtenerTodosXProyecto(insumo.IdProyecto);
+                var fsr = fsrRecalculado.FirstOrDefault();
+                if (fsr.EsCompuesto)
+                {
+                    insumo.CostoBase = registro.CostoBase;
+                    insumo.CostoUnitario = registro.CostoBase * fsr.PorcentajeFsr;
+                }
+            }
         }
     }
 }
