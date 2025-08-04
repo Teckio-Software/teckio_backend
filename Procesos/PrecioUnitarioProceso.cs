@@ -3172,6 +3172,50 @@ namespace ERP_TECKIO
             return agrupados.Where(z => z.id != 0).OrderBy(z => z.idTipoInsumo).ToList();
         }
 
+        public async Task<List<InsumoParaExplosionDTO>> ObtenerExplosionXPrecioUnitario(PrecioUnitarioDTO precioUnitario)
+        {
+            var ExplosionDeInsumos = new List<InsumoParaExplosionDTO>();
+
+            if (precioUnitario.TipoPrecioUnitario == 0)
+            {
+                var InsumosHijos = obtenerExplosionHijos(precioUnitario, precioUnitario.Hijos).Result;
+                for (int j = 0; j < InsumosHijos.Count; j++)
+                {
+                    ExplosionDeInsumos.Add(InsumosHijos[j]);
+                }
+            }
+            else
+            {
+                var ExplosionConcepto = await ObtenerExplosionDeInsumoXConcepto(precioUnitario.Id);
+                for (int j = 0; j < ExplosionConcepto.Count; j++)
+                {
+                    ExplosionDeInsumos.Add(ExplosionConcepto[j]);
+                }
+            }
+
+            var agrupados = ExplosionDeInsumos.GroupBy(z => new { z.Codigo, z.Descripcion, z.CostoUnitario }).Select(x => new InsumoParaExplosionDTO
+            {
+                id = x.First().id,
+                idFamiliaInsumo = x.First().idFamiliaInsumo,
+                idTipoInsumo = x.First().idTipoInsumo,
+                Unidad = x.First().Unidad,
+                IdProyecto = x.First().IdProyecto,
+                EsFsrGlobal = x.First().EsFsrGlobal,
+                CostoUnitario = x.First().CostoUnitario,
+                CostoUnitarioConFormato = x.First().CostoUnitarioConFormato,
+                CostoBase = x.First().CostoBase,
+                CostoBaseConFormato = x.First().CostoBaseConFormato,
+                Codigo = x.Key.Codigo,
+                Descripcion = x.Key.Descripcion,
+                Cantidad = x.Sum(z => z.Cantidad),
+                CantidadConFormato = String.Format("{0:#,##0.00}", x.Sum(z => z.Cantidad)),
+                Importe = x.Sum(z => z.Cantidad) * x.First().CostoUnitario,
+                ImporteConFormato = String.Format("{0:#,##0.00}", x.Sum(z => z.Cantidad) * x.First().CostoUnitario)
+            }).ToList();
+            
+            return agrupados.Where(z => z.id != 0).OrderBy(z => z.idTipoInsumo).ToList();
+        }
+
         public async Task<List<InsumoParaExplosionDTO>> obtenerExplosionHijos(PrecioUnitarioDTO registro, List<PrecioUnitarioDTO> RegistrosHijos)
         {
             var ExplosionDeInsumos = new List<InsumoParaExplosionDTO>();
