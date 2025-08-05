@@ -302,6 +302,7 @@ namespace ERP_TECKIO.Servicios
                 objetoEncontrado.IdConcepto = registro.IdConcepto;
                 objetoEncontrado.EsDetalle = false;
                 objetoEncontrado.Posicion = registro.Posicion;
+                objetoEncontrado.EsCatalogoGeneral = registro.EsCatalogoGeneral;
 
                 respuesta.Estatus = await _Repositorio.Editar(objetoEncontrado);
                 if (!respuesta.Estatus)
@@ -347,6 +348,12 @@ namespace ERP_TECKIO.Servicios
                 respuesta.Descripcion = "Algo salió mal en la eliminación del precio unitario";
                 return respuesta;
             }
+        }
+
+        public async Task<List<PrecioUnitarioCopiaDTO>> ObtenerCatalogoGeneral()
+        {
+            var query = await _Repositorio.ObtenerTodos(z => z.EsCatalogoGeneral == true);
+            return _Mapper.Map<List<PrecioUnitarioCopiaDTO>>(query);
         }
     }
 }

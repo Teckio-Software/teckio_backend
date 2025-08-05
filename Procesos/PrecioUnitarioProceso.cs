@@ -513,31 +513,90 @@ namespace ERP_TECKIO
         public async Task<ActionResult<List<PrecioUnitarioCopiaDTO>>> ObtenerPrecioUnitarioCopia(int IdProyecto)
         {
             var proyecto = await _ProyectoService.ObtenXId(IdProyecto);
-            var conceptos = await _ConceptoService.ObtenerTodos(IdProyecto);
-            var lista = await _PrecioUnitarioService.ObtenerTodosParaCopia(IdProyecto);
-            var indirectos = 1;
-            for (int i = 0; i < lista.Count; i++)
+            var conceptos = new List<ConceptoDTO>();
+            var lista = new List<PrecioUnitarioCopiaDTO>();
+            if (IdProyecto == 0) {
+                lista = await obtenerPrecioUnitarioCatalogoGeneral();
+                foreach(var registro in lista)
+                {
+                    registro.Hijos = [];
+                }
+                return lista;
+            } 
+            else
             {
-                var concepto = conceptos.Where(z => z.Id == lista[i].IdConcepto).FirstOrDefault();
-                lista[i].NoSerie = proyecto.NoSerie;
-                lista[i].Codigo = concepto.Codigo;
-                lista[i].Descripcion = concepto.Descripcion;
-                lista[i].Unidad = concepto.Unidad;
-                lista[i].CostoUnitario = concepto.CostoUnitario;
-                lista[i].PrecioUnitario = lista[i].CostoUnitario * indirectos;
-                lista[i].Importe = lista[i].PrecioUnitario * lista[i].Cantidad;
-                lista[i].ImporteSeries = lista[i].Importe * lista[i].NoSerie;
-                lista[i].Expandido = true;
-                lista[i].CantidadConFormato = String.Format("{0:#,##0.0000}", lista[i].Cantidad);
-                lista[i].CantidadExcedenteConFormato = String.Format("{0:#,##0.0000}", lista[i].CantidadExcedente);
-                lista[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", lista[i].CostoUnitario);
-                lista[i].PrecioUnitarioConFormato = String.Format("{0:#,##0.00}", lista[i].PrecioUnitario);
-                lista[i].ImporteConFormato = String.Format("{0:#,##0.00}", lista[i].Importe);
-                lista[i].ImporteSeriesConFormato = String.Format("{0:#,##0.00}", lista[i].ImporteSeries);
+                conceptos = await _ConceptoService.ObtenerTodos(IdProyecto);
+                lista = await _PrecioUnitarioService.ObtenerTodosParaCopia(IdProyecto);
+                var indirectos = 1;
+                for (int i = 0; i < lista.Count; i++)
+                {
+                    var concepto = conceptos.Where(z => z.Id == lista[i].IdConcepto).FirstOrDefault();
+                    lista[i].NoSerie = proyecto.NoSerie;
+                    lista[i].Codigo = concepto.Codigo;
+                    lista[i].Descripcion = concepto.Descripcion;
+                    lista[i].Unidad = concepto.Unidad;
+                    lista[i].CostoUnitario = concepto.CostoUnitario;
+                    lista[i].PrecioUnitario = lista[i].CostoUnitario * indirectos;
+                    lista[i].Importe = lista[i].PrecioUnitario * lista[i].Cantidad;
+                    lista[i].ImporteSeries = lista[i].Importe * lista[i].NoSerie;
+                    lista[i].Expandido = true;
+                    lista[i].CantidadConFormato = String.Format("{0:#,##0.0000}", lista[i].Cantidad);
+                    lista[i].CantidadExcedenteConFormato = String.Format("{0:#,##0.0000}", lista[i].CantidadExcedente);
+                    lista[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", lista[i].CostoUnitario);
+                    lista[i].PrecioUnitarioConFormato = String.Format("{0:#,##0.00}", lista[i].PrecioUnitario);
+                    lista[i].ImporteConFormato = String.Format("{0:#,##0.00}", lista[i].Importe);
+                    lista[i].ImporteSeriesConFormato = String.Format("{0:#,##0.00}", lista[i].ImporteSeries);
+                }
             }
+            
             var listaEstructurada = await _PrecioUnitarioService.EstructurarCopia(lista);
             var listaResult = listaEstructurada.OrderBy(z => z.Id).ToList();
             return listaResult;
+        }
+
+        public async Task<List<PrecioUnitarioCopiaDTO>> obtenerPrecioUnitarioCatalogoGeneral() {
+            var items = _dbContex.Database.SqlQueryRaw<string>(
+@"
+select 
+  PU.id as Id, 
+  PU.idProyecto as IdProyecto, 
+  PU.Cantidad, 
+  PU.CantidadExcedente, 
+  PU.TipoPrecioUnitario, 
+  PU.Nivel, 
+  PU.idPrecioUnitarioBase as IdPrecioUnitarioBase,
+  PU.EsDetalle, 
+  PU.idConcepto as IdConcepto, 
+  PU.Posicion, 
+  PU.EsCatalogoGeneral, 
+  P.NoSerie as NoSerie, 
+  C.Codigo, 
+  C.Descripcion, 
+  C.Unidad, 
+  C.CostoUnitario, 
+  (C.CostoUnitario) as PrecioUnitario,
+  (C.CostoUnitario * PU.Cantidad) as Importe, 
+  (C.CostoUnitario * PU.Cantidad * P.NoSerie) as ImporteSeries, 
+  CAST(1 AS bit) as Expandido,
+  FORMAT(PU.Cantidad, '0.0000') as CantidadConFormato,
+  FORMAT(PU.CantidadExcedente, '0.0000') as CantidadExcedenteConFormato,
+  FORMAT(C.CostoUnitario, '0.00') as CostoUnitarioConFormato,
+  FORMAT(C.CostoUnitario, '0.00') as PrecioUnitarioConFormato,
+  FORMAT((C.CostoUnitario * PU.Cantidad), '0.00') as ImporteConFormato,
+  FORMAT((C.CostoUnitario * PU.Cantidad * P.NoSerie), '0.00') as ImporteSeriesConFormato
+from PrecioUnitario as PU
+left join Proyecto as P on P.Id = PU.idProyecto
+left join Concepto as C on C.Id = PU.idConcepto
+where PU.EsCatalogoGeneral = 1
+for json path
+").ToList();
+            if (items.Count <= 0)
+            {
+                return new List<PrecioUnitarioCopiaDTO>();
+            }
+            string json = string.Join("", items);
+            var datos = JsonSerializer.Deserialize<List<PrecioUnitarioCopiaDTO>>(json);
+            return datos;
         }
 
         public async Task<List<PrecioUnitarioDTO>> ObtenerSinEstructura(int IdProyecto)
@@ -2003,6 +2062,7 @@ namespace ERP_TECKIO
                 for (int i = 0; i < precios.Count; i++)
                 {
                     precios[i].Nivel = precioUnitarioBase.Nivel + 1;
+                    precios[i].EsCatalogoGeneral = false;
                     precios[i].IdPrecioUnitarioBase = precioUnitarioBase.Id;
                     precios[i].IdProyecto = IdProyecto;
                     var Id = precios[i].Id;
@@ -2094,6 +2154,7 @@ namespace ERP_TECKIO
                 {
                     precios[i].Nivel = 1;
                     precios[i].IdPrecioUnitarioBase = 0;
+                    precios[i].EsCatalogoGeneral = false;
                     precios[i].IdProyecto = IdProyecto;
                     var Id = precios[i].Id;
                     precios[i].Id = 0;

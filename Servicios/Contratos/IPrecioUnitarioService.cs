@@ -7,6 +7,7 @@ namespace ERP_TECKIO
     {
         Task<List<PrecioUnitarioDTO>> ObtenerTodos(int IdProyecto);
         Task<List<PrecioUnitarioCopiaDTO>> ObtenerTodosParaCopia(int IdProyecto);
+        Task<List<PrecioUnitarioCopiaDTO>> ObtenerCatalogoGeneral();
         Task<List<PrecioUnitarioDTO>> Estructurar(List<PrecioUnitarioDTO> registros, decimal IndirectoG);
         Task<List<PrecioUnitarioCopiaDTO>> EstructurarCopia(List<PrecioUnitarioCopiaDTO> registros);
         Task<PrecioUnitarioDTO> ObtenXId(int Id);

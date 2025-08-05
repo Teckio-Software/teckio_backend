@@ -24,7 +24,9 @@ namespace ERP_TECKIO
             CreateMap<Proyecto, ProyectoDTO>();
             CreateMap<ProyectoDTO, Proyecto>();
             //////////////////////////////////////
-            CreateMap<PrecioUnitario, PrecioUnitarioDTO>();
+            CreateMap<PrecioUnitario, PrecioUnitarioDTO>()
+            .ForMember(destino => destino.EsCatalogoGeneral,
+                opt => opt.MapFrom(origien => origien.EsCatalogoGeneral == null ? false : origien.EsCatalogoGeneral));
             CreateMap<PrecioUnitario, PrecioUnitarioCopiaDTO>();
             CreateMap<PrecioUnitarioDTO, PrecioUnitario>()
             .ForMember(z => z.IdProyectoNavigation,
