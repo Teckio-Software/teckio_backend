@@ -428,6 +428,14 @@ namespace ERP_TECKIO
 
         public async Task<List<PrecioUnitarioDTO>> ObtenerPrecioUnitario(int IdProyecto)
         {
+            if (IdProyecto == 0) {
+                var catalogoGeneal = await obtenerPrecioUnitarioCatalogoGeneral();
+                foreach (var concepto in catalogoGeneal) {
+                    concepto.Nivel = 2;
+                    concepto.Hijos = new List<PrecioUnitarioDTO>();
+                }
+                return catalogoGeneal;
+            }
             var proyecto = await _ProyectoService.ObtenXId(IdProyecto);
             var conceptos = await _ConceptoService.ObtenerTodos(IdProyecto);
             var lista = await _PrecioUnitarioService.ObtenerTodos(IdProyecto);
@@ -475,6 +483,52 @@ namespace ERP_TECKIO
             return listaResult;
         }
 
+        public async Task<List<PrecioUnitarioDTO>> obtenerPrecioUnitarioCatalogoGeneral()
+        {
+            var items = _dbContex.Database.SqlQueryRaw<string>(
+@"
+select 
+  PU.id as Id, 
+  PU.idProyecto as IdProyecto, 
+  PU.Cantidad, 
+  PU.CantidadExcedente, 
+  PU.TipoPrecioUnitario, 
+  PU.Nivel, 
+  PU.idPrecioUnitarioBase as IdPrecioUnitarioBase,
+  PU.EsDetalle, 
+  PU.idConcepto as IdConcepto, 
+  PU.Posicion, 
+  PU.EsCatalogoGeneral, 
+  P.NoSerie as NoSerie, 
+  C.Codigo, 
+  C.Descripcion, 
+  C.Unidad, 
+  C.CostoUnitario, 
+  (C.CostoUnitario) as PrecioUnitario,
+  (C.CostoUnitario * PU.Cantidad) as Importe, 
+  (C.CostoUnitario * PU.Cantidad * P.NoSerie) as ImporteSeries, 
+  CAST(1 AS bit) as Expandido,
+  FORMAT(PU.Cantidad, '0.0000') as CantidadConFormato,
+  FORMAT(PU.CantidadExcedente, '0.0000') as CantidadExcedenteConFormato,
+  FORMAT(C.CostoUnitario, '0.00') as CostoUnitarioConFormato,
+  FORMAT(C.CostoUnitario, '0.00') as PrecioUnitarioConFormato,
+  FORMAT((C.CostoUnitario * PU.Cantidad), '0.00') as ImporteConFormato,
+  FORMAT((C.CostoUnitario * PU.Cantidad * P.NoSerie), '0.00') as ImporteSeriesConFormato
+from PrecioUnitario as PU
+left join Proyecto as P on P.Id = PU.idProyecto
+left join Concepto as C on C.Id = PU.idConcepto
+where PU.EsCatalogoGeneral = 1
+for json path
+").ToList();
+            if (items.Count <= 0)
+            {
+                return new List<PrecioUnitarioDTO>();
+            }
+            string json = string.Join("", items);
+            var datos = JsonSerializer.Deserialize<List<PrecioUnitarioDTO>>(json);
+            return datos;
+        }
+
         public async Task<List<PrecioUnitarioDTO>> ObtenerPrecioUnitarioSinEstructurar(int IdProyecto)
         {
             var proyecto = await _ProyectoService.ObtenXId(IdProyecto);
@@ -516,7 +570,7 @@ namespace ERP_TECKIO
             var conceptos = new List<ConceptoDTO>();
             var lista = new List<PrecioUnitarioCopiaDTO>();
             if (IdProyecto == 0) {
-                lista = await obtenerPrecioUnitarioCatalogoGeneral();
+                lista = await obtenerPrecioUnitarioCatalogoGeneralCopia();
                 foreach(var registro in lista)
                 {
                     registro.Hijos = [];
@@ -554,7 +608,7 @@ namespace ERP_TECKIO
             return listaResult;
         }
 
-        public async Task<List<PrecioUnitarioCopiaDTO>> obtenerPrecioUnitarioCatalogoGeneral() {
+        public async Task<List<PrecioUnitarioCopiaDTO>> obtenerPrecioUnitarioCatalogoGeneralCopia() {
             var items = _dbContex.Database.SqlQueryRaw<string>(
 @"
 select 
