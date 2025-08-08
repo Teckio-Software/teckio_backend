@@ -151,7 +151,7 @@ namespace ERP_TECKIO.Procesos
             insumo.Descripcion = registro.Descripcion;
             insumo.Unidad = registro.Unidad;
             insumo.CostoBase = registro.CostoBase;
-            var insumoEditado = await _InsumoService
+            //var insumoEditado = await _InsumoService
             if(insumo.idTipoInsumo == 10000)
             {
                 var fsrRecalculado = await _FSRService.ObtenerTodosXProyecto(insumo.IdProyecto);

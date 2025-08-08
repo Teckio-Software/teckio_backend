@@ -35,4 +35,6 @@ public abstract class OrdenVentaAbstract
     public decimal Descuento { get; set; }
 
     public string? Observaciones { get; set; }
+
+    public string Elaboro { get; set; }
 }

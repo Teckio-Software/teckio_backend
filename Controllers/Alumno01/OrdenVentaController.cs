@@ -24,5 +24,26 @@ namespace ERP_TECKIO.Controllers.Alumno01
             var respuesta = await _ordenVentaProceso.CrearOrdenVenta(ordenVenta, authen.Claims.ToList());
             return respuesta;
         }
+
+        [HttpPut("editarOrdenVenta")]
+        public async Task<ActionResult<RespuestaDTO>> EditarOrdenVenta(OrdenVentaDTO ordenVenta)
+        {
+            var respuesta = await _ordenVentaProceso.EditarOrdenVenta(ordenVenta);
+            return respuesta;
+        }
+
+        [HttpDelete("eliminarOrdenVenta")]
+        public async Task<ActionResult<RespuestaDTO>> EliminarOrdenVenta(OrdenVentaDTO ordenVenta)
+        {
+            var respuesta = await _ordenVentaProceso.EliminarOrdenVenta(ordenVenta);
+            return respuesta;
+        }
+
+        [HttpGet("todos")]
+        public async Task<ActionResult<List<OrdenVentaDTO>>> ObtenerTodos()
+        {
+            var lista = await _ordenVentaProceso.ObtenerTodos();
+            return lista;
+        }
     }
 }
