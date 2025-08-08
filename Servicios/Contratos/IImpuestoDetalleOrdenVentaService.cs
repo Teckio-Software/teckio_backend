@@ -9,5 +9,6 @@ namespace ERP_TECKIO.Servicios.Contratos
         Task<OrdenVentaDTO> CrearYObtener(ImpuestoDetalleOrdenVentaDTO modelo);
         Task<RespuestaDTO> Editar(ImpuestoDetalleOrdenVentaDTO modelo);
         Task<RespuestaDTO> Eliminar(ImpuestoDetalleOrdenVentaDTO modelo);
+        Task<List<ImpuestoDetalleOrdenVentaDTO>> ObtenerXIdDetalle(int id);
     }
 }

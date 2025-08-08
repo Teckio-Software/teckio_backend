@@ -17,8 +17,9 @@ namespace ERP_TECKIO.Procesos
             this._dbContext = db;
         }
 
-        //public async Task<List<ProductoYservicioDTO>> ObtenerProductosYServicios()
+        //public async Task<List<ProductoYServicioConjuntoDTO>> ObtenerProductosYServicios()
         //{
+        //    //[pendiente]
         //    try
         //    {
         //        var items = _dbContext.Database.SqlQueryRaw<string>("""""
@@ -29,17 +30,17 @@ namespace ERP_TECKIO.Procesos
         //        if (items.Count > 0)
         //        {
         //            string json = string.Join("", items);
-        //            var datos = JsonSerializer.Deserialize<List<ProductoYservicioDTO>>(json);
+        //            var datos = JsonSerializer.Deserialize<List<ProductoYServicioConjuntoDTO>>(json);
         //            return datos;
         //        }
         //        else
         //        {
-        //            return new List<ProductoYservicioDTO>();
+        //            return new List<ProductoYServicioConjuntoDTO>();
         //        }
         //    }
         //    catch
         //    {
-        //        return new List<ProductoYservicioDTO>();
+        //        return new List<ProductoYServicioConjuntoDTO>();
         //    }
         //}
 
