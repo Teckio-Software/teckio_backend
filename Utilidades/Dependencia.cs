@@ -140,6 +140,7 @@ namespace ERP_TECKIO
             services.AddScoped(typeof(CuentaContableProceso<>));
             services.AddScoped(typeof(OrdenVentaProceso<>));
             services.AddScoped(typeof(FsrProceso<>));
+            services.AddScoped(typeof(ProductoYServicioProceso<>));
 
             //Facturas
             services.AddScoped(typeof(ITipoImpuestoService<>), typeof(TipoImpuestoService<>));

@@ -1,8 +1,10 @@
 ﻿using ERP_TECKIO.DTO.Factura;
+using ERP_TECKIO.Procesos;
 using ERP_TECKIO.Servicios.Contratos.Facturacion;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace ERP_TECKIO.Controllers.Alumno01
 {
@@ -13,9 +15,15 @@ namespace ERP_TECKIO.Controllers.Alumno01
     {
 
         private readonly IProductoYservicioService<Alumno01Context> _productoYServicioService;
-        public ProductoYServicioAlumno01Controller(IProductoYservicioService<Alumno01Context> productoYServicioService)
+
+        private readonly ProductoYServicioProceso<Alumno01Context> _process;
+
+        public ProductoYServicioAlumno01Controller(IProductoYservicioService<Alumno01Context> productoYServicioService,
+            ProductoYServicioProceso<Alumno01Context> process
+            )
         {
             _productoYServicioService = productoYServicioService;
+            _process = process;
         }
 
         [HttpGet("obtenerTodos")]
@@ -25,6 +33,13 @@ namespace ERP_TECKIO.Controllers.Alumno01
             return lista;
         }
 
+
+        [HttpGet("obtenerConjunto")]
+        public async Task<ActionResult<List<ProductoYServicioConjuntoDTO>>> ObtenerConjuntos()
+        {
+            var lista = await _process.ObtenerProductosYServicios();
+            return lista;
+        }
 
     }
 }

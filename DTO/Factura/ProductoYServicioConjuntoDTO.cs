@@ -27,11 +27,11 @@
         public string? ClaveUS { get; set; }
         public string? NombreUs { get; set; }
 
-        //Valores de subcategoria productoservicio
+        //Valores de categoria productoservicio
         public int IdCPS { get; set; }
         public string? DescripcionCPS { get; set; }
 
-        //Valores de categoria productoservicio
+        //Valores de subcategoria productoservicio
         public int IdSPS { get; set; }
         public string? DescripcionSPS { get; set; }
 

@@ -24,5 +24,12 @@ namespace ERP_TECKIO.Controllers.DemoTeckio
             var lista = await _process.ObtenerTodos();
             return lista;
         }
+
+        [HttpGet("obtenerConjunto")]
+        public async Task<ActionResult<List<ProductoYServicioConjuntoDTO>>> ObtenerConjuntos()
+        {
+            var lista = await _process.ObtenerProductosYServicios();
+            return lista;
+        }
     }
 }
