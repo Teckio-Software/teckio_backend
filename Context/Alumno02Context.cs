@@ -73,6 +73,7 @@ public partial class Alumno02Context : DbContext
     public virtual DbSet<FamiliaInsumo> FamiliaInsumos { get; set; }
 
     public virtual DbSet<Generadores> Generadores { get; set; }
+    public virtual DbSet<GeneradoresXEstimacion> GeneradoresXEstimacion { get; set; }
 
     public virtual DbSet<Insumo> Insumos { get; set; }
 
@@ -157,9 +158,263 @@ public partial class Alumno02Context : DbContext
 
     public virtual DbSet<UsoCfdiSat> UsoCfdiSats { get; set; }
     public virtual DbSet<FacturaXOrdenCompra> FacturaXOrdenCompras { get; set; }
+    public virtual DbSet<OrdenVentum> OrdenVenta { get; set; }
+    public virtual DbSet<DetalleOrdenVentum> DetalleOrdenVenta { get; set; }
+    public virtual DbSet<ImpuestoDetalleOrdenVentum> ImpuestoDetalleOrdenVenta { get; set; }
+    public virtual DbSet<Produccion> Produccions { get; set; }
+    public virtual DbSet<InsumoXproduccion> InsumoXproduccions { get; set; }
+    public virtual DbSet<EntradaProduccionAlmacen> EntradaProduccionAlmacens { get; set; }
+    public virtual DbSet<ProductosXentradaProduccionAlmacen> ProductosXentradaProduccionAlmacens { get; set; }
+    public virtual DbSet<ExistenciaProductosAlmacen> ExistenciaProductosAlmacens { get; set; }
+    public virtual DbSet<ParametrosFsr> ParametrosFsrs { get; set; }
+    public virtual DbSet<PorcentajeCesantiaEdad> PorcentajeCesantiaEdads { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<ParametrosFsr>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Parametr__3214EC0730D8920B");
+
+            entity.ToTable("ParametrosFSR");
+
+            entity.Property(e => e.RiesgoTrabajo).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.CuotaFija).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.AplicacionExcedente).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.PrestacionDinero).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.GastoMedico).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.InvalidezVida).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Retiro).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.PrestaconSocial).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Infonavit).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.UMA).HasColumnType("decimal(28, 6)");
+
+            entity.HasOne(d => d.IdProyectoNavigation).WithMany(p => p.ParametrosFsrs)
+                .HasForeignKey(d => d.IdProyecto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ParametrosFSR_IdProyecto");
+        });
+
+        modelBuilder.Entity<PorcentajeCesantiaEdad>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Porcenta__3214EC07E295DCC5");
+
+            entity.ToTable("PorcentajeCesantiaEdad");
+
+            entity.Property(e => e.RangoUMA).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Porcentaje).HasColumnType("decimal(28, 6)");
+
+            entity.HasOne(d => d.IdProyectoNavigation).WithMany(p => p.PorcentajeCesantiaEdads)
+                .HasForeignKey(d => d.IdProyecto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PorcentajeCesantiaEdad_IdProyecto");
+        });
+
+        modelBuilder.Entity<OrdenVentum>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__OrdenVen__3214EC073AF330EB");
+
+            entity.ToTable("OrdenVenta", "OrdenVenta");
+
+            entity.Property(e => e.Autorizo).HasMaxLength(100);
+            entity.Property(e => e.FechaRegistro).HasColumnType("datetime");
+            entity.Property(e => e.ImporteTotal).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.NumeroOrdenVenta).HasMaxLength(50);
+            entity.Property(e => e.Observaciones).HasMaxLength(200);
+            entity.Property(e => e.Subtotal).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Descuento).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.TotalSaldado).HasColumnType("decimal(28, 6)");
+
+            entity.HasOne(d => d.IdClienteNavigation).WithMany(p => p.OrdenVenta)
+                .HasForeignKey(d => d.IdCliente)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_OrdenVenta_IdCliente");
+        });
+
+        modelBuilder.Entity<DetalleOrdenVentum>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__DetalleO__3214EC07F881A192");
+
+            entity.ToTable("DetalleOrdenVenta", "OrdenVenta");
+
+            entity.Property(e => e.Cantitdad).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Descuento).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.IdProductoYservicio).HasColumnName("IdProductoYServicio");
+            entity.Property(e => e.ImporteTotal).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.PrecioUnitario).HasColumnType("decimal(28, 6)");
+
+            entity.HasOne(d => d.IdEstimacionNavigation).WithMany(p => p.DetalleOrdenVenta)
+                .HasForeignKey(d => d.IdEstimacion)
+                .HasConstraintName("FK_DetalleOrdenVenta_IdEstimacion");
+
+            entity.HasOne(d => d.IdOrdenVentaNavigation).WithMany(p => p.DetalleOrdenVenta)
+                .HasForeignKey(d => d.IdOrdenVenta)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetalleOrdenVenta_IdOrdenVenta");
+
+            entity.HasOne(d => d.IdProductoYservicioNavigation).WithMany(p => p.DetalleOrdenVenta)
+                .HasForeignKey(d => d.IdProductoYservicio)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetalleOrdenVenta_IdProductoYServicio");
+        });
+
+        modelBuilder.Entity<ImpuestoDetalleOrdenVentum>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Impuesto__3214EC07D7FA9810");
+
+            entity.ToTable("ImpuestoDetalleOrdenVenta", "OrdenVenta");
+
+            entity.Property(e => e.ImporteTotal).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.TasaCuota).HasColumnType("decimal(28, 6)");
+
+            entity.HasOne(d => d.IdCategoriaImpuestoNavigation).WithMany(p => p.ImpuestoDetalleOrdenVenta)
+                .HasForeignKey(d => d.IdCategoriaImpuesto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ImpuestoDetalleOrdenVenta_IdCategoriaImpuesto");
+
+            entity.HasOne(d => d.IdClasificacionImpuestoNavigation).WithMany(p => p.ImpuestoDetalleOrdenVenta)
+                .HasForeignKey(d => d.IdClasificacionImpuesto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ImpuestoDetalleOrdenVenta_IdClasificacionImpuesto");
+
+            entity.HasOne(d => d.IdDetalleOrdenVentaNavigation).WithMany(p => p.ImpuestoDetalleOrdenVenta)
+                .HasForeignKey(d => d.IdDetalleOrdenVenta)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ImpuestoDetalleOrdenVenta_IdDetalleOrdenVenta");
+
+            entity.HasOne(d => d.IdTipoFactorNavigation).WithMany(p => p.ImpuestoDetalleOrdenVenta)
+                .HasForeignKey(d => d.IdTipoFactor)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ImpuestoDetalleOrdenVenta_IdTipoFactor");
+
+            entity.HasOne(d => d.IdTipoImpuestoNavigation).WithMany(p => p.ImpuestoDetalleOrdenVenta)
+                .HasForeignKey(d => d.IdTipoImpuesto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ImpuestoDetalleOrdenVenta_IdTipoImpuesto");
+        });
+
+        modelBuilder.Entity<CostoHorarioFijoXPrecioUnitarioDetalle>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__CostoHor__3214EC079936A165");
+
+            entity.ToTable("CostoHorarioFijoXPrecioUnitarioDetalle");
+
+            entity.Property(e => e.GastoAnual).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.HorasUso).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.InteresAnual).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Inversion).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.MesTrabajoReal).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.PorcentajeReparacion).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.PorcentajeSeguroAnual).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.VidaUtil).HasColumnType("decimal(28, 6)");
+
+            entity.HasOne(d => d.IdPrecioUnitarioDetalleNavigation).WithMany(p => p.CostoHorarioFijoXprecioUnitarioDetalles)
+                .HasForeignKey(d => d.IdPrecioUnitarioDetalle)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CostoHorarioFijoXPrecioUnitarioDetalle_IdPrecioUnitarioDetalle");
+        });
+
+        modelBuilder.Entity<CostoHorarioVariableXPrecioUnitarioDetalle>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__CostoHor__3214EC075B2153A8");
+
+            entity.ToTable("CostoHorarioVariableXPrecioUnitarioDetalle");
+
+            entity.Property(e => e.Rendimiento).HasColumnType("decimal(28, 6)");
+
+            entity.HasOne(d => d.IdPrecioUnitarioDetalleNavigation).WithMany(p => p.CostoHorarioVariableXprecioUnitarioDetalles)
+                .HasForeignKey(d => d.IdPrecioUnitarioDetalle)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CostoHorarioVariableXPrecioUnitarioDetalle_IdPrecioUnitarioDetalle");
+        });
+
+        modelBuilder.Entity<Produccion>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Producci__3214EC07D07A5627");
+
+            entity.ToTable("Produccion", "Produccion");
+
+            entity.Property(e => e.Cantidad).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.FechaProduccion).HasColumnType("datetime");
+            entity.Property(e => e.IdProductoYservicio).HasColumnName("IdProductoYServicio");
+            entity.Property(e => e.Observaciones).HasMaxLength(200);
+            entity.Property(e => e.Produjo).HasMaxLength(100);
+
+            entity.HasOne(d => d.IdProductoYservicioNavigation).WithMany(p => p.Produccion)
+                .HasForeignKey(d => d.IdProductoYservicio)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Produccion_IdProductoServicio");
+        });
+
+        modelBuilder.Entity<InsumoXproduccion>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__InsumoXP__3214EC07F4AA107B");
+
+            entity.ToTable("InsumoXProduccion", "Produccion");
+
+            entity.Property(e => e.Cantidad).HasColumnType("decimal(28, 6)");
+
+            entity.HasOne(d => d.IdInsumoNavigation).WithMany(p => p.InsumoxProduccion)
+                .HasForeignKey(d => d.IdInsumo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_InsumoXProduccion_IdInsumo");
+
+            entity.HasOne(d => d.IdProduccionNavigation).WithMany(p => p.InsumoxProduccion)
+                .HasForeignKey(d => d.IdProduccion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_InsumoXProduccion_IdProduccion");
+        });
+
+        modelBuilder.Entity<EntradaProduccionAlmacen>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__EntradaP__3214EC07F9D865D3");
+
+            entity.ToTable("EntradaProduccionAlmacen", "Produccion");
+
+            entity.Property(e => e.FechaEntrada).HasColumnType("datetime");
+            entity.Property(e => e.Observaciones).HasMaxLength(200);
+            entity.Property(e => e.Recibio).HasMaxLength(100);
+
+            entity.HasOne(d => d.IdAlmacenNavigation).WithMany(p => p.EntradaProduccionAlmacens)
+                .HasForeignKey(d => d.IdAlmacen)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_EntradaProduccionAlmacen_IdAlmacen");
+        });
+
+        modelBuilder.Entity<ProductosXentradaProduccionAlmacen>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Producto__3214EC075D12C9D4");
+
+            entity.ToTable("ProductosXEntradaProduccionAlmacen", "Produccion");
+
+            entity.Property(e => e.Cantidad).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.IdProductoYservicio).HasColumnName("IdProductoYServicio");
+
+            entity.HasOne(d => d.IdEntradaProduccionAlmacenNavigation).WithMany(p => p.ProductosXentradaProduccionAlmacens)
+                .HasForeignKey(d => d.IdEntradaProduccionAlmacen)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ProductosXEntradaProduccionAlmacen_IdEntradaProduccionAlmacen");
+
+            entity.HasOne(d => d.IdProductoYservicioNavigation).WithMany(p => p.ProductosXentradaProduccionAlmacens)
+                .HasForeignKey(d => d.IdProductoYservicio)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ProductosXEntradaProduccionAlmacen_IdProductoYServicio");
+        });
+
+        modelBuilder.Entity<ExistenciaProductosAlmacen>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Existenc__3214EC07CFE5C050");
+
+            entity.ToTable("ExistenciaProductosAlmacen", "Produccion");
+
+            entity.Property(e => e.Cantidad).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.IdProductoYservicio).HasColumnName("IdProductoYServicio");
+
+            entity.HasOne(d => d.IdProductoYservicioNavigation).WithMany(p => p.ExistenciaProductosAlmacens)
+                .HasForeignKey(d => d.IdProductoYservicio)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ExistenciaProductosAlmacen_IdProductoYServicio");
+        });
+
         modelBuilder.Entity<FsixinsummoMdO>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__FSIXInsu__3214EC07D9E08BFA");
@@ -1357,6 +1612,8 @@ public partial class Alumno02Context : DbContext
             entity.Property(e => e.PorcentajeFsr)
                 .HasColumnType("decimal(28, 6)")
                 .HasColumnName("PorcentajeFSR");
+            entity.Property(e => e.EsCompuesto).HasColumnName("EsCompuesto");
+
 
             entity.HasOne(d => d.IdProyectoNavigation).WithMany(p => p.FactorSalarioReals)
                 .HasForeignKey(d => d.IdProyecto)
@@ -1410,6 +1667,30 @@ public partial class Alumno02Context : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Generador__IdPre__7849DB76");
         });
+
+        modelBuilder.Entity<GeneradoresXEstimacion>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Generado__3214EC0776619304");
+
+            entity.Property(e => e.Cantidad).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Codigo).HasMaxLength(20);
+            entity.Property(e => e.EjeX).HasMaxLength(20);
+            entity.Property(e => e.EjeY).HasMaxLength(20);
+            entity.Property(e => e.EjeZ).HasMaxLength(20);
+            entity.Property(e => e.X).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Y).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Z).HasColumnType("decimal(28, 6)");
+
+            entity.HasOne(d => d.IdGeneradoresNavigation).WithMany(p => p.GeneradoresXEstimacions)
+                .HasForeignKey(d => d.IdGenerador)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_GeneradoresXEstimacion_IdGenerador");
+            entity.HasOne(d => d.IdEstimacionesNavigation).WithMany(p => p.GeneradoresXEstimacions)
+                .HasForeignKey(d => d.IdEstimacion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Generador__IdEst__51851410");
+        });
+
         modelBuilder.Entity<TipoImpuesto>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_TipoImpuesto_2024_02_15");

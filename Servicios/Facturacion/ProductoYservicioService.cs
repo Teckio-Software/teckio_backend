@@ -50,8 +50,16 @@ namespace ERP_TECKIO.Servicios.Facturacion
 
         public async Task<ProductoYservicioDTO> CrearYObtener(ProductoYservicioDTO registro)
         {
-            var respuesta = await _repository.Crear(_mapper.Map<ProductoYservicio>(registro));
-            return _mapper.Map<ProductoYservicioDTO>(respuesta);
+            try
+            {
+                var respuesta = await _repository.Crear(_mapper.Map<ProductoYservicio>(registro));
+                return _mapper.Map<ProductoYservicioDTO>(respuesta);
+            }
+            catch
+            {
+                return new ProductoYservicioDTO();
+            }
+            
         }
 
         public async Task<RespuestaDTO> Editar(ProductoYservicioDTO registro)

@@ -29,6 +29,26 @@ namespace ERP_TECKIO.Servicios.Facturacion
             return true;
         }
 
+        public async Task<List<UnidadDTO>> ObtenerTodos()
+        {
+            try
+            {
+                var lista = await _repository.ObtenerTodos();
+                if (lista.Count > 0)
+                {
+                    return _mapper.Map<List<UnidadDTO>>(lista);
+                }
+                else
+                {
+                    return new List<UnidadDTO>();
+                }
+            }
+            catch
+            {
+                return new List<UnidadDTO>();
+            }
+        }
+
         public async Task<UnidadDTO> ObtenerXId(int Id)
         {
             var objeto = await _repository.Obtener(z => z.Id == Id);
