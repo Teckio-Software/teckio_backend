@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<Alumno01Context>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("IyAToluca"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno01"));
 });
 builder.Services.AddDbContext<Alumno02Context>(options =>
 {

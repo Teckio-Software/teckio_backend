@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ERP_TECKIO.Controllers
+namespace ERP_TECKIO.Controllers.Alumno01
 {
     [Route("api/impuestodetalleordencompra/1")]
     [ApiController]

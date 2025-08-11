@@ -88,5 +88,52 @@ namespace ERP_TECKIO.Procesos
                 return new List<ProductoYservicioDTO>();
             }
         }
+
+        public async Task<ProductoYservicioDTO> CrearYObtener(ProductoYservicioDTO productoyservicio)
+        {
+            try
+            {
+                var resultado = await _productoYServicioService.CrearYObtener(productoyservicio);
+                return resultado;
+            }
+            catch
+            {
+                return new ProductoYservicioDTO();
+            }
+        }
+
+        public async Task<RespuestaDTO> Editar(ProductoYservicioDTO productoyservicio)
+        {
+            try
+            {
+                var resultado = await _productoYServicioService.Editar(productoyservicio);
+                return resultado;
+            }
+            catch
+            {
+                return new RespuestaDTO
+                {
+                    Estatus = false,
+                    Descripcion = "Ocurrio un arror al intentar editar el producto y servicio"
+                };
+            }
+        }
+
+        public async Task<RespuestaDTO> Eliminar(ProductoYservicioDTO productoyservicio)
+        {
+            try
+            {
+                var resultado = await _productoYServicioService.Eliminar(productoyservicio.Id);
+                return resultado;
+            }
+            catch
+            {
+                return new RespuestaDTO
+                {
+                    Estatus = false,
+                    Descripcion = "Ocurrio un arror al intentar editar el producto y servicio"
+                };
+            }
+        }
     }
 }

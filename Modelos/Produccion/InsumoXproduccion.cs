@@ -1,4 +1,5 @@
 ﻿using ERP_TECKIO.Modelos;
+using ERP_TECKIO.Modelos.Facturaion;
 using System;
 using System.Collections.Generic;
 
@@ -11,6 +12,9 @@ public partial class InsumoXproduccion : InsumoXproduccionAbstract
     public virtual Insumo IdInsumoNavigation { get; set; } = null!;
 
     public virtual Produccion IdProduccionNavigation { get; set; } = null!;
+
+    public virtual ICollection<InsumoxProductoYservicio> InsumoxProductoYservicios { get; set; } = new List<InsumoxProductoYservicio>();
+
 }
 
 public abstract class InsumoXproduccionAbstract
