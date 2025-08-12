@@ -25,5 +25,7 @@ namespace ERP_TECKIO.Controllers.Alumno01
             var lista = await _service.ObtenerTodos();
             return lista;
         }
+
+        
     }
 }

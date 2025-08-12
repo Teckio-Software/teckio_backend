@@ -135,5 +135,21 @@ namespace ERP_TECKIO.Procesos
                 };
             }
         }
+
+        public async Task<RespuestaDTO> Crear(ProductoYservicioDTO productoyservicio)
+        {
+            RespuestaDTO respuesta = new RespuestaDTO();
+            try
+            {
+                respuesta = await _productoYServicioService.Crear(productoyservicio);
+                return respuesta;
+            }
+            catch
+            {
+                respuesta.Descripcion = "Ocurrio un error al intentar crear el producto y servicio";
+                respuesta.Estatus = false;
+                return respuesta;
+            }
+        }
     }
 }
