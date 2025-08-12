@@ -24,6 +24,13 @@ namespace ERP_TECKIO.Servicios.Facturacion
             try
             {
                 var objeto = _mapper.Map<InsumoxProductoYservicio>(parametro);
+                var listaExist = await _repository.ObtenerTodos(i => i.IdInsumo == parametro.IdInsumo && i.IdProductoYservicio == parametro.IdProductoYservicio);
+                if (listaExist.Count > 0)
+                {
+                    respuesta.Descripcion = "No se puede duplicar un insumo";
+                    respuesta.Estatus = false;
+                    return respuesta;
+                }
                 var resultado = await _repository.Crear(objeto);
                 if (resultado.Id > 0)
                 {
@@ -60,6 +67,13 @@ namespace ERP_TECKIO.Servicios.Facturacion
                 objeto.IdProductoYservicio = parametro.IdProductoYservicio;
                 objeto.IdInsumo = parametro.IdInsumo;
                 objeto.Cantidad = parametro.Cantidad;
+                var listaExist = await _repository.ObtenerTodos(i => i.IdInsumo == objeto.IdInsumo && i.IdProductoYservicio == objeto.IdProductoYservicio && i.Id != objeto.Id);
+                if (listaExist.Count > 0)
+                {
+                    respuesta.Descripcion = "No se puede duplicar un insumo";
+                    respuesta.Estatus = false;
+                    return respuesta;
+                }
                 respuesta.Estatus = await _repository.Editar(objeto);
                 if (respuesta.Estatus)
                 {
