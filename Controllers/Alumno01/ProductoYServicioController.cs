@@ -63,5 +63,14 @@ namespace ERP_TECKIO.Controllers.Alumno01
             return resultado;
         }
 
+        [HttpPost("crear")]
+        public async Task<ActionResult<RespuestaDTO>> Crear(ProductoYservicioDTO productoyservicio)
+        {
+            var respuesta = await _process.Crear(productoyservicio);
+            return respuesta;
+        }
+
+
+
     }
 }
