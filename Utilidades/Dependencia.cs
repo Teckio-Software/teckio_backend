@@ -168,7 +168,7 @@ namespace ERP_TECKIO
             services.AddScoped(typeof(IAcuseValidacionService<>), typeof(AcuseValidacionService<>));
             services.AddScoped(typeof(IArchivoService<>), typeof(ArchivoService<>));
             services.AddScoped(typeof(IFacturaXOrdenCompraService<>), typeof(FacturaXOrdenCompraService<>));
-
+            services.AddScoped(typeof(IInsumoXProductoYServicioService<>), typeof(InsumoXProductoYServicioService<>));
 
             //Produccion
             services.AddScoped(typeof(IOrdenVentaService<>), typeof(OrdenVentaService<>));

@@ -13,8 +13,6 @@ public partial class InsumoXproduccion : InsumoXproduccionAbstract
 
     public virtual Produccion IdProduccionNavigation { get; set; } = null!;
 
-    public virtual ICollection<InsumoxProductoYservicio> InsumoxProductoYservicios { get; set; } = new List<InsumoxProductoYservicio>();
-
 }
 
 public abstract class InsumoXproduccionAbstract
