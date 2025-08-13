@@ -19,7 +19,6 @@ namespace ERP_TECKIO.Procesos
 
         public async Task<List<ProductoYServicioConjuntoDTO>> ObtenerProductosYServicios()
         {
-            //[pendiente]
             try
             {
                 var items = _dbContext.Database.SqlQueryRaw<ProductoYServicioConjuntoDTO>(""""

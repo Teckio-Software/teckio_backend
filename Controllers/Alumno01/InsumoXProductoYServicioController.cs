@@ -1,4 +1,6 @@
-﻿using ERP_TECKIO.DTO.Factura;
+﻿using ERP_TECKIO.DTO;
+using ERP_TECKIO.DTO.Factura;
+using ERP_TECKIO.Procesos.Facturacion;
 using ERP_TECKIO.Servicios.Contratos.Facturacion;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -14,11 +16,13 @@ namespace ERP_TECKIO.Controllers.Alumno01
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionInsumo-Empresa1")]
     public class InsumoXProductoYServicioController: ControllerBase
     {
-        public readonly IInsumoXProductoYServicioService<Alumno01Context> _service;
+        private readonly IInsumoXProductoYServicioService<Alumno01Context> _service;
+        private readonly InsumoXProductoYServicioProceso<Alumno01Context> _process;
 
-        public InsumoXProductoYServicioController(IInsumoXProductoYServicioService<Alumno01Context> service)
+        public InsumoXProductoYServicioController(IInsumoXProductoYServicioService<Alumno01Context> service, InsumoXProductoYServicioProceso<Alumno01Context> process)
         {
             _service = service;
+            _process = process;
         }
 
         [HttpGet("obtenerXIdProdYSer/{id:int}")]
@@ -42,11 +46,18 @@ namespace ERP_TECKIO.Controllers.Alumno01
             return resultado;
         }
 
-        [HttpDelete("eliminar")]
-        public async Task<ActionResult<RespuestaDTO>> Eliminar(int parametro)
+        [HttpDelete("eliminar/{id:int}")]
+        public async Task<ActionResult<RespuestaDTO>> Eliminar(int id)
         {
-            var resultado = await _service.Eliminar(parametro);
+            var resultado = await _service.Eliminar(id);
             return resultado;
+        }
+
+        [HttpGet("obtenerConjuntoXIdProdYSer/{id:int}")]
+        public async Task<ActionResult<List<InsumoXProductoYServicioCompuestoDTO>>> ObtenerConjuntoXIdProdYSer(int id)
+        {
+            var lista = await _process.ObtenerLista(id);
+            return lista;
         }
     }
 }
