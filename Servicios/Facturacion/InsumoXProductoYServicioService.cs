@@ -93,12 +93,12 @@ namespace ERP_TECKIO.Servicios.Facturacion
             }
         }
 
-        public async Task<RespuestaDTO> Eliminar(InsumoXProductoYServicioDTO parametro)
+        public async Task<RespuestaDTO> Eliminar(int parametro)
         {
             RespuestaDTO respuesta = new RespuestaDTO();
             try
             {
-                var objeto = await _repository.Obtener(i => i.Id == parametro.Id);
+                var objeto = await _repository.Obtener(i => i.Id == parametro);
                 if (objeto.Id <= 0)
                 {
                     respuesta.Estatus = false;
