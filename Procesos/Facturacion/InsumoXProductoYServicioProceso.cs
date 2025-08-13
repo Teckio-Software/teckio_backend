@@ -23,7 +23,7 @@ namespace ERP_TECKIO.Procesos.Facturacion
                 ips.IdProductoYservicio as IdProductoYservicio,
                 ips.IdInsumo as IdInsumo,
                 ips.Cantidad as Cantidad,
-                i.Clave as Clave,
+                i.Codigo as Clave,
                 i.Descripcion as Descripcion
                 from Factura.InsumoxProductoYServicio ips 
                 join dbo.Insumo i on ips.IdInsumo = i.Id 
