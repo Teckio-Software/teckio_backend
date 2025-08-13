@@ -24,5 +24,27 @@ namespace ERP_TECKIO.Controllers.Alumno01
             var lista = await _service.ObtenerTodos();
             return lista;
         }
+
+        [HttpPost("crear")]
+        public async Task<ActionResult<RespuestaDTO>> Crear(UnidadDTO unidad)
+        {
+            var resultado = await _service.Crear(unidad);
+            if (resultado)
+            {
+                return new RespuestaDTO
+                {
+                    Estatus = true,
+                    Descripcion = "Unidad creada exitosamente"
+                };
+            }
+            else
+            {
+                return new RespuestaDTO
+                {
+                    Estatus = false,
+                    Descripcion = "Ocurrio un error al intentar crear la unidad"
+                };
+            }
+        }
     }
 }

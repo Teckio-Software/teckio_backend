@@ -43,7 +43,7 @@ namespace ERP_TECKIO.Controllers.Alumno01
         }
 
         [HttpDelete("eliminar")]
-        public async Task<ActionResult<RespuestaDTO>> Eliminar(InsumoXProductoYServicioDTO parametro)
+        public async Task<ActionResult<RespuestaDTO>> Eliminar(int parametro)
         {
             var resultado = await _service.Eliminar(parametro);
             return resultado;

@@ -25,5 +25,12 @@ namespace ERP_TECKIO.Controllers.Alumno01
             var lista = await _service.ObtenerTodos();
             return lista;
         }
+
+        [HttpPost("crearYObtener")]
+        public async Task<ActionResult<CategoriaProductoYServicioDTO>> CrearYObtener(CategoriaProductoYServicioDTO categoria)
+        {
+            var resultado = await _service.CrearYObtener(categoria);
+            return resultado;
+        }
     }
 }
