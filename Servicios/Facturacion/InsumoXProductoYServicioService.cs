@@ -64,16 +64,16 @@ namespace ERP_TECKIO.Servicios.Facturacion
                     respuesta.Descripcion = "No se encontro el insumo por producto y servicio";
                     return respuesta;
                 }
-                objeto.IdProductoYservicio = parametro.IdProductoYservicio;
-                objeto.IdInsumo = parametro.IdInsumo;
+                //objeto.IdProductoYservicio = parametro.IdProductoYservicio;
+                //objeto.IdInsumo = parametro.IdInsumo;
                 objeto.Cantidad = parametro.Cantidad;
-                var listaExist = await _repository.ObtenerTodos(i => i.IdInsumo == objeto.IdInsumo && i.IdProductoYservicio == objeto.IdProductoYservicio && i.Id != objeto.Id);
-                if (listaExist.Count > 0)
-                {
-                    respuesta.Descripcion = "No se puede duplicar un insumo";
-                    respuesta.Estatus = false;
-                    return respuesta;
-                }
+                //var listaExist = await _repository.ObtenerTodos(i => i.IdInsumo == objeto.IdInsumo && i.IdProductoYservicio == objeto.IdProductoYservicio && i.Id != objeto.Id);
+                //if (listaExist.Count > 0)
+                //{
+                //    respuesta.Descripcion = "No se puede duplicar un insumo";
+                //    respuesta.Estatus = false;
+                //    return respuesta;
+                //}
                 respuesta.Estatus = await _repository.Editar(objeto);
                 if (respuesta.Estatus)
                 {
