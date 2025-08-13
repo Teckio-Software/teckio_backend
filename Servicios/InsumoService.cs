@@ -158,5 +158,26 @@ namespace ERP_TECKIO.Servicios
             var query = await _Repositorio.ObtenerTodos(z => z.IdProyecto == IdProyecto);
             return _Mapper.Map<List<InsumoDTO>>(query);
         }
+
+        public async Task<List<InsumoDTO>> ObtenerTodos()
+        {
+            try
+            {
+                var lista = await _Repositorio.ObtenerTodos();
+                if (lista.Count > 0)
+                {
+                    return _Mapper.Map<List<InsumoDTO>>(lista);
+                }
+                else
+                {
+                    return new List<InsumoDTO>();
+                }
+            }
+            catch
+            {
+                return new List<InsumoDTO>();
+
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿
+using ERP_TECKIO.Modelos.Facturaion;
 using ERP_TECKIO.Modelos.Presupuesto;
 
 namespace ERP_TECKIO.Modelos;
@@ -50,4 +51,6 @@ public partial class Insumo
     public virtual ICollection<RelacionFSRInsumo> RelacionFsrinsumos { get; set; } = new List<RelacionFSRInsumo>();
     public virtual ICollection<InsumoXproduccion> InsumoxProduccion { get; set; } = new List<InsumoXproduccion>(); 
     public virtual ICollection<CostoHorarioVariableXPrecioUnitarioDetalle> CostoHorarioVariableXprecioUnitarioDetalles { get; set; } = new List<CostoHorarioVariableXPrecioUnitarioDetalle>();
+    public virtual ICollection<InsumoxProductoYservicio> InsumoxProductoYservicios { get; set; } = new List<InsumoxProductoYservicio>();
+
 }

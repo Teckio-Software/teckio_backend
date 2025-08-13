@@ -1125,7 +1125,7 @@ namespace ERP_TECKIO
             CreateMap<FacturaEmisor, FacturaEmisorDTO>();
             CreateMap<FacturaEmisorDTO, FacturaEmisor>()
            .ForMember(destino => destino.IdFacturaNavigation,
-                opt => opt.Ignore()); 
+                opt => opt.Ignore());
 
             #endregion
             #region FacturaReceptor
@@ -1133,6 +1133,14 @@ namespace ERP_TECKIO
             // CreateMap<FacturaReceptorDTO, FacturaReceptor>()
             //.ForMember(destino => destino.IdFacturaNavigation,
             //     opt => opt.Ignore()); ;
+
+            #endregion
+            #region InsumoXProductoYServicio
+
+            CreateMap<InsumoxProductoYservicio, InsumoXProductoYServicioDTO>();
+            CreateMap<InsumoXProductoYServicioDTO, InsumoxProductoYservicio>()
+                .ForMember(destino => destino.IdProductoYservicioNavigation, opt => opt.Ignore())
+                .ForMember(destino => destino.IdInsumoNavigation, opt => opt.Ignore());
 
             #endregion
 

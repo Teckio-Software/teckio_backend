@@ -158,5 +158,25 @@ namespace ERP_TECKIO
                 await _Service.Crear(nuevoInsumoCreado);
             }
         }
+
+        public async Task<List<InsumoDTO>> ObtenerTodos()
+        {
+            try
+            {
+                var lista = await _Service.ObtenerTodos();
+                if (lista.Count > 0)
+                {
+                    return lista;
+                }
+                else
+                {
+                    return new List<InsumoDTO>();
+                }
+            }
+            catch
+            {
+                return new List<InsumoDTO>();
+            }
+        }
     }
 }

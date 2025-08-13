@@ -4,7 +4,7 @@ namespace ERP_TECKIO.Modelos.Facturaion
 {
     public class InsumoxProductoYservicio : InsumoxProductoYservicioAbstract
     {
-        public virtual InsumoXproduccion IdInsumoNavigation { get; set; } = null!;
+        public virtual Insumo IdInsumoNavigation { get; set; } = null!;
 
         public virtual ProductoYservicio IdProductoYservicioNavigation { get; set; } = null!;
     }
