@@ -8,6 +8,8 @@ namespace ERP_TECKIO.Servicios.Contratos
         Task<RespuestaDTO> Crear(ProduccionDTO modelo);
         Task<ProduccionDTO> CrearYObtener(ProduccionDTO modelo);
         Task<RespuestaDTO> Editar(ProduccionDTO modelo);
-        Task<RespuestaDTO> Eliminar(ProduccionDTO modelo);
+        Task<RespuestaDTO> Eliminar(int id);
+        Task<ProduccionDTO> ObtenerXId(int id);
+
     }
 }
