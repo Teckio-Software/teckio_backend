@@ -47,5 +47,12 @@ namespace ERP_TECKIO.Controllers.Alumno01
             var resultado = await _proceso.Eliminar(id);
             return resultado;
         }
+
+        [HttpGet("obtenerXProduccion/{id:int}")]
+        public async Task<ActionResult<List<InsumoXProduccionDTO>>> ObtenerXPRoduccion(int id)
+        {
+            var lista = await _proceso.ObtenerXProduccion(id);
+            return lista;
+        }
     }
 }
