@@ -158,5 +158,40 @@ namespace ERP_TECKIO.Servicios
             var query = await _Repositorio.ObtenerTodos(z => z.IdProyecto == IdProyecto);
             return _Mapper.Map<List<InsumoDTO>>(query);
         }
+
+        public async Task<bool> AutorizarMultiple(List<InsumoParaExplosionDTO> registros)
+        {
+            var insumos = new List<Insumo>();
+            foreach (var insumo in registros) {
+                var objetoEncontrado = await _Repositorio.Obtener(z => z.Id == insumo.id);
+                objetoEncontrado.EsAutorizado = true;
+                insumos.Add(objetoEncontrado);
+            }
+            return await _Repositorio.EditarMultiple(insumos);
+        }
+
+        public async Task<bool> EditarMultiple(List<InsumoDTO> registros)
+        {
+            var insumos = new List<Insumo>();
+            foreach (var insumo in registros)
+            {
+                var objetoEncontrado = await _Repositorio.Obtener(z => z.Id == insumo.id);
+                objetoEncontrado.EsAutorizado = true;
+                insumos.Add(objetoEncontrado);
+            }
+            return await _Repositorio.EditarMultiple(insumos);
+        }
+
+        public async Task<bool> AutorizarMultipleXPU(List<PrecioUnitarioDetalleDTO> registros)
+        {
+            var insumos = new List<Insumo>();
+            foreach (var insumo in registros)
+            {
+                var objetoEncontrado = await _Repositorio.Obtener(z => z.Id == insumo.IdInsumo);
+                objetoEncontrado.EsAutorizado = true;
+                insumos.Add(objetoEncontrado);
+            }
+            return await _Repositorio.EditarMultiple(insumos);
+        }
     }
 }

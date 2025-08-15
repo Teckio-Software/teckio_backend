@@ -720,9 +720,13 @@ for json path
 
                     if (PUcopiar != null)
                     {
+                        var esAutorizado = PUcopiar.EsAvanceObra;
                         PUcopiar.IdPrecioUnitarioBase = registro.IdPrecioUnitarioBase;
+                        PUcopiar.EsAvanceObra = registro.EsAvanceObra;
+                        PUcopiar.EsCatalogoGeneral = registro.EsCatalogoGeneral;
+                        PUcopiar.EsAdicional = registro.EsAdicional;
 
-                        await CopiarPUXCodigo(PUcopiar, _dbContex);
+                        await CopiarPUXCodigo(PUcopiar, _dbContex, esAutorizado);
                     }
                     return await ObtenerPrecioUnitario(registro.IdProyecto);
                 }
@@ -881,6 +885,55 @@ for json path
             {
                 string error = ex.Message.ToString();
                 return new List<PrecioUnitarioDTO>();
+            }
+        }
+
+        public async Task AutorizarPresupuesto(int IdProyecto)
+        {
+            //todos los PU como esAvanceObre
+
+            var PUs = await _PrecioUnitarioService.ObtenerTodos(IdProyecto);
+            foreach (var pu in PUs) {
+                pu.EsAvanceObra = true;
+            }
+
+            await _PrecioUnitarioService.AutorizarMultiple(PUs);
+            //todos los insumos autorizados
+            var insumos = await _InsumoService.ObtenXIdProyecto(IdProyecto);
+            foreach (var insumo in insumos) {
+                insumo.EsAutorizado = true;
+            }
+
+            await _InsumoService.EditarMultiple(insumos);
+        }
+
+        public async Task AutorizarXPartida(PrecioUnitarioDTO partida) {
+            var PUs = await _PrecioUnitarioService.ObtenerTodos(partida.IdProyecto);
+            await AutorizarHijosBuscar(partida, PUs);
+
+            var explosionInsumo = await ObtenerExplosionXPrecioUnitario(partida);
+            foreach (var insumo in explosionInsumo) {
+                insumo.EsAutorizado = true;
+            }
+            await _InsumoService.AutorizarMultiple(explosionInsumo);
+
+            partida.EsAvanceObra = true;
+            await _PrecioUnitarioService.Editar(partida);
+        }
+
+        public async Task AutorizarHijosBuscar(PrecioUnitarioDTO partida, List<PrecioUnitarioDTO> PUs) {
+            var padres = PUs.Where(z => z.IdPrecioUnitarioBase == partida.Id);
+            foreach (var padre in padres) {
+                await AutorizarHijosBuscar(padre, PUs);
+
+                padre.EsAvanceObra = true;
+                await _PrecioUnitarioService.Editar(padre);
+
+                if (padre.TipoPrecioUnitario == 1) {
+                    var detallesXPU = await ObtenerDetalles(padre.Id, _dbContex);
+                    var detallesCompuestos = detallesXPU.Where(z => z.IdPrecioUnitario == padre.Id).ToList();
+                    await _InsumoService.AutorizarMultipleXPU(detallesCompuestos);
+                }
             }
         }
 
@@ -1125,7 +1178,8 @@ for json path
                 I.IdTipoInsumo,
                 I.IdFamiliaInsumo,
                 PUD.Cantidad * I.CostoUnitario as Importe,
-                FORMAT(PUD.Cantidad * I.CostoUnitario, 'N', 'en-us') as ImporteConFormato
+                FORMAT(PUD.Cantidad * I.CostoUnitario, 'N', 'en-us') as ImporteConFormato,
+                I.EsAutorizado
                 from PrecioUnitarioDetalle PUD
                 Join Insumo I
                 on PUD.IdInsumo = I.Id
@@ -1185,7 +1239,8 @@ for json path
                 I.IdTipoInsumo,
                 I.IdFamiliaInsumo,
                 PUD.Cantidad * I.CostoUnitario as Importe,
-                FORMAT(PUD.Cantidad * I.CostoUnitario, 'N', 'en-us') as ImporteConFormato
+                FORMAT(PUD.Cantidad * I.CostoUnitario, 'N', 'en-us') as ImporteConFormato,
+                I.EsAutorizado
                 from PrecioUnitarioDetalle PUD
                 Join Insumo I
                 on PUD.IdInsumo = I.Id
@@ -1222,7 +1277,8 @@ for json path
                 I.IdTipoInsumo,
                 I.IdFamiliaInsumo,
                 PUD.Cantidad * I.CostoUnitario as Importe,
-                FORMAT(PUD.Cantidad * I.CostoUnitario, 'N', 'en-us') as ImporteConFormato
+                FORMAT(PUD.Cantidad * I.CostoUnitario, 'N', 'en-us') as ImporteConFormato,
+                I.EsAutorizado
                 from PrecioUnitarioDetalle PUD
                 Join Insumo I
                 on PUD.IdInsumo = I.Id
@@ -1421,6 +1477,7 @@ for json path
                                 foreach(var partida in PreciosFiltrados)
                                 {
                                     registro.IdPrecioUnitario = partida.Id;
+                                    
                                     nuevoRegistro = await _PrecioUnitarioDetalleService.CrearYObtener(registro);
                                     if (Detalle.EsCompuesto == true)
                                     {
@@ -1649,68 +1706,44 @@ for json path
             {
                 var insumoOriginal = await _InsumoService.ObtenXId(registro.IdInsumo);
 
-                //if (registro.IdInsumo != 0)
-                //{
-                //    var fsr = await _FsrxinsummoMdOService.ObtenerXIdInsumo(registro.IdInsumo);
-                //    if (fsr.Id > 0)
-                //    {
-                //        registro.CostoUnitario = registro.CostoBase * fsr.Fsr;
-                //    }
-                //    else
-                //    {
-                //        if (registro.CostoBase != 0)
-                //        {
-                //            if (registro.IdTipoInsumo == 10000)
-                //            {
-                //                var FSR = await _FSRService.ObtenerTodosXProyecto(insumoOriginal.IdProyecto);
-                //                if (FSR.Count > 0)
-                //                {
-                //                    var factorSR = FSR.FirstOrDefault();
-                //                    registro.CostoUnitario = registro.CostoBase * FSR[0].PorcentajeFsr;
-                //                }
-                //                else
-                //                {
-                //                    registro.CostoUnitario = registro.CostoBase;
-                //                }
-
-                //            }
-                //            else
-                //            {
-                //                registro.CostoUnitario = registro.CostoBase;
-
-                //            }
-                //        }
-                //    }
-                //}
-                var PU = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
-                InsumoDTO insumo = new InsumoDTO();
-                insumo.id = registro.IdInsumo;
-                insumo.Codigo = registro.Codigo;
-                insumo.Descripcion = registro.Descripcion;
-                insumo.Unidad = registro.Unidad;
-                insumo.idTipoInsumo = registro.IdTipoInsumo;
-                insumo.idFamiliaInsumo = registro.IdFamiliaInsumo;
-                insumo.CostoUnitario = registro.CostoUnitario;
-                insumo.CostoBase = registro.CostoBase;
-                insumo.IdProyecto = PU.IdProyecto;
-
-                if (registro.IdTipoInsumo == 10000)
+                if (!registro.EsAutorizado)
                 {
-                    var FSR = await _FSRService.ObtenerTodosXProyecto(insumoOriginal.IdProyecto);
-                    if (FSR.Count > 0)
-                    {
-                        var factorSR = FSR.FirstOrDefault();
+                    var PU = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
+                    InsumoDTO insumo = new InsumoDTO();
+                    insumo.id = registro.IdInsumo;
+                    insumo.Codigo = registro.Codigo;
+                    insumo.Descripcion = registro.Descripcion;
+                    insumo.Unidad = registro.Unidad;
+                    insumo.idTipoInsumo = registro.IdTipoInsumo;
+                    insumo.idFamiliaInsumo = registro.IdFamiliaInsumo;
+                    insumo.CostoUnitario = registro.CostoUnitario;
+                    insumo.CostoBase = registro.CostoBase;
+                    insumo.IdProyecto = PU.IdProyecto;
 
-                        if (!factorSR.EsCompuesto)
+                    if (registro.IdTipoInsumo == 10000)
+                    {
+                        var FSR = await _FSRService.ObtenerTodosXProyecto(insumoOriginal.IdProyecto);
+                        if (FSR.Count > 0)
                         {
-                            insumo.CostoUnitario = registro.CostoBase * factorSR.PorcentajeFsr;
-                            var insumoEditado = await _InsumoService.Editar(insumo);
+                            var factorSR = FSR.FirstOrDefault();
+
+                            if (!factorSR.EsCompuesto)
+                            {
+                                insumo.CostoUnitario = registro.CostoBase * factorSR.PorcentajeFsr;
+                                var insumoEditado = await _InsumoService.Editar(insumo);
+                            }
+                            else
+                            {
+                                insumo.CostoBase = registro.CostoBase;
+                                await _factorSalarioRealProceso.actualizarCostoUnitarioInsumoMO(insumo, factorSR);
+                            }
                         }
                         else
                         {
-                            insumo.CostoBase = registro.CostoBase;
-                            await _factorSalarioRealProceso.actualizarCostoUnitarioInsumoMO(insumo, factorSR);
+                            insumo.CostoUnitario = registro.CostoBase;
+                            var insumoEditado = await _InsumoService.Editar(insumo);
                         }
+
                     }
                     else
                     {
@@ -1718,18 +1751,22 @@ for json path
                         var insumoEditado = await _InsumoService.Editar(insumo);
                     }
 
+                    await _PrecioUnitarioDetalleService.Editar(registro);
+                    if (registro.IdTipoInsumo == 10000)
+                    {
+                        await RecalcularPorcentajeManoDeObra(registro);
+                    }
                 }
                 else
                 {
-                    insumo.CostoUnitario = registro.CostoBase;
-                    var insumoEditado = await _InsumoService.Editar(insumo);
+                    var partirDetalle = await PartirDetalle(registro);
+                    if (registro.IdPrecioUnitarioDetallePerteneciente != 0) {
+                        var detallesXPU = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(registro.IdPrecioUnitario);
+                        await partirDetalleXDetalleHijo(registro, detallesXPU);
+                    }
                 }
 
-                await _PrecioUnitarioDetalleService.Editar(registro);
-                if (registro.IdTipoInsumo == 10000)
-                {
-                    await RecalcularPorcentajeManoDeObra(registro);
-                }
+                
                 var precioUnitario = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
                 var insumos = await _InsumoService.ObtenXIdProyecto(precioUnitario.IdProyecto); //Era id del proyecto pero no lo obtengo
                 var detalles = await ObtenerDetallesPorPU(precioUnitario.Id, _dbContex);
@@ -1759,69 +1796,91 @@ for json path
             }
         }
 
-        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> EditarImporteDetalle(PrecioUnitarioDetalleDTO registro) {
-            if (registro.Importe > 0)
-            {
-                var detallesFiltrados = new List<PrecioUnitarioDetalleDTO>();
-                var precioUnitario = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
-                var PUs = await ObtenerPrecioUnitarioSinEstructurar(precioUnitario.IdProyecto);
-                var conceptos = await _ConceptoService.ObtenerTodos(precioUnitario.IdProyecto);
-                var insumos = await _InsumoService.ObtenXIdProyecto(precioUnitario.IdProyecto); //Era id del proyecto pero no lo obtengo
-                var existePadre = new PrecioUnitarioDetalleDTO();
-                if (registro.IdPrecioUnitarioDetallePerteneciente != 0)
-                {
-                    existePadre = await _PrecioUnitarioDetalleService.ObtenXId(registro.IdPrecioUnitarioDetallePerteneciente);
-                    var detallesXInsumo = await ObtenerDetallesPorIdInsumo(registro.IdInsumo, _dbContex);
-                    foreach (var det in detallesXInsumo)
-                    {
-                        var DetallePadre = await _PrecioUnitarioDetalleService.ObtenXId(det.IdPrecioUnitarioDetallePerteneciente);
-                        if (DetallePadre.IdInsumo != existePadre.IdInsumo || DetallePadre.Id == 0 && det.Id != registro.Id)
-                        {
-                            continue;
-                        }
-                        var PU = PUs.Where(z => z.Id == det.IdPrecioUnitario).First();
-                        det.Cantidad = registro.Importe / registro.CostoUnitario;
-                        await _PrecioUnitarioDetalleService.Editar(det);
-                        if (det.IdTipoInsumo == 10000)
-                        {
-                            await RecalcularPorcentajeManoDeObra(det);
-                        }
-
-                        var detalles = await ObtenerDetallesPorPU(PU.Id, _dbContex);
-                        var datos = await RecalcularDetalles(det.IdPrecioUnitario, detalles, insumos);
-                        var concepto = conceptos.Where(z => z.Id == PU.IdConcepto).First();
-                        concepto.CostoUnitario = datos.Total;
-                        await _ConceptoService.Editar(concepto);
-                        await RecalcularPrecioUnitario(PU);
-                    }
+        public async Task partirDetalleXDetalleHijo(PrecioUnitarioDetalleDTO detalleHijo, List<PrecioUnitarioDetalleDTO> detallesXPU) {
+            var detallePadre = detallesXPU.FirstOrDefault(z => z.Id == detalleHijo.IdPrecioUnitarioDetallePerteneciente);
+            if (detallePadre != null) {
+                if (detallePadre.EsAutorizado) {
+                    await PartirDetalle(detallePadre);
                 }
-                else
+                await partirDetalleXDetalleHijo(detallePadre, detallesXPU);
+            }
+        }
+
+        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> EditarImporteDetalle(PrecioUnitarioDetalleDTO registro) {
+            if (!registro.EsAutorizado) {
+                if (registro.Importe > 0)
                 {
-                    var partidas = PUs.Where(z => z.IdConcepto == precioUnitario.IdConcepto && z.TipoPrecioUnitario == 1);
-                    foreach (var partida in partidas)
+                    var detallesFiltrados = new List<PrecioUnitarioDetalleDTO>();
+                    var precioUnitario = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
+                    var PUs = await ObtenerPrecioUnitarioSinEstructurar(precioUnitario.IdProyecto);
+                    var conceptos = await _ConceptoService.ObtenerTodos(precioUnitario.IdProyecto);
+                    var insumos = await _InsumoService.ObtenXIdProyecto(precioUnitario.IdProyecto); //Era id del proyecto pero no lo obtengo
+                    var existePadre = new PrecioUnitarioDetalleDTO();
+                    if (registro.IdPrecioUnitarioDetallePerteneciente != 0)
                     {
-                        var detalles = await ObtenerDetallesPorPU(partida.Id, _dbContex);
-                        var detEditar = detalles.Where(z => z.IdInsumo == registro.IdInsumo && z.IdPrecioUnitarioDetallePerteneciente == 0).ToList();
-                        foreach (var det in detEditar)
+                        existePadre = await _PrecioUnitarioDetalleService.ObtenXId(registro.IdPrecioUnitarioDetallePerteneciente);
+                        var detallesXInsumo = await ObtenerDetallesPorIdInsumo(registro.IdInsumo, _dbContex);
+                        foreach (var det in detallesXInsumo)
                         {
+                            var DetallePadre = await _PrecioUnitarioDetalleService.ObtenXId(det.IdPrecioUnitarioDetallePerteneciente);
+                            if (DetallePadre.IdInsumo != existePadre.IdInsumo || DetallePadre.Id == 0 && det.Id != registro.Id)
+                            {
+                                continue;
+                            }
+                            var PU = PUs.Where(z => z.Id == det.IdPrecioUnitario).First();
                             det.Cantidad = registro.Importe / registro.CostoUnitario;
                             await _PrecioUnitarioDetalleService.Editar(det);
                             if (det.IdTipoInsumo == 10000)
                             {
                                 await RecalcularPorcentajeManoDeObra(det);
                             }
-                        }
 
-                        detalles = await ObtenerDetallesPorPU(partida.Id, _dbContex);
-                        var datos = await RecalcularDetalles(partida.Id, detalles, insumos);
-                        var concepto = conceptos.Where(z => z.Id == partida.IdConcepto).First();
-                        concepto.CostoUnitario = datos.Total;
-                        await _ConceptoService.Editar(concepto);
-                        await RecalcularPrecioUnitario(partida);
+                            var detalles = await ObtenerDetallesPorPU(PU.Id, _dbContex);
+                            var datos = await RecalcularDetalles(det.IdPrecioUnitario, detalles, insumos);
+                            var concepto = conceptos.Where(z => z.Id == PU.IdConcepto).First();
+                            concepto.CostoUnitario = datos.Total;
+                            await _ConceptoService.Editar(concepto);
+                            await RecalcularPrecioUnitario(PU);
+                        }
                     }
+                    else
+                    {
+                        var partidas = PUs.Where(z => z.IdConcepto == precioUnitario.IdConcepto && z.TipoPrecioUnitario == 1);
+                        foreach (var partida in partidas)
+                        {
+                            var detalles = await ObtenerDetallesPorPU(partida.Id, _dbContex);
+                            var detEditar = detalles.Where(z => z.IdInsumo == registro.IdInsumo && z.IdPrecioUnitarioDetallePerteneciente == 0).ToList();
+                            foreach (var det in detEditar)
+                            {
+                                det.Cantidad = registro.Importe / registro.CostoUnitario;
+                                await _PrecioUnitarioDetalleService.Editar(det);
+                                if (det.IdTipoInsumo == 10000)
+                                {
+                                    await RecalcularPorcentajeManoDeObra(det);
+                                }
+                            }
+
+                            detalles = await ObtenerDetallesPorPU(partida.Id, _dbContex);
+                            var datos = await RecalcularDetalles(partida.Id, detalles, insumos);
+                            var concepto = conceptos.Where(z => z.Id == partida.IdConcepto).First();
+                            concepto.CostoUnitario = datos.Total;
+                            await _ConceptoService.Editar(concepto);
+                            await RecalcularPrecioUnitario(partida);
+                        }
+                    }
+
                 }
-                
             }
+            else
+            {
+                var partirDetalle = await PartirDetalle(registro);
+                if (registro.IdPrecioUnitarioDetallePerteneciente != 0)
+                {
+                    var detallesXPU = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(registro.IdPrecioUnitario);
+                    await partirDetalleXDetalleHijo(registro, detallesXPU);
+                }
+            }
+            
             var lista = await ObtenerDetallesPorPU(registro.IdPrecioUnitario, _dbContex);
             return lista.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.IdPrecioUnitarioDetallePerteneciente).ToList();
         }
@@ -1837,16 +1896,44 @@ for json path
                 return registrosFiltrados.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.IdPrecioUnitarioDetallePerteneciente).ToList();
             }
             var insumos = await _InsumoService.ObtenerInsumoXProyecto(insumo.IdProyecto);
-            var mismoCodigo = insumos.Where(z => z.Codigo == insumo.Codigo).ToList();
+
+            var codigosCoinsidencia = insumos.Where(z => z.Codigo.Length >= insumo.Codigo.Length &&
+                z.Codigo.Substring(0, insumo.Codigo.Length) == insumo.Codigo);
 
             InsumoCreacionDTO nuevoInsumo = new InsumoCreacionDTO();
-            nuevoInsumo.Codigo = insumo.Codigo + "-" + mismoCodigo.Count().ToString();
+            nuevoInsumo.Codigo = insumo.Codigo + "-" + codigosCoinsidencia.Count().ToString();
             nuevoInsumo.Unidad = insumo.Unidad;
             nuevoInsumo.idTipoInsumo = insumo.idTipoInsumo;
             nuevoInsumo.idFamiliaInsumo = insumo.idFamiliaInsumo;
-            nuevoInsumo.CostoUnitario = insumo.CostoUnitario;
+            nuevoInsumo.CostoUnitario = registro.CostoUnitario;
+            nuevoInsumo.CostoBase = registro.CostoBase;
             nuevoInsumo.IdProyecto = insumo.IdProyecto;
-            nuevoInsumo.Descripcion = insumo.Descripcion + "-" + mismoCodigo.Count().ToString();
+            nuevoInsumo.Descripcion = insumo.Descripcion + "-" + codigosCoinsidencia.Count().ToString();
+            nuevoInsumo.EsAutorizado = insumo.EsAutorizado == true ? false : insumo.EsAutorizado;
+
+            if (registro.IdTipoInsumo == 10000)
+            {
+                var FSR = await _FSRService.ObtenerTodosXProyecto(insumo.IdProyecto);
+                if (FSR.Count > 0)
+                {
+                    var factorSR = FSR.FirstOrDefault();
+
+                    if (!factorSR.EsCompuesto)
+                    {
+                        nuevoInsumo.CostoUnitario = registro.CostoBase * factorSR.PorcentajeFsr;
+                    }
+                    else
+                    {
+                        decimal costoUnitario = await _factorSalarioRealProceso.obtenerCostoUnitarioConFsrXCostoBase(registro.CostoBase, factorSR);
+                        nuevoInsumo.CostoUnitario = costoUnitario;
+                    }
+                }
+                else
+                {
+                    nuevoInsumo.CostoUnitario = registro.CostoBase;
+                }
+
+            }
 
             var detallesFiltrados = registrosFiltrados.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.IdPrecioUnitarioDetallePerteneciente).ToList();
 
@@ -3316,6 +3403,7 @@ for json path
                 Unidad = x.First().Unidad,
                 IdProyecto = x.First().IdProyecto,
                 EsFsrGlobal = x.First().EsFsrGlobal,
+                EsAutorizado = x.First().EsAutorizado,
                 CostoUnitario = x.First().CostoUnitario,
                 CostoUnitarioConFormato = x.First().CostoUnitarioConFormato,
                 CostoBase = x.First().CostoBase,
@@ -3927,10 +4015,22 @@ for json path
             }
         }
 
-        public async Task CopiarPUXCodigo(PrecioUnitarioDTO precio, DbContext db)
+        public async Task CopiarPUXCodigo(PrecioUnitarioDTO precio, DbContext db, bool esAutorizado)
         {
             var Id = precio.Id;
             var precioUnitarioBase = await _PrecioUnitarioService.ObtenXId(precio.IdPrecioUnitarioBase);
+
+            if (esAutorizado) {
+                ConceptoDTO concepto = new ConceptoDTO();
+                concepto.Codigo = precio.Codigo;
+                concepto.Descripcion = precio.Descripcion;
+                concepto.Unidad = precio.Unidad;
+                concepto.IdEspecialidad = null;
+                concepto.CostoUnitario = precio.CostoUnitario;
+                concepto.IdProyecto = precio.IdProyecto;
+                var nuevoConcepto = await _ConceptoService.CrearYObtener(concepto);
+                precio.IdConcepto = nuevoConcepto.Id;
+            }
 
             precio.Nivel = precioUnitarioBase.Nivel + 1;
             precio.Id = 0;

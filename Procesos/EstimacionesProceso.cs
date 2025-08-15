@@ -265,6 +265,29 @@ namespace ERP_TECKIO
         {
             registro.ImporteDeAvance = (registro.PorcentajeAvance/100) * registro.Importe;
             await _EstimacionService.Editar(registro);
+
+            //var estimacionesXPU = await _EstimacionService.ObtenXIdPrecioUnitario(registro.IdPrecioUnitario);
+            //var PU = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
+
+            //if (estimacionesXPU.Count() > 0) {
+            //    decimal existeAvance = registro.CantidadAvance;
+            //    foreach (var estimacion in estimacionesXPU) {
+            //        if (estimacion.Id == registro.Id) {
+            //            continue;
+            //        }
+            //        existeAvance += estimacion.CantidadAvance;
+            //    }
+            //    if (existeAvance > 0) {
+            //        PU.EsAvanceObra = true;
+            //    }
+            //    else
+            //    {
+            //        PU.EsAvanceObra = false;
+            //    }
+            //}
+
+            
+            //var editarPU = await _PrecioUnitarioService.Editar(PU);
             await RecalcularEstimacion(registro);
             var registros = await ObtenerEstimacionesXIdPeriodo(registro.IdPeriodo);
             return registros;
@@ -304,6 +327,32 @@ namespace ERP_TECKIO
                         foreach (var gen in generadores) {
                             await _generadoresXEstimacionService.Eliminar(gen.Id);
                         }
+
+                        //var estimacionesXPU = await _EstimacionService.ObtenXIdPrecioUnitario(estimacion.IdPrecioUnitario);
+                        //var PU = await _PrecioUnitarioService.ObtenXId(estimacion.IdPrecioUnitario);
+
+                        //if (estimacionesXPU.Count() > 0)
+                        //{
+                        //    decimal existeAvance = 0;
+                        //    foreach (var esti in estimacionesXPU)
+                        //    {
+                        //        if (esti.Id == estimacion.Id)
+                        //        {
+                        //            continue;
+                        //        }
+                        //        existeAvance += esti.CantidadAvance;
+                        //    }
+                        //    if (existeAvance > 0)
+                        //    {
+                        //        PU.EsAvanceObra = true;
+                        //    }
+                        //    else
+                        //    {
+                        //        PU.EsAvanceObra = false;
+                        //    }
+                        //}
+
+                        //var editarPU = await _PrecioUnitarioService.Editar(PU);
                     }
                     await _EstimacionService.EliminarMultiple(IdPeriodo);
 

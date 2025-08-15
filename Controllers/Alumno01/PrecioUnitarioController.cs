@@ -68,6 +68,20 @@ namespace ERP_TECKIO
             return await _precioUnitarioProceso.Editar(registro);
         }
 
+        [HttpGet("AutorizarPresupuesto/{IdProyecto:int}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPrecioUnitario-Empresa2")]
+        public async Task AutorizarPresupuesto(int IdProyecto)
+        {
+            await _precioUnitarioProceso.AutorizarPresupuesto(IdProyecto);
+        }
+
+        [HttpPost("AutorizarXPrecioUnitario")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPrecioUnitario-Empresa2")]
+        public async Task AutorizarXPrecioUnitario(PrecioUnitarioDTO partida)
+        {
+            await _precioUnitarioProceso.AutorizarXPartida(partida);
+        }
+
         [HttpPost("partirConcepto")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPrecioUnitario-Empresa2")]
         public async Task<ActionResult<List<PrecioUnitarioDTO>>> partirConcepto([FromBody] PrecioUnitarioDTO registro)

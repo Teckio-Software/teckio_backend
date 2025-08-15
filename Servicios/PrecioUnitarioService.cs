@@ -303,6 +303,8 @@ namespace ERP_TECKIO.Servicios
                 objetoEncontrado.EsDetalle = false;
                 objetoEncontrado.Posicion = registro.Posicion;
                 objetoEncontrado.EsCatalogoGeneral = registro.EsCatalogoGeneral;
+                objetoEncontrado.EsAvanceObra = registro.EsAvanceObra;
+                objetoEncontrado.EsAdicional = registro.EsAdicional;
 
                 respuesta.Estatus = await _Repositorio.Editar(objetoEncontrado);
                 if (!respuesta.Estatus)
@@ -354,6 +356,17 @@ namespace ERP_TECKIO.Servicios
         {
             var query = await _Repositorio.ObtenerTodos(z => z.EsCatalogoGeneral == true);
             return _Mapper.Map<List<PrecioUnitarioCopiaDTO>>(query);
+        }
+
+        public async Task<bool> AutorizarMultiple(List<PrecioUnitarioDTO> registros)
+        {
+            var PUs = new List<PrecioUnitario>();
+            foreach (var registro in registros) {
+                var objetoEncontrado = await _Repositorio.Obtener(z => z.Id == registro.Id);
+                objetoEncontrado.EsAvanceObra = true;
+                PUs.Add(objetoEncontrado);
+            }
+            return await _Repositorio.EditarMultiple(PUs);
         }
     }
 }
