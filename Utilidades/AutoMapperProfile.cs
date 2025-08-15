@@ -1141,6 +1141,18 @@ namespace ERP_TECKIO
                 .ForMember(destino => destino.IdInsumoNavigation, opt => opt.Ignore());
 
             #endregion
+            #region Produccion
+
+            CreateMap<Produccion, ProduccionDTO>();
+            CreateMap<ProduccionDTO, Produccion>()
+                .ForMember(destino => destino.IdProductoYservicioNavigation, opt => opt.Ignore())
+                .ForMember(destino => destino.InsumoxProduccion, opt => opt.Ignore());
+            CreateMap<ProduccionDTO, ProduccionConAlmacenDTO>();
+            CreateMap<ProduccionConAlmacenDTO, ProduccionDTO>();
+
+
+
+            #endregion
 
             #endregion
 

@@ -208,5 +208,25 @@ namespace ERP_TECKIO.Servicios
                 return new ProduccionDTO();
             }
         }
+
+        //public async Task<List<ProduccionDTO>> ObtenerTodos()
+        //{
+        //    try
+        //    {
+        //        var lista = await _repository.ObtenerTodos();
+        //        if (lista.Count > 0)
+        //        {
+
+        //        }
+        //        else
+        //        {
+
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        return new <List<ProduccionDTO>();
+        //    }
+        //}
     }
 }
