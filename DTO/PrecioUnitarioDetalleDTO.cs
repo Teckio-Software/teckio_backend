@@ -23,6 +23,7 @@
         public int? IdFamiliaInsumo { get; set; } //Insumo
         public decimal Importe { get; set; }
         public string? ImporteConFormato { get; set; } //Se genera
+        public bool EsAutorizado { get; set; }
     }
 
     public class PrecioUnitarioDetalleCopiaDTO: PrecioUnitarioDetalleDTO

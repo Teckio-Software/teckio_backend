@@ -42,6 +42,8 @@ namespace ERP_TECKIO
         public decimal CostoUnitario { get; set; }
         public decimal CostoBase { get; set; }
         public bool EsFsrGlobal { get; set; }
+        public bool EsAutorizado { get; set; }
+
         public int IdProyecto { get; set; }
     }
 
@@ -81,6 +83,7 @@ namespace ERP_TECKIO
         public decimal CostoUnitario { get; set; }
         public decimal CostoBase { get; set; }
         public bool EsFsrGlobal { get; set; }
+        public bool EsAutorizado { get; set; }
         public int IdProyecto { get; set; }
     }
 

@@ -26,7 +26,11 @@ namespace ERP_TECKIO
             //////////////////////////////////////
             CreateMap<PrecioUnitario, PrecioUnitarioDTO>()
             .ForMember(destino => destino.EsCatalogoGeneral,
-                opt => opt.MapFrom(origien => origien.EsCatalogoGeneral == null ? false : origien.EsCatalogoGeneral));
+                opt => opt.MapFrom(origien => origien.EsCatalogoGeneral == null ? false : origien.EsCatalogoGeneral))
+            .ForMember(destino => destino.EsAvanceObra,
+                opt => opt.MapFrom(origien => origien.EsAvanceObra == null ? false : origien.EsAvanceObra))
+            .ForMember(destino => destino.EsAdicional,
+                opt => opt.MapFrom(origien => origien.EsAdicional == null ? false : origien.EsAdicional));
             CreateMap<PrecioUnitario, PrecioUnitarioCopiaDTO>();
             CreateMap<PrecioUnitarioDTO, PrecioUnitario>()
             .ForMember(z => z.IdProyectoNavigation,
@@ -183,17 +187,22 @@ namespace ERP_TECKIO
                 .ForMember(z => z.DescripcionTipoInsumo,
                 opt => opt.MapFrom(origen => origen.IdTipoInsumoNavigation == null ? "" : origen.IdTipoInsumoNavigation.Descripcion))
                 .ForMember(z => z.DescripcionFamiliaInsumo,
-                opt => opt.MapFrom(origen => origen.IdFamiliaInsumoNavigation == null ? "" : origen.IdFamiliaInsumoNavigation.Descripcion));
+                opt => opt.MapFrom(origen => origen.IdFamiliaInsumoNavigation == null ? "" : origen.IdFamiliaInsumoNavigation.Descripcion))
+                .ForMember(destino => destino.EsAutorizado,
+                opt => opt.MapFrom(origien => origien.EsAutorizado == null ? false : origien.EsAutorizado));
             CreateMap<InsumoCreacionDTO, Insumo>()
                 .ForMember(z => z.IdFamiliaInsumoNavigation,
                 opt => opt.Ignore())
                 .ForMember(z => z.IdTipoInsumoNavigation,
-                opt => opt.Ignore());
+                opt => opt.Ignore())
+                .ForMember(destino => destino.EsAutorizado,
+                opt => opt.MapFrom(origien => origien.EsAutorizado == null ? false : origien.EsAutorizado));
             CreateMap<InsumoDTO, Insumo>()
                 .ForMember(z => z.IdFamiliaInsumoNavigation,
                 opt => opt.Ignore())
                 .ForMember(z => z.IdTipoInsumoNavigation,
                 opt => opt.Ignore());
+            CreateMap<InsumoParaExplosionDTO, Insumo>();
             #endregion
 
             #region Concepto
@@ -1141,6 +1150,18 @@ namespace ERP_TECKIO
             CreateMap<InsumoXProductoYServicioDTO, InsumoxProductoYservicio>()
                 .ForMember(destino => destino.IdProductoYservicioNavigation, opt => opt.Ignore())
                 .ForMember(destino => destino.IdInsumoNavigation, opt => opt.Ignore());
+
+            #endregion
+            #region Produccion
+
+            CreateMap<Produccion, ProduccionDTO>();
+            CreateMap<ProduccionDTO, Produccion>()
+                .ForMember(destino => destino.IdProductoYservicioNavigation, opt => opt.Ignore())
+                .ForMember(destino => destino.InsumoxProduccion, opt => opt.Ignore());
+            CreateMap<ProduccionDTO, ProduccionConAlmacenDTO>();
+            CreateMap<ProduccionConAlmacenDTO, ProduccionDTO>();
+
+
 
             #endregion
 

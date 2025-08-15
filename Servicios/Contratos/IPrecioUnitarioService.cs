@@ -17,6 +17,7 @@ namespace ERP_TECKIO
         Task<PrecioUnitarioDTO> CrearYObtener(PrecioUnitarioDTO hijo);
         Task<PrecioUnitarioCopiaDTO> CrearYObtenerCopia(PrecioUnitarioCopiaDTO hijo);
         Task<RespuestaDTO> Editar(PrecioUnitarioDTO registro);
+        Task<bool> AutorizarMultiple(List<PrecioUnitarioDTO> registros);
         Task<RespuestaDTO> Eliminar(int Id);
     }
 }

@@ -1,5 +1,8 @@
-﻿using ERP_TECKIO.DTO;
+﻿using AutoMapper;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using ERP_TECKIO.DTO;
 using ERP_TECKIO.Servicios.Contratos;
+using ERP_TECKIO.Servicios.Contratos.Facturacion;
 using Microsoft.EntityFrameworkCore;
 
 namespace ERP_TECKIO.Procesos
@@ -8,11 +11,22 @@ namespace ERP_TECKIO.Procesos
     {
         private readonly IProduccionService<TContext> _produccionService;
         private readonly IInsumoXProduccionService<TContext> _insumoService;
+        private readonly ExistenciasProceso<TContext> _existenciasProceso;
+        private readonly IInsumoXProductoYServicioService<TContext> _insumoXProductoService;
+        private readonly IMapper _mapper;
 
-        public ProduccionProceso(IProduccionService<TContext> produccionService, IInsumoXProduccionService<TContext> insumoService)
+        public ProduccionProceso(IProduccionService<TContext> produccionService,
+            IInsumoXProduccionService<TContext> insumoService, 
+            ExistenciasProceso<TContext> existenciasProceso,
+            IInsumoXProductoYServicioService<TContext> insumoXProductoService,
+            IMapper mapper
+            )
         {
             _produccionService = produccionService;
             _insumoService = insumoService;
+            _existenciasProceso = existenciasProceso;
+            _insumoXProductoService = insumoXProductoService;
+            _mapper = mapper;
         }
 
         public async Task<RespuestaDTO> Crear(ProduccionDTO produccion)
@@ -47,11 +61,48 @@ namespace ERP_TECKIO.Procesos
             }
         }
 
-        public async Task<RespuestaDTO> Editar(ProduccionDTO produccion)
+        public async Task<RespuestaDTO> Editar(ProduccionConAlmacenDTO produccion)
         {
+            RespuestaDTO respuesta = new RespuestaDTO();
             try
             {
-                var respuesta = await _produccionService.Editar(produccion);
+                var objeto = _mapper.Map<ProduccionDTO>(produccion);
+                if (objeto.Estatus == 3)
+                {
+                    var existencias = await _existenciasProceso.obtenInsumosExistentes(produccion.IdAlmacen);
+                    if (existencias.Count <= 0)
+                    {
+                        return new RespuestaDTO
+                        {
+                            Estatus = false,
+                            Descripcion = "No hay existencias disponibles en el almacen"
+                        };
+                    }
+                    var insumos = await _insumoXProductoService.ObtenerPorIdPrdYSer(produccion.IdProductoYservicio);
+                    foreach (var insumo in insumos)
+                    {
+                        var existencia = existencias.Find(e => e.IdInsumo == insumo.IdInsumo);
+                        if (existencia == null)
+                        {
+                            return new RespuestaDTO
+                            {
+                                Estatus = false,
+                                Descripcion = "No hay existencias para algunos insumos en el almacen"
+                            };
+                        }
+                        if (existencia.CantidadInsumos < insumo.Cantidad)
+                        {
+                            return new RespuestaDTO
+                            {
+                                Estatus = false,
+                                Descripcion = "No hay existencias suficientes para algunos insumos en el almacen"
+                            };
+                        }
+                    }
+                    respuesta = await _produccionService.Editar(objeto);
+                    return respuesta;
+                }
+                respuesta = await _produccionService.Editar(objeto);
                 return respuesta;
             }
             catch
@@ -63,6 +114,64 @@ namespace ERP_TECKIO.Procesos
                 };
             }
         }
+
+        //public async Task<RespuestaDTO> PasarAEnproduccion(ProduccionConAlmacenDTO produccionConAlmacen)
+        //{
+        //    try
+        //    {
+        //        ProduccionDTO produccion = new ProduccionDTO
+        //        {
+        //            Id = produccionConAlmacen.Id,
+        //            IdProductoYservicio = produccionConAlmacen.IdProductoYservicio,
+        //            FechaProduccion = produccionConAlmacen.FechaProduccion,
+        //            Produjo = produccionConAlmacen.Produjo,
+        //            Cantidad = produccionConAlmacen.Cantidad,
+        //            Observaciones = produccionConAlmacen.Observaciones,
+        //            Estatus = 3,
+        //            Autorizo = produccionConAlmacen.Autorizo
+        //        };
+        //        var existencias = await _existenciasProceso.obtenInsumosExistentes(produccionConAlmacen.IdAlmacen);
+        //        if (existencias.Count <= 0)
+        //        {
+        //            return new RespuestaDTO
+        //            {
+        //                Estatus = false,
+        //                Descripcion = "No hay existencias disponibles en el almacen"
+        //            };
+        //        }
+        //        var insumos = await _insumoXProductoService.ObtenerPorIdPrdYSer(produccionConAlmacen.IdProductoYservicio);
+        //        foreach(var insumo in insumos)
+        //        {
+        //            var existencia = existencias.Find(e=>e.IdInsumo==insumo.IdInsumo);
+        //            if (existencia == null)
+        //            {
+        //                return new RespuestaDTO
+        //                {
+        //                    Estatus = false,
+        //                    Descripcion = "No hay existencias para algunos insumos en el almacen"
+        //                };
+        //            }
+        //            if (existencia.CantidadInsumos < insumo.Cantidad)
+        //            {
+        //                return new RespuestaDTO
+        //                {
+        //                    Estatus = false,
+        //                    Descripcion = "No hay existencias suficientes para algunos insumos en el almacen"
+        //                };
+        //            }
+        //        }
+        //        var respuesta = await _produccionService.Editar(produccion);
+        //        return respuesta;
+        //    }
+        //    catch
+        //    {
+        //        return new RespuestaDTO
+        //        {
+        //            Descripcion = "Ocurrió un error al itentar editar la producción",
+        //            Estatus = false
+        //        };
+        //    }
+        //}
 
         public async Task<RespuestaDTO> Eliminar(int produccion)
         {

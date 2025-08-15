@@ -6,6 +6,16 @@
 
         public int IdPrecioUnitarioDetalle { get; set; }
 
+        public int IdCostoVariablePerteneciente { get; set; }
+
+        public int IdInsumo { get; set; }
+
+        public bool EsCompuesto { get; set; }
+
+        public decimal Cantidad { get; set; }
+
+        public decimal CantidadExcedente { get; set; }
+
         public int TipoCostoVariable { get; set; }
 
         public decimal Rendimiento { get; set; }

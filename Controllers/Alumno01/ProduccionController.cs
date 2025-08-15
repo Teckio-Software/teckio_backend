@@ -34,7 +34,7 @@ namespace ERP_TECKIO.Controllers.Alumno01
         }
 
         [HttpPut("editar")]
-        public async Task<ActionResult<RespuestaDTO>> Editar(ProduccionDTO produccion)
+        public async Task<ActionResult<RespuestaDTO>> Editar(ProduccionConAlmacenDTO produccion)
         {
             var resultado = await _proceso.Editar(produccion);
             return resultado;
@@ -46,5 +46,14 @@ namespace ERP_TECKIO.Controllers.Alumno01
             var resultado = await _proceso.Eliminar(id);
             return resultado;
         }
+
+
+
+        //[HttpPut("pasarAEnProceso")]
+        //public async Task<ActionResult<RespuestaDTO>> PasarAEnProceso(ProduccionConAlmacenDTO produccion)
+        //{
+        //    var resultado = await _proceso;
+        //    return resultado;
+        //}
     }
 }
