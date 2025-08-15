@@ -19,24 +19,122 @@ namespace ERP_TECKIO.Servicios
             _mapper = mapper;
         }
 
-        public Task<RespuestaDTO> Crear(ProductosXEntradaProduccionAlmacenDTO modelo)
+        public async Task<RespuestaDTO> Crear(ProductosXEntradaProduccionAlmacenDTO modelo)
         {
-            throw new NotImplementedException();
+            RespuestaDTO respuesta = new RespuestaDTO();
+            try
+            {
+                var objeto = _mapper.Map<ProductosXentradaProduccionAlmacen>(modelo);
+                var resultado = await _repository.Crear(objeto);
+                if (resultado.Id > 0)
+                {
+                    respuesta.Estatus = true;
+                    respuesta.Descripcion = "Detalle de entrada creado exitosamente";
+                }
+                else
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "Ocurrio un error al intentar crear el detalle de entrada";
+                }
+                return respuesta;
+            }
+            catch
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Ocurrio un error al intentar crear el detalle de entrada";
+                return respuesta;
+            }
         }
 
-        public Task<ProductosXEntradaProduccionAlmacenDTO> CrearYObtener(ProductosXEntradaProduccionAlmacenDTO modelo)
+        public async Task<ProductosXEntradaProduccionAlmacenDTO> CrearYObtener(ProductosXEntradaProduccionAlmacenDTO modelo)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var objeto = _mapper.Map<ProductosXentradaProduccionAlmacen>(modelo);
+                var resultado = await _repository.Crear(objeto);
+                if (resultado.Id > 0)
+                {
+                    return _mapper.Map<ProductosXEntradaProduccionAlmacenDTO>(objeto);
+                }
+                else
+                {
+                    return new ProductosXEntradaProduccionAlmacenDTO();
+                }
+            }
+            catch
+            {
+                return new ProductosXEntradaProduccionAlmacenDTO();
+            }
         }
 
-        public Task<RespuestaDTO> Editar(ProductosXEntradaProduccionAlmacenDTO modelo)
+        public async Task<RespuestaDTO> Editar(ProductosXEntradaProduccionAlmacenDTO modelo)
         {
-            throw new NotImplementedException();
+            RespuestaDTO respuesta = new RespuestaDTO();
+            try
+            {
+                var objeto = await _repository.Obtener(p => p.Id == modelo.Id);
+                if (objeto.Id <= 0)
+                {
+                    respuesta.Descripcion = "No se encontro el detalle de entrada";
+                    respuesta.Estatus = false;
+                    return respuesta;
+                }
+                objeto.IdEntradaProduccionAlmacen = modelo.IdEntradaProduccionAlmacen;
+                objeto.IdProductoYservicio = modelo.IdProductoYservicio;
+                objeto.Cantidad = modelo.Cantidad;
+                objeto.TipoOrigen = modelo.TipoOrigen;
+                var resultado = await _repository.Editar(objeto);
+                if (resultado)
+                {
+                    respuesta.Estatus = true;
+                    respuesta.Descripcion = "Detalle de entrada editado exitosamente";
+                }
+                else
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "Ocurrio un error al intentar editar el detalle de entrada";
+                }
+                return respuesta;
+            }
+            catch
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Ocurrio un error al intentar editar el detalle de entrada";
+                return respuesta;
+            }
         }
 
-        public Task<RespuestaDTO> Eliminar(ProductosXEntradaProduccionAlmacenDTO modelo)
+        public async Task<RespuestaDTO> Eliminar(ProductosXEntradaProduccionAlmacenDTO modelo)
         {
-            throw new NotImplementedException();
+            RespuestaDTO respuesta = new RespuestaDTO();
+            try
+            {
+                var objeto = await _repository.Obtener(p => p.Id == modelo.Id);
+                if (objeto.Id <= 0)
+                {
+                    respuesta.Descripcion = "No se encontro el detalle de entrada";
+                    respuesta.Estatus = false;
+                    return respuesta;
+                }
+                var resultado = await _repository.Eliminar(objeto);
+                if (resultado)
+                {
+                    respuesta.Estatus = true;
+                    respuesta.Descripcion = "Detalle de entrada eliminado exitosamente";
+                }
+                else
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "Ocurrio un error al intentar eliminar el detalle de entrada";
+                }
+                return respuesta;
+            }
+            catch
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Ocurrio un error al intentar eliminar el detalle de entrada";
+                return respuesta;
+            }
         }
     }
 }

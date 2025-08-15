@@ -153,5 +153,25 @@ namespace ERP_TECKIO.Servicios
                 return new InsumoXProduccionDTO();
             }
         }
+
+        public async Task<List<InsumoXProduccionDTO>> ObtenerXProduccion(int id)
+        {
+            try
+            {
+                var lista = await _repository.ObtenerTodos(i => i.IdProduccion == id);
+                if (lista.Count > 0)
+                {
+                    return _mapper.Map<List<InsumoXProduccionDTO>>(lista);
+                }
+                else
+                {
+                    return new List<InsumoXProduccionDTO>();
+                }
+            }
+            catch
+            {
+                return new List<InsumoXProduccionDTO>();
+            }
+        }
     }
 }

@@ -148,5 +148,18 @@ namespace ERP_TECKIO.Procesos
                 };
             }
         }
+
+        public async Task<List<InsumoXProduccionDTO>> ObtenerXProduccion(int id)
+        {
+            try
+            {
+                var lista = await _insumoService.ObtenerXProduccion(id);
+                return lista;
+            }
+            catch
+            {
+                return new List<InsumoXProduccionDTO>();
+            }
+        }
     }
 }

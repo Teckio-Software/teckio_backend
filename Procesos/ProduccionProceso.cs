@@ -68,6 +68,11 @@ namespace ERP_TECKIO.Procesos
         {
             try
             {
+                var insumos = await _insumoService.ObtenerXProduccion(produccion);
+                foreach(var insumo in insumos)
+                {
+                    await _insumoService.Eliminar(insumo.Id);
+                }
                 var respuesta = await _produccionService.Eliminar(produccion);
                 return respuesta;
             }
