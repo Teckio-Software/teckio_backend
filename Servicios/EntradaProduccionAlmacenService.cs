@@ -19,24 +19,122 @@ namespace ERP_TECKIO.Servicios
             _mapper = mapper;
         }
 
-        public Task<RespuestaDTO> Crear(EntradaProduccionAlmacenDTO modelo)
+        public async Task<RespuestaDTO> Crear(EntradaProduccionAlmacenDTO modelo)
         {
-            throw new NotImplementedException();
+            RespuestaDTO respuesta = new RespuestaDTO();
+            try
+            {
+                var objeto = _mapper.Map<EntradaProduccionAlmacen>(modelo);
+                var resultado = await _repository.Crear(objeto);
+                if (resultado.Id > 0)
+                {
+                    respuesta.Estatus = true;
+                    respuesta.Descripcion = "Entrada procuccion almacen creada exitosamente";
+                }
+                else
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "Ocurrio un problema al intentar crear la entrada producto almacen";
+                }
+                return respuesta;
+            }
+            catch
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Ocurrio un problema al intentar crear la entrada producto almacen";
+                return respuesta;
+            }
         }
 
-        public Task<EntradaProduccionAlmacenDTO> CrearYObtener(EntradaProduccionAlmacenDTO modelo)
+        public async Task<EntradaProduccionAlmacenDTO> CrearYObtener(EntradaProduccionAlmacenDTO modelo)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var objeto = _mapper.Map<EntradaProduccionAlmacen>(modelo);
+                var resultado = await _repository.Crear(objeto);
+                if (resultado.Id > 0)
+                {
+                    return _mapper.Map<EntradaProduccionAlmacenDTO>(resultado);
+                }
+                else
+                {
+                    return new EntradaProduccionAlmacenDTO();
+                }
+            }
+            catch
+            {
+                return new EntradaProduccionAlmacenDTO();
+            }
         }
 
-        public Task<RespuestaDTO> Editar(EntradaProduccionAlmacenDTO modelo)
+        public async Task<RespuestaDTO> Editar(EntradaProduccionAlmacenDTO modelo)
         {
-            throw new NotImplementedException();
+            RespuestaDTO respuesta = new RespuestaDTO();
+            try
+            {
+                var objeto = await _repository.Obtener(e=>e.Id==modelo.Id);
+                if (objeto.Id <= 0)
+                {
+                    respuesta.Descripcion = "No se encontro la entrada produccion almacen";
+                    respuesta.Estatus = false;
+                    return respuesta;
+                }
+                objeto.IdAlmacen = modelo.IdAlmacen;
+                objeto.FechaEntrada = modelo.FechaEntrada;
+                objeto.Recibio = modelo.Recibio;
+                objeto.Observaciones = modelo.Observaciones;
+                var resultado = await _repository.Editar(objeto);
+                if (resultado)
+                {
+                    respuesta.Estatus = true;
+                    respuesta.Descripcion = "Entrada procuccion almacen editada exitosamente";
+                }
+                else
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "Ocurrio un problema al intentar editar la entrada producto almacen";
+                }
+                return respuesta;
+            }
+            catch
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Ocurrio un problema al intentar editar la entrada producto almacen";
+                return respuesta;
+            }
         }
 
-        public Task<RespuestaDTO> Eliminar(EntradaProduccionAlmacenDTO modelo)
+        public async Task<RespuestaDTO> Eliminar(EntradaProduccionAlmacenDTO modelo)
         {
-            throw new NotImplementedException();
+            RespuestaDTO respuesta = new RespuestaDTO();
+            try
+            {
+                var objeto = await _repository.Obtener(e => e.Id == modelo.Id);
+                if (objeto.Id <= 0)
+                {
+                    respuesta.Descripcion = "No se encontro la entrada produccion almacen";
+                    respuesta.Estatus = false;
+                    return respuesta;
+                }
+                var resultado = await _repository.Eliminar(objeto);
+                if (resultado)
+                {
+                    respuesta.Estatus = true;
+                    respuesta.Descripcion = "Entrada procuccion almacen eliminada exitosamente";
+                }
+                else
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "Ocurrio un problema al intentar eliminar la entrada producto almacen";
+                }
+                return respuesta;
+            }
+            catch
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Ocurrio un problema al intentar eliminar la entrada producto almacen";
+                return respuesta;
+            }
         }
     }
 }

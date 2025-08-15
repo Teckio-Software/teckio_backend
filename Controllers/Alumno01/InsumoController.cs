@@ -80,5 +80,12 @@ namespace ERP_TECKIO.Controllers
             await _InsumoProceso.ImportarInsumosAOtroProyecto(ids.IdProyectoAMigrar, ids.IdProyectoActual);
             return NoContent();
         }
+
+        [HttpGet("obtenerTodos")]
+        public async Task<ActionResult<List<InsumoDTO>>> ObtenerTodos()
+        {
+            var lista = await _InsumoProceso.ObtenerTodos();
+            return lista;
+        }
     }
 }

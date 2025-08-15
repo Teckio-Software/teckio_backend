@@ -77,10 +77,31 @@ namespace ERP_TECKIO.Servicios
                     respuesta.Descripcion = "La orden de venta no existe";
                     return respuesta;
                 }
-                if (objetoEncontrado.Estatus != 1)
+                //if (objetoEncontrado.Estatus != 1)
+                //{
+                //    respuesta.Estatus = false;
+                //    respuesta.Descripcion = "La orden de venta no puede estar facturada o cancelada";
+                //    return respuesta;
+                //}
+                //Si el estatus ed 2, está cancelado y o se puede editar.
+                if(objetoEncontrado.Estatus == 2)
                 {
                     respuesta.Estatus = false;
-                    respuesta.Descripcion = "La orden de venta no puede estar facturada o cancelada";
+                    respuesta.Descripcion = "La orden de venta ya está canceleda y no se puede modificar";
+                    return respuesta;
+                }
+                //Si el estatus es 0, se puede autorizar:1 o cancelar:2
+                if(objetoEncontrado.Estatus == 0 && modelo.Estatus == 3)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "La orden de venta esta apenas capturada aún no se puede pagar";
+                    return respuesta;
+                }
+                //Si el estatus es 1, se puede cancelar: 2 o pagar: 3
+                if(objetoEncontrado.Estatus == 1 && modelo.Estatus == 0)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "La orden de venta ta está autorizada y no se puede capturar";
                     return respuesta;
                 }
                 objetoEncontrado.Autorizo = modelo.Autorizo;
@@ -141,8 +162,37 @@ namespace ERP_TECKIO.Servicios
 
         public async Task<List<OrdenVentaDTO>> ObtenerTodos()
         {
-            var lista = await _repository.ObtenerTodos();
-            return _mapper.Map<List<OrdenVentaDTO>>(lista);
+            try
+            {
+                var lista = await _repository.ObtenerTodos();
+                return _mapper.Map<List<OrdenVentaDTO>>(lista);
+            }
+            catch
+            {
+                return new List<OrdenVentaDTO>();
+            }
+            
+        }
+
+        public async Task<OrdenVentaDTO> ObtenerOrdenVentaXId(int id)
+        {
+            try
+            {
+                var resultado = await _repository.Obtener(o => o.Id == id);
+                if (resultado.Id > 0)
+                {
+                    return _mapper.Map<OrdenVentaDTO>(resultado);
+                }
+                else
+                {
+                    return new OrdenVentaDTO();
+                }
+
+            }
+            catch
+            {
+                return new OrdenVentaDTO();
+            }
         }
     }
 }

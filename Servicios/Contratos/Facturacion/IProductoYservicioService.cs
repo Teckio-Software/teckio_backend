@@ -11,6 +11,7 @@ namespace ERP_TECKIO.Servicios.Contratos.Facturacion
         Task<ProductoYservicioDTO> ObtenerXId(int Id);
         Task<ProductoYservicioDTO> ObtenerXDescripcionYClave(string descripcion, int Idclave);
         Task<ProductoYservicioDTO> CrearYObtener(ProductoYservicioDTO registro);
+        Task<RespuestaDTO> Crear(ProductoYservicioDTO registro);
         Task<RespuestaDTO> Editar(ProductoYservicioDTO registro);
         Task<RespuestaDTO> Eliminar(int Id);
     }

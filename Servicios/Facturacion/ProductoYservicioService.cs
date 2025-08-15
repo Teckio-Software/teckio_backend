@@ -50,8 +50,16 @@ namespace ERP_TECKIO.Servicios.Facturacion
 
         public async Task<ProductoYservicioDTO> CrearYObtener(ProductoYservicioDTO registro)
         {
-            var respuesta = await _repository.Crear(_mapper.Map<ProductoYservicio>(registro));
-            return _mapper.Map<ProductoYservicioDTO>(respuesta);
+            try
+            {
+                var respuesta = await _repository.Crear(_mapper.Map<ProductoYservicio>(registro));
+                return _mapper.Map<ProductoYservicioDTO>(respuesta);
+            }
+            catch
+            {
+                return new ProductoYservicioDTO();
+            }
+            
         }
 
         public async Task<RespuestaDTO> Editar(ProductoYservicioDTO registro)
@@ -121,6 +129,33 @@ namespace ERP_TECKIO.Servicios.Facturacion
         {
             var query = await _repository.Obtener(z => z.Descripcion == descripcion && z.IdProductoYservicioSat == Idclave);
             return _mapper.Map<ProductoYservicioDTO>(query);
+        }
+
+        public async Task<RespuestaDTO> Crear(ProductoYservicioDTO registro)
+        {
+            RespuestaDTO respuesta = new RespuestaDTO();
+            try
+            {
+                var objeto = _mapper.Map<ProductoYservicio>(registro);
+                var resultado = await _repository.Crear(objeto);
+                if (resultado.Id > 0)
+                {
+                    respuesta.Estatus = true;
+                    respuesta.Descripcion = "Producto y servicio creado exitosamente";
+                }
+                else
+                {
+                    respuesta.Descripcion = "Ocurrio un error al intentar crear el producto y servicio";
+                    respuesta.Estatus = false;
+                }
+                return respuesta;
+            }
+            catch
+            {
+                respuesta.Descripcion = "Ocurrio un error al intentar crear el producto y servicio";
+                respuesta.Estatus = false;
+                return respuesta;
+            }
         }
     }
 }

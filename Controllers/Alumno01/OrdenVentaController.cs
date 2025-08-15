@@ -45,5 +45,13 @@ namespace ERP_TECKIO.Controllers.Alumno01
             var lista = await _ordenVentaProceso.ObtenerTodos();
             return lista;
         }
+
+        [HttpPut("autorizar")]
+        public async Task<ActionResult<RespuestaDTO>> Autorizar(OrdenVentaDTO ordenVenta)
+        {
+            var authen = HttpContext.User;
+            var respuesta = await _ordenVentaProceso.Autorizar(ordenVenta, authen.Claims.ToList());
+            return respuesta;
+        }
     }
 }

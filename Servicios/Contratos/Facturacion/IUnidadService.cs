@@ -7,5 +7,7 @@ namespace ERP_TECKIO.Servicios.Contratos.Facturacion
     {
         Task<bool> Crear(UnidadDTO parametro);
         Task<UnidadDTO> ObtenerXId(int Id);
+        Task<List<UnidadDTO>> ObtenerTodos();
+
     }
 }

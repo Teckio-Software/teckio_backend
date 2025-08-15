@@ -1,5 +1,6 @@
 ﻿using ERP_TECKIO.DTO;
 using ERP_TECKIO.Servicios.Contratos;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ERP_TECKIO.Procesos
@@ -138,5 +139,42 @@ namespace ERP_TECKIO.Procesos
                 return new List<OrdenVentaDTO>();
             }
         }
+
+        public async Task<RespuestaDTO> Autorizar(OrdenVentaDTO orden, List<System.Security.Claims.Claim> claims)
+        {
+            RespuestaDTO respuesta = new RespuestaDTO();
+            try
+            {
+                var usuarioNombre = claims.Where(z => z.Type == "username").ToList();
+                orden.Autorizo = usuarioNombre[0].Value;
+                orden.Estatus = 1;
+                respuesta = await _ordenVentaService.Editar(orden);
+                return respuesta;
+            }
+            catch
+            {
+                respuesta.Descripcion = "Ocurrio un error al intentar autorizar la orden de venta";
+                respuesta.Estatus = false;
+                return respuesta;
+            }
+        }
+
+        public async Task<RespuestaDTO> Cancelar(OrdenVentaDTO orden)
+        {
+            RespuestaDTO respuesta = new RespuestaDTO();
+            try
+            {
+                orden.Estatus = 2;
+                respuesta = await _ordenVentaService.Editar(orden);
+                return respuesta;
+            }
+            catch
+            {
+                respuesta.Descripcion = "Ocurrio un error al intentar autorizar la orden de venta";
+                respuesta.Estatus = false;
+                return respuesta;
+            }
+        }
+
     }
 }

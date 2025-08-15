@@ -29,6 +29,26 @@ namespace ERP_TECKIO.Servicios.Facturacion
             return true;
         }
 
+        public async Task<List<ProductoYServicioSatDTO>> ObtenerTodos()
+        {
+            try
+            {
+                var lista = await _repository.ObtenerTodos();
+                if (lista.Count > 0)
+                {
+                    return _mapper.Map<List<ProductoYServicioSatDTO>>(lista);
+                }
+                else
+                {
+                    return new List<ProductoYServicioSatDTO>();
+                }
+            }
+            catch
+            {
+                return new List<ProductoYServicioSatDTO>();
+            }
+        }
+
         public async Task<ProductoYServicioSatDTO> ObtenerXClave(string clave)
         {
             var objeto = await _repository.Obtener(z => z.Clave == clave);

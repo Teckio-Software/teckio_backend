@@ -212,5 +212,7 @@ namespace ERP_TECKIO.Controllers
             var respuesta = await _Proceso.ObtenerOrdenesCompraXInsumo(IdInsumo);
             return respuesta;
         }
+
+        
     }
 }

@@ -17,5 +17,7 @@ namespace ERP_TECKIO
         Task<InsumoDTO> CrearYObtener(InsumoCreacionDTO modelo);
         Task<RespuestaDTO> Editar(InsumoDTO modelo);
         Task<RespuestaDTO> Eliminar(int Id);
+        Task<List<InsumoDTO>> ObtenerTodos();
+
     }
 }

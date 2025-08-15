@@ -26,4 +26,6 @@ public abstract class ProduccionAbstract
     public string? Observaciones { get; set; }
 
     public int Estatus { get; set; }
+
+    public string? Autorizo { get; set; }
 }

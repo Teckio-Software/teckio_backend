@@ -140,6 +140,13 @@ namespace ERP_TECKIO
             services.AddScoped(typeof(CuentaContableProceso<>));
             services.AddScoped(typeof(OrdenVentaProceso<>));
             services.AddScoped(typeof(FsrProceso<>));
+            services.AddScoped(typeof(ProductoYServicioProceso<>));
+            services.AddScoped(typeof(InsumoXProductoYServicioProceso<>));
+            services.AddScoped(typeof(InsumoXProduccionProceso<>));
+            services.AddScoped(typeof(ProduccionProceso<>));
+            services.AddScoped(typeof(ExistenciaProductoAlmacenProceso<>));
+            services.AddScoped(typeof(EntradaProduccionAlmacenProceso<>));
+            services.AddScoped(typeof(ProductosXEntradaProduccionAlmacenProceso<>));
 
             //Facturas
             services.AddScoped(typeof(ITipoImpuestoService<>), typeof(TipoImpuestoService<>));
@@ -167,7 +174,7 @@ namespace ERP_TECKIO
             services.AddScoped(typeof(IAcuseValidacionService<>), typeof(AcuseValidacionService<>));
             services.AddScoped(typeof(IArchivoService<>), typeof(ArchivoService<>));
             services.AddScoped(typeof(IFacturaXOrdenCompraService<>), typeof(FacturaXOrdenCompraService<>));
-
+            services.AddScoped(typeof(IInsumoXProductoYServicioService<>), typeof(InsumoXProductoYServicioService<>));
 
             //Produccion
             services.AddScoped(typeof(IOrdenVentaService<>), typeof(OrdenVentaService<>));

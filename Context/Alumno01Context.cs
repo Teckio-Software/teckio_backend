@@ -1,12 +1,11 @@
 ﻿
-using Microsoft.EntityFrameworkCore;
-using ERP_TECKIO.Modelos;
-
 using ERP_TECKIO;
-using ERP_TECKIO.Modelos.Presupuesto;
+using ERP_TECKIO.Modelos;
+using ERP_TECKIO.Modelos.Contabilidad;
 using ERP_TECKIO.Modelos.Facturacion;
 using ERP_TECKIO.Modelos.Facturaion;
-using ERP_TECKIO.Modelos.Contabilidad;
+using ERP_TECKIO.Modelos.Presupuesto;
+using Microsoft.EntityFrameworkCore;
 
 
 public partial class Alumno01Context : DbContext
@@ -168,6 +167,8 @@ public partial class Alumno01Context : DbContext
     public virtual DbSet<ExistenciaProductosAlmacen> ExistenciaProductosAlmacens { get; set; }
     public virtual DbSet<ParametrosFsr> ParametrosFsrs { get; set; }
     public virtual DbSet<PorcentajeCesantiaEdad> PorcentajeCesantiaEdads { get; set; }
+    public virtual DbSet<InsumoxProductoYservicio> InsumoxProductoYservicios { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -346,6 +347,7 @@ public partial class Alumno01Context : DbContext
             entity.Property(e => e.IdProductoYservicio).HasColumnName("IdProductoYServicio");
             entity.Property(e => e.Observaciones).HasMaxLength(200);
             entity.Property(e => e.Produjo).HasMaxLength(100);
+            entity.Property(e => e.Autorizo).HasMaxLength(100);
 
             entity.HasOne(d => d.IdProductoYservicioNavigation).WithMany(p => p.Produccion)
                 .HasForeignKey(d => d.IdProductoYservicio)
@@ -416,11 +418,16 @@ public partial class Alumno01Context : DbContext
 
             entity.Property(e => e.Cantidad).HasColumnType("decimal(28, 6)");
             entity.Property(e => e.IdProductoYservicio).HasColumnName("IdProductoYServicio");
+            entity.Property(e => e.IdAlmacen).HasColumnName("IdAlmacen");
 
             entity.HasOne(d => d.IdProductoYservicioNavigation).WithMany(p => p.ExistenciaProductosAlmacens)
                 .HasForeignKey(d => d.IdProductoYservicio)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ExistenciaProductosAlmacen_IdProductoYServicio");
+            entity.HasOne(d => d.Almacen).WithMany(p => p.ExistenciaProductosAlmacen)
+                .HasForeignKey(d => d.IdAlmacen)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("Fk_ExisProdAlmac_Almacen");
         });
 
         modelBuilder.Entity<FsixinsummoMdO>(entity =>
@@ -2264,6 +2271,25 @@ public partial class Alumno01Context : DbContext
                 .HasForeignKey(d => d.IdOrdenCompra)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_FacturaXOrdenCompra_IdOrdenCompra");
+        });
+        modelBuilder.Entity<InsumoxProductoYservicio>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__InsumoxP__3214EC078ABC0F36");
+
+            entity.ToTable("InsumoxProductoYServicio", "Factura");
+
+            entity.Property(e => e.Cantidad).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.IdProductoYservicio).HasColumnName("IdProductoYServicio");
+
+            entity.HasOne(d => d.IdInsumoNavigation).WithMany(p => p.InsumoxProductoYservicios)
+                .HasForeignKey(d => d.IdInsumo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("Fk_InsXProdYSer_Ins");
+
+            entity.HasOne(d => d.IdProductoYservicioNavigation).WithMany(p => p.InsumoxProductoYservicios)
+                .HasForeignKey(d => d.IdProductoYservicio)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("Fk_InsXProdYSer_Prod");
         });
 
         base.OnModelCreating(modelBuilder);
