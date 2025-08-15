@@ -6,6 +6,7 @@ namespace ERP_TECKIO.DTO
     {
         public int IdPrecioUnitario { get; set; }
         public int IdInsumo { get; set; }
+        public int IdProyecto { get; set; }
         public bool EsCompuesto { get; set; }
         public decimal CostoUnitario { get; set; } //Viene de Insumo
         public string? CostoUnitarioConFormato { get; set; } //Se genera
@@ -16,7 +17,6 @@ namespace ERP_TECKIO.DTO
         public string? CantidadConFormato { get; set; } //Se genera
         public bool CantidadEditado { get; set; } //Se genera
         public decimal CantidadExcedente { get; set; } //Se genera
-        public int IdPrecioUnitarioDetallePerteneciente { get; set; }
         public string? Codigo { get; set; } //Insumo
         public string? Descripcion { get; set; } //Insumo
         public string? Unidad { get; set; } //Insumo

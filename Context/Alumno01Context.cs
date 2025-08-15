@@ -316,16 +316,23 @@ public partial class Alumno01Context : DbContext
 
         modelBuilder.Entity<CostoHorarioVariableXPrecioUnitarioDetalle>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__CostoHor__3214EC075B2153A8");
+            entity.HasKey(e => e.Id).HasName("PK__CostoHor__3214EC07518FB281");
 
             entity.ToTable("CostoHorarioVariableXPrecioUnitarioDetalle");
 
+            entity.Property(e => e.Cantidad).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.CantidadExcedente).HasColumnType("decimal(28, 6)");
             entity.Property(e => e.Rendimiento).HasColumnType("decimal(28, 6)");
+
+            entity.HasOne(d => d.IdInsumoNavigation).WithMany(p => p.CostoHorarioVariableXprecioUnitarioDetalles)
+                .HasForeignKey(d => d.IdInsumo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__CostoHora__IdIns__0169315C");
 
             entity.HasOne(d => d.IdPrecioUnitarioDetalleNavigation).WithMany(p => p.CostoHorarioVariableXprecioUnitarioDetalles)
                 .HasForeignKey(d => d.IdPrecioUnitarioDetalle)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_CostoHorarioVariableXPrecioUnitarioDetalle_IdPrecioUnitarioDetalle");
+                .HasConstraintName("FK__CostoHora__IdPre__00750D23");
         });
 
         modelBuilder.Entity<Produccion>(entity =>

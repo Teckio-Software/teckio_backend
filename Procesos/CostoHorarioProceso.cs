@@ -30,6 +30,7 @@ namespace ERP_TECKIO.Procesos
         private readonly IMapper _Mapper;
         private readonly TContext _dbContext;
         private readonly FactorSalarioRealProceso<TContext> _fsrProceso;
+        private readonly PrecioUnitarioProceso<TContext> _precioUnitarioProceso;
 
         public CostoHorarioProceso(
             IProyectoService<TContext> proyectoService
@@ -52,7 +53,7 @@ namespace ERP_TECKIO.Procesos
             , IMapper mapper
             , TContext dbContext
             , FactorSalarioRealProceso<TContext> fsrProceso
-
+            , PrecioUnitarioProceso<TContext> precioUnitarioProceso
             )
         {
             _ProyectoService = proyectoService;
@@ -75,6 +76,7 @@ namespace ERP_TECKIO.Procesos
             _CostoVariableService = costoVariableService;
             _CostoFijoService = costoFijoService;
             _fsrProceso = fsrProceso;
+            _precioUnitarioProceso = precioUnitarioProceso;
         }
 
         public async Task<CostoHorarioFijoXPrecioUnitarioDetalleDTO> ObtenerCostoFijoXIdDetalle(int IdPrecioUnitarioDetalle){
@@ -88,22 +90,20 @@ namespace ERP_TECKIO.Procesos
                 select
                 ch.Id
                 , ch.IdPrecioUnitarioDetalle
+                , ch.IdCostoVariablePerteneciente
                 , ch.TipoCostoVariable
                 , ch.Rendimiento
-                , PUD.IdPrecioUnitario
-                , PUD.IdInsumo
-                , PUD.EsCompuesto
+                , ch.IdInsumo
+                , ch.EsCompuesto
                 , I.CostoUnitario
                 , FORMAT(I.CostoUnitario, 'N', 'en-us') as CostoUnitarioConFormato
-                --Costo Unitario Con Formato
                 , I.CostoBase
                 , FORMAT(I.CostoBase, 'N', 'en-us') as CostoBaseConFormato
-                --Costo Base Con Formato
-                , PUD.Cantidad
-                , FORMAT(PUD.Cantidad, 'N', 'en-us') as CantidadConFormato
-                --Cantidad Con Formato
-                , PUD.CantidadExcedente
-                , PUD.IdPrecioUnitarioDetallePerteneciente
+                , ch.Cantidad
+                , FORMAT(ch.Cantidad, 'N', 'en-us') as CantidadConFormato
+                , ch.CantidadExcedente
+                , ch.Cantidad * I.CostoUnitario as Importe
+                , FORMAT(ch.Cantidad * I.CostoUnitario, 'N', 'en-us') as ImporteConFormato
                 , I.Codigo
                 , I.Descripcion
                 , I.Unidad
@@ -112,12 +112,58 @@ namespace ERP_TECKIO.Procesos
                 , I.IdProyecto
                 , I.EsFsrGlobal
                 from CostoHorarioVariableXPrecioUnitarioDetalle ch
-                join PrecioUnitarioDetalle PUD
-                on PUD.Id = ch.IdPrecioUnitarioDetalle
                 join Insumo I
-                on PUD.IdInsumo = I.Id
-                where IdPrecioUnitarioDetallePerteneciente = 
+                on ch.IdInsumo = I.Id
+                where IdPrecioUnitarioDetalle =
                 """ + IdPrecioUnitarioDetalle +
+                """ and ch.IdCostoVariablePerteneciente = 0 for json path""").ToList();
+            if (items.Count <= 0)
+            {
+                return new List<CostoHorarioVariableXPrecioUnitarioDetalleDTO>();
+            }
+            string json = string.Join("", items);
+            var datos = JsonSerializer.Deserialize<List<CostoHorarioVariableXPrecioUnitarioDetalleDTO>>(json);
+            if (datos == null)
+            {
+                return new List<CostoHorarioVariableXPrecioUnitarioDetalleDTO>();
+            }
+            return datos;
+        }
+
+        public async Task<List<CostoHorarioVariableXPrecioUnitarioDetalleDTO>> obtenerRegistrosXIdDetallePerteneciente(int IdPrecioUnitarioDetalle, int IdCostoVariablePerteneciente)
+        {
+            var items = _dbContext.Database.SqlQueryRaw<string>("""
+                select
+                ch.Id
+                , ch.IdPrecioUnitarioDetalle
+                , ch.IdCostoVariablePerteneciente
+                , ch.TipoCostoVariable
+                , ch.Rendimiento
+                , ch.IdInsumo
+                , ch.EsCompuesto
+                , I.CostoUnitario
+                , FORMAT(I.CostoUnitario, 'N', 'en-us') as CostoUnitarioConFormato
+                , I.CostoBase
+                , FORMAT(I.CostoBase, 'N', 'en-us') as CostoBaseConFormato
+                , ch.Cantidad
+                , FORMAT(ch.Cantidad, 'N', 'en-us') as CantidadConFormato
+                , ch.CantidadExcedente
+                , ch.Cantidad * I.CostoUnitario as Importe
+                , FORMAT(ch.Cantidad * I.CostoUnitario, 'N', 'en-us') as ImporteConFormato
+                , I.Codigo
+                , I.Descripcion
+                , I.Unidad
+                , I.IdTipoInsumo
+                , I.IdFamiliaInsumo
+                , I.IdProyecto
+                , I.EsFsrGlobal
+                from CostoHorarioVariableXPrecioUnitarioDetalle ch
+                join Insumo I
+                on ch.IdInsumo = I.Id
+                where IdPrecioUnitarioDetalle =
+                """ + IdPrecioUnitarioDetalle +
+                """ and ch.IdCostoVariablePerteneciente = """
+                + IdCostoVariablePerteneciente + 
                 """ for json path""").ToList();
             if (items.Count <= 0)
             {
@@ -142,26 +188,78 @@ namespace ERP_TECKIO.Procesos
             return registros;
         }
 
-        public async Task EditarCostoVariable(CostoHorarioVariableXPrecioUnitarioDetalleDTO registro)
+        public async Task CrearEditarCostoVariable(CostoHorarioVariableXPrecioUnitarioDetalleDTO registro)
         {
             var insumo = await _InsumoService.ObtenXId(registro.IdInsumo);
-            var precioUnitarioDetalle = await _PrecioUnitarioDetalleService.ObtenerXId(registro.IdPrecioUnitarioDetalle);
-            insumo.Codigo = registro.Codigo;
-            insumo.idTipoInsumo = registro.IdTipoInsumo;
-            insumo.Descripcion = registro.Descripcion;
-            insumo.Unidad = registro.Unidad;
-            insumo.CostoBase = registro.CostoBase;
-            //var insumoEditado = await _InsumoService
-            if(insumo.idTipoInsumo == 10000)
+            if(insumo.idTipoInsumo == 10001)
             {
-                var fsrRecalculado = await _FSRService.ObtenerTodosXProyecto(insumo.IdProyecto);
-                var fsr = fsrRecalculado.FirstOrDefault();
-                if (fsr.EsCompuesto)
+                var registros = await obtenerRegistrosXIdDetallePerteneciente(registro.IdPrecioUnitarioDetalle, registro.IdCostoVariablePerteneciente);
+                var registrosFiltrados = registros.Where(z => z.IdTipoInsumo == 10000).ToList();
+                decimal costoTotal = 0;
+                if(registrosFiltrados.Count > 0)
                 {
-                    insumo.CostoBase = registro.CostoBase;
-                    insumo.CostoUnitario = registro.CostoBase * fsr.PorcentajeFsr;
+                    foreach(var costo in registrosFiltrados)
+                    {
+                        costoTotal =+ costo.Importe;
+                    }
                 }
+                registro.CostoBase = costoTotal;
+                registro.CostoUnitario = costoTotal;
             }
+            if (insumo.id != 0)
+            {
+                insumo.Codigo = registro.Codigo;
+                insumo.Descripcion = registro.Descripcion;
+                insumo.Unidad = registro.Unidad;
+                insumo.idTipoInsumo = registro.IdTipoInsumo;
+                insumo.CostoBase = registro.CostoBase;
+                insumo.CostoUnitario = registro.CostoBase;
+                var insumoEditado = await _InsumoService.Editar(insumo);
+            }
+            else
+            {
+                var insumoCreacion = new InsumoCreacionDTO();
+                insumoCreacion.Codigo = registro.Codigo;
+                insumoCreacion.Descripcion = registro.Descripcion;
+                insumoCreacion.Unidad = registro.Unidad;
+                insumoCreacion.idTipoInsumo = registro.IdTipoInsumo;
+                insumoCreacion.CostoBase = registro.CostoBase;
+                insumoCreacion.CostoUnitario = registro.CostoBase;
+                insumo = await _InsumoService.CrearYObtener(insumoCreacion);
+            }
+
+            registro.IdInsumo = insumo.id;
+            //switch (registro.TipoCostoVariable)
+            //{
+            //    case 1: //Combustibles
+                    
+            //        break;
+
+            //    case 2: //Lubricantes
+            //        break;
+
+            //    case 3: //Llantas
+            //        break;
+
+            //    case 4: //Operación
+            //        break;
+
+            //    case 5: //Fletes
+            //        break;
+
+            //}
+
+            if(registro.IdCostoVariablePerteneciente == 0)
+            {
+                var detalles = await _precioUnitarioProceso.ObtenerDetallesPorIdInsumo(registro.IdInsumo, _dbContext);
+                foreach(var detalle in detalles)
+                {
+                    registro.Id = 0;
+
+                }
+
+            }
+            
         }
     }
 }
