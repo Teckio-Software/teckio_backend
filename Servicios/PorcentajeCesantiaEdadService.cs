@@ -62,9 +62,26 @@ namespace ERP_TECKIO.Servicios
             return respuesta;
         }
 
-        public Task<RespuestaDTO> Eliminar(int Id)
+        public async Task<RespuestaDTO> Eliminar(int Id)
         {
-            throw new NotImplementedException();
+            var respuesta = new RespuestaDTO();
+            var objetoEncontrado = await _Repositorio.Obtener(z => z.Id == Id);
+            if (objetoEncontrado.Id <= 0)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No se encontro el registro";
+                return respuesta;
+            }
+            var eliminar = await _Repositorio.Eliminar(objetoEncontrado);
+            if (!eliminar)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No se elimino el registro";
+                return respuesta;
+            }
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Se elimino el registro";
+            return respuesta;
         }
 
         public async Task<List<PorcentajeCesantiaEdadDTO>> ObtenerXIdProyecto(int IdProyecto)

@@ -68,6 +68,27 @@ namespace ERP_TECKIO
             return await _precioUnitarioProceso.Editar(registro);
         }
 
+        [HttpGet("AutorizarPresupuesto/{IdProyecto:int}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPrecioUnitario-Empresa2")]
+        public async Task AutorizarPresupuesto(int IdProyecto)
+        {
+            await _precioUnitarioProceso.AutorizarPresupuesto(IdProyecto);
+        }
+
+        [HttpPost("AutorizarXPrecioUnitario")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPrecioUnitario-Empresa2")]
+        public async Task AutorizarXPrecioUnitario(PrecioUnitarioDTO partida)
+        {
+            await _precioUnitarioProceso.AutorizarXPartida(partida);
+        }
+
+        [HttpPost("partirConcepto")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPrecioUnitario-Empresa2")]
+        public async Task<ActionResult<List<PrecioUnitarioDTO>>> partirConcepto([FromBody] PrecioUnitarioDTO registro)
+        {
+            return await _precioUnitarioProceso.PartirConcepto(registro);
+        }
+
         [HttpPost("EditarIndirectoPrecioUnitario")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPrecioUnitario-Empresa2")]
         public async Task<ActionResult<bool>> EditarIndirectoPrecioUnitario([FromBody] PrecioUnitarioDTO registro)
@@ -147,6 +168,12 @@ namespace ERP_TECKIO
         public async Task<ActionResult<List<InsumoParaExplosionDTO>>> ObtenerExplosion(int IdProyecto)
         {
             return await _precioUnitarioProceso.obtenerExplosion(IdProyecto);
+        }
+
+        [HttpPost("obtenerExplosionDeInsumosXPrecioUnitario")]
+        public async Task<ActionResult<List<InsumoParaExplosionDTO>>> ObtenerExplosionXPrecioUnitario(PrecioUnitarioDTO precioUnitario)
+        {
+            return await _precioUnitarioProceso.ObtenerExplosionXPrecioUnitario(precioUnitario);
         }
 
         [HttpPost("editarCostoDesdeExplosion")]

@@ -2063,6 +2063,9 @@ public partial class Alumno01Context : DbContext
             entity.Property(e => e.IdConcepto).HasColumnName("idConcepto");
             entity.Property(e => e.IdPrecioUnitarioBase).HasColumnName("idPrecioUnitarioBase");
             entity.Property(e => e.IdProyecto).HasColumnName("idProyecto");
+            entity.Property(e => e.EsCatalogoGeneral).HasColumnName("EsCatalogoGeneral");
+            entity.Property(e => e.EsAvanceObra).HasColumnName("EsAvanceObra");
+            entity.Property(e => e.EsAdicional).HasColumnName("EsAdicional");
 
             entity.HasOne(d => d.IdConceptoNavigation).WithMany(p => p.PrecioUnitarios)
                 .HasForeignKey(d => d.IdConcepto)
