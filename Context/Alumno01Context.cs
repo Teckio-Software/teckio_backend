@@ -411,11 +411,16 @@ public partial class Alumno01Context : DbContext
 
             entity.Property(e => e.Cantidad).HasColumnType("decimal(28, 6)");
             entity.Property(e => e.IdProductoYservicio).HasColumnName("IdProductoYServicio");
+            entity.Property(e => e.IdAlmacen).HasColumnName("IdAlmacen");
 
             entity.HasOne(d => d.IdProductoYservicioNavigation).WithMany(p => p.ExistenciaProductosAlmacens)
                 .HasForeignKey(d => d.IdProductoYservicio)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ExistenciaProductosAlmacen_IdProductoYServicio");
+            entity.HasOne(d => d.Almacen).WithMany(p => p.ExistenciaProductosAlmacen)
+                .HasForeignKey(d => d.IdAlmacen)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("Fk_ExisProdAlmac_Almacen");
         });
 
         modelBuilder.Entity<FsixinsummoMdO>(entity =>

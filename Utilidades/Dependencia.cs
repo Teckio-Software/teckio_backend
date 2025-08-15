@@ -144,6 +144,9 @@ namespace ERP_TECKIO
             services.AddScoped(typeof(InsumoXProductoYServicioProceso<>));
             services.AddScoped(typeof(InsumoXProduccionProceso<>));
             services.AddScoped(typeof(ProduccionProceso<>));
+            services.AddScoped(typeof(ExistenciaProductoAlmacenProceso<>));
+            services.AddScoped(typeof(EntradaProduccionAlmacenProceso<>));
+            services.AddScoped(typeof(ProductosXEntradaProduccionAlmacenProceso<>));
 
             //Facturas
             services.AddScoped(typeof(ITipoImpuestoService<>), typeof(TipoImpuestoService<>));

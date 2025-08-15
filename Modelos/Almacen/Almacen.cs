@@ -14,6 +14,7 @@ public partial class Almacen : almacenAbsatract
 
     public virtual ICollection<InsumoExistencia> InsumoExistencia { get; set; } = new List<InsumoExistencia>();
     public virtual ICollection<EntradaProduccionAlmacen> EntradaProduccionAlmacens { get; set; } = new List<EntradaProduccionAlmacen>();
+    public virtual ICollection<ExistenciaProductosAlmacen> ExistenciaProductosAlmacen { get; set; } = new List<ExistenciaProductosAlmacen>();
 
 
 }
