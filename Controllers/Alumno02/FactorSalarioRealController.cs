@@ -19,7 +19,7 @@ namespace ERP_TECKIO.Controllers.Alumno02
         private readonly FactorSalarioRealProceso<Alumno02Context> _FactorSalarioRealProceso;
         private readonly IParametrosFsrService<Alumno02Context> _parametrosFsrService;
         private readonly IPorcentajeCesantiaEdadService<Alumno02Context> _porcentajeCesantiaEdadService;
-
+        
         public FactorSalarioRealController(
             FactorSalarioRealProceso<Alumno02Context> factorSalarioRealProceso,
             IParametrosFsrService<Alumno02Context> parametrosFsrService,
@@ -32,8 +32,7 @@ namespace ERP_TECKIO.Controllers.Alumno02
         }
 
         [HttpPost("crearFsrDetalleXInsumo")]
-        public async Task<ActionResult<RespuestaDTO>> CrearFsrDetalleXInsumo(FsrxinsummoMdOdetalleDTO objeto)
-        {
+        public async Task<ActionResult<RespuestaDTO>> CrearFsrDetalleXInsumo(FsrxinsummoMdOdetalleDTO objeto) { 
             return await _FactorSalarioRealProceso.CrearFsrDetalle(objeto);
         }
 
@@ -181,6 +180,25 @@ namespace ERP_TECKIO.Controllers.Alumno02
         public async Task editarRangoPorcentajeCesantiaEdad(PorcentajeCesantiaEdadDTO porcentaje)
         {
             await _FactorSalarioRealProceso.editarRangoPorcentajeCesantiaEdad(porcentaje);
+        }
+
+        [HttpPost("obtenerParametrosXInsumo")]
+        public async Task<ActionResult<List<ParametrosFsrXInsumoDTO>>> obtenerParametrosXInsumo(FactorSalarioRealDTO fsr)
+        {
+            var respuesta = await _FactorSalarioRealProceso.obtenerParametrosXInsumo(fsr);
+            return respuesta;
+        }
+
+        [HttpPost("actualizarCostoBaseInsumo")]
+        public async Task actualizarCostoBaseInsumo(ParametrosFsrXInsumoDTO parametrosXInsumo)
+        {
+            await _FactorSalarioRealProceso.actualizarCostoBaseInsumo(parametrosXInsumo);
+        }
+
+        [HttpGet("importarFsr/{IdProyecto:int}/{IdProyectoImportar:int}")]
+        public async Task importarFsr(int IdProyecto, int IdProyectoImportar)
+        {
+            await _FactorSalarioRealProceso.importarFsr(IdProyecto, IdProyectoImportar);
         }
     }
 }
