@@ -25,6 +25,8 @@ public partial class Requisicion
 
     public string? Residente { get; set; }
 
+    public int? IdProduccion {  get; set; }
+
     public virtual ICollection<AlmacenEntradaInsumo> AlmacenEntradaInsumos { get; set; } = new List<AlmacenEntradaInsumo>();
 
     public virtual ICollection<CompraDirecta> CompraDirecta { get; set; } = new List<CompraDirecta>();
@@ -32,6 +34,8 @@ public partial class Requisicion
     public virtual ICollection<Cotizacion> Cotizacions { get; set; } = new List<Cotizacion>();
 
     public virtual Proyecto? IdProyectoNavigation { get; set; }
+
+    public virtual Produccion? IdProduccionNavigation { get; set; }
 
     public virtual ICollection<InsumoXRequisicion> InsumoXrequisicions { get; set; } = new List<InsumoXRequisicion>();
 

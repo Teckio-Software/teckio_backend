@@ -40,6 +40,18 @@ namespace ERP_TECKIO
             requisicion.EstatusRequisicion = 1;
             requisicion.EstatusInsumosComprados = 0;
             requisicion.EstatusInsumosSurtIdos = 0;
+            if(requisicion.IdProduccion == null && requisicion.IdProyecto == null)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "La requisición debe estar asociada a un proyecto o a una producción";
+                return respuesta;
+            }
+            if (requisicion.IdProduccion != null && requisicion.IdProyecto != null)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "La requisición no puede estar asociada a un proyecto y a una producción";
+                return respuesta;
+            }
 
             var requisiciones = await _requisicionService.ObtenXIdProyecto(parametros.IdProyecto);
             var proyecto = await _proyectoService.ObtenXId(parametros.IdProyecto);
@@ -101,7 +113,7 @@ namespace ERP_TECKIO
             var requisicion = await _requisicionService.ObtenXId(parametro.IdRequisicion);
             var insumosXRequisicion = await _insumoXRequisicionService.ObtenXIdRequisicion(requisicion.Id);
             var insumoXRequsicion = new InsumoXRequisicionDTO();
-            var listaInsumos = await _insumoService.ObtenerInsumoXProyecto(requisicion.IdProyecto);
+            var listaInsumos = await _insumoService.ObtenerInsumoXProyecto((int)requisicion.IdProyecto);
             var objetoinsumo = listaInsumos.Where(z => z.Descripcion.ToLower() == parametro.Descripcion.ToLower() && z.Unidad.ToLower() == parametro.Unidad.ToLower()).ToList();
             InsumoDTO crearInsumo = new InsumoDTO();
             if (objetoinsumo.Count <= 0)
@@ -110,7 +122,7 @@ namespace ERP_TECKIO
                 {
                     Descripcion = parametro.Descripcion,
                     Unidad = parametro.Unidad,
-                    IdProyecto = requisicion.IdProyecto,
+                    IdProyecto = (int)requisicion.IdProyecto,
                     idFamiliaInsumo = null,
                     idTipoInsumo = parametro.idTipoInsumo,
                     CostoUnitario = 0,
@@ -278,7 +290,7 @@ namespace ERP_TECKIO
         public async Task<List<InsumoXRequisicionDTO>> InsumosXRequisicion(int IdRequisicion) {
             var requisicion =  await _requisicionService.ObtenXId(IdRequisicion);
             var idProyecto = requisicion.IdProyecto;
-            var insumos = await _insumoService.ObtenXIdProyecto(idProyecto);
+            var insumos = await _insumoService.ObtenXIdProyecto((int)idProyecto);
             var insumosXRequicision = await _insumoXRequisicionService.ObtenXIdRequisicion(IdRequisicion);
 
             List<InsumoXRequisicionDTO> listInsumosXRequisicion = new List<InsumoXRequisicionDTO>();
@@ -545,6 +557,70 @@ namespace ERP_TECKIO
 
             var eliminarRequisicion = await _requisicionService.Eliminar(requisicion);
             return eliminarRequisicion;
+        }
+
+        public async Task<List<RequisicionDTO>> ObtenerProduccionGeneral()
+        {
+            try
+            {
+                var lista = await _requisicionService.ObtenTodos();
+                lista = lista.Where(r => r.IdProyecto == null).ToList();
+                if (lista.Count > 0)
+                {
+                    return lista;
+                }
+                else
+                {
+                    return new List<RequisicionDTO>();
+                }
+            }
+            catch
+            {
+                return new List<RequisicionDTO>();
+            }
+        }
+
+        public async Task<List<RequisicionDTO>> ObtenerProduccionPorFecha(DateTime fecha)
+        {
+            try
+            {
+                var lista = await _requisicionService.ObtenTodos();
+                lista = lista.Where(r => r.IdProyecto == null && r.FechaRegistro==fecha).ToList();
+                if (lista.Count > 0)
+                {
+                    return lista;
+                }
+                else
+                {
+                    return new List<RequisicionDTO>();
+                }
+            }
+            catch
+            {
+                return new List<RequisicionDTO>();
+            }
+        }
+
+        //Pendiente a resolución por los distintos estatus
+        public async Task<List<RequisicionDTO>> ObtenerProduccionPorEstatus(int estatus)
+        {
+            try
+            {
+                var lista = await _requisicionService.ObtenTodos();
+                lista = lista.Where(r => r.IdProyecto == null && r.EstatusRequisicion == estatus).ToList();
+                if (lista.Count > 0)
+                {
+                    return lista;
+                }
+                else
+                {
+                    return new List<RequisicionDTO>();
+                }
+            }
+            catch
+            {
+                return new List<RequisicionDTO>();
+            }
         }
     }
 }

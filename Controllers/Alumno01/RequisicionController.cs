@@ -312,5 +312,26 @@ namespace ERP_TECKIO.Controllers
             return eliminar;
         }
 
+        [HttpGet("obtenerGeneral")]
+        public async Task<ActionResult<List<RequisicionDTO>>> ObtenerGeneral()
+        {
+            var lista = await _Proceso.ObtenerProduccionGeneral();
+            return lista;
+        }
+
+        [HttpGet("obtenerPorFecha/{fecha:datetime}")]
+        public async Task<ActionResult<List<RequisicionDTO>>> ObtenerPorFecha(DateTime fecha)
+        {
+            var lista = await _Proceso.ObtenerProduccionPorFecha(fecha);
+            return lista;
+        }
+
+        [HttpGet("obtenerPorEstatus/{estatus:int}")]
+        public async Task<ActionResult<List<RequisicionDTO>>> ObtenerPorEstatus(int estatus)
+        {
+            var lista = await _Proceso.ObtenerProduccionPorEstatus(estatus);
+            return lista;
+        }
+
     }
 }

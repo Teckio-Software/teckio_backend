@@ -2208,6 +2208,9 @@ public partial class Alumno01Context : DbContext
             entity.HasOne(d => d.IdProyectoNavigation).WithMany(p => p.Requisicions)
                 .HasForeignKey(d => d.IdProyecto)
                 .HasConstraintName("FK__Requisici__IdPro__00200768");
+            entity.HasOne(d => d.IdProduccionNavigation).WithMany(p => p.Requisicion)
+                .HasForeignKey(d => d.IdProduccion)
+                .HasConstraintName("Fk_Requisicion_Produccion");
         });
 
         modelBuilder.Entity<Rubro>(entity =>

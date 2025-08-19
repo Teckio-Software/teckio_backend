@@ -13,20 +13,26 @@ namespace ERP_TECKIO.Procesos
         private readonly IInsumoXProduccionService<TContext> _insumoService;
         private readonly ExistenciasProceso<TContext> _existenciasProceso;
         private readonly IInsumoXProductoYServicioService<TContext> _insumoXProductoService;
+        private readonly IRequisicionService<TContext> _requisicionService;
+        private readonly IInsumoXRequisicionService<TContext> _insumoXRequisicionService;
+
         private readonly IMapper _mapper;
 
         public ProduccionProceso(IProduccionService<TContext> produccionService,
             IInsumoXProduccionService<TContext> insumoService, 
             ExistenciasProceso<TContext> existenciasProceso,
             IInsumoXProductoYServicioService<TContext> insumoXProductoService,
-            IMapper mapper
-            )
+            IMapper mapper,
+            IRequisicionService<TContext> requisicionService,
+            IInsumoXRequisicionService<TContext> insumoXRequisicionService)
         {
             _produccionService = produccionService;
             _insumoService = insumoService;
             _existenciasProceso = existenciasProceso;
             _insumoXProductoService = insumoXProductoService;
             _mapper = mapper;
+            _requisicionService = requisicionService;
+            _insumoXRequisicionService = insumoXRequisicionService;
         }
 
         public async Task<RespuestaDTO> Crear(ProduccionDTO produccion)
@@ -61,11 +67,12 @@ namespace ERP_TECKIO.Procesos
             }
         }
 
-        public async Task<RespuestaDTO> Editar(ProduccionConAlmacenDTO produccion)
+        public async Task<RespuestaDTO> Editar(ProduccionConAlmacenDTO produccion, List<System.Security.Claims.Claim> claims)
         {
             RespuestaDTO respuesta = new RespuestaDTO();
             try
             {
+                var usuarioNombre = claims.Where(z => z.Type == "username").ToList();
                 var objeto = _mapper.Map<ProduccionDTO>(produccion);
                 if (objeto.Estatus == 3)
                 {
@@ -79,25 +86,88 @@ namespace ERP_TECKIO.Procesos
                         };
                     }
                     var insumos = await _insumoXProductoService.ObtenerPorIdPrdYSer(produccion.IdProductoYservicio);
+                    bool crear = true;
+                    RequisicionDTO requisicion = new RequisicionDTO();
+                    List<InsumoXRequisicionDTO> insumosXRequisicion = new List<InsumoXRequisicionDTO>();
                     foreach (var insumo in insumos)
                     {
                         var existencia = existencias.Find(e => e.IdInsumo == insumo.IdInsumo);
                         if (existencia == null)
                         {
-                            return new RespuestaDTO
+                            crear = false;
+                            //Crea una requisición, en este caso el insumo no se encuentra en el almacen.
+                            insumosXRequisicion.Add(new InsumoXRequisicionDTO
                             {
-                                Estatus = false,
-                                Descripcion = "No hay existencias para algunos insumos en el almacen"
-                            };
+                                IdInsumo = insumo.IdInsumo,
+                                Denominacion = 0,
+                                Cantidad = insumo.Cantidad,
+                                CantidadComprada = 0,
+                                CantidadEnAlmacen = 0,
+                                EstatusInsumoRequisicion = 0,
+                                EstatusInsumoComprado = 0,
+                                EstatusInsumoSurtido = 0,
+                                PersonaIniciales = usuarioNombre[0].Value,
+                                Observaciones = ""
+                            });
                         }
-                        if (existencia.CantidadInsumos < insumo.Cantidad)
+                        else
                         {
-                            return new RespuestaDTO
+                            if (existencia.CantidadInsumos < insumo.Cantidad)
                             {
-                                Estatus = false,
-                                Descripcion = "No hay existencias suficientes para algunos insumos en el almacen"
-                            };
+                                crear = false;
+                                //Crea una requisición, en este caso no hay suficiente cantidad del insumo en el almacen.
+                                insumosXRequisicion.Add(new InsumoXRequisicionDTO
+                                {
+                                    IdInsumo = insumo.IdInsumo,
+                                    Denominacion = 0,
+                                    Cantidad = insumo.Cantidad - existencia.CantidadInsumos,
+                                    CantidadComprada = 0,
+                                    CantidadEnAlmacen = 0,
+                                    EstatusInsumoRequisicion = 0,
+                                    EstatusInsumoComprado = 0,
+                                    EstatusInsumoSurtido = 0,
+                                    PersonaIniciales = usuarioNombre[0].Value,
+                                    Observaciones = ""
+                                });
+
+                            }
                         }
+                        
+                    }
+                    if (!crear)
+                    {
+                        requisicion.PersonaSolicitante = usuarioNombre[0].Value;
+                        requisicion.IdProduccion = produccion.Id;
+                        requisicion.EstatusRequisicion = 0;
+                        requisicion.NoRequisicion = "Material faltante para producción";
+
+                        var resultReq = await _requisicionService.CrearYObtener(requisicion);
+                        if (resultReq.Id > 0)
+                        {
+                            var incrementable = 1;
+                            foreach(var insReq in insumosXRequisicion)
+                            {
+                                insReq.IdRequisicion = resultReq.Id;
+                                insReq.Folio = incrementable.ToString();
+                                incrementable++;
+                            }
+                            var resultInsums = await _insumoXRequisicionService.CrearLista(insumosXRequisicion);
+                            if (resultInsums)
+                            {
+                                return new RespuestaDTO
+                                {
+                                    Estatus = false,
+                                    Descripcion = "No hay existencias suficientes para algunos insumos en el almacen, se crearón las requisiciones necesarias"
+                                };
+                            }
+                        }
+
+
+                        return new RespuestaDTO
+                        {
+                            Estatus = false,
+                            Descripcion = "No hay existencias suficientes para algunos insumos en el almacen"
+                        };
                     }
                     respuesta = await _produccionService.Editar(objeto);
                     return respuesta;
