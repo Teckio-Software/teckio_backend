@@ -10,17 +10,17 @@ namespace ERP_TECKIO.Controllers
 {
 
 
-    [Route("api/codigoagrupador/18")]
+    [Route("api/CodigoAgrupador/18")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class CodigoAgrupador01Controller : ControllerBase
+    public class CodigoAgrupadorAlumno18Controller : ControllerBase
     {
         private readonly ICodigoAgrupadorService<Alumno18Context> _CodigoAgrupadorService;
 
-        public CodigoAgrupador01Controller(
-            ICodigoAgrupadorService<Alumno18Context> codigoAgrupadorService)
+        public CodigoAgrupadorAlumno18Controller(
+            ICodigoAgrupadorService<Alumno18Context> CodigoAgrupadorService)
         {
-            _CodigoAgrupadorService = codigoAgrupadorService;
+            _CodigoAgrupadorService = CodigoAgrupadorService;
         }
 
         [HttpGet("todos")]

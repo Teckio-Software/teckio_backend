@@ -9,11 +9,11 @@ namespace ERP_TECKIO.Controllers
     [Route("api/entradaproduccionalmacen/18")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class EntradaProduccionAlmacenController: ControllerBase
+    public class EntradaProduccionAlmacenAlumno18Controller : ControllerBase
     {
         private readonly EntradaProduccionAlmacenProceso<Alumno18Context> _proceso;
 
-        public EntradaProduccionAlmacenController(EntradaProduccionAlmacenProceso<Alumno18Context> proceso)
+        public EntradaProduccionAlmacenAlumno18Controller(EntradaProduccionAlmacenProceso<Alumno18Context> proceso)
         {
             _proceso = proceso;
         }
