@@ -168,6 +168,9 @@ public partial class Alumno01Context : DbContext
     public virtual DbSet<ParametrosFsr> ParametrosFsrs { get; set; }
     public virtual DbSet<PorcentajeCesantiaEdad> PorcentajeCesantiaEdads { get; set; }
     public virtual DbSet<InsumoxProductoYservicio> InsumoxProductoYservicios { get; set; }
+    public virtual DbSet<SalidaProduccionAlmacen> SalidaProduccionAlmacens { get; set; }
+    public virtual DbSet<ProductosXsalidaProduccionAlmacen> ProductosXsalidaProduccionAlmacens { get; set; }
+
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -2296,6 +2299,40 @@ public partial class Alumno01Context : DbContext
                 .HasForeignKey(d => d.IdProductoYservicio)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Fk_InsXProdYSer_Prod");
+        });
+        modelBuilder.Entity<SalidaProduccionAlmacen>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__SalidaPr__3214EC07D7B91BC4");
+
+            entity.ToTable("SalidaProduccionAlmacen", "Produccion");
+
+            entity.Property(e => e.FechaEntrada).HasColumnType("datetime");
+            entity.Property(e => e.Observaciones).HasMaxLength(200);
+            entity.Property(e => e.Recibio).HasMaxLength(100);
+
+            entity.HasOne(d => d.IdAlmacenNavigation).WithMany(p => p.SalidaProduccionAlmacens)
+                .HasForeignKey(d => d.IdAlmacen)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__SalidaPro__IdAlm__39AD8A7F");
+        });
+        modelBuilder.Entity<ProductosXsalidaProduccionAlmacen>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Producto__3214EC079520A442");
+
+            entity.ToTable("ProductosXSalidaProduccionAlmacen", "Produccion");
+
+            entity.Property(e => e.Cantidad).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.IdProductoYservicio).HasColumnName("IdProductoYServicio");
+
+            entity.HasOne(d => d.IdProductoYservicioNavigation).WithMany(p => p.ProductosXsalidaProduccionAlmacens)
+                .HasForeignKey(d => d.IdProductoYservicio)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Productos__IdPro__3D7E1B63");
+
+            entity.HasOne(d => d.IdSalidaProduccionAlmacenNavigation).WithMany(p => p.ProductosXsalidaProduccionAlmacens)
+                .HasForeignKey(d => d.IdSalidaProduccionAlmacen)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Productos__IdSal__3C89F72A");
         });
 
         base.OnModelCreating(modelBuilder);

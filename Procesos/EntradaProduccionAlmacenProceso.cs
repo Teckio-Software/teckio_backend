@@ -8,7 +8,7 @@ namespace ERP_TECKIO.Procesos
     {
         private readonly IEntradaProduccionAlmacenService<TContext> _entradaProdAlService;
 
-        private readonly IProductoXEntradaProduccionAlmacenService<TContext> _detallesServixe;
+        private readonly IProductoXEntradaProduccionAlmacenService<TContext> _detallesService;
 
         private readonly IExistenciaProductoAlmacenService<TContext> _existenciaProdAlService;
 
@@ -19,19 +19,21 @@ namespace ERP_TECKIO.Procesos
         {
             _entradaProdAlService = entradaProdAlService;
             _existenciaProdAlService = existenciaProdAlService;
-            _detallesServixe = detalleService;
+            _detallesService = detalleService;
         }
 
         public async Task<RespuestaDTO> Crear(EntradaProduccionAlmacenDTO parametro)
         {
+            RespuestaDTO respuesta = new RespuestaDTO();
             try
             {
-                var resultado = await _entradaProdAlService.Crear(parametro);
-                if (resultado.Estatus)
+                var resultado = await _entradaProdAlService.CrearYObtener(parametro);
+                if (resultado.Id > 0)
                 {
                     foreach(var detalle in parametro.Detalles)
                     {
-                        var resultDet = await _detallesServixe.Crear(detalle);
+                        detalle.IdEntradaProduccionAlmacen = resultado.Id;
+                        var resultDet = await _detallesService.Crear(detalle);
                         if (resultDet.Estatus)
                         {
                             ExistenciaProductoAlmacenDTO existencia = new ExistenciaProductoAlmacenDTO
@@ -44,7 +46,17 @@ namespace ERP_TECKIO.Procesos
                         }
                     }
                 }
-                return resultado;
+                if(resultado.Id > 0)
+                {
+                    respuesta.Descripcion = "Entrada producción creada exitosamente";
+                    respuesta.Estatus = true;
+                }
+                else
+                {
+                    respuesta.Descripcion = "Ocurrio un error al intentar crear la entrada producción";
+                    respuesta.Estatus = false;
+                }
+                return respuesta;
             }
             catch
             {
@@ -65,7 +77,7 @@ namespace ERP_TECKIO.Procesos
                 {
                     foreach (var detalle in parametro.Detalles)
                     {
-                        var resultDet = await _detallesServixe.Crear(detalle);
+                        var resultDet = await _detallesService.Crear(detalle);
                         if (resultDet.Estatus)
                         {
                             ExistenciaProductoAlmacenDTO existencia = new ExistenciaProductoAlmacenDTO
@@ -111,6 +123,34 @@ namespace ERP_TECKIO.Procesos
                 {
                     Id = parametro
                 };
+                var detalles = await _detallesService.ObtenerXIdEntrada(objeto.Id);
+                foreach(var detalle in detalles)
+                {
+                    var existencia = await _existenciaProdAlService.ObtenerExistencia(objeto.IdAlmacen, detalle.IdProductoYservicio);
+                    existencia.Cantidad -= detalle.Cantidad;
+                    var resultExist = await _existenciaProdAlService.Editar(existencia);
+                    if (resultExist.Estatus)
+                    {
+                        var resultDet = await _detallesService.Eliminar(detalle);
+                        if (!resultDet.Estatus)
+                        {
+                            return new RespuestaDTO
+                            {
+                                Descripcion = "Ocurrio un error al intentar eliminar la entrada produccion almacen, no se pudo eliminar el detalle",
+                                Estatus = false
+                            };
+                        }
+
+                    }
+                    else
+                    {
+                        return new RespuestaDTO
+                        {
+                            Descripcion = "Ocurrio un error al intentar eliminar la entrada produccion almacen, no se pudo actualizar la existencia",
+                            Estatus = false
+                        };
+                    }
+                }
                 var resultado = await _entradaProdAlService.Eliminar(objeto);
                 return resultado;
             }

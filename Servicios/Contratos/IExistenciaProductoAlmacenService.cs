@@ -11,5 +11,7 @@ namespace ERP_TECKIO.Servicios.Contratos
         Task<RespuestaDTO> Eliminar(ExistenciaProductoAlmacenDTO modelo);
 
         Task<ExistenciaProductoAlmacenDTO> ObtenerExistencia(int idAlmacen, int idProdYSer);
+
+        Task<List<ExistenciaProductoAlmacenDTO>> ObtenerExistenciasXProdYSer(int idProdYSer);
     }
 }

@@ -46,11 +46,27 @@ namespace ERP_TECKIO.Controllers.Alumno01
             return lista;
         }
 
+        //[HttpPut("autorizar")]
+        //public async Task<ActionResult<RespuestaDTO>> Autorizar(OrdenVentaDTO ordenVenta)
+        //{
+        //    var authen = HttpContext.User;
+        //    var respuesta = await _ordenVentaProceso.Autorizar(ordenVenta, authen.Claims.ToList());
+        //    return respuesta;
+        //}
+
+        //Este endpoint ya realiza las validaciones de existencias, provisionalmente comente el otro
         [HttpPut("autorizar")]
-        public async Task<ActionResult<RespuestaDTO>> Autorizar(OrdenVentaDTO ordenVenta)
+        public async Task<ActionResult<RespuestaDTO>> Autorizar(SalidaProduccionAlmacenAutorizarOrdenVDTO ordenVenta)
         {
             var authen = HttpContext.User;
             var respuesta = await _ordenVentaProceso.Autorizar(ordenVenta, authen.Claims.ToList());
+            return respuesta;
+        }
+
+        [HttpPut("cancelar")]
+        public async Task<ActionResult<RespuestaDTO>> Cancelar(OrdenVentaCancelarDTO ordenVenta)
+        {
+            var respuesta = await _ordenVentaProceso.Cancelar(ordenVenta);
             return respuesta;
         }
     }

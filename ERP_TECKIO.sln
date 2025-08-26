@@ -5,7 +5,7 @@ VisualStudioVersion = 17.12.35514.174
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERP_TECKIO", "ERP_TECKIO.csproj", "{25933F73-1487-4996-AF36-5312A8321F75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary1", "..\ClassLibrary1\ClassLibrary1.csproj", "{D70D0146-87F5-46F3-BD37-71A830357FF3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary1", "..\ClassLibrary1\ClassLibrary1.csproj", "{E97F8DA8-EA64-4D7B-87B3-4B19340AEDA8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{25933F73-1487-4996-AF36-5312A8321F75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25933F73-1487-4996-AF36-5312A8321F75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25933F73-1487-4996-AF36-5312A8321F75}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D70D0146-87F5-46F3-BD37-71A830357FF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D70D0146-87F5-46F3-BD37-71A830357FF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D70D0146-87F5-46F3-BD37-71A830357FF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D70D0146-87F5-46F3-BD37-71A830357FF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E97F8DA8-EA64-4D7B-87B3-4B19340AEDA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E97F8DA8-EA64-4D7B-87B3-4B19340AEDA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E97F8DA8-EA64-4D7B-87B3-4B19340AEDA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E97F8DA8-EA64-4D7B-87B3-4B19340AEDA8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -37,6 +37,8 @@ public partial class ProductoYservicio: ProductoYservicioAbstract
     public virtual ICollection<ProductosXentradaProduccionAlmacen> ProductosXentradaProduccionAlmacens { get; set; } = new List<ProductosXentradaProduccionAlmacen>();
     public virtual ICollection<ExistenciaProductosAlmacen> ExistenciaProductosAlmacens { get; set; } = new List<ExistenciaProductosAlmacen>();
     public virtual ICollection<InsumoxProductoYservicio> InsumoxProductoYservicios { get; set; } = new List<InsumoxProductoYservicio>();
+    public virtual ICollection<ProductosXsalidaProduccionAlmacen> ProductosXsalidaProduccionAlmacens { get; set; } = new List<ProductosXsalidaProduccionAlmacen>();
+
 
 
 

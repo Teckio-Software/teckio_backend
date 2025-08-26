@@ -183,5 +183,25 @@ namespace ERP_TECKIO.Servicios
                 return new ExistenciaProductoAlmacenDTO();
             }
         }
+
+        public async Task<List<ExistenciaProductoAlmacenDTO>> ObtenerExistenciasXProdYSer(int idProdYSer)
+        {
+            try
+            {
+                var lista = await _repository.ObtenerTodos(e => e.IdProductoYservicio == idProdYSer);
+                if (lista.Count>0)
+                {
+                    return _mapper.Map<List<ExistenciaProductoAlmacenDTO>>(lista);
+                }
+                else
+                {
+                    return new List<ExistenciaProductoAlmacenDTO>();
+                }
+            }
+            catch
+            {
+                return new List<ExistenciaProductoAlmacenDTO>();
+            }
+        }
     }
 }
