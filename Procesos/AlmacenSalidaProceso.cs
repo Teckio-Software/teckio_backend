@@ -270,8 +270,8 @@ namespace ERP_TECKIO
             if (insumosSalidaAlmacen.Count() <= 0) {
                 return lista;
             }
-            var salidasAlmacen = await _almacenSalidaService.ObtenXIdProyecto(insumosSalidaAlmacen[0].IdProyecto);
-            var insumos = await _insumoService.ObtenXIdProyecto(insumosSalidaAlmacen[0].IdProyecto);
+            var salidasAlmacen = await _almacenSalidaService.ObtenXIdProyecto((int)insumosSalidaAlmacen[0].IdProyecto);
+            var insumos = await _insumoService.ObtenXIdProyecto((int)insumosSalidaAlmacen[0].IdProyecto);
             foreach (var isa in insumosSalidaAlmacen)
             {
                 var salidaAlmacen = salidasAlmacen.Where(z => z.Id == isa.IdAlmacenSalida).ToList();

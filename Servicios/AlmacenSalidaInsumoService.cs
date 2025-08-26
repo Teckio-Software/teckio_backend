@@ -240,9 +240,33 @@ namespace ERP_TECKIO
             return await _Repositorio.CrearMultiple(objetosMapaeados);
         }
 
-        public Task<RespuestaDTO> Crear(AlmacenSalidaInsumoCreacionDTO parametro)
+        public async Task<RespuestaDTO> Crear(AlmacenSalidaInsumoCreacionDTO parametro)
         {
-            throw new NotImplementedException();
+            RespuestaDTO respuesta = new RespuestaDTO();
+            try
+            {
+                var objeto = _Mapper.Map<AlmacenSalidaInsumo>(parametro);
+                var resultado = await _Repositorio.Crear(objeto);
+                if (resultado.Id > 0)
+                {
+                    respuesta.Estatus = true;
+                    respuesta.Descripcion = "Salida del insumo creada exitosamente";
+                }
+                else
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "No se pudo crear la salida del insumo";
+                }
+                return respuesta;
+
+            }
+            catch
+            {
+                respuesta.Descripcion = "No se pudo crear la salida del insumo";
+                respuesta.Estatus = false;
+                return respuesta;
+            }
+            
         }
 
         public async Task<AlmacenSalidaInsumoDTO> CrearYObtener(AlmacenSalidaInsumoDTO parametro)
@@ -251,9 +275,47 @@ namespace ERP_TECKIO
             return _Mapper.Map<AlmacenSalidaInsumoDTO>(objeto);
         }
 
-        public Task<RespuestaDTO> Editar(AlmacenSalidaInsumoDTO parametro)
+        public async Task<RespuestaDTO> Editar(AlmacenSalidaInsumoDTO parametro)
         {
-            throw new NotImplementedException();
+            RespuestaDTO respuesta = new RespuestaDTO();
+            try
+            {
+                var objeto = await _Repositorio.Obtener(z => z.Id == parametro.Id);
+                if(objeto.Id <= 0)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "No se encontró la salida del insumo";
+                    return respuesta;
+                }
+                objeto.CantidadPorSalir = parametro.CantidadPorSalir;
+                objeto.IdInsumo = parametro.IdInsumo;
+                objeto.IdAlmacenSalida = parametro.IdAlmacenSalida;
+                objeto.IdProyecto = parametro.IdProyecto;
+                objeto.EstatusInsumo = parametro.EstatusInsumo;
+                objeto.PersonaRecibio = parametro.PersonaRecibio;
+                objeto.EsPrestamo = parametro.EsPrestamo;
+                objeto.PrestamoFinalizado = parametro.PrestamoFinalizado;
+                objeto.PersonaRecibio = parametro.PersonaRecibio;
+                objeto.PrestamoFinalizado = parametro.PrestamoFinalizado;
+                var resultado = await _Repositorio.Editar(objeto);
+                if (resultado)
+                {
+                    respuesta.Estatus = true;
+                    respuesta.Descripcion = "Salida del insumo editada exitosamente";
+                }
+                else
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "No se pudo editar la salida del insumo";
+                }
+                return respuesta;
+            }
+            catch (Exception ex)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Algo salió mal al editar el insumo de la salida del almacén";
+                return respuesta;
+            }
         }
 
         public Task<RespuestaDTO> Cancelar(int Id)

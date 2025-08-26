@@ -293,9 +293,38 @@ namespace ERP_TECKIO
             throw new NotImplementedException();
         }
 
-        public Task<RespuestaDTO> ActualizaExistenciaInsumoSalida(int Id, decimal Cantidad)
+        public async Task<RespuestaDTO> ActualizaExistenciaInsumoSalida(int Id, decimal Cantidad)
         {
-            throw new NotImplementedException();
+            RespuestaDTO respuesta = new RespuestaDTO();
+            try
+            {
+                var objeto = await _Repositorio.Obtener(e => e.Id == Id);
+                if (objeto.Id <= 0)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "No se encontró la existencia";
+                    return respuesta;
+                }
+                objeto.CantidadExistente = Cantidad;
+                respuesta.Estatus = await _Repositorio.Editar(objeto);
+                if (respuesta.Estatus)
+                {
+                    respuesta.Descripcion = "Existencia editada exitosamente";
+                    respuesta.Estatus = true;
+                }
+                else
+                {
+                    respuesta.Descripcion = "Ocurrió un error al intentar editar la existencia";
+                    respuesta.Estatus = false;
+                }
+                return respuesta;
+            }
+            catch
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Ocurrióm un error al intentar editar la existencia";
+                return respuesta;
+            }
         }
 
         public Task<bool> Crear(AlmacenExistenciaInsumoCreacionDTO parametro)
