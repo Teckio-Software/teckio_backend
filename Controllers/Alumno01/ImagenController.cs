@@ -18,7 +18,7 @@ namespace ERP_TECKIO.Controllers.Alumno01
             _proceso = proceso;
         }
 
-        [HttpGet("obtenerXId{id:int}")]
+        [HttpGet("obtenerXId/{id:int}")]
         public async Task<ActionResult<ImagenDTO>> ObtenerXId(int id)
         {
             var resultado = await _proceso.ObtenerXId(id);
