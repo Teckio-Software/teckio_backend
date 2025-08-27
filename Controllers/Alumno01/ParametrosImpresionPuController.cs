@@ -39,5 +39,26 @@ namespace ERP_TECKIO.Controllers.Alumno01
             var resultado = await _proceso.ObtenerXIdCliente(idCliente);
             return resultado;
         }
+
+        [HttpPut("editarConImagen")]
+        public async Task<ActionResult<RespuestaDTO>> EditarConImagen([FromForm] ParametrosIPuConArchivo conjunto)
+        {
+            var resultado = await _proceso.EditarParametrosConImagen(conjunto.Modelo, conjunto.Archivo);
+            return resultado;
+        }
+
+        [HttpPut("editar")]
+        public async Task<ActionResult<RespuestaDTO>> Editar(ParametrosImpresionPuDTO parametros)
+        {
+            var resultado = await _proceso.EditarParametros(parametros);
+            return resultado;
+        }
+
+        [HttpDelete("eliminar{id:int}")]
+        public async Task<ActionResult<RespuestaDTO>> Eliminar(int id)
+        {
+            var resultado = await _proceso.EliminarParametro(id);
+            return resultado;
+        }
     }
 }
