@@ -170,6 +170,8 @@ public partial class Alumno01Context : DbContext
     public virtual DbSet<InsumoxProductoYservicio> InsumoxProductoYservicios { get; set; }
     public virtual DbSet<SalidaProduccionAlmacen> SalidaProduccionAlmacens { get; set; }
     public virtual DbSet<ProductosXsalidaProduccionAlmacen> ProductosXsalidaProduccionAlmacens { get; set; }
+    public virtual DbSet<Imagen> Imagens { get; set; }
+    public virtual DbSet<ParametrosImpresionPu> ParametrosImpresionPus { get; set; }
 
 
 
@@ -2333,6 +2335,40 @@ public partial class Alumno01Context : DbContext
                 .HasForeignKey(d => d.IdSalidaProduccionAlmacen)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Productos__IdSal__3C89F72A");
+        });
+        modelBuilder.Entity<Imagen>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Imagen__3214EC071F94716E");
+
+            entity.ToTable("Imagen");
+
+            entity.Property(e => e.Ruta).HasMaxLength(1000);
+        });
+        modelBuilder.Entity<ParametrosImpresionPu>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Parametr__3214EC07B3210CDD");
+
+            entity.ToTable("ParametrosImpresionPU");
+
+            entity.Property(e => e.EncabezadoCentro).HasMaxLength(200);
+            entity.Property(e => e.EncabezadoDerecho).HasMaxLength(200);
+            entity.Property(e => e.EncabezadoIzquierdo).HasMaxLength(200);
+            entity.Property(e => e.MargenDerecho).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.MargenInferior).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.MargenIzquierdo).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.MargenSuperior).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.PieCentro).HasMaxLength(200);
+            entity.Property(e => e.PieDerecho).HasMaxLength(200);
+            entity.Property(e => e.PieIzquierdo).HasMaxLength(200);
+
+            entity.HasOne(d => d.IdClienteNavigation).WithMany(p => p.ParametrosImpresionPus)
+                .HasForeignKey(d => d.IdCliente)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Parametro__IdCli__4242D080");
+
+            entity.HasOne(d => d.IdImagenNavigation).WithMany(p => p.ParametrosImpresionPus)
+                .HasForeignKey(d => d.IdImagen)
+                .HasConstraintName("FK__Parametro__IdIma__4336F4B9");
         });
 
         base.OnModelCreating(modelBuilder);
