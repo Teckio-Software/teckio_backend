@@ -87,6 +87,7 @@ namespace ERP_TECKIO.Servicios
                 objeto.PieCentro = modelo.PieCentro;
                 objeto.PieDerecho = modelo.PieDerecho;
                 objeto.PieIzquierdo = modelo.PieIzquierdo;
+                objeto.Nombre = modelo.Nombre;
                 var resultado = await _Repository.Editar(objeto);
                 if (!resultado)
                 {

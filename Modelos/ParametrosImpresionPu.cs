@@ -36,6 +36,6 @@ namespace ERP_TECKIO.Modelos
 
         public decimal? MargenIzquierdo { get; set; }
 
-        
+        public string? Nombre { get; set; }
     }
 }

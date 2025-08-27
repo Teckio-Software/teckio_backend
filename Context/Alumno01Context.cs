@@ -2360,6 +2360,7 @@ public partial class Alumno01Context : DbContext
             entity.Property(e => e.PieCentro).HasMaxLength(200);
             entity.Property(e => e.PieDerecho).HasMaxLength(200);
             entity.Property(e => e.PieIzquierdo).HasMaxLength(200);
+            entity.Property(e => e.Nombre).HasMaxLength(150);
 
             entity.HasOne(d => d.IdClienteNavigation).WithMany(p => p.ParametrosImpresionPus)
                 .HasForeignKey(d => d.IdCliente)
