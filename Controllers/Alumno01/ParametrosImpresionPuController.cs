@@ -33,7 +33,7 @@ namespace ERP_TECKIO.Controllers.Alumno01
             return resultado;
         }
 
-        [HttpGet("obtenerXcliente{idCliente:int}")]
+        [HttpGet("obtenerXcliente/{idCliente:int}")]
         public async Task<ActionResult<List<ParametrosImpresionPuDTO>>> ObtenerXCliente(int idCliente)
         {
             var resultado = await _proceso.ObtenerXIdCliente(idCliente);
@@ -54,7 +54,7 @@ namespace ERP_TECKIO.Controllers.Alumno01
             return resultado;
         }
 
-        [HttpDelete("eliminar{id:int}")]
+        [HttpDelete("eliminar/{id:int}")]
         public async Task<ActionResult<RespuestaDTO>> Eliminar(int id)
         {
             var resultado = await _proceso.EliminarParametro(id);
