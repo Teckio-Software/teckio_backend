@@ -2,8 +2,6 @@
 {
     public partial class Imagen: ImagenAbstract
     {
-        public virtual ICollection<ParametrosImpresionPu> ParametrosImpresionPus { get; set; } = new List<ParametrosImpresionPu>();
-
     }
 
     public abstract class ImagenAbstract

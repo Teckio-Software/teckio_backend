@@ -75,7 +75,6 @@ namespace ERP_TECKIO.Servicios
                     respuesta.Descripcion = "No se encontraron los parámetros de impresión";
                     return respuesta;
                 }
-                objeto.IdImagen = modelo.IdImagen;
                 objeto.MargenDerecho = modelo.MargenDerecho;
                 objeto.MargenIzquierdo = modelo.MargenIzquierdo;
                 objeto.MargenSuperior = modelo.MargenSuperior;

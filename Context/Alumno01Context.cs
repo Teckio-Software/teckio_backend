@@ -2362,9 +2362,6 @@ public partial class Alumno01Context : DbContext
             entity.Property(e => e.PieIzquierdo).HasMaxLength(200);
             entity.Property(e => e.Nombre).HasMaxLength(150);
 
-            entity.HasOne(d => d.IdImagenNavigation).WithMany(p => p.ParametrosImpresionPus)
-                .HasForeignKey(d => d.IdImagen)
-                .HasConstraintName("FK__Parametro__IdIma__4336F4B9");
         });
 
         base.OnModelCreating(modelBuilder);

@@ -19,52 +19,51 @@ namespace ERP_TECKIO.Procesos
             _ParametrosImpresionPuService = parametrosImpresionPuService;
         }
 
-        public async Task<RespuestaDTO> Crear(string modelo, IFormFile archivo)
-        {
-            RespuestaDTO respuesta = new RespuestaDTO();
-            try
-            {
-                ParametrosImpresionPuDTO parametros = JsonSerializer.Deserialize<ParametrosImpresionPuDTO>(modelo);
-                if(parametros == null)
-                {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "Ocurrió un error al intentar guardar los parámetros de impresión";
-                    return respuesta;
-                }
-                if (archivo != null)
-                {
-                    var resultadoImagen = await _ImagenProceso.GuardarImagen(archivo);
-                    if (resultadoImagen <= 0)
-                    {
-                        respuesta.Estatus = false;
-                        respuesta.Descripcion = "Ocurrió un error al intentar guardar la imagen de los parámetros de impresión";
-                        return respuesta;
-                    }
-                    parametros.IdImagen = resultadoImagen;
-                    respuesta = await _ParametrosImpresionPuService.Crear(parametros);
-                    return respuesta;
-                }
-                else
-                {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "No se recibió ninguna imagen para los parámetros de impresión";
-                    return respuesta;
-                }
-            }
-            catch
-            {
-                respuesta.Estatus = false;
-                respuesta.Descripcion = "Ocurrió un error al intentar guardar los parámetros de impresión";
-                return respuesta;
-            }
-        }
+        //public async Task<RespuestaDTO> Crear(string modelo, IFormFile archivo)
+        //{
+        //    RespuestaDTO respuesta = new RespuestaDTO();
+        //    try
+        //    {
+        //        ParametrosImpresionPuDTO parametros = JsonSerializer.Deserialize<ParametrosImpresionPuDTO>(modelo);
+        //        if(parametros == null)
+        //        {
+        //            respuesta.Estatus = false;
+        //            respuesta.Descripcion = "Ocurrió un error al intentar guardar los parámetros de impresión";
+        //            return respuesta;
+        //        }
+        //        if (archivo != null)
+        //        {
+        //            var resultadoImagen = await _ImagenProceso.GuardarImagen(archivo);
+        //            if (resultadoImagen <= 0)
+        //            {
+        //                respuesta.Estatus = false;
+        //                respuesta.Descripcion = "Ocurrió un error al intentar guardar la imagen de los parámetros de impresión";
+        //                return respuesta;
+        //            }
+        //            parametros.IdImagen = resultadoImagen;
+        //            respuesta = await _ParametrosImpresionPuService.Crear(parametros);
+        //            return respuesta;
+        //        }
+        //        else
+        //        {
+        //            respuesta.Estatus = false;
+        //            respuesta.Descripcion = "No se recibió ninguna imagen para los parámetros de impresión";
+        //            return respuesta;
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        respuesta.Estatus = false;
+        //        respuesta.Descripcion = "Ocurrió un error al intentar guardar los parámetros de impresión";
+        //        return respuesta;
+        //    }
+        //}
 
         public async Task<RespuestaDTO> Crear(ParametrosImpresionPuDTO parametros)
         {
             RespuestaDTO respuesta = new RespuestaDTO();
             try
             {
-                parametros.IdImagen = null;
                 respuesta = await _ParametrosImpresionPuService.Crear(parametros);
                 return respuesta;
             }
@@ -131,45 +130,45 @@ namespace ERP_TECKIO.Procesos
             }
         }
 
-        public async Task<RespuestaDTO> EditarParametrosConImagen(string modelo, IFormFile archivo)
-        {
-            RespuestaDTO respuesta = new RespuestaDTO();
-            try
-            {
-                ParametrosImpresionPuDTO parametros = JsonSerializer.Deserialize<ParametrosImpresionPuDTO>(modelo);
-                if (parametros == null)
-                {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "Ocurrió un error al intentar editar los parámetros de impresión";
-                    return respuesta;
-                }
-                if (archivo != null)
-                {
-                    var resultadoImagen = await _ImagenProceso.EditarImagen(archivo, (int)parametros.IdImagen);
-                    if (resultadoImagen <= 0)
-                    {
-                        respuesta.Estatus = false;
-                        respuesta.Descripcion = "Ocurrió un error al intentar editar la imagen de los parámetros de impresión";
-                        return respuesta;
-                    }
-                    parametros.IdImagen = resultadoImagen;
-                    respuesta = await _ParametrosImpresionPuService.Editar(parametros);
-                    return respuesta;
-                }
-                else
-                {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "No se recibió ninguna imagen para los parámetros de impresión";
-                    return respuesta;
-                }
-            }
-            catch
-            {
-                respuesta.Estatus = false;
-                respuesta.Descripcion = "Ocurrio un error al intentar editar los parámetros";
-                return respuesta;
-            }
-        }
+        //public async Task<RespuestaDTO> EditarParametrosConImagen(string modelo, IFormFile archivo)
+        //{
+        //    RespuestaDTO respuesta = new RespuestaDTO();
+        //    try
+        //    {
+        //        ParametrosImpresionPuDTO parametros = JsonSerializer.Deserialize<ParametrosImpresionPuDTO>(modelo);
+        //        if (parametros == null)
+        //        {
+        //            respuesta.Estatus = false;
+        //            respuesta.Descripcion = "Ocurrió un error al intentar editar los parámetros de impresión";
+        //            return respuesta;
+        //        }
+        //        if (archivo != null)
+        //        {
+        //            var resultadoImagen = await _ImagenProceso.EditarImagen(archivo, (int)parametros.IdImagen);
+        //            if (resultadoImagen <= 0)
+        //            {
+        //                respuesta.Estatus = false;
+        //                respuesta.Descripcion = "Ocurrió un error al intentar editar la imagen de los parámetros de impresión";
+        //                return respuesta;
+        //            }
+        //            parametros.IdImagen = resultadoImagen;
+        //            respuesta = await _ParametrosImpresionPuService.Editar(parametros);
+        //            return respuesta;
+        //        }
+        //        else
+        //        {
+        //            respuesta.Estatus = false;
+        //            respuesta.Descripcion = "No se recibió ninguna imagen para los parámetros de impresión";
+        //            return respuesta;
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        respuesta.Estatus = false;
+        //        respuesta.Descripcion = "Ocurrio un error al intentar editar los parámetros";
+        //        return respuesta;
+        //    }
+        //}
 
         public async Task<RespuestaDTO> EliminarParametro(int id)
         {
