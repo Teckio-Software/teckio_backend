@@ -24,6 +24,13 @@ namespace ERP_TECKIO.Servicios
             RespuestaDTO respuesta = new RespuestaDTO();
             try
             {
+                var exist = await _Repository.ObtenerTodos(p => p.Nombre == modelo.Nombre);
+                if (exist.Count>0)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "Ya existen parámetros de impresión con el mismo nombre";
+                    return respuesta;
+                }
                 var objeto = _Mapper.Map<ParametrosImpresionPu>(modelo);
                 var resultado = await _Repository.Crear(objeto);
                 if (resultado.Id <= 0)
@@ -68,6 +75,13 @@ namespace ERP_TECKIO.Servicios
             RespuestaDTO respuesta = new RespuestaDTO();
             try
             {
+                var exist = await _Repository.ObtenerTodos(p => p.Nombre == modelo.Nombre && p.Id!=modelo.Id);
+                if (exist.Count > 0)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "Ya existen parámetros de impresión con el mismo nombre";
+                    return respuesta;
+                }
                 var objeto = await _Repository.Obtener(p=>p.Id==modelo.Id);
                 if(objeto.Id<=0)
                 {
