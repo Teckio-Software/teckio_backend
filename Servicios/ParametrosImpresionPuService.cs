@@ -75,7 +75,6 @@ namespace ERP_TECKIO.Servicios
                     respuesta.Descripcion = "No se encontraron los parámetros de impresión";
                     return respuesta;
                 }
-                objeto.IdCliente = modelo.IdCliente;
                 objeto.IdImagen = modelo.IdImagen;
                 objeto.MargenDerecho = modelo.MargenDerecho;
                 objeto.MargenIzquierdo = modelo.MargenIzquierdo;
@@ -160,25 +159,25 @@ namespace ERP_TECKIO.Servicios
             }
         }
 
-        public async Task<List<ParametrosImpresionPuDTO>> ObtenerPorCliente(int idCliente)
-        {
-            try
-            {
-                var lista = await _Repository.ObtenerTodos(p => p.IdCliente == idCliente);
-                if (lista.Count > 0)
-                {
-                    return _Mapper.Map<List<ParametrosImpresionPuDTO>>(lista);
-                }
-                else
-                {
-                    return new List<ParametrosImpresionPuDTO>();
-                }
-            }
-            catch
-            {
-                return new List<ParametrosImpresionPuDTO>();
-            }
-        }
+        //public async Task<List<ParametrosImpresionPuDTO>> ObtenerPorCliente(int idCliente)
+        //{
+        //    try
+        //    {
+        //        var lista = await _Repository.ObtenerTodos(p => p.IdCliente == idCliente);
+        //        if (lista.Count > 0)
+        //        {
+        //            return _Mapper.Map<List<ParametrosImpresionPuDTO>>(lista);
+        //        }
+        //        else
+        //        {
+        //            return new List<ParametrosImpresionPuDTO>();
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        return new List<ParametrosImpresionPuDTO>();
+        //    }
+        //}
 
         public async Task<List<ParametrosImpresionPuDTO>> ObtenerTodos()
         {

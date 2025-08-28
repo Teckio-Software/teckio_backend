@@ -41,12 +41,12 @@ namespace ERP_TECKIO.Controllers.Alumno01
             return resultado;
         }
 
-        [HttpGet("obtenerXcliente/{idCliente:int}")]
-        public async Task<ActionResult<List<ParametrosImpresionPuDTO>>> ObtenerXCliente(int idCliente)
-        {
-            var resultado = await _proceso.ObtenerXIdCliente(idCliente);
-            return resultado;
-        }
+        //[HttpGet("obtenerXcliente/{idCliente:int}")]
+        //public async Task<ActionResult<List<ParametrosImpresionPuDTO>>> ObtenerXCliente(int idCliente)
+        //{
+        //    var resultado = await _proceso.ObtenerXIdCliente(idCliente);
+        //    return resultado;
+        //}
 
         [HttpPut("editarConImagen")]
         public async Task<ActionResult<RespuestaDTO>> EditarConImagen([FromForm] ParametrosIPuConArchivo conjunto)

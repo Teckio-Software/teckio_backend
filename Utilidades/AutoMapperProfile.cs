@@ -1195,8 +1195,6 @@ namespace ERP_TECKIO
 
             CreateMap<ParametrosImpresionPu, ParametrosImpresionPuDTO>();
             CreateMap<ParametrosImpresionPuDTO, ParametrosImpresionPu>()
-                .ForMember(destino => destino.IdClienteNavigation,
-                opt => opt.Ignore())
                 .ForMember(destino => destino.IdImagenNavigation,
                 opt => opt.Ignore());
 

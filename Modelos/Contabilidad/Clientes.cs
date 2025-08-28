@@ -26,8 +26,6 @@ public partial class Clientes:ClientesAbstarct
     public ICollection<MovimientoBancarioCliente> MBClientes { get; set; } = new List<MovimientoBancarioCliente>();
     public ICollection<OrdenVentum> OrdenVenta { get; set; } = new List<OrdenVentum>();
     public virtual ICollection<Factura> Facturas { get; set; } = new List<Factura>();
-    public virtual ICollection<ParametrosImpresionPu> ParametrosImpresionPus { get; set; } = new List<ParametrosImpresionPu>();
-
 
 }
 

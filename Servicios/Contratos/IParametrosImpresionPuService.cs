@@ -11,6 +11,6 @@ namespace ERP_TECKIO.Servicios.Contratos
         Task<RespuestaDTO> Eliminar(int id);
         Task<ParametrosImpresionPuDTO> Obtener(int id);
         Task<List<ParametrosImpresionPuDTO>> ObtenerTodos();
-        Task<List<ParametrosImpresionPuDTO>> ObtenerPorCliente(int idCliente);
+        //Task<List<ParametrosImpresionPuDTO>> ObtenerPorCliente(int idCliente);
     }
 }
