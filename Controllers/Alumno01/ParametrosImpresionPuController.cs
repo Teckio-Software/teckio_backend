@@ -19,8 +19,15 @@ namespace ERP_TECKIO.Controllers.Alumno01
             _proceso = proceso;
         }
 
+        [HttpPost("crearConImagen")]
+        public async Task<ActionResult<RespuestaDTO>> CrearConImagen([FromForm]ParametrosIPuConArchivo conjunto)
+        {
+            var resultado = await _proceso.Crear(conjunto.Modelo, conjunto.Archivo);
+            return resultado;
+        }
+
         [HttpPost("crear")]
-        public async Task<ActionResult<RespuestaDTO>> Crear([FromForm]ParametrosIPuConArchivo conjunto)
+        public async Task<ActionResult<RespuestaDTO>> Crear([FromForm] ParametrosIPuConArchivo conjunto)
         {
             var resultado = await _proceso.Crear(conjunto.Modelo, conjunto.Archivo);
             return resultado;

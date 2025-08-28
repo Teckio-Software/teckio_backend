@@ -59,6 +59,23 @@ namespace ERP_TECKIO.Procesos
             }
         }
 
+        public async Task<RespuestaDTO> Crear(ParametrosImpresionPuDTO parametros)
+        {
+            RespuestaDTO respuesta = new RespuestaDTO();
+            try
+            {
+                parametros.IdImagen = null;
+                respuesta = await _ParametrosImpresionPuService.Crear(parametros);
+                return respuesta;
+            }
+            catch
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Ocurrió un error al intentar guardar los parámetros de impresión";
+                return respuesta;
+            }
+        }
+
         public async Task<ParametrosImpresionPuDTO> ObtenerXId(int id)
         {
             try
