@@ -184,26 +184,28 @@ namespace ERP_TECKIO.Procesos
                     return respuesta;
                 }
                 var resultPar = await _ParametrosImpresionPuService.Eliminar(id);
-                if (resultPar.Estatus)
-                {
-                    var resultImg = await _ImagenProceso.ElimnarImagen((int)parametros.IdImagen);
-                    if (resultImg.Estatus)
-                    {
-                        respuesta.Estatus = true;
-                        respuesta.Descripcion = "Parámetros eliminados exitosamente";
-                        return respuesta;
-                    }
-                    else
-                    {
-                        return resultImg;
-                    }
-                }
-                else
-                {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = resultPar.Descripcion;
-                    return respuesta;
-                }
+                return resultPar;
+                //El fragmento de código comentado eliminaba la imagen en automático al eliminar el parámetro.
+                //if (resultPar.Estatus)
+                //{
+                //    var resultImg = await _ImagenProceso.ElimnarImagen((int)parametros.IdImagen);
+                //    if (resultImg.Estatus)
+                //    {
+                //        respuesta.Estatus = true;
+                //        respuesta.Descripcion = "Parámetros eliminados exitosamente";
+                //        return respuesta;
+                //    }
+                //    else
+                //    {
+                //        return resultImg;
+                //    }
+                //}
+                //else
+                //{
+                //    respuesta.Estatus = false;
+                //    respuesta.Descripcion = resultPar.Descripcion;
+                //    return respuesta;
+                //}
             }
             catch
             {
