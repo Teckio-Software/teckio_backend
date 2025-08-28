@@ -3,16 +3,12 @@ namespace ERP_TECKIO.Modelos
 {
     public partial class ParametrosImpresionPu : ParametrosImpresionPuAbstract
     {
-        public virtual Clientes IdClienteNavigation { get; set; } = null!;
-
         public virtual Imagen? IdImagenNavigation { get; set; }
     }
 
     public abstract class ParametrosImpresionPuAbstract
     {
         public int Id { get; set; }
-
-        public int IdCliente { get; set; }
 
         public string EncabezadoIzquierdo { get; set; } = null!;
 

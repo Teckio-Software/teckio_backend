@@ -89,18 +89,18 @@ namespace ERP_TECKIO.Procesos
             }
         }
 
-        public async Task<List<ParametrosImpresionPuDTO>> ObtenerXIdCliente(int idCliente)
-        {
-            try
-            {
-                var resultado = await _ParametrosImpresionPuService.ObtenerPorCliente(idCliente);
-                return resultado;
-            }
-            catch
-            {
-                return new List<ParametrosImpresionPuDTO>();
-            }
-        }
+        //public async Task<List<ParametrosImpresionPuDTO>> ObtenerXIdCliente(int idCliente)
+        //{
+        //    try
+        //    {
+        //        var resultado = await _ParametrosImpresionPuService.ObtenerPorCliente(idCliente);
+        //        return resultado;
+        //    }
+        //    catch
+        //    {
+        //        return new List<ParametrosImpresionPuDTO>();
+        //    }
+        //}
 
         public async Task<List<ParametrosImpresionPuDTO>> ObtenerTodos()
         {
