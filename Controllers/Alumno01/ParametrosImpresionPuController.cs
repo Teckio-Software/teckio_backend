@@ -19,12 +19,12 @@ namespace ERP_TECKIO.Controllers.Alumno01
             _proceso = proceso;
         }
 
-        [HttpPost("crearConImagen")]
-        public async Task<ActionResult<RespuestaDTO>> CrearConImagen([FromForm]ParametrosIPuConArchivo conjunto)
-        {
-            var resultado = await _proceso.Crear(conjunto.Modelo, conjunto.Archivo);
-            return resultado;
-        }
+        //[HttpPost("crearConImagen")]
+        //public async Task<ActionResult<RespuestaDTO>> CrearConImagen([FromForm]ParametrosIPuConArchivo conjunto)
+        //{
+        //    var resultado = await _proceso.Crear(conjunto.Modelo, conjunto.Archivo);
+        //    return resultado;
+        //}
 
         [HttpPost("crear")]
         public async Task<ActionResult<RespuestaDTO>> Crear(ParametrosImpresionPuDTO parametros)
@@ -48,12 +48,12 @@ namespace ERP_TECKIO.Controllers.Alumno01
         //    return resultado;
         //}
 
-        [HttpPut("editarConImagen")]
-        public async Task<ActionResult<RespuestaDTO>> EditarConImagen([FromForm] ParametrosIPuConArchivo conjunto)
-        {
-            var resultado = await _proceso.EditarParametrosConImagen(conjunto.Modelo, conjunto.Archivo);
-            return resultado;
-        }
+        //[HttpPut("editarConImagen")]
+        //public async Task<ActionResult<RespuestaDTO>> EditarConImagen([FromForm] ParametrosIPuConArchivo conjunto)
+        //{
+        //    var resultado = await _proceso.EditarParametrosConImagen(conjunto.Modelo, conjunto.Archivo);
+        //    return resultado;
+        //}
 
         [HttpPut("editar")]
         public async Task<ActionResult<RespuestaDTO>> Editar(ParametrosImpresionPuDTO parametros)

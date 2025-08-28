@@ -3,7 +3,6 @@ namespace ERP_TECKIO.Modelos
 {
     public partial class ParametrosImpresionPu : ParametrosImpresionPuAbstract
     {
-        public virtual Imagen? IdImagenNavigation { get; set; }
     }
 
     public abstract class ParametrosImpresionPuAbstract
@@ -21,8 +20,6 @@ namespace ERP_TECKIO.Modelos
         public string PieCentro { get; set; } = null!;
 
         public string PieDerecho { get; set; } = null!;
-
-        public int? IdImagen { get; set; }
 
         public decimal? MargenSuperior { get; set; }
 

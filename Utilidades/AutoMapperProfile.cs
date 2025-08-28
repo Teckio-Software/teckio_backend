@@ -1194,19 +1194,14 @@ namespace ERP_TECKIO
             #region ParametrosImpresionPu
 
             CreateMap<ParametrosImpresionPu, ParametrosImpresionPuDTO>();
-            CreateMap<ParametrosImpresionPuDTO, ParametrosImpresionPu>()
-                .ForMember(destino => destino.IdImagenNavigation,
-                opt => opt.Ignore());
+            CreateMap<ParametrosImpresionPuDTO, ParametrosImpresionPu>();
 
             #endregion
 
             #region Imagen
 
             CreateMap<Imagen, ImagenDTO>();
-            CreateMap<ImagenDTO, Imagen>()
-                .ForMember(destino => destino.ParametrosImpresionPus,
-                opt => opt.Ignore());
-
+            CreateMap<ImagenDTO, Imagen>();
             #endregion
 
         }
