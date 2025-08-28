@@ -27,13 +27,14 @@ namespace ERP_TECKIO.Controllers.Alumno01
         }
 
         [HttpPost("crear")]
-        public async Task<ActionResult<RespuestaDTO>> Crear(ParametrosImpresionPuDTO parametros)
+        public async Task<ActionResult<RespuestaDTO>> Crear([FromForm] ParametrosIPuConArchivo conjunto)
         {
-            var resultado = await _proceso.Crear(parametros);
+            var resultado = await _proceso.Crear(conjunto.Modelo, conjunto.Archivo);
             return resultado;
         }
 
         [HttpGet("todos")]
+
         public async Task<ActionResult<List<ParametrosImpresionPuDTO>>> ObtenerTodos()
         {
             var resultado = await _proceso.ObtenerTodos();
