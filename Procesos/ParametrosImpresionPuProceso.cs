@@ -71,55 +71,55 @@ namespace ERP_TECKIO.Procesos
                     respuesta.Descripcion = "El nombre de los parámetros de impresión es obligatorio";
                     return respuesta;
                 }
-                if (string.IsNullOrWhiteSpace(parametros.EncabezadoCentro))
-                {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "El encabezado central es obligatorio";
-                    return respuesta;
-                }
-                if (string.IsNullOrWhiteSpace(parametros.EncabezadoDerecho))
-                {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "El encabezado derecho es obligatorio";
-                    return respuesta;
-                }
-                if (string.IsNullOrWhiteSpace(parametros.EncabezadoIzquierdo))
-                {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "El encabezado izquierdo es obligatorio";
-                    return respuesta;
-                }
-                if (string.IsNullOrWhiteSpace(parametros.PieCentro))
-                {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "El pie central es obligatorio";
-                    return respuesta;
-                }
-                if (string.IsNullOrWhiteSpace(parametros.PieDerecho))
-                {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "El pie derecho es obligatorio";
-                    return respuesta;
-                }
-                if (string.IsNullOrWhiteSpace(parametros.PieIzquierdo))
-                {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "El pie izquierdo es obligatorio";
-                    return respuesta;
-                }
-                if (parametros.MargenSuperior == null || parametros.MargenSuperior < 0)
+                //if (string.IsNullOrWhiteSpace(parametros.EncabezadoCentro))
+                //{
+                //    respuesta.Estatus = false;
+                //    respuesta.Descripcion = "El encabezado central es obligatorio";
+                //    return respuesta;
+                //}
+                //if (string.IsNullOrWhiteSpace(parametros.EncabezadoDerecho))
+                //{
+                //    respuesta.Estatus = false;
+                //    respuesta.Descripcion = "El encabezado derecho es obligatorio";
+                //    return respuesta;
+                //}
+                //if (string.IsNullOrWhiteSpace(parametros.EncabezadoIzquierdo))
+                //{
+                //    respuesta.Estatus = false;
+                //    respuesta.Descripcion = "El encabezado izquierdo es obligatorio";
+                //    return respuesta;
+                //}
+                //if (string.IsNullOrWhiteSpace(parametros.PieCentro))
+                //{
+                //    respuesta.Estatus = false;
+                //    respuesta.Descripcion = "El pie central es obligatorio";
+                //    return respuesta;
+                //}
+                //if (string.IsNullOrWhiteSpace(parametros.PieDerecho))
+                //{
+                //    respuesta.Estatus = false;
+                //    respuesta.Descripcion = "El pie derecho es obligatorio";
+                //    return respuesta;
+                //}
+                //if (string.IsNullOrWhiteSpace(parametros.PieIzquierdo))
+                //{
+                //    respuesta.Estatus = false;
+                //    respuesta.Descripcion = "El pie izquierdo es obligatorio";
+                //    return respuesta;
+                //}
+                if (parametros.MargenSuperior == null || parametros.MargenSuperior <= 0)
                 {
                     parametros.MargenSuperior = 30;
                 }
-                if (parametros.MargenInferior == null || parametros.MargenInferior < 0)
+                if (parametros.MargenInferior == null || parametros.MargenInferior <= 0)
                 {
                     parametros.MargenInferior = 30;
                 }
-                if (parametros.MargenDerecho == null || parametros.MargenDerecho < 0)
+                if (parametros.MargenDerecho == null || parametros.MargenDerecho <= 0)
                 {
                     parametros.MargenDerecho = 30;
                 }
-                if (parametros.MargenIzquierdo == null || parametros.MargenIzquierdo < 0)
+                if (parametros.MargenIzquierdo == null || parametros.MargenIzquierdo <= 0)
                 {
                     parametros.MargenIzquierdo = 30;
                 }
@@ -185,55 +185,55 @@ namespace ERP_TECKIO.Procesos
                     respuesta.Descripcion = "El nombre de los parámetros de impresión es obligatorio";
                     return respuesta;
                 }
-                if (string.IsNullOrWhiteSpace(parametros.EncabezadoCentro))
-                {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "El encabezado central es obligatorio";
-                    return respuesta;
-                }
-                if (string.IsNullOrWhiteSpace(parametros.EncabezadoDerecho))
-                {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "El encabezado derecho es obligatorio";
-                    return respuesta;
-                }
-                if (string.IsNullOrWhiteSpace(parametros.EncabezadoIzquierdo))
-                {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "El encabezado izquierdo es obligatorio";
-                    return respuesta;
-                }
-                if (string.IsNullOrWhiteSpace(parametros.PieCentro))
-                {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "El pie central es obligatorio";
-                    return respuesta;
-                }
-                if (string.IsNullOrWhiteSpace(parametros.PieDerecho))
-                {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "El pie derecho es obligatorio";
-                    return respuesta;
-                }
-                if (string.IsNullOrWhiteSpace(parametros.PieIzquierdo))
-                {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "El pie izquierdo es obligatorio";
-                    return respuesta;
-                }
-                if (parametros.MargenSuperior == null || parametros.MargenSuperior < 0)
+                //if (string.IsNullOrWhiteSpace(parametros.EncabezadoCentro))
+                //{
+                //    respuesta.Estatus = false;
+                //    respuesta.Descripcion = "El encabezado central es obligatorio";
+                //    return respuesta;
+                //}
+                //if (string.IsNullOrWhiteSpace(parametros.EncabezadoDerecho))
+                //{
+                //    respuesta.Estatus = false;
+                //    respuesta.Descripcion = "El encabezado derecho es obligatorio";
+                //    return respuesta;
+                //}
+                //if (string.IsNullOrWhiteSpace(parametros.EncabezadoIzquierdo))
+                //{
+                //    respuesta.Estatus = false;
+                //    respuesta.Descripcion = "El encabezado izquierdo es obligatorio";
+                //    return respuesta;
+                //}
+                //if (string.IsNullOrWhiteSpace(parametros.PieCentro))
+                //{
+                //    respuesta.Estatus = false;
+                //    respuesta.Descripcion = "El pie central es obligatorio";
+                //    return respuesta;
+                //}
+                //if (string.IsNullOrWhiteSpace(parametros.PieDerecho))
+                //{
+                //    respuesta.Estatus = false;
+                //    respuesta.Descripcion = "El pie derecho es obligatorio";
+                //    return respuesta;
+                //}
+                //if (string.IsNullOrWhiteSpace(parametros.PieIzquierdo))
+                //{
+                //    respuesta.Estatus = false;
+                //    respuesta.Descripcion = "El pie izquierdo es obligatorio";
+                //    return respuesta;
+                //}
+                if (parametros.MargenSuperior == null || parametros.MargenSuperior <= 0)
                 {
                     parametros.MargenSuperior = 30;
                 }
-                if (parametros.MargenInferior == null || parametros.MargenInferior < 0)
+                if (parametros.MargenInferior == null || parametros.MargenInferior <= 0)
                 {
                     parametros.MargenInferior = 30;
                 }
-                if (parametros.MargenDerecho == null || parametros.MargenDerecho < 0)
+                if (parametros.MargenDerecho == null || parametros.MargenDerecho <= 0)
                 {
                     parametros.MargenDerecho = 30;
                 }
-                if (parametros.MargenIzquierdo == null || parametros.MargenIzquierdo < 0)
+                if (parametros.MargenIzquierdo == null || parametros.MargenIzquierdo <= 0)
                 {
                     parametros.MargenIzquierdo = 30;
                 }
