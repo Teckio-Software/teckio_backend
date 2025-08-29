@@ -37,6 +37,7 @@ namespace ERP_TECKIO
         public bool EsCatalogoGeneral { get; set; }
         public bool EsAvanceObra { get; set; }
         public bool EsAdicional { get; set; }
+        public bool EsSeleccionado { get; set; } = false;
 
         public string? CodigoPadre { get; set; }
     }
@@ -57,6 +58,12 @@ namespace ERP_TECKIO
         public List<PrecioUnitarioCopiaDTO>? Registros { get; set; }
         public int IdPrecioUnitarioBase { get; set; }
         public int IdProyecto { get; set; }
+    }
+
+    public class DatosParaImportarCatalogoGeneralDTO
+    {
+        public List<PrecioUnitarioDTO>? Registros { get; set; } = new List<PrecioUnitarioDTO>();
+        public PrecioUnitarioDTO PrecioUnitario { get; set; } = new PrecioUnitarioDTO();
     }
 
     public class DatosParaCopiarArmadoDTO

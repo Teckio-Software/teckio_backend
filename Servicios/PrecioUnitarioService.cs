@@ -368,5 +368,17 @@ namespace ERP_TECKIO.Servicios
             }
             return await _Repositorio.EditarMultiple(PUs);
         }
+
+        public async Task<bool> EsCatalogoGeneralMultiple(List<PrecioUnitarioDTO> registros)
+        {
+            var PUs = new List<PrecioUnitario>();
+            foreach (var registro in registros)
+            {
+                var objetoEncontrado = await _Repositorio.Obtener(z => z.Id == registro.Id);
+                objetoEncontrado.EsCatalogoGeneral = !registro.EsCatalogoGeneral;
+                PUs.Add(objetoEncontrado);
+            }
+            return await _Repositorio.EditarMultiple(PUs);
+        }
     }
 }
