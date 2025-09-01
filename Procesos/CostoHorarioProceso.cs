@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Drawing;
 using ERP_TECKIO.DTO;
 using ERP_TECKIO.Modelos.Presupuesto;
 using ERP_TECKIO.Servicios.Contratos;
@@ -81,6 +82,15 @@ namespace ERP_TECKIO.Procesos
 
         public async Task<CostoHorarioFijoXPrecioUnitarioDetalleDTO> ObtenerCostoFijoXIdDetalle(int IdPrecioUnitarioDetalle){
             var detalle = await _CostoFijoService.ObtenTodosXIdPrecioUnitarioDetalle(IdPrecioUnitarioDetalle);
+            detalle.InteresSobreCapital = detalle.Inversion * detalle.InteresAnual / detalle.HorasUso;
+            detalle.Depreciacion = detalle.Inversion / detalle.VidaUtil;
+            detalle.Reparaciones = detalle.PorcentajeReparacion * detalle.Depreciacion;
+            detalle.Seguro = detalle.PorcentajeSeguroAnual * detalle.Inversion / detalle.HorasUso;
+            detalle.GastosAnuales = detalle.GastoAnual / detalle.HorasUso;
+            detalle.Suma = detalle.InteresSobreCapital + detalle.Depreciacion + detalle.Reparaciones + detalle.Seguro + detalle.GastosAnuales;
+            detalle.SubtotalGastosFijos = detalle.Suma * (12 / detalle.MesTrabajoReal);
+            //Horas Uso = horas de trabajo al año
+            //Vida Util = horas totales de uso
             return detalle;
         }
 
@@ -102,8 +112,36 @@ namespace ERP_TECKIO.Procesos
                 , ch.Cantidad
                 , FORMAT(ch.Cantidad, 'N', 'en-us') as CantidadConFormato
                 , ch.CantidadExcedente
-                , ch.Cantidad * I.CostoUnitario as Importe
-                , FORMAT(ch.Cantidad * I.CostoUnitario, 'N', 'en-us') as ImporteConFormato
+                , case 
+                when ch.TipoCostoVariable = 1 --Combustible 
+                	then ch.Cantidad * ch.Rendimiento * I.CostoUnitario 
+                when ch.TipoCostoVariable = 2 --Lubricantes
+                	then ch.Cantidad * ch.Rendimiento * I.CostoUnitario
+                when ch.TipoCostoVariable = 3 --Llantas
+                	then ch.Cantidad * I.CostoUnitario / ch.Rendimiento 
+                when ch.TipoCostoVariable = 4 --Operación
+                	then ch.Cantidad * I.CostoUnitario 
+                when ch.TipoCostoVariable = 5 --Fletes
+                	then ch.Cantidad * I.CostoUnitario / ch.Rendimiento
+                else
+                	0
+                end 
+                as Importe
+                , FORMAT(
+                Case
+                	when ch.TipoCostoVariable = 1 
+                		then ch.Cantidad * ch.Rendimiento * I.CostoUnitario 
+                	when ch.TipoCostoVariable = 2 
+                		then ch.Cantidad * ch.Rendimiento * I.CostoUnitario
+                	when ch.TipoCostoVariable = 3 
+                		then ch.Cantidad * I.CostoUnitario / ch.Rendimiento 
+                	when ch.TipoCostoVariable = 4 
+                		then ch.Cantidad * I.CostoUnitario 
+                	when ch.TipoCostoVariable = 5 
+                		then ch.Cantidad * I.CostoUnitario / ch.Rendimiento
+                	else 0
+                end
+                , 'N', 'en-us') as ImporteConFormato
                 , I.Codigo
                 , I.Descripcion
                 , I.Unidad
@@ -148,8 +186,36 @@ namespace ERP_TECKIO.Procesos
                 , ch.Cantidad
                 , FORMAT(ch.Cantidad, 'N', 'en-us') as CantidadConFormato
                 , ch.CantidadExcedente
-                , ch.Cantidad * I.CostoUnitario as Importe
-                , FORMAT(ch.Cantidad * I.CostoUnitario, 'N', 'en-us') as ImporteConFormato
+                , case 
+                when ch.TipoCostoVariable = 1 --Combustible 
+                	then ch.Cantidad * ch.Rendimiento * I.CostoUnitario 
+                when ch.TipoCostoVariable = 2 --Lubricantes
+                	then ch.Cantidad * ch.Rendimiento * I.CostoUnitario
+                when ch.TipoCostoVariable = 3 --Llantas
+                	then ch.Cantidad * I.CostoUnitario / ch.Rendimiento 
+                when ch.TipoCostoVariable = 4 --Operación
+                	then ch.Cantidad * I.CostoUnitario 
+                when ch.TipoCostoVariable = 5 --Fletes
+                	then ch.Cantidad * I.CostoUnitario / ch.Rendimiento
+                else
+                	0
+                end 
+                as Importe
+                , FORMAT(
+                Case
+                	when ch.TipoCostoVariable = 1 
+                		then ch.Cantidad * ch.Rendimiento * I.CostoUnitario 
+                	when ch.TipoCostoVariable = 2 
+                		then ch.Cantidad * ch.Rendimiento * I.CostoUnitario
+                	when ch.TipoCostoVariable = 3 
+                		then ch.Cantidad * I.CostoUnitario / ch.Rendimiento 
+                	when ch.TipoCostoVariable = 4 
+                		then ch.Cantidad * I.CostoUnitario
+                	when ch.TipoCostoVariable = 5 
+                		then ch.Cantidad * I.CostoUnitario / ch.Rendimiento
+                	else 0
+                end
+                , 'N', 'en-us') as ImporteConFormato
                 , I.Codigo
                 , I.Descripcion
                 , I.Unidad
@@ -213,7 +279,10 @@ namespace ERP_TECKIO.Procesos
                 insumo.Unidad = registro.Unidad;
                 insumo.idTipoInsumo = registro.IdTipoInsumo;
                 insumo.CostoBase = registro.CostoBase;
-                insumo.CostoUnitario = registro.CostoBase;
+                if(insumo.idTipoInsumo != 10000)
+                {
+                    insumo.CostoUnitario = registro.CostoBase;
+                }
                 var insumoEditado = await _InsumoService.Editar(insumo);
             }
             else
@@ -224,32 +293,20 @@ namespace ERP_TECKIO.Procesos
                 insumoCreacion.Unidad = registro.Unidad;
                 insumoCreacion.idTipoInsumo = registro.IdTipoInsumo;
                 insumoCreacion.CostoBase = registro.CostoBase;
+                if (insumoCreacion.idTipoInsumo != 10000)
+                {
+                    insumoCreacion.CostoUnitario = registro.CostoBase;
+                }
                 insumoCreacion.CostoUnitario = registro.CostoBase;
                 insumo = await _InsumoService.CrearYObtener(insumoCreacion);
             }
-
             registro.IdInsumo = insumo.id;
-            //switch (registro.TipoCostoVariable)
-            //{
-            //    case 1: //Combustibles
-                    
-            //        break;
 
-            //    case 2: //Lubricantes
-            //        break;
+            var registroCreado = await _CostoVariableService.CrearYObtener(registro);
+            var obtenerRegistros = await obtenerRegistrosXIdDetallePerteneciente(registro.IdPrecioUnitarioDetalle, registro.IdCostoVariablePerteneciente);
+            var costoFijo = await ObtenerCostoFijoXIdDetalle(registro.IdPrecioUnitarioDetalle)
 
-            //    case 3: //Llantas
-            //        break;
-
-            //    case 4: //Operación
-            //        break;
-
-            //    case 5: //Fletes
-            //        break;
-
-            //}
-
-            if(registro.IdCostoVariablePerteneciente == 0)
+            if (registro.IdCostoVariablePerteneciente == 0)
             {
                 var detalles = await _precioUnitarioProceso.ObtenerDetallesPorIdInsumo(registro.IdInsumo, _dbContext);
                 foreach(var detalle in detalles)

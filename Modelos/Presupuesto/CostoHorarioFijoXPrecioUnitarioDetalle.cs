@@ -21,6 +21,13 @@
         public decimal GastoAnual { get; set; }
 
         public decimal MesTrabajoReal { get; set; }
+        public decimal InteresSobreCapital { get; set; }
+        public decimal Depreciacion{ get; set; }
+        public decimal Reparaciones { get; set; }
+        public decimal Seguro { get; set; }
+        public decimal GastosAnuales { get; set; }
+        public decimal Suma { get; set; }
+        public decimal SubtotalGastosFijos { get; set; }
     }
 
     public partial class CostoHorarioFijoXPrecioUnitarioDetalle: CostoHorarioFijoXPrecioUnitarioDetalleAbstract
