@@ -54,7 +54,7 @@ namespace ERP_TECKIO
                 return objeto;
             }
 
-            var insumos = await _inuimoService.ObtenXIdProyecto(requisicion.IdProyecto);
+            var insumos = await _inuimoService.ObtenXIdProyecto((int)requisicion.IdProyecto);
 
             foreach (var IXR in insumosXRequisicion) {
                 var insumo = insumos.Where(z => z.id == IXR.IdInsumo).ToList();

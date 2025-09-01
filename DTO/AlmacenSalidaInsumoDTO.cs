@@ -6,7 +6,7 @@
     public class AlmacenSalidaInsumoDTO
     {
         public int Id { get; set; }
-        public int IdProyecto { get; set; }
+        public int? IdProyecto { get; set; }
         public int IdAlmacenSalida { get; set; }
         public string CodigoSalida { get; set; }
         public int IdInsumo { get; set; }

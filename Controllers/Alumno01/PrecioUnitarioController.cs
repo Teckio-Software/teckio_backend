@@ -115,6 +115,34 @@ namespace ERP_TECKIO
             return registros;
         }
 
+        [HttpPost("ImportarCatalogoAPrecioUnitario")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearPrecioUnitario-Empresa2")]
+        public async Task ImportarCatalogoAPrecioUnitario([FromBody] DatosParaImportarCatalogoGeneralDTO datos)
+        {
+            await _precioUnitarioProceso.ImportarCatalogoAPrecioUnitario(datos.Registros, datos.PrecioUnitario);
+        }
+
+        [HttpPost("eliminarCatalogoGeneral")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearPrecioUnitario-Empresa2")]
+        public async Task eliminarCatalogoGeneral([FromBody] List<PrecioUnitarioDTO> lista)
+        {
+            await _precioUnitarioProceso.eliminarCatalogoGeneral(lista);
+        }
+
+        [HttpPost("agregarCatalogoGeneral")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearPrecioUnitario-Empresa2")]
+        public async Task<ActionResult<List<PrecioUnitarioDTO>>> agregarCatalogoGeneral([FromBody] List<PrecioUnitarioDTO> lista)
+        {
+            return await _precioUnitarioProceso.agregarCatalogoGeneral(lista);
+        }
+
+        [HttpPost("remplazarCatalogoGeneral")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearPrecioUnitario-Empresa2")]
+        public async Task remplazarCatalogoGeneral([FromBody] List<PrecioUnitarioDTO> lista)
+        {
+            await _precioUnitarioProceso.remplazarCatalogoGeneral(lista);
+        }
+
         [HttpGet("todoscopia/{IdProyecto:int}")]
         public async Task<ActionResult<List<PrecioUnitarioCopiaDTO>>> ObtenerCopia(int IdProyecto)
         {

@@ -136,5 +136,25 @@ namespace ERP_TECKIO.Servicios
                 return respuesta;
             }
         }
+
+        public async Task<List<ProductosXEntradaProduccionAlmacenDTO>> ObtenerXIdEntrada(int id)
+        {
+            try
+            {
+                var lista = await _repository.ObtenerTodos(p => p.IdEntradaProduccionAlmacen == id);
+                if (lista.Count > 0)
+                {
+                    return _mapper.Map<List<ProductosXEntradaProduccionAlmacenDTO>>(lista);
+                }
+                else
+                {
+                    return new List<ProductosXEntradaProduccionAlmacenDTO>();
+                }
+            }
+            catch
+            {
+                return new List<ProductosXEntradaProduccionAlmacenDTO>();
+            }
+        }
     }
 }

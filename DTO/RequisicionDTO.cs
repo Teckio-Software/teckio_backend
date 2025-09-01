@@ -13,7 +13,7 @@ namespace ERP_TECKIO
         /// <summary>
         /// Identificador de <see cref="Proyecto"/>
         /// </summary>
-        public int IdProyecto { get; set; }
+        public int? IdProyecto { get; set; }
         /// <summary>
         /// Numero de la requisición
         /// </summary>
@@ -45,6 +45,8 @@ namespace ERP_TECKIO
         public int EstatusInsumosSurtIdos { get; set; }
         public string EstatusInsumosSurtIdosDescripcion { get; set; }
         public string? Residente { get; set; }
+        public int? IdProduccion { get; set; }
+
     }
 
     public class ListaRequisicionDTO : RequisicionDTO

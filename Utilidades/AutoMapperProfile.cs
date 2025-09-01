@@ -842,6 +842,30 @@ namespace ERP_TECKIO
             #endregion
 
             #endregion
+
+            #region SalidaProduccionAlmacen
+
+            CreateMap<SalidaProduccionAlmacen, SalidaProduccionAlmacenDTO>();
+            CreateMap<SalidaProduccionAlmacenDTO, SalidaProduccionAlmacen>()
+                .ForMember(destino => destino.ProductosXsalidaProduccionAlmacens,
+                opt => opt.Ignore())
+                .ForMember(destino => destino.IdAlmacenNavigation,
+                opt => opt.Ignore());
+
+            #endregion
+
+            #region ProductosXSalidaProduccionAlmacen
+
+            CreateMap<ProductosXsalidaProduccionAlmacen, ProductosXsalidaProduccionAlmacenDTO>();
+            CreateMap<ProductosXsalidaProduccionAlmacenDTO, ProductosXsalidaProduccionAlmacen>()
+                .ForMember(destino => destino.IdSalidaProduccionAlmacenNavigation,
+                opt => opt.Ignore())
+                .ForMember(destino => destino.IdProductoYservicioNavigation,
+                opt => opt.Ignore());
+
+            #endregion
+
+
             #region Facturas
 
             #region Facturas
@@ -1165,6 +1189,19 @@ namespace ERP_TECKIO
 
             #endregion
 
+            #endregion
+
+            #region ParametrosImpresionPu
+
+            CreateMap<ParametrosImpresionPu, ParametrosImpresionPuDTO>();
+            CreateMap<ParametrosImpresionPuDTO, ParametrosImpresionPu>();
+
+            #endregion
+
+            #region Imagen
+
+            CreateMap<Imagen, ImagenDTO>();
+            CreateMap<ImagenDTO, Imagen>();
             #endregion
 
         }

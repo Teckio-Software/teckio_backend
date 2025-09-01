@@ -1,4 +1,5 @@
 ﻿using ERP_TECKIO.DTO;
+using ERP_TECKIO.Modelos;
 using ERP_TECKIO.Servicios.Contratos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,14 +11,24 @@ namespace ERP_TECKIO.Procesos
         private readonly IOrdenVentaService<T> _ordenVentaService;
         private readonly IDetalleOrdenVentaService<T> _detalleOrdenVentaService;
         private readonly IImpuestoDetalleOrdenVentaService<T> _impuestoDetalleOrdenVentaService;
+        private readonly SalidaProduccionAlmacenProceso<T> _salidaProduccionAlmacenProceso;
+        private readonly IClientesService<T> _clienteService;
+        private readonly EntradaProduccionAlmacenProceso<T> _entradaProduccionAlmacenProceso;
+
         public OrdenVentaProceso(
             IOrdenVentaService<T> ordenVentaService,
             IDetalleOrdenVentaService<T> detalleOrdenVentaService,
-            IImpuestoDetalleOrdenVentaService<T> impuestoDetalleOrdenVentaService
+            IImpuestoDetalleOrdenVentaService<T> impuestoDetalleOrdenVentaService,
+            SalidaProduccionAlmacenProceso<T> salidaProduccionAlmacenProceso,
+            IClientesService<T> clienteService,
+            EntradaProduccionAlmacenProceso<T> entradaProduccionAlmacenProceso
             ) { 
             _ordenVentaService = ordenVentaService;
             _detalleOrdenVentaService = detalleOrdenVentaService;
             _impuestoDetalleOrdenVentaService = impuestoDetalleOrdenVentaService;
+            _salidaProduccionAlmacenProceso = salidaProduccionAlmacenProceso;
+            _clienteService = clienteService;
+            _entradaProduccionAlmacenProceso = entradaProduccionAlmacenProceso;
         }
 
         public async Task<RespuestaDTO> CrearOrdenVenta(OrdenVentaDTO ordenVenta, List<System.Security.Claims.Claim> claims) { 
@@ -171,6 +182,142 @@ namespace ERP_TECKIO.Procesos
             catch
             {
                 respuesta.Descripcion = "Ocurrio un error al intentar autorizar la orden de venta";
+                respuesta.Estatus = false;
+                return respuesta;
+            }
+        }
+
+        public async Task<RespuestaDTO> Autorizar(SalidaProduccionAlmacenAutorizarOrdenVDTO orden, List<System.Security.Claims.Claim> claims)
+        {
+            RespuestaDTO respuesta = new RespuestaDTO();
+            try
+            {
+                var usuarioNombre = claims.Where(z => z.Type == "username").ToList();
+                var ordenVenta = await _ordenVentaService.ObtenerOrdenVentaXId(orden.IdOrdenVenta);
+                if (ordenVenta.Id <= 0)
+                {
+                    respuesta.Descripcion = "No se encontro la orden de venta";
+                    respuesta.Estatus = false;
+                    return respuesta;
+                }
+                var cliente = await _clienteService.ObtenXId(ordenVenta.IdCliente);
+                if (cliente.Id <= 0)
+                {
+                    respuesta.Descripcion = "No se encontro el cliente asociado a la orden de venta";
+                    respuesta.Estatus = false;
+                    return respuesta;
+                }
+
+                var salidas = new List<SalidaProduccionAlmacenDTO>();
+                foreach (var salida in orden.Salidas)
+                {
+                    salida.FechaEntrada = DateTime.Now;
+                    salida.Recibio = cliente.RazonSocial;
+                    var resultSalida = await _salidaProduccionAlmacenProceso.CrearYObtenerSalida(salida);
+                    if (resultSalida.Id > 0)
+                    {
+                        salidas.Add(resultSalida);
+                    }
+                    else
+                    {
+                        //Eliminar las salidas que se hayan creado
+
+                        foreach (var salidaCreada in salidas)
+                        {
+                            var eliminar = await _salidaProduccionAlmacenProceso.Eliminar(salidaCreada.Id);
+                        }
+
+                        ///////////////
+                        respuesta.Descripcion = "Ocurrio un error al intentar crear la salida de producción al almacén";
+                        respuesta.Estatus = false;
+                        return respuesta;
+                    }
+                }
+                ordenVenta.Autorizo = usuarioNombre[0].Value;
+                ordenVenta.Estatus = 1; //Autorizada y con salidas
+                respuesta = await _ordenVentaService.Editar(ordenVenta);
+                if(respuesta.Estatus == false)
+                {
+                    //Eliminar las salidas que se hayan creado
+
+                    foreach (var salidaCreada in salidas)
+                    {
+                        var eliminar = await _salidaProduccionAlmacenProceso.Eliminar(salidaCreada.Id);
+                    }
+
+                    ///////////////
+                    respuesta.Descripcion = "Ocurrio un error al intentar autorizar la orden de venta";
+                    respuesta.Estatus = false;
+                    return respuesta;
+                }
+
+                return respuesta;
+            }
+            catch
+            {
+                respuesta.Descripcion = "Ocurrio un error al intentar autorizar la orden de venta";
+                respuesta.Estatus = false;
+                return respuesta;
+            }
+        }
+
+        public async Task<RespuestaDTO> Cancelar(OrdenVentaCancelarDTO parametro)
+        {
+            RespuestaDTO respuesta = new RespuestaDTO();
+            try
+            {
+                var ordenVenta = await _ordenVentaService.ObtenerOrdenVentaXId(parametro.IdOrdenVenta);
+                if (ordenVenta.Id <= 0)
+                {
+                    respuesta.Descripcion = "No se encontro la orden de venta";
+                    respuesta.Estatus = false;
+                    return respuesta;
+                }
+                var productosDetalle = await _detalleOrdenVentaService.ObtenerXIdOrdenVenta(ordenVenta.Id);
+                EntradaProduccionAlmacenDTO entrada = new EntradaProduccionAlmacenDTO
+                {
+                    IdAlmacen = parametro.IdAlmacenDestino,
+                    FechaEntrada = DateTime.Now,
+                    //Recibio = ,
+                    Observaciones = "Cancelación de orden de venta"
+                };
+                foreach (var productos in productosDetalle)
+                {
+                    //Agrega los detalles
+                    entrada.Detalles.Add(new ProductosXEntradaProduccionAlmacenDTO
+                    {
+                        IdEntradaProduccionAlmacen = 0,
+                        IdProductoYservicio = productos.IdProductoYservicio,
+                        Cantidad = productos.Cantitdad,
+                        TipoOrigen = 2
+                    });
+
+                }
+                var resultEntrada = await _entradaProduccionAlmacenProceso.CrearYObtener(entrada);
+                if (resultEntrada.Id>0)
+                {
+                    
+                    ordenVenta.Estatus = 2; //Cancelada
+                    respuesta = await _ordenVentaService.Editar(ordenVenta);
+                    if (!respuesta.Estatus)
+                    {
+                        //Elimina la entrada
+                        await _entradaProduccionAlmacenProceso.Eliminar(resultEntrada.Id);
+                    }
+                    return respuesta;
+                }
+                else
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "Ocurrio un error al intentar crear la entrada de producción al almacen";
+                    return respuesta;
+
+                }
+
+            }
+            catch
+            {
+                respuesta.Descripcion = "Ocurrio un error al intentar cancelar la orden de venta";
                 respuesta.Estatus = false;
                 return respuesta;
             }

@@ -168,6 +168,11 @@ public partial class Alumno01Context : DbContext
     public virtual DbSet<ParametrosFsr> ParametrosFsrs { get; set; }
     public virtual DbSet<PorcentajeCesantiaEdad> PorcentajeCesantiaEdads { get; set; }
     public virtual DbSet<InsumoxProductoYservicio> InsumoxProductoYservicios { get; set; }
+    public virtual DbSet<SalidaProduccionAlmacen> SalidaProduccionAlmacens { get; set; }
+    public virtual DbSet<ProductosXsalidaProduccionAlmacen> ProductosXsalidaProduccionAlmacens { get; set; }
+    public virtual DbSet<Imagen> Imagens { get; set; }
+    public virtual DbSet<ParametrosImpresionPu> ParametrosImpresionPus { get; set; }
+
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -2208,6 +2213,9 @@ public partial class Alumno01Context : DbContext
             entity.HasOne(d => d.IdProyectoNavigation).WithMany(p => p.Requisicions)
                 .HasForeignKey(d => d.IdProyecto)
                 .HasConstraintName("FK__Requisici__IdPro__00200768");
+            entity.HasOne(d => d.IdProduccionNavigation).WithMany(p => p.Requisicion)
+                .HasForeignKey(d => d.IdProduccion)
+                .HasConstraintName("Fk_Requisicion_Produccion");
         });
 
         modelBuilder.Entity<Rubro>(entity =>
@@ -2293,6 +2301,67 @@ public partial class Alumno01Context : DbContext
                 .HasForeignKey(d => d.IdProductoYservicio)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Fk_InsXProdYSer_Prod");
+        });
+        modelBuilder.Entity<SalidaProduccionAlmacen>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__SalidaPr__3214EC07D7B91BC4");
+
+            entity.ToTable("SalidaProduccionAlmacen", "Produccion");
+
+            entity.Property(e => e.FechaEntrada).HasColumnType("datetime");
+            entity.Property(e => e.Observaciones).HasMaxLength(200);
+            entity.Property(e => e.Recibio).HasMaxLength(100);
+
+            entity.HasOne(d => d.IdAlmacenNavigation).WithMany(p => p.SalidaProduccionAlmacens)
+                .HasForeignKey(d => d.IdAlmacen)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__SalidaPro__IdAlm__39AD8A7F");
+        });
+        modelBuilder.Entity<ProductosXsalidaProduccionAlmacen>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Producto__3214EC079520A442");
+
+            entity.ToTable("ProductosXSalidaProduccionAlmacen", "Produccion");
+
+            entity.Property(e => e.Cantidad).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.IdProductoYservicio).HasColumnName("IdProductoYServicio");
+
+            entity.HasOne(d => d.IdProductoYservicioNavigation).WithMany(p => p.ProductosXsalidaProduccionAlmacens)
+                .HasForeignKey(d => d.IdProductoYservicio)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Productos__IdPro__3D7E1B63");
+
+            entity.HasOne(d => d.IdSalidaProduccionAlmacenNavigation).WithMany(p => p.ProductosXsalidaProduccionAlmacens)
+                .HasForeignKey(d => d.IdSalidaProduccionAlmacen)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Productos__IdSal__3C89F72A");
+        });
+        modelBuilder.Entity<Imagen>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Imagen__3214EC071F94716E");
+
+            entity.ToTable("Imagen");
+
+            entity.Property(e => e.Ruta).HasMaxLength(1000);
+        });
+        modelBuilder.Entity<ParametrosImpresionPu>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Parametr__3214EC07B3210CDD");
+
+            entity.ToTable("ParametrosImpresionPU");
+
+            entity.Property(e => e.EncabezadoCentro).HasMaxLength(200);
+            entity.Property(e => e.EncabezadoDerecho).HasMaxLength(200);
+            entity.Property(e => e.EncabezadoIzquierdo).HasMaxLength(200);
+            entity.Property(e => e.MargenDerecho).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.MargenInferior).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.MargenIzquierdo).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.MargenSuperior).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.PieCentro).HasMaxLength(200);
+            entity.Property(e => e.PieDerecho).HasMaxLength(200);
+            entity.Property(e => e.PieIzquierdo).HasMaxLength(200);
+            entity.Property(e => e.Nombre).HasMaxLength(150);
+
         });
 
         base.OnModelCreating(modelBuilder);

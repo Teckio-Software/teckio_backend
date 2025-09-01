@@ -9,6 +9,8 @@ public partial class Produccion : ProduccionAbstract
 
     public virtual ICollection<InsumoXproduccion> InsumoxProduccion { get; set; } = new List<InsumoXproduccion>();
 
+    public virtual ICollection<Requisicion> Requisicion { get; set; } = new List<Requisicion>();
+
 }
 
 public abstract class ProduccionAbstract

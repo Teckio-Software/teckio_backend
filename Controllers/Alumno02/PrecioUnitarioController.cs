@@ -1,4 +1,5 @@
 ﻿
+using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.Procesos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +11,7 @@ namespace ERP_TECKIO
 {
     [Route("api/preciounitario/2")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPrecioUnitario-Empresa2")]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPrecioUnitario-Empresa2")]
     public class PrecioUnitarioAlumno02Controller : ControllerBase
     {
         private readonly PrecioUnitarioProceso<Alumno02Context> _precioUnitarioProceso;
@@ -65,6 +66,27 @@ namespace ERP_TECKIO
         public async Task<ActionResult<List<PrecioUnitarioDTO>>> Editar([FromBody] PrecioUnitarioDTO registro)
         {
             return await _precioUnitarioProceso.Editar(registro);
+        }
+
+        [HttpGet("AutorizarPresupuesto/{IdProyecto:int}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPrecioUnitario-Empresa2")]
+        public async Task AutorizarPresupuesto(int IdProyecto)
+        {
+            await _precioUnitarioProceso.AutorizarPresupuesto(IdProyecto);
+        }
+
+        [HttpPost("AutorizarXPrecioUnitario")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPrecioUnitario-Empresa2")]
+        public async Task AutorizarXPrecioUnitario(PrecioUnitarioDTO partida)
+        {
+            await _precioUnitarioProceso.AutorizarXPartida(partida);
+        }
+
+        [HttpPost("partirConcepto")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPrecioUnitario-Empresa2")]
+        public async Task<ActionResult<List<PrecioUnitarioDTO>>> partirConcepto([FromBody] PrecioUnitarioDTO registro)
+        {
+            return await _precioUnitarioProceso.PartirConcepto(registro);
         }
 
         [HttpPost("EditarIndirectoPrecioUnitario")]
@@ -148,6 +170,12 @@ namespace ERP_TECKIO
             return await _precioUnitarioProceso.obtenerExplosion(IdProyecto);
         }
 
+        [HttpPost("obtenerExplosionDeInsumosXPrecioUnitario")]
+        public async Task<ActionResult<List<InsumoParaExplosionDTO>>> ObtenerExplosionXPrecioUnitario(PrecioUnitarioDTO precioUnitario)
+        {
+            return await _precioUnitarioProceso.ObtenerExplosionXPrecioUnitario(precioUnitario);
+        }
+
         [HttpPost("editarCostoDesdeExplosion")]
         public async Task<ActionResult<List<InsumoParaExplosionDTO>>> EditarCostoDesdeExplosion(InsumoParaExplosionDTO registro)
         {
@@ -183,5 +211,62 @@ namespace ERP_TECKIO
             }
             return registros;
         }
+
+        [HttpPost("importarOpus")]
+        public async Task<IActionResult> ImportarOpus([FromForm] List<IFormFile> files, [FromForm] int IdProyecto)
+        {
+            var ImportacionInsumoDBF = files.Where(z => z.FileName.Substring(z.FileName.Length - 5, 5) == "P.DBF").FirstOrDefault();
+            if (ImportacionInsumoDBF == null || ImportacionInsumoDBF.Length == 0)
+                return BadRequest("Archivo DBF no válido.");
+            var ImportacionInsumoFPT = files.Where(z => z.FileName.Substring(z.FileName.Length - 5, 5) == "P.FPT").FirstOrDefault();
+            if (ImportacionInsumoFPT == null || ImportacionInsumoFPT.Length == 0)
+                return BadRequest("Archivo FPT no válido.");
+
+            await _precioUnitarioProceso.ImportarInsumos(ImportacionInsumoDBF, ImportacionInsumoFPT, IdProyecto);
+
+            var ImportacionConceptosDBF = files.Where(z => z.FileName.Substring(z.FileName.Length - 5, 5) == "A.DBF").FirstOrDefault();
+            if (ImportacionConceptosDBF == null || ImportacionConceptosDBF.Length == 0)
+                return BadRequest("Archivo DBF no válido.");
+            var ImportacionConceptosFPT = files.Where(z => z.FileName.Substring(z.FileName.Length - 5, 5) == "A.FPT").FirstOrDefault();
+            if (ImportacionConceptosFPT == null || ImportacionConceptosFPT.Length == 0)
+                return BadRequest("Archivo FPT no válido.");
+
+            await _precioUnitarioProceso.ImportarConceptos(ImportacionConceptosDBF, ImportacionConceptosFPT, IdProyecto);
+
+            var ArmadoCatalogoConcepto = files.Where(z => z.FileName.Substring(z.FileName.Length - 5, 5) == "1.DBF").FirstOrDefault();
+            if (ArmadoCatalogoConcepto == null || ArmadoCatalogoConcepto.Length == 0)
+                return BadRequest("Archivo DBF no válido.");
+            var ArmadoCatalogoConceptoFPT = files.Where(z => z.FileName.Substring(z.FileName.Length - 5, 5) == "1.FPT").FirstOrDefault();
+            if (ArmadoCatalogoConceptoFPT == null || ArmadoCatalogoConceptoFPT.Length == 0)
+                return BadRequest("Archivo FPT no válido.");
+
+            await _precioUnitarioProceso.ArmarCatalogoConceptos(ArmadoCatalogoConcepto, ArmadoCatalogoConceptoFPT, IdProyecto);
+
+            var ArmadoPU = files.Where(z => z.FileName.Substring(z.FileName.Length - 5, 5) == "F.DBF").FirstOrDefault();
+            if (ArmadoPU == null || ArmadoPU.Length == 0)
+                return BadRequest("Archivo DBF no válido.");
+            var ArmadoPUFPT = files.Where(z => z.FileName.Substring(z.FileName.Length - 5, 5) == "F.FPT").FirstOrDefault();
+            if (ArmadoPUFPT == null || ArmadoPUFPT.Length == 0)
+                return BadRequest("Archivo FPT no válido.");
+
+            await _precioUnitarioProceso.ArmarPreciosUnitarios(ArmadoPU, ArmadoPUFPT, IdProyecto);
+            return NoContent();
+        }
+        //public async Task ImportarOpus(List<IFormFile> archivosDBF)
+        //{
+        //    var ImportacionInsumo = archivosDBF.Where(z => z.FileName.Substring(z.FileName.Length - 5, 5) == "P.DBF").FirstOrDefault();
+        //    var archivoInsumo = ImportacionInsumo.OpenReadStream();
+        //    var insumos = new DBFReader(archivoInsumo);
+        //    object[] rowObjects;
+        //    while ((rowObjects = insumos.NextRecord()) != null)
+        //    {
+        //        // Procesar cada fila del archivo DBF
+        //        for (int i = 0; i < rowObjects.Length; i++)
+        //        {
+        //            Console.WriteLine($"Columna {i}: {rowObjects[i]}");
+        //        }
+        //    }
+        //    //DbfDataReader file = new DbfDataReader(ImportacionInsumo.FirstOrDefault(), FileMode.Open, FileAccess.Read);
+        //}
     }
 }

@@ -1762,7 +1762,8 @@ for json path
                     var partirDetalle = await PartirDetalle(registro);
                     if (registro.IdPrecioUnitarioDetallePerteneciente != 0) {
                         var detallesXPU = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(registro.IdPrecioUnitario);
-                        await partirDetalleXDetalleHijo(registro, detallesXPU);
+                        var listInsumos = await _InsumoService.ObtenXIdProyecto(insumoOriginal.IdProyecto);
+                        await partirDetalleXDetalleHijo(registro, detallesXPU, listInsumos);
                     }
                 }
 
@@ -1796,13 +1797,14 @@ for json path
             }
         }
 
-        public async Task partirDetalleXDetalleHijo(PrecioUnitarioDetalleDTO detalleHijo, List<PrecioUnitarioDetalleDTO> detallesXPU) {
+        public async Task partirDetalleXDetalleHijo(PrecioUnitarioDetalleDTO detalleHijo, List<PrecioUnitarioDetalleDTO> detallesXPU, List<InsumoDTO> insumos) {
             var detallePadre = detallesXPU.FirstOrDefault(z => z.Id == detalleHijo.IdPrecioUnitarioDetallePerteneciente);
             if (detallePadre != null) {
-                if (detallePadre.EsAutorizado) {
+                var insumo = insumos.FirstOrDefault(z => z.id == detallePadre.IdInsumo);
+                if (insumo.EsAutorizado) {
                     await PartirDetalle(detallePadre);
                 }
-                await partirDetalleXDetalleHijo(detallePadre, detallesXPU);
+                await partirDetalleXDetalleHijo(detallePadre, detallesXPU, insumos);
             }
         }
 
@@ -1877,7 +1879,9 @@ for json path
                 if (registro.IdPrecioUnitarioDetallePerteneciente != 0)
                 {
                     var detallesXPU = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(registro.IdPrecioUnitario);
-                    await partirDetalleXDetalleHijo(registro, detallesXPU);
+                    var precioUnitario = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
+                    var listInsumos = await _InsumoService.ObtenXIdProyecto(precioUnitario.IdProyecto);
+                    await partirDetalleXDetalleHijo(registro, detallesXPU, listInsumos);
                 }
             }
             
@@ -2334,6 +2338,134 @@ for json path
 
                 }
             }
+        }
+
+        public async Task ImportarCatalogoAPrecioUnitario(List<PrecioUnitarioDTO> precios, PrecioUnitarioDTO precioUniatrio)
+        {
+            for (int i = 0; i < precios.Count; i++)
+            {
+                precios[i].Nivel = precioUniatrio.TipoPrecioUnitario == 0 ? precioUniatrio.Nivel + 1 : precioUniatrio.Nivel;
+                precios[i].EsCatalogoGeneral = false;
+                precios[i].IdPrecioUnitarioBase = precioUniatrio.TipoPrecioUnitario == 0 ? precioUniatrio.Id : precioUniatrio.IdPrecioUnitarioBase;
+                precios[i].IdProyecto = precioUniatrio.IdProyecto;
+                var Id = precios[i].Id;
+                precios[i].Id = 0;
+                var nuevoConcepto = new ConceptoDTO();
+                nuevoConcepto.IdProyecto = precioUniatrio.IdProyecto;
+                nuevoConcepto.Codigo = precios[i].Codigo;
+                nuevoConcepto.Descripcion = precios[i].Descripcion;
+                nuevoConcepto.Unidad = precios[i].Unidad;
+                nuevoConcepto.CostoUnitario = 0;
+                var conceptoCreado = await _ConceptoService.CrearYObtener(nuevoConcepto);
+                precios[i].IdConcepto = conceptoCreado.Id;
+                var nuevoRegistro = await _PrecioUnitarioService.CrearYObtener(precios[i]);
+                var Proyecto = await _ProyectoService.ObtenXId(nuevoRegistro.IdProyecto);
+                ProgramacionEstimadaGanttDTO nuevaProgramacion = new ProgramacionEstimadaGanttDTO();
+                nuevaProgramacion.IdConcepto = nuevoRegistro.IdConcepto;
+                nuevaProgramacion.Start = Proyecto.FechaInicio;
+                nuevaProgramacion.End = Proyecto.FechaInicio;
+                nuevaProgramacion.IdProyecto = Proyecto.Id;
+                nuevaProgramacion.IdPrecioUnitario = nuevoRegistro.Id;
+                nuevaProgramacion.Duracion = 1;
+                nuevaProgramacion.Progress = 0;
+                if (nuevoRegistro.IdPrecioUnitarioBase != 0)
+                {
+                    var programacionesEstimadas = await _ProgramacionEstimadaGanttService.ObtenerXIdProyecto(Proyecto.Id, _dbContex);
+                    var programacionEstimadaPadre = programacionesEstimadas.Where(z => z.IdPrecioUnitario == nuevoRegistro.IdPrecioUnitarioBase).FirstOrDefault();
+                    nuevaProgramacion.Parent = programacionEstimadaPadre.Id;
+                }
+                else
+                {
+                    nuevaProgramacion.Parent = "";
+                }
+                await _ProgramacionEstimadaGanttService.CrearYObtener(nuevaProgramacion);
+
+                if (precios[i].TipoPrecioUnitario == 1)
+                {
+                    var items = _dbContex.Database.SqlQueryRaw<string>(""""select Id, IdPrecioUnitario, IdInsumo, EsCompuesto, Cantidad, CantidadExcedente, IdPrecioUnitarioDetallePerteneciente from PrecioUnitarioDetalle where IdPrecioUnitario = '"""" + Id + """"' for json path"""").ToList();
+                    if (items.Count > 0)
+                    {
+                        string json = string.Join("", items);
+                        var datos = JsonSerializer.Deserialize<List<PrecioUnitarioDetalle>>(json);
+                        var detalles = _Mapper.Map<List<PrecioUnitarioDetalleDTO>>(datos);
+                        var precioUnitarioAuxiliar = await _PrecioUnitarioService.ObtenXId(Id);
+                        var insumos = await _InsumoService.ObtenXIdProyecto(precioUnitarioAuxiliar.IdProyecto);
+                        for (int j = 0; j < detalles.Count; j++)
+                        {
+                            var insumo = insumos.Where(z => z.id == detalles[j].IdInsumo).FirstOrDefault();
+                            detalles[j].IdPrecioUnitario = nuevoRegistro.Id;
+                            detalles[j].Codigo = insumo.Codigo;
+                            detalles[j].Descripcion = insumo.Descripcion;
+                            detalles[j].Unidad = insumo.Unidad;
+                            detalles[j].IdTipoInsumo = insumo.idTipoInsumo;
+                            detalles[j].IdFamiliaInsumo = insumo.idFamiliaInsumo;
+                            detalles[j].CostoUnitario = insumo.CostoBase;
+                            detalles[j].CostoBase = insumo.CostoBase;
+                        }
+                        await CrearDetalles(detalles, precioUniatrio.IdProyecto);
+                        var insumosParaRecalculo = await _InsumoService.ObtenXIdProyecto(precioUniatrio.IdProyecto);
+                        var detallesParaRecalculo = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(nuevoRegistro.Id);
+                        for (int j = 0; j < detallesParaRecalculo.Count; j++)
+                        {
+                            var insumo = insumosParaRecalculo.Where(z => z.id == detallesParaRecalculo[j].IdInsumo).FirstOrDefault();
+                            detallesParaRecalculo[j].IdPrecioUnitario = nuevoRegistro.Id;
+                            detallesParaRecalculo[j].Codigo = insumo.Codigo;
+                            detallesParaRecalculo[j].Descripcion = insumo.Descripcion;
+                            detallesParaRecalculo[j].Unidad = insumo.Unidad;
+                            detallesParaRecalculo[j].IdTipoInsumo = insumo.idTipoInsumo;
+                            detallesParaRecalculo[j].IdFamiliaInsumo = insumo.idFamiliaInsumo;
+                            detallesParaRecalculo[j].CostoUnitario = insumo.CostoBase;
+                            detallesParaRecalculo[j].CostoBase = insumo.CostoBase;
+                        }
+                        var datosObtenidos = await RecalcularDetalles(nuevoRegistro.Id, detallesParaRecalculo, insumosParaRecalculo);
+                        var nuevoRegistroBuscado = await _PrecioUnitarioService.ObtenXId(nuevoRegistro.Id);
+                        var concepto = await _ConceptoService.ObtenXId(nuevoRegistroBuscado.IdConcepto);
+                        concepto.CostoUnitario = datosObtenidos.Total;
+                        await _ConceptoService.Editar(concepto);
+                        await RecalcularPrecioUnitario(nuevoRegistroBuscado);
+                    }
+                }
+            }
+        }
+
+        public async Task eliminarCatalogoGeneral(List<PrecioUnitarioDTO> lista) {
+            await _PrecioUnitarioService.EsCatalogoGeneralMultiple(lista);
+        }
+
+        public async Task<List<PrecioUnitarioDTO>> agregarCatalogoGeneral(List<PrecioUnitarioDTO> registros) {
+            var registrosRemplazables = new List<PrecioUnitarioDTO>();
+            var registrosAgregar = new List<PrecioUnitarioDTO>();
+            var obtenerCatalogoGeneral = await obtenerPrecioUnitarioCatalogoGeneral();
+
+            foreach (var registro in registros) {
+                var existeEnCatalogo = obtenerCatalogoGeneral.FirstOrDefault(z => z.Codigo == registro.Codigo);
+                if (existeEnCatalogo != null && existeEnCatalogo.Id != registro.Id) {
+                    registrosRemplazables.Add(registro);
+                }
+                else
+                {
+                    registro.EsCatalogoGeneral = false;
+                    registrosAgregar.Add(registro);
+                }
+            }
+
+            await _PrecioUnitarioService.EsCatalogoGeneralMultiple(registrosAgregar);
+            return registrosRemplazables;
+        }
+
+        public async Task remplazarCatalogoGeneral(List<PrecioUnitarioDTO> remplazables) {
+            var obtenerCatalogoGeneral = await obtenerPrecioUnitarioCatalogoGeneral();
+            var registrosQuitarCatalogo = new List<PrecioUnitarioDTO>();
+
+            foreach (var remplazar in remplazables) {
+                var registroremplazar = obtenerCatalogoGeneral.FirstOrDefault(z => z.Codigo == remplazar.Codigo);
+                if (registroremplazar != null) {
+                    registrosQuitarCatalogo.Add(registroremplazar);
+                }
+            }
+
+            remplazables.AddRange(registrosQuitarCatalogo);
+            await _PrecioUnitarioService.EsCatalogoGeneralMultiple(remplazables);
         }
 
         //public async Task CrearRegistrosSeleccionados(List<PrecioUnitarioCopiaDTO> precios, int IdPrecioUnitarioBase, int IdProyecto)

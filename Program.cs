@@ -16,7 +16,83 @@ builder.Services.AddDbContext<Alumno01Context>(options =>
 });
 builder.Services.AddDbContext<Alumno02Context>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("GrupoTeckio"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno02"));
+});
+builder.Services.AddDbContext<Alumno03Context>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno03"));
+});
+builder.Services.AddDbContext<Alumno04Context>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno04"));
+});
+builder.Services.AddDbContext<Alumno05Context>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno05"));
+});
+builder.Services.AddDbContext<Alumno06Context>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno06"));
+});
+builder.Services.AddDbContext<Alumno07Context>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno07"));
+});
+builder.Services.AddDbContext<Alumno08Context>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno08"));
+});
+builder.Services.AddDbContext<Alumno09Context>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno09"));
+});
+builder.Services.AddDbContext<Alumno10Context>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno10"));
+});
+builder.Services.AddDbContext<Alumno11Context>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno11"));
+});
+builder.Services.AddDbContext<Alumno12Context>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno12"));
+});
+builder.Services.AddDbContext<Alumno13Context>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno13"));
+});
+builder.Services.AddDbContext<Alumno14Context>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno14"));
+});
+builder.Services.AddDbContext<Alumno15Context>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno15"));
+});
+builder.Services.AddDbContext<Alumno16Context>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno16"));
+});
+builder.Services.AddDbContext<Alumno17Context>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno17"));
+});
+builder.Services.AddDbContext<Alumno18Context>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno18"));
+});
+builder.Services.AddDbContext<Alumno19Context>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno19"));
+});
+builder.Services.AddDbContext<Alumno20Context>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno20"));
+});
+builder.Services.AddDbContext<Alumno21Context>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("alumno21"));
 });
 builder.Services.AddDbContext<DemoTeckioContext>(options =>
 {

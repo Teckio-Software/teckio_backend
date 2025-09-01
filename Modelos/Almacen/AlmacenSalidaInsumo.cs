@@ -5,7 +5,7 @@ public partial class AlmacenSalidaInsumo
 {
     public int Id { get; set; }
 
-    public int IdProyecto { get; set; }
+    public int? IdProyecto { get; set; }
 
     public int IdAlmacenSalida { get; set; }
 
