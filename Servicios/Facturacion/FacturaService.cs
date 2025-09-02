@@ -34,9 +34,17 @@ namespace ERP_TECKIO.Servicios.Facturacion
             return true;
         }
 
-        public Task<bool> Crear(FacturaDTO parametro)
+        public async Task<bool> Crear(FacturaDTO parametro)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var resultado = await _repository.Crear(_mapper.Map<Factura>(parametro));
+                return resultado.Id > 0;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public async Task<FacturaDTO> CrearYObtener(FacturaDTO parametro)
@@ -48,14 +56,62 @@ namespace ERP_TECKIO.Servicios.Facturacion
             return _mapper.Map<FacturaDTO>(objetoCreado);
         }
 
-        public Task<bool> Editar(FacturaDTO parametro)
+        public async Task<bool> Editar(FacturaDTO parametro)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var objetoEncontrado = await _repository.Obtener(z => z.Id == parametro.Id);
+                if(objetoEncontrado.Id <= 0)
+                    return false;
+                objetoEncontrado.Uuid = parametro.Uuid;
+                objetoEncontrado.FechaValidacion = parametro.FechaValidacion;
+                objetoEncontrado.FechaTimbrado = parametro.FechaTimbrado;
+                objetoEncontrado.FechaEmision = parametro.FechaEmision;
+                objetoEncontrado.RfcEmisor = parametro.RfcEmisor;
+                objetoEncontrado.Subtotal = parametro.Subtotal;
+                objetoEncontrado.Total = parametro.Total;
+                objetoEncontrado.SerieCfdi = parametro.SerieCfdi;
+                objetoEncontrado.FolioCfdi = parametro.FolioCfdi;
+                objetoEncontrado.Estatus = parametro.Estatus;
+                objetoEncontrado.Tipo = parametro.Tipo;
+                objetoEncontrado.Modalidad = parametro.Modalidad;
+                objetoEncontrado.IdArchivo = parametro.IdArchivo;
+                objetoEncontrado.MetodoPago = parametro.MetodoPago;
+                objetoEncontrado.Descuento = parametro.Descuento;
+                objetoEncontrado.IdArchivoPdf = parametro.IdArchivoPdf;
+                objetoEncontrado.EstatusEnviadoCentroCostos = parametro.EstatusEnviadoCentroCostos;
+                objetoEncontrado.VersionFactura = parametro.VersionFactura;
+                objetoEncontrado.CodigoPostal = parametro.CodigoPostal;
+                objetoEncontrado.TipoCambio = parametro.TipoCambio;
+                objetoEncontrado.IdCliente = parametro.IdCliente;
+                objetoEncontrado.IdFormaPago = parametro.IdFormaPago;
+                objetoEncontrado.IdRegimenFiscalSat = parametro.IdRegimenFiscalSat;
+                objetoEncontrado.IdUsoCfdi = parametro.IdUsoCfdi;
+                objetoEncontrado.IdMonedaSat = parametro.IdMonedaSat;
+                var resultado = await _repository.Editar(objetoEncontrado);
+                return resultado;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        public Task<bool> EsEnviado(int IdFactura)
+        public async Task<bool> EsEnviado(int IdFactura)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var objetoEncontrado = await _repository.Obtener(z => z.Id == IdFactura);
+                if (objetoEncontrado.Id <= 0)
+                    return false;
+                
+                var resultado = await _repository.Eliminar(objetoEncontrado);
+                return resultado;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public Task<List<FacturaDTO>> ObtenSoloValidas()
@@ -85,12 +141,13 @@ namespace ERP_TECKIO.Servicios.Facturacion
             throw new NotImplementedException();
         }
 
-        public Task<List<FacturaDTO>> ObtenXRfcEmisor(string rfcEmisor)
+        public async Task<List<FacturaDTO>> ObtenXRfcEmisor(string rfcEmisor)
         {
-            throw new NotImplementedException();
+            var lista = await _repository.ObtenerTodos(f => f.RfcEmisor == rfcEmisor);
+            return _mapper.Map<List<FacturaDTO>>(lista);
         }
 
-        public Task<List<FacturaDTO>> ObtenXRfcReceptor(string rfcReceptor)
+        public  Task<List<FacturaDTO>> ObtenXRfcReceptor(string rfcReceptor)
         {
             throw new NotImplementedException();
         }

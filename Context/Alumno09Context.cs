@@ -843,7 +843,6 @@ public partial class Alumno09Context : DbContext
             entity.ToTable("FacturaDetalle", "Factura");
 
             entity.Property(e => e.Cantidad).HasColumnType("decimal(28, 6)");
-            entity.Ignore(e => e.Descripcion);
             entity.Ignore(e => e.UnidadSat);
             entity.Property(e => e.Descuento).HasColumnType("decimal(28, 6)");
             entity.Property(e => e.IdProductoYservicio).HasColumnName("IdProductoYServicio");

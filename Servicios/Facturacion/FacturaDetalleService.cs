@@ -18,9 +18,17 @@ namespace ERP_TECKIO.Servicios.Facturacion
             _mapper = mapper;
         }
 
-        public Task<bool> Crear(FacturaDetalleDTO parametro)
+        public async Task<bool> Crear(FacturaDetalleDTO parametro)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var objetoCreado = await _repository.Crear(_mapper.Map<FacturaDetalle>(parametro));
+                return objetoCreado.Id > 0;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public async Task<FacturaDetalleDTO> CrearYObtener(FacturaDetalleDTO parametro)
@@ -31,29 +39,100 @@ namespace ERP_TECKIO.Servicios.Facturacion
             return _mapper.Map<FacturaDetalleDTO>(objetoCreado);
         }
 
-        public Task<bool> Editar(FacturaDetalleDTO parametro)
+        public async Task<bool> Editar(FacturaDetalleDTO parametro)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var objetoObtenido = await _repository.Obtener(f=>f.Id == parametro.Id);
+                if (objetoObtenido.Id <= 0)
+                {
+                    return false;
+                }
+                objetoObtenido.Cantidad = parametro.Cantidad;
+                objetoObtenido.PrecioUnitario = parametro.PrecioUnitario;
+                objetoObtenido.Importe = parametro.Importe;
+                objetoObtenido.Descuento = parametro.Descuento;
+                objetoObtenido.IdProductoYservicio = parametro.IdProductoYservicio;
+                objetoObtenido.UnidadSat = parametro.UnidadSat;
+                var objetoEditado = await _repository.Editar(objetoObtenido);
+                return objetoEditado;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        public Task<bool> Eliminar(int Id)
+        public async Task<bool> Eliminar(int Id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var objetoObtenido = await _repository.Obtener(f => f.Id == Id);
+                if (objetoObtenido.Id <= 0)
+                {
+                    return false;
+                }
+                
+                var objetoEditado = await _repository.Eliminar(objetoObtenido);
+                return objetoEditado;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        public Task<List<FacturaDetalleDTO>> ObtenTodos()
+        public async Task<List<FacturaDetalleDTO>> ObtenTodos()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var lista = await _repository.ObtenerTodos();
+                if (lista.Count > 0)
+                {
+                    return _mapper.Map<List<FacturaDetalleDTO>>(lista);
+                }
+                else
+                {
+                    return new List<FacturaDetalleDTO>();
+                }
+            }
+            catch
+            {
+                return new List<FacturaDetalleDTO>();
+            }
         }
 
-        public Task<List<FacturaDetalleDTO>> ObtenXCantidad(decimal Cantidad)
+        public async Task<List<FacturaDetalleDTO>> ObtenXCantidad(decimal Cantidad)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var lista = await _repository.ObtenerTodos(f=>f.Cantidad == Cantidad);
+                if (lista.Count > 0)
+                {
+                    return _mapper.Map<List<FacturaDetalleDTO>>(lista);
+                }
+                else
+                {
+                    return new List<FacturaDetalleDTO>();
+                }
+            }
+            catch
+            {
+                return new List<FacturaDetalleDTO>();
+            }
         }
 
-        public Task<FacturaDetalleDTO> ObtenXId(int Id)
+        public async Task<FacturaDetalleDTO> ObtenXId(int Id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var objeto = await _repository.Obtener(f => f.Id == Id);
+                return _mapper.Map<FacturaDetalleDTO>(objeto);
+            }
+            catch
+            {
+                return new FacturaDetalleDTO();
+            }
         }
 
         public async Task<List<FacturaDetalleDTO>> ObtenXIdFactura(int IdFactura)
@@ -62,14 +141,44 @@ namespace ERP_TECKIO.Servicios.Facturacion
             return _mapper.Map<List<FacturaDetalleDTO>>(lista);
         }
 
-        public Task<List<FacturaDetalleDTO>> ObtenXImporte(decimal Importe)
+        public async Task<List<FacturaDetalleDTO>> ObtenXImporte(decimal Importe)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var lista = await _repository.ObtenerTodos(f => f.Importe == Importe);
+                if (lista.Count > 0)
+                {
+                    return _mapper.Map<List<FacturaDetalleDTO>>(lista);
+                }
+                else
+                {
+                    return new List<FacturaDetalleDTO>();
+                }
+            }
+            catch
+            {
+                return new List<FacturaDetalleDTO>();
+            }
         }
 
-        public Task<List<FacturaDetalleDTO>> ObtenXUnidadSat(string UnidadSat)
+        public async Task<List<FacturaDetalleDTO>> ObtenXUnidadSat(string UnidadSat)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var lista = await _repository.ObtenerTodos(f => f.UnidadSat == UnidadSat);
+                if (lista.Count > 0)
+                {
+                    return _mapper.Map<List<FacturaDetalleDTO>>(lista);
+                }
+                else
+                {
+                    return new List<FacturaDetalleDTO>();
+                }
+            }
+            catch
+            {
+                return new List<FacturaDetalleDTO>();
+            }
         }
     }
 }

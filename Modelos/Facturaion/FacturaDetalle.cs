@@ -8,7 +8,6 @@ public partial class FacturaDetalle
 
     public int IdFactura { get; set; }
 
-    public string Descripcion { get; set; }
     public decimal Cantidad { get; set; }
 
     public decimal PrecioUnitario { get; set; }
