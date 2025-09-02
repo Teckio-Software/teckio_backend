@@ -4,6 +4,8 @@ using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.Modelos;
 using ERP_TECKIO.Servicios.Contratos.Facturacion;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Text.Json;
 
 namespace ERP_TECKIO.Servicios.Facturacion
 {
@@ -11,6 +13,7 @@ namespace ERP_TECKIO.Servicios.Facturacion
     {
         private readonly IGenericRepository<Factura, T> _repository;
         private readonly IMapper _mapper;
+        private readonly Alumno01Context db = new Alumno01Context();
         public FacturaService(
             IGenericRepository<Factura, T> repository,
             IMapper mapper
@@ -116,6 +119,7 @@ namespace ERP_TECKIO.Servicios.Facturacion
 
         public Task<List<FacturaDTO>> ObtenSoloValidas()
         {
+            //Donde el estatus es 2
             throw new NotImplementedException();
         }
 
@@ -149,7 +153,42 @@ namespace ERP_TECKIO.Servicios.Facturacion
 
         public  Task<List<FacturaDTO>> ObtenXRfcReceptor(string rfcReceptor)
         {
-            throw new NotImplementedException();
+            var items = db.Database.SqlQueryRaw<string>(""""
+               SELECT f.[Id]
+               ,f.[UUID]
+               ,f.[FechaValidacion]
+              ,f.[FechaTimbrado]
+              ,f.[FechaEmision]
+              ,f.[RfcEmisor]
+              ,f.[Subtotal]
+              ,f.[Total]
+              ,f.[SerieCfdi]
+              ,f.[FolioCfdi]
+              ,f.[Estatus]
+              ,f.[Tipo]
+              ,f.[Modalidad]
+              ,f.[IdArchivo]
+              ,f.[MetodoPago]
+              ,f.[Descuento]
+              ,f.[IdArchivoPdf]
+              ,f.[EstatusEnviadoCentroCostos]
+              ,f.[VersionFactura]
+              ,f.[CodigoPostal]
+              ,f.[TipoCambio]
+              ,f.[IdCliente]
+              ,f.[IdFormaPago]
+              ,f.[IdRegimenFiscalSat]
+              ,f.[IdUsoCfdi]
+              ,f.[IdMonedaSat]
+          FROM dbo.Clientes c join Factura.Factura f on f.[IdCliente] = c.Id where f.RfcEmisor = '
+                        """"+ rfcReceptor+""""';"""").ToList();
+            if (items.Count <= 0)
+            {
+                return new list<preciounitariodetalledto>();
+            }
+            string json = string.Join("", items);
+            var datos = JsonSerializer.Deserialize<list<preciounitariodetalledto>>(json);
+            return datos;
         }
 
         public async Task<List<FacturaDTO>> ObtenXUuid(string uuid)
