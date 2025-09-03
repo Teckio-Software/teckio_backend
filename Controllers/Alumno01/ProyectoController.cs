@@ -54,10 +54,10 @@ namespace ERP_TECKIO.Controllers
         /// <returns>NoContent</returns>
         [HttpPut]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//)]//, Policy = "EditarProyecto-Empresa1")]
-        public async Task<ActionResult> Put([FromBody] ProyectoDTO parametros)
+        public async Task<ActionResult<RespuestaDTO>> Put([FromBody] ProyectoDTO parametros)
         {
-            await _ProyectoProceso.Put(parametros);
-            return NoContent();
+            var respuesta = await _ProyectoProceso.Put(parametros);
+            return respuesta;
         }
         /// <summary>
         /// Endpoint del tipo delete que permite eliminar un registro, recibe como parametro el Id del registro

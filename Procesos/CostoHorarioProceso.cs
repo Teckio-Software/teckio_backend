@@ -304,7 +304,7 @@ namespace ERP_TECKIO.Procesos
 
             var registroCreado = await _CostoVariableService.CrearYObtener(registro);
             var obtenerRegistros = await obtenerRegistrosXIdDetallePerteneciente(registro.IdPrecioUnitarioDetalle, registro.IdCostoVariablePerteneciente);
-            var costoFijo = await ObtenerCostoFijoXIdDetalle(registro.IdPrecioUnitarioDetalle)
+            var costoFijo = await ObtenerCostoFijoXIdDetalle(registro.IdPrecioUnitarioDetalle);
 
             if (registro.IdCostoVariablePerteneciente == 0)
             {

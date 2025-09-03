@@ -55,8 +55,9 @@ namespace ERP_TECKIO
             return respuesta;
         }
 
-        public async Task Put([FromBody] ProyectoDTO parametros)
+        public async Task<RespuestaDTO> Put([FromBody] ProyectoDTO parametros)
         {
+            var resultado = new RespuestaDTO();
             var programacionesGantt = await _ProgramacionEstimadaGantt.ObtenerProgramacionEstimadaXIdProyecto(parametros.Id, _context);
             var inicio = parametros.FechaInicio.ToShortDateString();
             var termino = parametros.FechaInicio.AddDays(1).ToShortDateString();
@@ -68,13 +69,13 @@ namespace ERP_TECKIO
             }
             try
             {
-                var resultado = await _proyectoService.Editar(parametros);
+                resultado = await _proyectoService.Editar(parametros);
             }
             catch (Exception ex)
             {
                 string error = ex.Message.ToString();
             }
-            return;
+            return resultado;
         }
 
         public async Task<ActionResult<ProyectoDTO>> PostCrearYObtener([FromBody] ProyectoDTO creacionDTO)
