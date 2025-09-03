@@ -5,6 +5,7 @@ using ERP_TECKIO.Modelos.Presupuesto;
 using ERP_TECKIO.Servicios.Contratos;
 using ERP_TECKIO.Servicios.Contratos.Facturacion;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
 using System.Text.Json;
 
 namespace ERP_TECKIO.Procesos
@@ -304,18 +305,39 @@ namespace ERP_TECKIO.Procesos
 
             var registroCreado = await _CostoVariableService.CrearYObtener(registro);
             var obtenerRegistros = await obtenerRegistrosXIdDetallePerteneciente(registro.IdPrecioUnitarioDetalle, registro.IdCostoVariablePerteneciente);
-            var costoFijo = await ObtenerCostoFijoXIdDetalle(registro.IdPrecioUnitarioDetalle)
-
+            var costoFijo = await ObtenerCostoFijoXIdDetalle(registro.IdPrecioUnitarioDetalle);
+            decimal costoPU = 0;
             if (registro.IdCostoVariablePerteneciente == 0)
             {
-                var detalles = await _precioUnitarioProceso.ObtenerDetallesPorIdInsumo(registro.IdInsumo, _dbContext);
-                foreach(var detalle in detalles)
+                foreach (var variables in obtenerRegistros)
                 {
-                    registro.Id = 0;
-
+                    costoPU += variables.Importe;
                 }
-
+                costoPU = costoPU + costoFijo.SubtotalGastosFijos;
+                var detalle = await _PrecioUnitarioDetalleService.ObtenXId(registro.IdPrecioUnitarioDetalle);
+                await RecalcularPreciosUnitarios(detalle.IdInsumo, costoPU);
             }
+            else
+            {
+                //var detallesHermanos = await obtenerRegistrosXIdDetallePerteneciente(registro.IdPrecioUnitarioDetalle, registro.IdCostoVariablePerteneciente);
+                var registroFinal = new CostoHorarioVariableXPrecioUnitarioDetalleDTO();
+
+                await RecalcularPreciosUnitarios(registro.IdInsumo, registro.CostoBase);
+            }
+            
+        }
+        public async Task RecalcularPreciosUnitarios(int IdInsumo, decimal CostoPU)
+        {
+            var detalles = await _precioUnitarioProceso.ObtenerDetallesPorIdInsumo(IdInsumo, _dbContext);
+            foreach (var item in detalles)
+            {
+                item.CostoBase = CostoPU;
+                await _precioUnitarioProceso.EditarImporteDetalle(item);
+            }
+        }
+        
+        public async Task RecalcularCostosVariablesPadre(int idCostoVariablePadre, decimal CostoPU)
+        {
             
         }
     }
