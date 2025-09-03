@@ -180,8 +180,8 @@ namespace ERP_TECKIO.Servicios.Facturacion
               ,f.[IdRegimenFiscalSat]
               ,f.[IdUsoCfdi]
               ,f.[IdMonedaSat]
-              FROM dbo.Clientes c join Factura.Factura f on f.[IdCliente] = c.Id where f.RfcEmisor = '
-              """"+ rfcReceptor+""""';"""").ToList();
+              FROM dbo.Clientes c join Factura.Factura f on f.[IdCliente] = c.Id where c.Rfc = '
+              """" + rfcReceptor+""""';"""").ToList();
             if (items.Count <= 0)
             {
                 return new List<FacturaDTO>();
