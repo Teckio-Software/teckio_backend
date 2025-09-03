@@ -151,12 +151,12 @@ namespace ERP_TECKIO.Servicios.Facturacion
             return _mapper.Map<List<FacturaDTO>>(lista);
         }
 
-        public  Task<List<FacturaDTO>> ObtenXRfcReceptor(string rfcReceptor)
+        public async Task<List<FacturaDTO>> ObtenXRfcReceptor(string rfcReceptor)
         {
-            var items = db.Database.SqlQueryRaw<string>(""""
-               SELECT f.[Id]
-               ,f.[UUID]
-               ,f.[FechaValidacion]
+            var items = db.Database.SqlQueryRaw<FacturaDTO>(""""
+              SELECT f.[Id]
+              ,f.[UUID]
+              ,f.[FechaValidacion]
               ,f.[FechaTimbrado]
               ,f.[FechaEmision]
               ,f.[RfcEmisor]
@@ -180,15 +180,14 @@ namespace ERP_TECKIO.Servicios.Facturacion
               ,f.[IdRegimenFiscalSat]
               ,f.[IdUsoCfdi]
               ,f.[IdMonedaSat]
-          FROM dbo.Clientes c join Factura.Factura f on f.[IdCliente] = c.Id where f.RfcEmisor = '
-                        """"+ rfcReceptor+""""';"""").ToList();
+              FROM dbo.Clientes c join Factura.Factura f on f.[IdCliente] = c.Id where f.RfcEmisor = '
+              """"+ rfcReceptor+""""';"""").ToList();
             if (items.Count <= 0)
             {
-                return new list<preciounitariodetalledto>();
+                return new List<FacturaDTO>();
             }
-            string json = string.Join("", items);
-            var datos = JsonSerializer.Deserialize<list<preciounitariodetalledto>>(json);
-            return datos;
+            
+            return items;
         }
 
         public async Task<List<FacturaDTO>> ObtenXUuid(string uuid)
