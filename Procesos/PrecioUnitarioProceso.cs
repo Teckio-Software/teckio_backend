@@ -4485,7 +4485,6 @@ for json path
                         insumo.idTipoInsumo = 10006;
                     }
                     insumo.Codigo = registros[i].Where(z => z.TipoCampo == "NOMBRE").FirstOrDefault().Valor;
-                    //string descipcionInsumo = RecuperarTextoOriginal(registros[i].Where(z => z.TipoCampo == "DESCRIPCIO").FirstOrDefault().Valor);
                     insumo.Descripcion = registros[i].Where(z => z.TipoCampo == "DESCRIPCIO").FirstOrDefault().Valor;
                     insumo.Unidad = registros[i].Where(z => z.TipoCampo == "UNIDAD").FirstOrDefault().Valor;
                     insumo.idFamiliaInsumo = null;
@@ -4584,15 +4583,36 @@ for json path
                             var precioUnitarioDetalle = new PrecioUnitarioDetalleDTO();
                             precioUnitarioDetalle.IdPrecioUnitario = regCatalogo.Id;
                             precioUnitarioDetalle.IdPrecioUnitarioDetallePerteneciente = 0;
+                            if(insumo.idTipoInsumo == 10001)
+                            {
+                                var nuevoInsumoCreacion = new InsumoCreacionDTO();
+                                nuevoInsumoCreacion.idTipoInsumo = insumo.idTipoInsumo;
+                                nuevoInsumoCreacion.Codigo = insumo.Codigo;
+                                nuevoInsumoCreacion.Descripcion = insumo.Descripcion;
+                                nuevoInsumoCreacion.Unidad = insumo.Unidad;
+                                nuevoInsumoCreacion.idFamiliaInsumo = insumo.idFamiliaInsumo;
+                                nuevoInsumoCreacion.CostoBase = Convert.ToDecimal(registro.Where(z => z.TipoCampo == "COSTO").FirstOrDefault().Valor);
+                                nuevoInsumoCreacion.CostoUnitario = nuevoInsumoCreacion.CostoBase;
+                                nuevoInsumoCreacion.IdProyecto = insumo.IdProyecto;
+                                var insumoCreado = await _InsumoService.CrearYObtener(nuevoInsumoCreacion);
+                                insumo = insumoCreado;
+                            }
                             precioUnitarioDetalle.IdInsumo = insumo.id;
                             precioUnitarioDetalle.Cantidad = Convert.ToDecimal(registro.Where(z => z.TipoCampo == "CANTIDAD").FirstOrDefault().Valor);
                             var RegistrosExistentesCompuesto = registros.Where(sublista => sublista.Any(z => z.TipoCampo == "NOMBRE" && z.Valor == insumo.Codigo)).ToList();
-                            if (RegistrosExistentesCompuesto.Count > 0)
+                            if(insumo.idTipoInsumo != 10001)
                             {
-                                precioUnitarioDetalle.EsCompuesto = true;
-                                var precioUnitarioCreado = await _PrecioUnitarioDetalleService.CrearYObtener(precioUnitarioDetalle);
-                                //Hacer metodo recursivo para armados (pasar parametros el precio creado y los registros guardados)
-                                await ArmarPreciosUnitariosDetalles(registros, IdProyecto, precioUnitarioCreado, Insumos);
+                                if (RegistrosExistentesCompuesto.Count > 0)
+                                {
+                                    precioUnitarioDetalle.EsCompuesto = true;
+                                    var precioUnitarioCreado = await _PrecioUnitarioDetalleService.CrearYObtener(precioUnitarioDetalle);
+                                    //Hacer metodo recursivo para armados (pasar parametros el precio creado y los registros guardados)
+                                    await ArmarPreciosUnitariosDetalles(registros, IdProyecto, precioUnitarioCreado, Insumos);
+                                }
+                                else
+                                {
+                                    var precioUnitarioCreado = await _PrecioUnitarioDetalleService.CrearYObtener(precioUnitarioDetalle);
+                                }
                             }
                             else
                             {
@@ -4618,15 +4638,36 @@ for json path
                     var precioUnitarioDetalle = new PrecioUnitarioDetalleDTO();
                     precioUnitarioDetalle.IdPrecioUnitario = Padre.IdPrecioUnitario;
                     precioUnitarioDetalle.IdPrecioUnitarioDetallePerteneciente = Padre.Id;
+                    if (insumoHijo.idTipoInsumo == 10001)
+                    {
+                        var nuevoInsumoCreacion = new InsumoCreacionDTO();
+                        nuevoInsumoCreacion.idTipoInsumo = insumoHijo.idTipoInsumo;
+                        nuevoInsumoCreacion.Codigo = insumo.Codigo;
+                        nuevoInsumoCreacion.Descripcion = insumoHijo.Descripcion;
+                        nuevoInsumoCreacion.Unidad = insumoHijo.Unidad;
+                        nuevoInsumoCreacion.idFamiliaInsumo = insumoHijo.idFamiliaInsumo;
+                        nuevoInsumoCreacion.CostoBase = Convert.ToDecimal(hijo.Where(z => z.TipoCampo == "COSTO").FirstOrDefault().Valor);
+                        nuevoInsumoCreacion.CostoUnitario = nuevoInsumoCreacion.CostoBase;
+                        nuevoInsumoCreacion.IdProyecto = insumoHijo.IdProyecto;
+                        var insumoCreado = await _InsumoService.CrearYObtener(nuevoInsumoCreacion);
+                        insumoHijo = insumoCreado;
+                    }
                     precioUnitarioDetalle.IdInsumo = insumoHijo.id;
                     precioUnitarioDetalle.Cantidad = Convert.ToDecimal(hijo.Where(z => z.TipoCampo == "CANTIDAD").FirstOrDefault().Valor);
-                    var RegistrosExistentesCompuesto = registros.Where(sublista => sublista.Any(z => z.TipoCampo == "NOMBRE" && z.Valor == insumoHijo.Codigo)).ToList();
-                    if (RegistrosExistentesCompuesto.Count > 0)
+                    if(insumoHijo.idTipoInsumo != 10001)
                     {
-                        precioUnitarioDetalle.EsCompuesto = true;
-                        var precioUnitarioCreado = await _PrecioUnitarioDetalleService.CrearYObtener(precioUnitarioDetalle);
-                        //Hacer metodo recursivo para armados (pasar parametros el precio creado y los registros guardados)
-                        await ArmarPreciosUnitariosDetalles(registros, IdProyecto, precioUnitarioCreado, insumos);
+                        var RegistrosExistentesCompuesto = registros.Where(sublista => sublista.Any(z => z.TipoCampo == "NOMBRE" && z.Valor == insumoHijo.Codigo)).ToList();
+                        if (RegistrosExistentesCompuesto.Count > 0)
+                        {
+                            precioUnitarioDetalle.EsCompuesto = true;
+                            var precioUnitarioCreado = await _PrecioUnitarioDetalleService.CrearYObtener(precioUnitarioDetalle);
+                            //Hacer metodo recursivo para armados (pasar parametros el precio creado y los registros guardados)
+                            await ArmarPreciosUnitariosDetalles(registros, IdProyecto, precioUnitarioCreado, insumos);
+                        }
+                        else
+                        {
+                            var precioUnitarioCreado = await _PrecioUnitarioDetalleService.CrearYObtener(precioUnitarioDetalle);
+                        }
                     }
                     else
                     {
