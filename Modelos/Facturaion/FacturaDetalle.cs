@@ -13,6 +13,7 @@ public partial class FacturaDetalle
     public decimal PrecioUnitario { get; set; }
 
     public string UnidadSat { get; set; } = null!;
+    public string Descripcion { get; set; } = null!;
 
     public decimal Importe { get; set; }
 
