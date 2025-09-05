@@ -41,7 +41,7 @@ namespace ERP_TECKIO
             indirectos.IdConjuntoIndirectos = crearConjuntoIndirecto.Id;
             indirectos.IdIndirectoBase = 0;
             string Codigo = "00";
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 4; i++) {
                 indirectos.TipoIndirecto = i;
                 indirectos.Codigo = Codigo + (i + 1).ToString();
                 indirectos.Porcentaje = 0;
@@ -54,6 +54,9 @@ namespace ERP_TECKIO
                         break;
                     case 2:
                         indirectos.Descripcion = "Utilidad";
+                        break;
+                    case 3:
+                        indirectos.Descripcion = "Cargos Adicionales";
                         break;
                 }
 

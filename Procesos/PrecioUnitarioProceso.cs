@@ -2208,6 +2208,7 @@ for json path
                 {
                     precios[i].Nivel = precioUnitarioBase.Nivel + 1;
                     precios[i].EsCatalogoGeneral = false;
+                    precios[i].EsAvanceObra = false;
                     precios[i].IdPrecioUnitarioBase = precioUnitarioBase.Id;
                     precios[i].IdProyecto = IdProyecto;
                     var Id = precios[i].Id;

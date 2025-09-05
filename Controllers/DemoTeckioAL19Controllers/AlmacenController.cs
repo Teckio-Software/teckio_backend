@@ -11,6 +11,7 @@ namespace ERP_TECKIO.Controllers
 
 
     [Route("api/almacen/19")]
+
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AlmacenDemoTeckioAL19Controller : ControllerBase
