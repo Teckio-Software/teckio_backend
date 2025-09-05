@@ -10,5 +10,6 @@ namespace ERP_TECKIO.DTO.Factura
         public string MonedaSat { get; set; }
         public string RfcReceptor { get; set; } = null!;
         public string FormaPago { get; set; } = null!;
+        public List<FacturaDetalleDTO> DetalleDTOs { get; set; } = new List<FacturaDetalleDTO>();
     }
 }

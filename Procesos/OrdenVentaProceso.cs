@@ -1,6 +1,8 @@
 ﻿using ERP_TECKIO.DTO;
+using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.Modelos;
 using ERP_TECKIO.Servicios.Contratos;
+using ERP_TECKIO.Servicios.Contratos.Facturacion;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +16,8 @@ namespace ERP_TECKIO.Procesos
         private readonly SalidaProduccionAlmacenProceso<T> _salidaProduccionAlmacenProceso;
         private readonly IClientesService<T> _clienteService;
         private readonly EntradaProduccionAlmacenProceso<T> _entradaProduccionAlmacenProceso;
+        private readonly IFacturaService<T> _facturaService;
+        private readonly IFacturaDetalleService<T> _detalleFacturaService;
 
         public OrdenVentaProceso(
             IOrdenVentaService<T> ordenVentaService,
@@ -21,7 +25,9 @@ namespace ERP_TECKIO.Procesos
             IImpuestoDetalleOrdenVentaService<T> impuestoDetalleOrdenVentaService,
             SalidaProduccionAlmacenProceso<T> salidaProduccionAlmacenProceso,
             IClientesService<T> clienteService,
-            EntradaProduccionAlmacenProceso<T> entradaProduccionAlmacenProceso
+            EntradaProduccionAlmacenProceso<T> entradaProduccionAlmacenProceso,
+            IFacturaService<T> facturaService,
+            IFacturaDetalleService<T> detalleFacturaService
             ) { 
             _ordenVentaService = ordenVentaService;
             _detalleOrdenVentaService = detalleOrdenVentaService;
@@ -29,6 +35,8 @@ namespace ERP_TECKIO.Procesos
             _salidaProduccionAlmacenProceso = salidaProduccionAlmacenProceso;
             _clienteService = clienteService;
             _entradaProduccionAlmacenProceso = entradaProduccionAlmacenProceso;
+            _facturaService = facturaService;
+            _detalleFacturaService = detalleFacturaService;
         }
 
         public async Task<RespuestaDTO> CrearOrdenVenta(OrdenVentaDTO ordenVenta, List<System.Security.Claims.Claim> claims) { 
@@ -323,5 +331,138 @@ namespace ERP_TECKIO.Procesos
             }
         }
 
+        public async Task<RespuestaDTO> FacturarOrdenVenta(FacturaCreacionDTO factura)
+        {
+            RespuestaDTO respuesta = new RespuestaDTO();
+            try
+            {
+                if (factura.IdOrdenesVenta.Count <= 0)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "No se recibieron órdenes de venta para facturar";
+                    return respuesta;
+                }
+                else
+                {
+                    var c = false;
+                    foreach (var idOrden in factura.IdOrdenesVenta)
+                    {
+                        var ordenVenta = await _ordenVentaService.ObtenerOrdenVentaXId(idOrden);
+                        ordenVenta.DetalleOrdenVenta = await _detalleOrdenVentaService.ObtenerXIdOrdenVenta(ordenVenta.Id);
+
+                        FacturaDTO objeto = new FacturaDTO
+                        {
+                            Uuid = "",
+                            //Provisionalmente setee la fecha de emision y timbrado como la fecha actual aunque esta sujeto a cambios.
+                            FechaEmision = DateTime.Now,
+                            FechaTimbrado = DateTime.Now,
+                            FechaValidacion = DateTime.Now,
+                            RfcEmisor = factura.RFCEmisor,
+                            Subtotal = ordenVenta.Subtotal,
+                            Total = ordenVenta.ImporteTotal,
+                            Descuento = ordenVenta.Descuento,
+                            SerieCfdi = "",
+                            FolioCfdi = "",
+                            Estatus = 1,
+                            Tipo = factura.Tipo,
+                            Modalidad = factura.Modalidad,
+                            //provisionalmente el archivo se pone en 0, ya que no se ha generado el XML
+                            IdArchivo = 0,
+                            MetodoPago = factura.MetodoPago,
+                            IdArchivoPdf = null,
+                            EstatusEnviadoCentroCostos = false,
+                            VersionFactura = "4.0",
+                            CodigoPostal = factura.CodigoPostal,
+                            TipoCambio = factura.TipoCambio,
+                            IdCliente = factura.IdCliente,
+                            IdFormaPago = factura.IdFormaPago,
+                            IdRegimenFiscalSat = factura.IdRegimenFiscalSat,
+                            IdUsoCfdi = factura.IdUsoCfdi,
+                            IdMonedaSat = factura.IdMonedaSat,
+                        };
+
+                        //Obtiene el folio para la factura obteniendo el último, convirtiendolo a entero y sumandole 1.
+                        var facturas = await _facturaService.ObtenTodos();
+                        var facturaAnterior = facturas.Last();
+                        if (facturaAnterior != null && facturas.Count > 0)
+                        {
+                            if (facturaAnterior.FolioCfdi != null && facturaAnterior.FolioCfdi != "")
+                            {
+                                int folio = 0;
+                                if (int.TryParse(facturaAnterior.FolioCfdi, out folio))
+                                {
+                                    objeto.FolioCfdi = (folio + 1).ToString();
+                                }
+                                else
+                                {
+                                    objeto.FolioCfdi = "1";
+                                }
+                            }
+                            else
+                            {
+                                objeto.FolioCfdi = "1";
+                            }
+                        }
+                        else
+                        {
+                            objeto.FolioCfdi = "1";
+                        }
+                        objeto.Subtotal = ordenVenta.Subtotal;
+                        objeto.Total = ordenVenta.ImporteTotal;
+                        objeto.Descuento = ordenVenta.Descuento;
+                        var resultFactura = await _facturaService.CrearYObtener(objeto);
+
+                        if (resultFactura.Id <= 0)
+                        {
+                            respuesta.Estatus = false;
+                            respuesta.Descripcion = "Ocurrio un error al intentar facturar la orden de venta";
+                            return respuesta;
+                        }
+
+                        foreach (var detalle in ordenVenta.DetalleOrdenVenta)
+                        {
+                            FacturaDetalleDTO detalleFactura = new FacturaDetalleDTO
+                            {
+                                //De momento se deja en 0 ya que no se ha implementado la funcionalidad de guardar el detalle de la factura
+                                IdFactura = 0,
+                                Cantidad = detalle.Cantitdad,
+                                PrecioUnitario = detalle.PrecioUnitario,
+                                Importe = (detalle.Cantitdad * detalle.PrecioUnitario) - detalle.Descuento,
+                                Descuento = detalle.Descuento,
+                                IdProductoYservicio = detalle.IdProductoYservicio,
+                            };
+                            var resultDetalle = await _detalleFacturaService.CrearYObtener(detalleFactura);
+                            if (resultDetalle.Id <= 0)
+                            {
+                                respuesta.Estatus = false;
+                                respuesta.Descripcion = "Ocurrio un error al intentar facturar la orden de venta";
+                                return respuesta;
+                            }
+                        }
+                        c = true;
+                        
+                    }
+
+                    if (c)
+                    {
+                        respuesta.Estatus = true;
+                        respuesta.Descripcion = "Se facturo la orden de venta";
+                        return respuesta;
+                    }
+                    else
+                    {
+                        respuesta.Estatus = false;
+                        respuesta.Descripcion = "Ocurrio un error al intentar facturar la orden de venta";
+                        return respuesta;
+                    }
+                }
+            }
+            catch
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Ocurrio un error al intentar facturar la orden de venta";
+                return respuesta;
+            }
+        }
     }
 }
