@@ -747,6 +747,9 @@ for json path
                 var registrosFiltrados = registrosSinEstructurar.Where(z => z.IdPrecioUnitarioBase == registro.IdPrecioUnitarioBase).OrderBy(z => z.Posicion).ToList();
                 var registrosEditarPosicion = new List<PrecioUnitarioDTO>();
                 for (var i = 0; i < registrosFiltrados.Count(); i++) {
+                    if (registrosFiltrados[i].Posicion == 0) {
+                        registrosFiltrados[i].Posicion = i + 1;
+                    }
                     if (registro.Posicion <= registrosFiltrados[i].Posicion) {
                         registrosFiltrados[i].Posicion = i+2;
                         registrosEditarPosicion.Add(registrosFiltrados[i]);
