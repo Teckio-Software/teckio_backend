@@ -2111,6 +2111,77 @@ for json path
             }
         }
 
+        public async Task<List<PrecioUnitarioDetalleDTO>> EliminarDetalles(List<int> Ids, DbContext db)
+        {
+            try
+            {
+                var lista = new List<PrecioUnitarioDetalleDTO>();
+                foreach (var Id in Ids)
+                {
+                    var registro = await _PrecioUnitarioDetalleService.ObtenerXId(Id);
+                    var registros = await ObtenerDetallesPorIdInsumo(registro.IdInsumo, db);
+                    var registroPadre = new PrecioUnitarioDetalleDTO();
+                    if (registro.IdPrecioUnitarioDetallePerteneciente != 0)
+                    {
+                        registroPadre = await _PrecioUnitarioDetalleService.ObtenerXId(registro.IdPrecioUnitarioDetallePerteneciente);
+                        foreach (var detalle in registros)
+                        {
+                            if (detalle.IdPrecioUnitarioDetallePerteneciente != 0)
+                            {
+                                var detallePadre = await _PrecioUnitarioDetalleService.ObtenerXId(detalle.IdPrecioUnitarioDetallePerteneciente);
+                                if (detallePadre.IdInsumo == registroPadre.IdInsumo)
+                                {
+                                    var PrecioUnitario = await _PrecioUnitarioService.ObtenXId(detalle.IdPrecioUnitario);
+                                    await _PrecioUnitarioDetalleService.Eliminar(detalle.Id);
+                                    var insumos = await _InsumoService.ObtenXIdProyecto(PrecioUnitario.IdProyecto);
+                                    var detalles = await ObtenerDetallesPorPU(PrecioUnitario.Id, db);
+                                    var valores = await RecalcularDetalles(PrecioUnitario.Id, detalles, insumos);
+                                    var concepto = await _ConceptoService.ObtenXId(PrecioUnitario.IdConcepto);
+                                    concepto.CostoUnitario = valores.Total;
+                                    await _ConceptoService.Editar(concepto);
+                                    await RecalcularPrecioUnitario(PrecioUnitario);
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var PrecioUnitario = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
+                        var preciosUnitariosSinOrganizar = await ObtenerPrecioUnitarioSinEstructurar(PrecioUnitario.IdProyecto);
+                        var registrosFiltrados = preciosUnitariosSinOrganizar.Where(z => z.IdConcepto == PrecioUnitario.IdConcepto && z.TipoPrecioUnitario == 1).ToList();
+                        foreach (var partida in registrosFiltrados)
+                        {
+                            var detalles = await ObtenerDetallesPorPU(partida.Id, db);
+                            var detEliminar = detalles.Where(z => z.IdInsumo == registro.IdInsumo && z.IdPrecioUnitarioDetallePerteneciente == 0).ToList();
+                            foreach (var det in detEliminar)
+                            {
+                                await _PrecioUnitarioDetalleService.Eliminar(det.Id);
+                            }
+                            var insumos = await _InsumoService.ObtenXIdProyecto(PrecioUnitario.IdProyecto);
+                            detalles = await ObtenerDetallesPorPU(partida.Id, db);
+                            var valores = await RecalcularDetalles(partida.Id, detalles, insumos);
+                            var concepto = await _ConceptoService.ObtenXId(partida.IdConcepto);
+                            concepto.CostoUnitario = valores.Total;
+                            await _ConceptoService.Editar(concepto);
+                            await RecalcularPrecioUnitario(partida);
+                        }
+                    }
+                    var listaTemporal = (await ObtenerDetallesPorPU(registro.IdPrecioUnitario, _dbContex));
+                    lista.AddRange(listaTemporal.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.IdPrecioUnitarioDetallePerteneciente).ToList());
+                }
+                return lista;
+            }
+            catch (Exception ex)
+            {
+                string error = ex.Message.ToString();
+                return new List<PrecioUnitarioDetalleDTO>();
+            }
+        }
+
         public async Task RecalcularAfectados(int IdInsumo)
         {
             var insumoBase = await _InsumoService.ObtenXId(IdInsumo);

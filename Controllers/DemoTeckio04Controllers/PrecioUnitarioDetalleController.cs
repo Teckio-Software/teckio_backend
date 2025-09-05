@@ -100,6 +100,18 @@ namespace SistemaERP.API.DemoTeckioAL04Controllers.Procomi
             return registros;
         }
 
+        [HttpPost("eliminarLista")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EliminarPrecioUnitario-Empresa2")]
+        public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> Eliminar([FromBody] List<int> Ids)
+        {
+            var registros = new List<PrecioUnitarioDetalleDTO>();
+            using (var db = new DemoTeckioAL04Context(_Options.Options))
+            {
+                registros = await _precioUnitarioProceso.EliminarDetalles(Ids, db);
+            }
+            return registros;
+        }
+
         [HttpPost("crearOperaciones")]
         public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> CrearOperacion([FromBody] OperacionesXPrecioUnitarioDetalleDTO registro)
         {
