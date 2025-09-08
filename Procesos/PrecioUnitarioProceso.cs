@@ -11,6 +11,7 @@ using ERP_TECKIO.Modelos;
 using ERP_TECKIO.Procesos;
 using ERP_TECKIO.Servicios;
 using ERP_TECKIO.Servicios.Contratos;
+using ERP_TECKIO.Servicios.Contratos.Facturacion;
 using ExcelDataReader;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -47,6 +48,16 @@ namespace ERP_TECKIO
         private readonly TContext _dbContex;
         private static readonly Encoding Latin1 = Encoding.GetEncoding("windows-1252");
         private readonly FactorSalarioRealProceso<TContext> _factorSalarioRealProceso;
+        private readonly IInsumoXAlmacenEntradaService<TContext> _almacenEntradaInsumoService;
+        private readonly IInsumoXAlmacenSalidaService<TContext> _almacenSalidaInsumoService;
+        private readonly IAlmacenExistenciaInsumoService<TContext> _insumoExistenciaService;
+        private readonly IInsumoXProduccionService<TContext> _insumoXProduccionService;
+        private readonly IInsumoXProductoYServicioService<TContext> _insumoXProductoYServicioService;
+        private readonly IInsumoXRequisicionService<TContext> _insumoXRequisicionService;
+        private readonly IFsrxinsummoMdOdetalleService<TContext> _FsrxinsummoMdODetalleService;
+        private readonly IFsixinsummoMdOService<TContext> _FsixinsummoMdOService;
+        private readonly IFsixinsummoMdOdetalleService<TContext> _FsixinsummoMdODetalleService;
+        private readonly IRelacionFSRInsumoService<TContext> _relacionFSRInsumoService;
         public PrecioUnitarioProceso(
             IProyectoService<TContext> proyectoService
             , IPrecioUnitarioService<TContext> precioUnitarioService
@@ -66,6 +77,16 @@ namespace ERP_TECKIO
             , IMapper mapper
             , TContext dbContex
             , FactorSalarioRealProceso<TContext> factorSalarioRealProceso
+            , IInsumoXAlmacenEntradaService<TContext> almacenEntradaInsumoService
+            , IInsumoXAlmacenSalidaService<TContext> almacenSalidaInsumoService
+            , IAlmacenExistenciaInsumoService<TContext> insumoExistenciaService
+            , IInsumoXProduccionService<TContext> insumoXProduccion
+            , IInsumoXProductoYServicioService<TContext> insumoXProductoYServicioService
+            , IInsumoXRequisicionService<TContext> insumoXRequisicionService
+            , IFsrxinsummoMdOdetalleService<TContext> fsrxinsummoMdODetalleService
+            , IFsixinsummoMdOService<TContext> fsixinsummoMdOService
+            , IFsixinsummoMdOdetalleService<TContext> fsixinsummoMdODetalleService
+            , IRelacionFSRInsumoService<TContext> relacionFSRInsumoService
 
             )
         {
@@ -87,6 +108,16 @@ namespace ERP_TECKIO
             _OperacionXPUService = operacionXPUService;
             _FsrxinsummoMdOService = fsrxinsummoMdOService;
             _factorSalarioRealProceso = factorSalarioRealProceso;
+            _almacenEntradaInsumoService = almacenEntradaInsumoService;
+            _insumoExistenciaService = insumoExistenciaService;
+            _almacenSalidaInsumoService = almacenSalidaInsumoService;
+            _insumoXProduccionService = insumoXProduccion;
+            _insumoXProductoYServicioService = insumoXProductoYServicioService;
+            _insumoXRequisicionService = insumoXRequisicionService;
+            _FsrxinsummoMdODetalleService = fsrxinsummoMdODetalleService;
+            _FsixinsummoMdOService = fsixinsummoMdOService;
+            _FsixinsummoMdODetalleService = fsixinsummoMdODetalleService;
+            _relacionFSRInsumoService = relacionFSRInsumoService;
         }
 
         public async Task RecalcularPrecioUnitario(PrecioUnitarioDTO registro)
@@ -2102,6 +2133,58 @@ for json path
                     }
                 }
                 var lista = await ObtenerDetallesPorPU(registro.IdPrecioUnitario, _dbContex);
+                //Elimina el insumo si ya no hay más precios unitarios relacionados
+                if (registros.Count <= 1)
+                {
+                    //Validar casi todas excepto FSIXInsumo, FSRXInsumo y RelaciónFSRInsumo, esas se eliminan
+                    var IdInsumo = registro.IdInsumo;
+                    var almacenEntradaInsumos = await _almacenEntradaInsumoService.ObtenTodos();
+                    almacenEntradaInsumos = almacenEntradaInsumos.Where(a => a.IdInsumo == IdInsumo).ToList();
+                    var almacenSalidaInsumos = await _almacenSalidaInsumoService.ObtenTodos();
+                    almacenSalidaInsumos = almacenSalidaInsumos.Where(a => a.IdInsumo == IdInsumo).ToList();
+                    var insumoExistencias = await _insumoExistenciaService.ObtenTodos();
+                    insumoExistencias = insumoExistencias.Where(i => i.IdInsumo == IdInsumo).ToList();
+                    var insumosXProduccion = await _insumoXProduccionService.ObtenerTodos();
+                    insumosXProduccion = insumosXProduccion.Where(i => i.IdInsumo == IdInsumo).ToList();
+                    var insumosXProductoYServicio = await _insumoXProductoYServicioService.ObtenerTodos();
+                    insumosXProductoYServicio = insumosXProductoYServicio.Where(i => i.IdInsumo == IdInsumo).ToList();
+                    var insumosXRequisicion = await _insumoXRequisicionService.ObtenTodos();
+                    insumosXRequisicion = insumosXRequisicion.Where(i => i.IdInsumo == IdInsumo).ToList();
+                    if (almacenEntradaInsumos.Count <= 0 &&
+                        almacenSalidaInsumos.Count<=0 &&
+                        insumoExistencias.Count<=0 &&
+                        insumosXProduccion.Count<=0 &&
+                        insumosXProductoYServicio.Count<=0 &&
+                        insumosXRequisicion.Count<=0)
+                    {
+                        var FSIXInsumo = await _FsixinsummoMdOService.ObtenerXIdInsumo(IdInsumo);
+                        if (FSIXInsumo.Id > 0)
+                        {
+                            var FSIXInsumoDetalles = await _FsixinsummoMdODetalleService.ObtenerXIdFsi(FSIXInsumo.Id);
+                            foreach (var detalle in FSIXInsumoDetalles)
+                            {
+                                await _FsixinsummoMdODetalleService.Eliminar(detalle.Id);
+                            }
+                            await _FsixinsummoMdOService.Eliminar(FSIXInsumo.Id);
+                        }
+                        var FSRXInsumo = await _FsrxinsummoMdOService.ObtenerXIdInsumo(IdInsumo);
+                        if(FSRXInsumo.Id > 0)
+                        {
+                            var FSRXInsumoDetalles = await _FsrxinsummoMdODetalleService.ObtenerXIdFsr(FSRXInsumo.Id);
+                            foreach (var detalle in FSRXInsumoDetalles)
+                            {
+                                await _FsrxinsummoMdODetalleService.Eliminar(detalle.Id);
+                            }
+                            await _FsrxinsummoMdOService.Eliminar(FSRXInsumo.Id);
+                        }
+                        var RelaciónFSRInsumo = await _relacionFSRInsumoService.ObtenerTodosXInsumo(IdInsumo);
+                        foreach (var relacion in RelaciónFSRInsumo)
+                        {
+                            await _relacionFSRInsumoService.Eliminar(relacion.Id);
+                        }
+                        await _InsumoService.Eliminar(registro.IdInsumo);
+                    }
+                }
                 return lista.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.IdPrecioUnitarioDetallePerteneciente).ToList();
             }
             catch (Exception ex)

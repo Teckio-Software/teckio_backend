@@ -122,5 +122,25 @@ namespace ERP_TECKIO.Servicios
                 return respuesta;
             }
         }
+
+        public async Task<List<RelacionFSRInsumoDTO>> ObtenerTodosXInsumo(int IdInsumo)
+        {
+            try
+            {
+                var lista = await _Repositorio.ObtenerTodos(r=>r.IdInsumo == IdInsumo);
+                if (lista.Count > 0)
+                {
+                    return _Mapper.Map<List<RelacionFSRInsumoDTO>>(lista);
+                }
+                else
+                {
+                    return new List<RelacionFSRInsumoDTO>();
+                }
+            }
+            catch
+            {
+                return new List<RelacionFSRInsumoDTO>();
+            }
+        }
     }
 }

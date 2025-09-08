@@ -9,6 +9,7 @@ namespace ERP_TECKIO.Servicios.Contratos.Facturacion
         Task<RespuestaDTO> Editar(InsumoXProductoYServicioDTO parametro);
         Task<RespuestaDTO> Eliminar(int parametro);
         Task<List<InsumoXProductoYServicioDTO>> ObtenerPorIdPrdYSer(int id);
+        Task<List<InsumoXProductoYServicioDTO>> ObtenerTodos();
 
     }
 }

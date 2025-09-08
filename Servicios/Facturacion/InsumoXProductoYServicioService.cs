@@ -143,5 +143,25 @@ namespace ERP_TECKIO.Servicios.Facturacion
                 return new List<InsumoXProductoYServicioDTO>();
             }
         }
+
+        public async Task<List<InsumoXProductoYServicioDTO>> ObtenerTodos()
+        {
+            try
+            {
+                var lista = await _repository.ObtenerTodos();
+                if (lista.Count > 0)
+                {
+                    return _mapper.Map<List<InsumoXProductoYServicioDTO>>(lista);
+                }
+                else
+                {
+                    return new List<InsumoXProductoYServicioDTO>();
+                }
+            }
+            catch
+            {
+                return new List<InsumoXProductoYServicioDTO>();
+            }
+        }
     }
 }
