@@ -91,7 +91,9 @@ namespace ERP_TECKIO.Servicios
                 }
                 var PU = registros.FindIndex(z => z.Id == padres[i].Id);
                 registros[PU].PrecioUnitario = padres[i].PrecioUnitario;
+                padres[i].Posicion = i + 1;
             }
+            padres.OrderBy(z => z.Posicion);
             return padres;
         }
 
@@ -143,7 +145,9 @@ namespace ERP_TECKIO.Servicios
                 
                 var PU = registros.FindIndex(z => z.Id == padres[i].Id);
                 registros[PU].PrecioUnitario = padres[i].PrecioUnitario;
+                padres[i].Posicion = i +1 ;
             }
+            padres.OrderBy(z => z.Posicion);
             return padres;
         }
 
@@ -376,6 +380,18 @@ namespace ERP_TECKIO.Servicios
             {
                 var objetoEncontrado = await _Repositorio.Obtener(z => z.Id == registro.Id);
                 objetoEncontrado.EsCatalogoGeneral = !registro.EsCatalogoGeneral;
+                PUs.Add(objetoEncontrado);
+            }
+            return await _Repositorio.EditarMultiple(PUs);
+        }
+
+        public async Task<bool> ActualizaPosicion(List<PrecioUnitarioDTO> registros)
+        {
+            var PUs = new List<PrecioUnitario>();
+            foreach (var registro in registros)
+            {
+                var objetoEncontrado = await _Repositorio.Obtener(z => z.Id == registro.Id);
+                objetoEncontrado.Posicion = registro.Posicion;
                 PUs.Add(objetoEncontrado);
             }
             return await _Repositorio.EditarMultiple(PUs);

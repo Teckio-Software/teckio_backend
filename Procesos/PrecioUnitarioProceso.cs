@@ -744,8 +744,25 @@ for json path
                 concepto.IdProyecto = registro.IdProyecto;
                 var nuevoConcepto = await _ConceptoService.CrearYObtener(concepto);
                 registro.IdConcepto = nuevoConcepto.Id;
-                var registrosFiltrados = registrosSinEstructurar.Where(z => z.IdPrecioUnitarioBase == registro.IdPrecioUnitarioBase);
-                registro.Posicion = registrosFiltrados.Count() + 1;
+                var registrosFiltrados = registrosSinEstructurar.Where(z => z.IdPrecioUnitarioBase == registro.IdPrecioUnitarioBase).OrderBy(z => z.Posicion).ToList();
+                var registrosEditarPosicion = new List<PrecioUnitarioDTO>();
+                for (var i = 0; i < registrosFiltrados.Count(); i++) {
+                    if (registrosFiltrados[i].Posicion == 0) {
+                        registrosFiltrados[i].Posicion = i + 1;
+                    }
+                    if (registro.Posicion <= registrosFiltrados[i].Posicion) {
+                        registrosFiltrados[i].Posicion = i+2;
+                        registrosEditarPosicion.Add(registrosFiltrados[i]);
+                    }
+                    else
+                    {
+                        registrosFiltrados[i].Posicion = i + 1;
+                        registrosEditarPosicion.Add(registrosFiltrados[i]);
+                    }
+                }
+                var editarPosiciones = await _PrecioUnitarioService.ActualizaPosicion(registrosEditarPosicion);
+
+                //registro.Posicion = registrosFiltrados.Count() + 1;
                 var nuevoRegistro = await _PrecioUnitarioService.CrearYObtener(registro);
                 var Proyecto = await _ProyectoService.ObtenXId(registro.IdProyecto);
                 ProgramacionEstimadaGanttDTO nuevaProgramacion = new ProgramacionEstimadaGanttDTO();

@@ -39,6 +39,18 @@ namespace ERP_TECKIO.Procesos
             _detalleFacturaService = detalleFacturaService;
         }
 
+        public async Task<OrdenVentaDTO> obtenerOrdenVentaXId(int IdOrdenVenta) {
+            var ordenVenta = await _ordenVentaService.ObtenerOrdenVentaXId(IdOrdenVenta);
+
+            var detallesXordenVenta = await _detalleOrdenVentaService.ObtenerXIdOrdenVenta(IdOrdenVenta);
+            foreach (var detalle in detallesXordenVenta) {
+                var impuestosDetalles = await _impuestoDetalleOrdenVentaService.ObtenerXIdDetalle(detalle.Id);
+                detalle.ImpuestosDetalleOrdenVenta = impuestosDetalles;
+            }
+            ordenVenta.DetalleOrdenVenta = detallesXordenVenta;
+            return ordenVenta;
+        }
+
         public async Task<RespuestaDTO> CrearOrdenVenta(OrdenVentaDTO ordenVenta, List<System.Security.Claims.Claim> claims) { 
             var respuesta = new RespuestaDTO();
 
@@ -54,6 +66,7 @@ namespace ERP_TECKIO.Procesos
             ordenVenta.TotalSaldado = 0;
             ordenVenta.Observaciones = "";
             ordenVenta.Autorizo = "";
+            ordenVenta.IdCliente = null;
 
             decimal subtotal = 0;
             decimal descuento = 0;
@@ -208,7 +221,7 @@ namespace ERP_TECKIO.Procesos
                     respuesta.Estatus = false;
                     return respuesta;
                 }
-                var cliente = await _clienteService.ObtenXId(ordenVenta.IdCliente);
+                var cliente = await _clienteService.ObtenXId((int)ordenVenta.IdCliente);
                 if (cliente.Id <= 0)
                 {
                     respuesta.Descripcion = "No se encontro el cliente asociado a la orden de venta";

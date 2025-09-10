@@ -19,7 +19,7 @@ public abstract class OrdenVentaAbstract
 
     public string Autorizo { get; set; } = null!;
 
-    public int IdCliente { get; set; }
+    public int? IdCliente { get; set; }
 
     public DateTime FechaRegistro { get; set; }
 
