@@ -13,7 +13,7 @@ namespace ERP_TECKIO.Servicios.Facturacion
     {
         private readonly IGenericRepository<Factura, T> _repository;
         private readonly IMapper _mapper;
-        private readonly Alumno01Context db = new Alumno01Context();
+        private readonly T db;
         public FacturaService(
             IGenericRepository<Factura, T> repository,
             IMapper mapper

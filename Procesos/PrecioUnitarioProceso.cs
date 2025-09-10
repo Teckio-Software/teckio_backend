@@ -149,7 +149,7 @@ namespace ERP_TECKIO
                 for (int i = 0; i < detallesPorcentajeManoObra.Count; i++)
                 {
                     decimal total = 0;
-                    var detallesManoObra = detallesFiltrados.Where(z => z.IdTipoInsumo == 10000).ToList();
+                    var detallesManoObra = detallesFiltrados.Where(z => z.IdTipoInsumo == 10000 || z.IdTipoInsumo == 10008).ToList();
                     if (detallesManoObra.Count > 0)
                     {
                         for (int j = 0; j < detallesManoObra.Count; j++)
@@ -226,7 +226,7 @@ namespace ERP_TECKIO
                     if (detallesFiltradosSinPorcentaje[i].EsCompuesto == true)
                     {
                         var registro = insumos.Where(z => z.id == detallesFiltradosSinPorcentaje[i].IdInsumo).FirstOrDefault();
-                        if (registro.idTipoInsumo == 10000)
+                        if (registro.idTipoInsumo == 10000 || registro.idTipoInsumo == 10008)
                         {
                             await RecalcularPorcentajeManoDeObra(detallesFiltradosSinPorcentaje[i]);
                         }
@@ -242,7 +242,7 @@ namespace ERP_TECKIO
                     else
                     {
                         var registro = insumos.Where(z => z.id == detallesFiltradosSinPorcentaje[i].IdInsumo).FirstOrDefault();
-                        if (registro.idTipoInsumo == 10000)
+                        if (registro.idTipoInsumo == 10000 || registro.idTipoInsumo == 10008)
                         {
                             await RecalcularPorcentajeManoDeObra(detallesFiltradosSinPorcentaje[i]);
                         }
@@ -258,10 +258,10 @@ namespace ERP_TECKIO
             {
                 for (int i = 0; i < detallesFiltradosPorcentaje.Count; i++)
                 {
-                    var registro = insumos.Where(z => z.id == detallesFiltradosSinPorcentaje[i].IdInsumo).FirstOrDefault();
-                    if (registro.idTipoInsumo == 10000)
+                    var registro = insumos.Where(z => z.id == detallesFiltradosPorcentaje[i].IdInsumo).FirstOrDefault();
+                    if (registro.idTipoInsumo == 10000 || registro.idTipoInsumo == 10008)
                     {
-                        await RecalcularPorcentajeManoDeObra(detallesFiltradosSinPorcentaje[i]);
+                        await RecalcularPorcentajeManoDeObra(detallesFiltradosPorcentaje[i]);
                     }
                     await _PrecioUnitarioDetalleService.Editar(detallesFiltradosPorcentaje[i]);
                     total = total + detallesFiltradosPorcentaje[i].CostoUnitario * detallesFiltradosPorcentaje[i].Cantidad;
@@ -286,7 +286,7 @@ namespace ERP_TECKIO
                 {
                     if (detallesFiltradosSinPorcentaje[i].EsCompuesto == true)
                     {
-                        if (insumos.Where(z => z.id == detallesFiltradosSinPorcentaje[i].IdInsumo).FirstOrDefault().idTipoInsumo == 10000)
+                        if (insumos.Where(z => z.id == detallesFiltradosSinPorcentaje[i].IdInsumo).FirstOrDefault().idTipoInsumo == 10000 || insumos.Where(z => z.id == detallesFiltradosSinPorcentaje[i].IdInsumo).FirstOrDefault().idTipoInsumo == 1000)
                         {
                             await RecalcularPorcentajeManoDeObra(detallesFiltradosSinPorcentaje[i]);
                         }
@@ -307,7 +307,7 @@ namespace ERP_TECKIO
                     }
                     else
                     {
-                        if (insumos.Where(z => z.id == detallesFiltradosSinPorcentaje[i].IdInsumo).FirstOrDefault().idTipoInsumo == 10000)
+                        if (insumos.Where(z => z.id == detallesFiltradosSinPorcentaje[i].IdInsumo).FirstOrDefault().idTipoInsumo == 10000 || insumos.Where(z => z.id == detallesFiltradosSinPorcentaje[i].IdInsumo).FirstOrDefault().idTipoInsumo == 10008)
                         {
                             await RecalcularPorcentajeManoDeObra(detallesFiltradosSinPorcentaje[i]);
                             totalAux = totalAux + (detallesFiltradosSinPorcentaje[i].CostoUnitario * detallesFiltradosSinPorcentaje[i].Cantidad);
@@ -322,7 +322,7 @@ namespace ERP_TECKIO
                     for (int i = 0; i < detallesFiltradosPorcentaje.Count; i++)
                     {
                         await _PrecioUnitarioDetalleService.Editar(detallesFiltradosPorcentaje[i]);
-                        total = total + totalAux * detallesFiltradosPorcentaje[i].Cantidad;
+                        total = total + detallesFiltradosPorcentaje[i].CostoUnitario * detallesFiltradosPorcentaje[i].Cantidad;
                     }
                 }
             }
@@ -1348,7 +1348,7 @@ for json path
                 PrecioUnitarioDetalleDTO nuevoRegistro = new PrecioUnitarioDetalleDTO();
                 var precioUnitario = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
                 var FSR = await _FSRService.ObtenerTodosXProyecto(precioUnitario.IdProyecto);
-                if (registro.IdTipoInsumo == 10006)
+                if (registro.IdTipoInsumo == 10006 || registro.IdTipoInsumo == 10008)
                 {
                     registro.EsCompuesto = true;
                     registro.CostoUnitario = 0;
@@ -1386,7 +1386,7 @@ for json path
                     for (int i = 0; i < DetallesParaCalcularPorcentaje.Count; i++)
                     {
                         var insumo = insumos.Where(z => z.id == DetallesParaCalcularPorcentaje[i].IdInsumo).FirstOrDefault();
-                        if (insumo.idTipoInsumo == 10000)
+                        if (insumo.idTipoInsumo == 10000 || insumo.idTipoInsumo == 10008)
                         {
                             costo = costo + DetallesParaCalcularPorcentaje[i].Cantidad * insumo.CostoUnitario;
                         }
@@ -1428,7 +1428,7 @@ for json path
                     {
                         registro.IdPrecioUnitario = partida.Id;
                         nuevoRegistro = await _PrecioUnitarioDetalleService.CrearYObtener(registro);
-                        if (registro.IdTipoInsumo == 10000)
+                        if (registro.IdTipoInsumo == 10000 || registro.IdTipoInsumo == 10008)
                         {
                             await RecalcularPorcentajeManoDeObra(nuevoRegistro);
                         }
@@ -1510,7 +1510,7 @@ for json path
                                                 DetallesHijos[i].IdInsumo = insumoCreadoNuevo.id;
                                             }
                                             var nuevoDetalle = await _PrecioUnitarioDetalleService.CrearYObtener(DetallesHijos[i]);
-                                            if (DetallesHijos[i].IdTipoInsumo == 10000 && DetallesHijos[i].EsCompuesto == false)
+                                            if (DetallesHijos[i].IdTipoInsumo == 10000 && DetallesHijos[i].EsCompuesto == false || DetallesHijos[i].IdTipoInsumo == 10008 && DetallesHijos[i].EsCompuesto == true)
                                             {
                                                 await RecalcularPorcentajeManoDeObra(nuevoDetalle);
                                             }
@@ -1604,7 +1604,7 @@ for json path
                                     registro.IdPrecioUnitarioDetallePerteneciente = registroPadre.Id;
                                     registro.IdPrecioUnitario = registroPadre.IdPrecioUnitario;
                                     nuevoRegistro = await _PrecioUnitarioDetalleService.CrearYObtener(registro);
-                                    if (registro.IdTipoInsumo == 10000 && registro.EsCompuesto == false)
+                                    if (registro.IdTipoInsumo == 10000 && registro.EsCompuesto == false || registro.IdTipoInsumo == 10008 && registro.EsCompuesto == true)
                                     {
                                         await RecalcularPorcentajeManoDeObra(nuevoRegistro);
                                     }
@@ -1628,7 +1628,7 @@ for json path
                             {
                                 registro.IdPrecioUnitario = partida.Id;
                                 nuevoRegistro = await _PrecioUnitarioDetalleService.CrearYObtener(registro);
-                                if (registro.IdTipoInsumo == 10000)
+                                if (registro.IdTipoInsumo == 10000 || registro.IdTipoInsumo == 10008)
                                 {
                                     await RecalcularPorcentajeManoDeObra(nuevoRegistro);
                                 }
@@ -1687,7 +1687,7 @@ for json path
                         detallesFiltrados[i].IdInsumo = insumoCreadoNuevo.id;
                     }
                     var nuevoDetalleCreado = await _PrecioUnitarioDetalleService.CrearYObtener(detallesFiltrados[i]);
-                    if (detallesFiltrados[i].IdTipoInsumo == 10000 && detallesFiltrados[i].EsCompuesto == false)
+                    if (detallesFiltrados[i].IdTipoInsumo == 10000 && detallesFiltrados[i].EsCompuesto == false || detallesFiltrados[i].IdTipoInsumo == 10008 && detallesFiltrados[i].EsCompuesto == true)
                     {
                         await RecalcularPorcentajeManoDeObra(nuevoDetalleCreado);
                     }
@@ -4445,7 +4445,14 @@ for json path
                     Concepto.Descripcion = registros[i].Where(z => z.TipoCampo == "DESCRIPCIO").FirstOrDefault().Valor;
                     Concepto.Unidad = registros[i].Where(z => z.TipoCampo == "UNIDAD").FirstOrDefault().Valor;
                     Concepto.IdEspecialidad = null;
-                    Concepto.CostoUnitario = Convert.ToDecimal(registros[i].Where(z => z.TipoCampo == "PRECIO").FirstOrDefault().Valor);
+                    var costo = (registros[i].Where(z => z.TipoCampo == "PRECIO").FirstOrDefault().Valor);
+                    if(costo == "")
+                    {
+                        Concepto.CostoUnitario = 0;
+                    }else
+                    {
+                        Concepto.CostoUnitario = Convert.ToDecimal(registros[i].Where(z => z.TipoCampo == "PRECIO").FirstOrDefault().Valor);
+                    }
                     Concepto.IdProyecto = IdProyecto;
                     Concepto.PorcentajeIndirecto = 0;
                     var ConceptoCreado = await _ConceptoService.CrearYObtener(Concepto);
@@ -4466,7 +4473,14 @@ for json path
 
                         case "4":
                             //%(mo)
-                            insumo.idTipoInsumo = 10001;
+                            if(registros[i].Where(z => z.TipoCampo == "UNIDAD").FirstOrDefault().Valor == "(%)mo")
+                            {
+                                insumo.idTipoInsumo = 10001;
+                            }
+                            else
+                            {
+                                insumo.idTipoInsumo = 10004;
+                            }
                             break;
 
                         case "8":
@@ -4483,17 +4497,32 @@ for json path
                     }
                     if(registros[i].Where(z => z.TipoCampo == "BASICO").FirstOrDefault().Valor != "S")
                     {
-                        insumo.idTipoInsumo = 10006;
+                        if(insumo.idTipoInsumo == 10000)
+                        {
+                            insumo.idTipoInsumo = 10008;
+                        }
+                        else
+                        {
+                            insumo.idTipoInsumo = 10006;
+                        }
                     }
                     insumo.Codigo = registros[i].Where(z => z.TipoCampo == "NOMBRE").FirstOrDefault().Valor;
                     insumo.Descripcion = registros[i].Where(z => z.TipoCampo == "DESCRIPCIO").FirstOrDefault().Valor;
                     insumo.Unidad = registros[i].Where(z => z.TipoCampo == "UNIDAD").FirstOrDefault().Valor;
                     insumo.idFamiliaInsumo = null;
-                    insumo.CostoBase = Convert.ToDecimal(registros[i].Where(z => z.TipoCampo == "PBASEMN").FirstOrDefault().Valor);
+                    var costo2 = registros[i].Where(z => z.TipoCampo == "PBASEMN").FirstOrDefault().Valor;
+                    if(costo2 == "")
+                    {
+                        insumo.CostoBase = 0;
+                    }
+                    else
+                    {
+                        insumo.CostoBase = Convert.ToDecimal(registros[i].Where(z => z.TipoCampo == "PBASEMN").FirstOrDefault().Valor);
+                    }
                     insumo.CostoUnitario = insumo.CostoBase;
                     insumo.IdProyecto = IdProyecto;
                     var insumoCreado = await _InsumoService.CrearYObtener(insumo);
-                    if(insumoCreado.idTipoInsumo == 10000 & registros[i].Where(z => z.TipoCampo == "BASICO").FirstOrDefault().Valor == "S")
+                    if(insumoCreado.idTipoInsumo == 10000 && registros[i].Where(z => z.TipoCampo == "BASICO").FirstOrDefault().Valor == "S")
                     {
                         var nuevoInsumoMDO = new FsrxinsummoMdODTO();
                         nuevoInsumoMDO.CostoDirecto = insumo.CostoBase;
@@ -4526,15 +4555,79 @@ for json path
             }
         }
 
+        //public async Task ArmarCatalogoConceptos(IFormFile archivoDBF, IFormFile archivoFPT, int IdProyecto) //Enviar 1.DBF
+        //{
+        //    var registros = await extraerDatosDBF(archivoDBF, archivoFPT);
+        //    var registrosOrdenados = registros.OrderBy(sublista => sublista.FirstOrDefault(obj => obj.TipoCampo == "PRE_ID").Valor).ToList();
+        //    var conceptos = await _ConceptoService.ObtenerTodos(IdProyecto);
+        //    var Pus = new List<PUOpusRelacionDTO>();
+        //    foreach (var registro in registrosOrdenados)
+        //    {
+        //        if(registro.Where(z => z.TipoCampo == "PRE_NIVEL").FirstOrDefault().Valor != "0")
+        //        {
+        //            var PrecioUnitario = new PrecioUnitarioDTO();
+        //            PrecioUnitario.IdProyecto = IdProyecto;
+        //            PrecioUnitario.Cantidad = Convert.ToDecimal(registro.Where(z => z.TipoCampo == "PRE_VOL").FirstOrDefault().Valor);
+        //            PrecioUnitario.CantidadExcedente = 0;
+        //            if (registro.Where(z => z.TipoCampo == "PRE_TIP").FirstOrDefault().Valor == "0")
+        //            {
+        //                PrecioUnitario.TipoPrecioUnitario = 1;
+        //            }
+        //            var nivelDecimal = Convert.ToDecimal(registro.Where(z => z.TipoCampo == "PRE_NIVEL").FirstOrDefault().Valor);
+        //            PrecioUnitario.Nivel = Convert.ToInt32(nivelDecimal);
+        //            var concepto = conceptos.Where(z => z.Codigo == registro.Where(z => z.TipoCampo == "PRE_COM").FirstOrDefault().Valor).FirstOrDefault();
+        //            PrecioUnitario.IdConcepto = concepto.Id;
+        //            if(registro.Where(z => z.TipoCampo == "PRE_IDPAD").FirstOrDefault().Valor != "0")
+        //            {
+        //                //estructurar PrecioUnitario
+        //                var relacionEncontrada = Pus.Where(z => z.IdPrecioUnitarioOpus == registro.Where(z => z.TipoCampo == "PRE_IDPAD").FirstOrDefault().Valor).FirstOrDefault();
+        //                PrecioUnitario.IdPrecioUnitarioBase = relacionEncontrada.IdPrecioUnitarioTeckio;
+        //            }
+        //            var nuevoPU = await _PrecioUnitarioService.CrearYObtener(PrecioUnitario);
+        //            var relacion = new PUOpusRelacionDTO();
+        //            relacion.IdPrecioUnitarioTeckio = nuevoPU.Id;
+        //            relacion.IdPrecioUnitarioOpus = registro.Where(z => z.TipoCampo == "PRE_IDUNI").FirstOrDefault().Valor;
+        //            Pus.Add(relacion);
+        //        }
+        //    }
+        //}
+
         public async Task ArmarCatalogoConceptos(IFormFile archivoDBF, IFormFile archivoFPT, int IdProyecto) //Enviar 1.DBF
         {
             var registros = await extraerDatosDBF(archivoDBF, archivoFPT);
-            var registrosOrdenados = registros.OrderBy(sublista => sublista.FirstOrDefault(obj => obj.TipoCampo == "PRE_ID").Valor).ToList();
+            var registrosOrdenados = new List<List<ObjetoOpusDTO>>();
+            for(int i = 0; i < 8; i++)
+            {
+                var listasFiltradas = registros.Where(sublista => sublista.Any(obj => obj.TipoCampo == "PRE_NIVEL" && obj.Valor == Convert.ToString(i))).ToList();
+                //listasFiltradas = listasFiltradas.OrderBy(sublista => sublista.FirstOrDefault(z => z.TipoCampo == "PRE_COM").Valor).ToList();
+
+                listasFiltradas = listasFiltradas
+                .OrderBy(sublista =>
+                {
+                    var valor = sublista.First(z => z.TipoCampo == "PRE_COM").Valor;
+
+                    // Ejemplo: "K1.10" => letra = "K", numeros = [1,10]
+                    var letra = new string(valor.TakeWhile(c => !char.IsDigit(c)).ToArray());
+
+                    var numeros = valor.Substring(letra.Length)
+                                       .Split('.', StringSplitOptions.RemoveEmptyEntries)
+                                       .Select(s =>
+                                       {
+                                           int n;
+                                           return int.TryParse(s.Replace("-", ""), out n) ? n : int.MaxValue;
+                                       })
+                                       .ToArray();
+
+                    return (letra, numeros);
+                }, new ComparadorJerarquico())
+                .ToList();
+                registrosOrdenados.AddRange(listasFiltradas);
+            }
             var conceptos = await _ConceptoService.ObtenerTodos(IdProyecto);
             var Pus = new List<PUOpusRelacionDTO>();
             foreach (var registro in registrosOrdenados)
             {
-                if(registro.Where(z => z.TipoCampo == "PRE_NIVEL").FirstOrDefault().Valor != "0")
+                if (registro.Where(z => z.TipoCampo == "PRE_NIVEL").FirstOrDefault().Valor != "0")
                 {
                     var PrecioUnitario = new PrecioUnitarioDTO();
                     PrecioUnitario.IdProyecto = IdProyecto;
@@ -4548,7 +4641,7 @@ for json path
                     PrecioUnitario.Nivel = Convert.ToInt32(nivelDecimal);
                     var concepto = conceptos.Where(z => z.Codigo == registro.Where(z => z.TipoCampo == "PRE_COM").FirstOrDefault().Valor).FirstOrDefault();
                     PrecioUnitario.IdConcepto = concepto.Id;
-                    if(registro.Where(z => z.TipoCampo == "PRE_IDPAD").FirstOrDefault().Valor != "0")
+                    if (registro.Where(z => z.TipoCampo == "PRE_IDPAD").FirstOrDefault().Valor != "0")
                     {
                         //estructurar PrecioUnitario
                         var relacionEncontrada = Pus.Where(z => z.IdPrecioUnitarioOpus == registro.Where(z => z.TipoCampo == "PRE_IDPAD").FirstOrDefault().Valor).FirstOrDefault();
@@ -4560,6 +4653,28 @@ for json path
                     relacion.IdPrecioUnitarioOpus = registro.Where(z => z.TipoCampo == "PRE_IDUNI").FirstOrDefault().Valor;
                     Pus.Add(relacion);
                 }
+            }
+        }
+
+        public class ComparadorJerarquico : IComparer<(string letra, int[] numeros)>
+        {
+            public int Compare((string letra, int[] numeros) x, (string letra, int[] numeros) y)
+            {
+                // Comparar letra (K, A, X, etc.)
+                int cmp = string.Compare(x.letra, y.letra, StringComparison.OrdinalIgnoreCase);
+                if (cmp != 0) return cmp;
+
+                // Comparar números jerárquicos (1.2 < 1.10)
+                int len = Math.Max(x.numeros.Length, y.numeros.Length);
+                for (int i = 0; i < len; i++)
+                {
+                    int a = i < x.numeros.Length ? x.numeros[i] : -1;
+                    int b = i < y.numeros.Length ? y.numeros[i] : -1;
+                    cmp = a.CompareTo(b);
+                    if (cmp != 0) return cmp;
+                }
+
+                return 0;
             }
         }
 

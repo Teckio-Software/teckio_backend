@@ -8,11 +8,11 @@ namespace ERP_TECKIO.Servicios
 {
     public class CodigoAgrupadorSatService<T> : ICodigoAgrupadorService<T> where T : DbContext
     {
-        private readonly IGenericRepository<CodigoAgrupadorSat, Alumno01Context> _Repositorio;
+        private readonly IGenericRepository<CodigoAgrupadorSat, T> _Repositorio;
         private readonly IMapper _Mapper;
 
         public CodigoAgrupadorSatService(
-            IGenericRepository<CodigoAgrupadorSat, Alumno01Context> repositorio
+            IGenericRepository<CodigoAgrupadorSat, T> repositorio
             , IMapper mapper)
         {
             _Repositorio = repositorio;
