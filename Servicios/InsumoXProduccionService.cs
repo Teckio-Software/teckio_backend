@@ -134,6 +134,26 @@ namespace ERP_TECKIO.Servicios
             }
         }
 
+        public async Task<List<InsumoXProduccionDTO>> ObtenerTodos()
+        {
+            try
+            {
+                var lista = await _repository.ObtenerTodos();
+                if(lista.Count > 0)
+                {
+                    return _mapper.Map<List<InsumoXProduccionDTO>>(lista);
+                }
+                else
+                {
+                    return new List<InsumoXProduccionDTO>();
+                }
+            }
+            catch
+            {
+                return new List<InsumoXProduccionDTO>();
+            }
+        }
+
         public async Task<InsumoXProduccionDTO> ObtenerXId(int id)
         {
             try

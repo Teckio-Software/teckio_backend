@@ -9,6 +9,7 @@ public partial class FacturaDetalle
     public int IdFactura { get; set; }
 
     public decimal Cantidad { get; set; }
+    public string Descripcion { get; set; }
 
     public string Descripcion { get; set; } = null!;
 
