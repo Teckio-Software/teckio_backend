@@ -39,6 +39,13 @@ namespace ERP_TECKIO.Controllers.IyAToluca
             return respuesta;
         }
 
+        [HttpGet("obtenerOrdenVenta/{IdOrdenVenta:int}")]
+        public async Task<ActionResult<OrdenVentaDTO>> ObtenerTodos(int IdOrdenVenta)
+        {
+            var respuesta = await _ordenVentaProceso.obtenerOrdenVentaXId(IdOrdenVenta);
+            return respuesta;
+        }
+
         [HttpGet("todos")]
         public async Task<ActionResult<List<OrdenVentaDTO>>> ObtenerTodos()
         {
