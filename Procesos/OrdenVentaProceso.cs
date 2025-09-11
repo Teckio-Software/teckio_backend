@@ -61,7 +61,7 @@ namespace ERP_TECKIO.Procesos
             ordenVenta.NumeroOrdenVenta = "OV_"+(DateTime.Now.ToString("MM"))+"_"+(ordenesVenta.Count()+1).ToString();
             ordenVenta.Elaboro = usuarioNombre[0].Value;
             ordenVenta.FechaRegistro = DateTime.Now;
-            ordenVenta.Estatus = 1;
+            ordenVenta.Estatus = 0;
             ordenVenta.EstatusSaldado = 1;
             ordenVenta.TotalSaldado = 0;
             ordenVenta.Observaciones = "";

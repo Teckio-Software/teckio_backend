@@ -501,13 +501,13 @@ namespace ERP_TECKIO
                 lista[i].Importe = lista[i].PrecioUnitario * lista[i].Cantidad;
                 lista[i].ImporteSeries = lista[i].Importe * lista[i].NoSerie;
                 lista[i].Expandido = true;
-                lista[i].CantidadConFormato = String.Format("{0:#,##0.0000}", lista[i].Cantidad);
-                lista[i].CantidadExcedenteConFormato = String.Format("{0:#,##0.0000}", lista[i].CantidadExcedente);
-                lista[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", lista[i].CostoUnitario);
-                lista[i].PrecioUnitarioConFormato = String.Format("{0:#,##0.00}", lista[i].PrecioUnitario);
-                lista[i].ImporteConFormato = String.Format("{0:#,##0.00}", lista[i].Importe);
-                lista[i].ImporteSeriesConFormato = String.Format("{0:#,##0.00}", lista[i].ImporteSeries);
-                lista[i].PorcentajeIndirectoConFormato = String.Format("{0:#,##0.0000}", lista[i].PorcentajeIndirecto);
+                lista[i].CantidadConFormato = String.Format("${0:#,##0.0000}", lista[i].Cantidad);
+                lista[i].CantidadExcedenteConFormato = String.Format("${0:#,##0.0000}", lista[i].CantidadExcedente);
+                lista[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", lista[i].CostoUnitario);
+                lista[i].PrecioUnitarioConFormato = String.Format("${0:#,##0.00}", lista[i].PrecioUnitario);
+                lista[i].ImporteConFormato = String.Format("${0:#,##0.00}", lista[i].Importe);
+                lista[i].ImporteSeriesConFormato = String.Format("${0:#,##0.00}", lista[i].ImporteSeries);
+                lista[i].PorcentajeIndirectoConFormato = String.Format("${0:#,##0.0000}", lista[i].PorcentajeIndirecto);
             }
             var listaEstructurada = await _PrecioUnitarioService.Estructurar(lista, indirectos);
             var listaResult = listaEstructurada.OrderBy(z => z.Posicion).ToList();
