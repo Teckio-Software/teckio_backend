@@ -39,7 +39,7 @@ namespace ERP_TECKIO.Procesos
                     item1.Descripcion = PU.Descripcion;
                     item1.Unidad = PU.Unidad;
                     item1.Cantidad = PU.Cantidad;
-                    item1.CantidadConFormato = String.Format("{0:#,##0.0000}", PU.Cantidad);
+                    item1.CantidadConFormato = String.Format("${0:#,##0.0000}", PU.Cantidad);
                 }
             }
             return PUXEmpleado;
@@ -67,7 +67,7 @@ namespace ERP_TECKIO.Procesos
                         Descripcion = item.Descripcion,
                         Unidad = item.Unidad,
                         Cantidad = item.Cantidad,
-                        CantidadConFormato = String.Format("{0:#,##0.00}", item.Cantidad)
+                        CantidadConFormato = String.Format("${0:#,##0.00}", item.Cantidad)
                     });
                 }
             }
