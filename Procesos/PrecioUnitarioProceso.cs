@@ -2112,6 +2112,12 @@ for json path
                             if (detallePadre.IdInsumo == registroPadre.IdInsumo)
                             {
                                 var PrecioUnitario = await _PrecioUnitarioService.ObtenXId(detalle.IdPrecioUnitario);
+                                var iguales = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(detalle.IdPrecioUnitario);
+                                iguales = iguales.Where(p => p.Codigo == detalle.Codigo).ToList();
+                                foreach(var det in iguales)
+                                {
+                                    await _PrecioUnitarioDetalleService.Eliminar(det.Id);
+                                }
                                 await _PrecioUnitarioDetalleService.Eliminar(detalle.Id);
                                 var insumos = await _InsumoService.ObtenXIdProyecto(PrecioUnitario.IdProyecto);
                                 var detalles = await ObtenerDetallesPorPU(PrecioUnitario.Id, db);
