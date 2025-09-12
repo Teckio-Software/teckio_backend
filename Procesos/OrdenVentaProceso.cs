@@ -289,11 +289,12 @@ namespace ERP_TECKIO.Procesos
             }
         }
 
-        public async Task<RespuestaDTO> Cancelar(OrdenVentaCancelarDTO parametro)
+        public async Task<RespuestaDTO> Cancelar(OrdenVentaCancelarDTO parametro, List<System.Security.Claims.Claim> claims)
         {
             RespuestaDTO respuesta = new RespuestaDTO();
             try
             {
+                var usuarioNombre = claims.Where(z => z.Type == "username").ToList();
                 var ordenVenta = await _ordenVentaService.ObtenerOrdenVentaXId(parametro.IdOrdenVenta);
                 if (ordenVenta.Id <= 0)
                 {
@@ -306,7 +307,7 @@ namespace ERP_TECKIO.Procesos
                 {
                     IdAlmacen = parametro.IdAlmacenDestino,
                     FechaEntrada = DateTime.Now,
-                    //Recibio = ,
+                    Recibio = usuarioNombre[0].Value,
                     Observaciones = "Cancelación de orden de venta"
                 };
                 foreach (var productos in productosDetalle)
