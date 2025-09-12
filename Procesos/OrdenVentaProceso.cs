@@ -61,7 +61,7 @@ namespace ERP_TECKIO.Procesos
             ordenVenta.NumeroOrdenVenta = "OV_"+(DateTime.Now.ToString("MM"))+"_"+(ordenesVenta.Count()+1).ToString();
             ordenVenta.Elaboro = usuarioNombre[0].Value;
             ordenVenta.FechaRegistro = DateTime.Now;
-            ordenVenta.Estatus = 1;
+            ordenVenta.Estatus = 0;
             ordenVenta.EstatusSaldado = 1;
             ordenVenta.TotalSaldado = 0;
             ordenVenta.Observaciones = "";
@@ -196,8 +196,15 @@ namespace ERP_TECKIO.Procesos
             RespuestaDTO respuesta = new RespuestaDTO();
             try
             {
-                orden.Estatus = 2;
-                respuesta = await _ordenVentaService.Editar(orden);
+                var objetoEncontrado = await _ordenVentaService.ObtenerOrdenVentaXId(orden.Id);
+                if (objetoEncontrado.Id <= 0)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "No se encontró la orden de venta";
+                    return respuesta;
+                }
+                objetoEncontrado.Estatus = 2;
+                respuesta = await _ordenVentaService.Editar(objetoEncontrado);
                 return respuesta;
             }
             catch

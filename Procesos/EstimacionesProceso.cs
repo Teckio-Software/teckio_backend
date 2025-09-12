@@ -64,7 +64,7 @@ namespace ERP_TECKIO
                     NumeroPeriodo = registrosOrdenados[i].NumeroPeriodo,
                     EsCerrada = registrosOrdenados[i].EsCerrada,
                     Importe = importe,
-                    ImporteConFormato = String.Format("{0:#,##0.00}", importe),
+                    ImporteConFormato = String.Format("${0:#,##0.00}", importe),
                     Avance = avance,
                     AvanceConFormato = String.Format("{0:#,##0.00}", avance)
                 }); 
@@ -86,24 +86,24 @@ namespace ERP_TECKIO
                 Registros[i].CostoUnitario = PrecioUnitario.CostoUnitario;
                 Registros[i].Cantidad = PrecioUnitario.Cantidad;
                 Registros[i].CantidadConFormato = String.Format("{0:#,##0.00}", Registros[i].Cantidad);
-                Registros[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", Registros[i].CostoUnitario);
+                Registros[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", Registros[i].CostoUnitario);
                 Registros[i].PorcentajeAvanceConFormato = String.Format("{0:#,##0.00}", Registros[i].PorcentajeAvance);
-                Registros[i].CantidadAvanceConFormato = String.Format("{0:#,##0.00}", Registros[i].CantidadAvance);
-                Registros[i].ImporteDeAvanceAcumuladoConFormato = String.Format("{0:#,##0.00}", Registros[i].ImporteDeAvanceAcumulado);
+                Registros[i].CantidadAvanceConFormato = String.Format("${0:#,##0.00}", Registros[i].CantidadAvance);
+                Registros[i].ImporteDeAvanceAcumuladoConFormato = String.Format("${0:#,##0.00}", Registros[i].ImporteDeAvanceAcumulado);
                 Registros[i].PorcentajeAvanceAcumuladoConFormato = String.Format("{0:#,##0.00}", Registros[i].PorcentajeAvanceAcumulado);
-                Registros[i].CantidadAvanceAcumuladoConFormato = String.Format("{0:#,##0.00}", Registros[i].CantidadAvanceAcumulado);
+                Registros[i].CantidadAvanceAcumuladoConFormato = String.Format("${0:#,##0.00}", Registros[i].CantidadAvanceAcumulado);
                 Registros[i].PorcentajeAvanceEditando = false;
                 Registros[i].CantidadAvanceEditando = false;
                 Registros[i].Importe = PrecioUnitario.Importe;
                 Registros[i].Expandido = true;
-                Registros[i].ImporteConFormato = String.Format("{0:#,##0.00}", Registros[i].Importe);
+                Registros[i].ImporteConFormato = String.Format("${0:#,##0.00}", Registros[i].Importe);
                 Registros[i].PorcentajeTotal = Registros[i].PorcentajeAvance + Registros[i].PorcentajeAvanceAcumulado;
                 Registros[i].PorcentajeTotalConFormato = String.Format("{0:#,##0.00}", Registros[i].PorcentajeTotal);
                 Registros[i].ImporteTotal = Registros[i].ImporteDeAvance + Registros[i].ImporteDeAvanceAcumulado;
-                Registros[i].ImporteTotalConFormato = String.Format("{0:#,##0.00}", Registros[i].ImporteTotal);
+                Registros[i].ImporteTotalConFormato = String.Format("${0:#,##0.00}", Registros[i].ImporteTotal);
                 Registros[i].CantidadAvanceTotal = Registros[i].CantidadAvance + Registros[i].CantidadAvanceAcumulado;
-                Registros[i].CantidadAvanceTotalConFormato = String.Format("{0:#,##0.00}", Registros[i].CantidadAvanceTotal);
-                Registros[i].ImporteDeAvanceConFormato = String.Format("{0:#,##0.00}", Registros[i].ImporteDeAvance);
+                Registros[i].CantidadAvanceTotalConFormato = String.Format("${0:#,##0.00}", Registros[i].CantidadAvanceTotal);
+                Registros[i].ImporteDeAvanceConFormato = String.Format("${0:#,##0.00}", Registros[i].ImporteDeAvance);
             }
             var listaEstructurada = await Estructurar(Registros);
             var listaResult = listaEstructurada.OrderBy(z => z.Id).ToList();
@@ -125,24 +125,24 @@ namespace ERP_TECKIO
                 Registros[i].CostoUnitario = PrecioUnitario.CostoUnitario;
                 Registros[i].Cantidad = PrecioUnitario.Cantidad;
                 Registros[i].CantidadConFormato = String.Format("{0:#,##0.00}", Registros[i].Cantidad);
-                Registros[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", Registros[i].CostoUnitario);
+                Registros[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", Registros[i].CostoUnitario);
                 Registros[i].PorcentajeAvanceConFormato = String.Format("{0:#,##0.00}", Registros[i].PorcentajeAvance);
                 Registros[i].CantidadAvanceConFormato = String.Format("{0:#,##0.00}", Registros[i].CantidadAvance);
-                Registros[i].ImporteDeAvanceAcumuladoConFormato = String.Format("{0:#,##0.00}", Registros[i].ImporteDeAvanceAcumulado);
+                Registros[i].ImporteDeAvanceAcumuladoConFormato = String.Format("${0:#,##0.00}", Registros[i].ImporteDeAvanceAcumulado);
                 Registros[i].PorcentajeAvanceAcumuladoConFormato = String.Format("{0:#,##0.00}", Registros[i].PorcentajeAvanceAcumulado);
                 Registros[i].CantidadAvanceAcumuladoConFormato = String.Format("{0:#,##0.00}", Registros[i].CantidadAvanceAcumulado);
                 Registros[i].PorcentajeAvanceEditando = false;
                 Registros[i].CantidadAvanceEditando = false;
                 Registros[i].Importe = PrecioUnitario.Importe;
                 Registros[i].Expandido = true;
-                Registros[i].ImporteConFormato = String.Format("{0:#,##0.00}", Registros[i].Importe);
+                Registros[i].ImporteConFormato = String.Format("${0:#,##0.00}", Registros[i].Importe);
                 Registros[i].PorcentajeTotal = Registros[i].PorcentajeAvance + Registros[i].PorcentajeAvanceAcumulado;
                 Registros[i].PorcentajeTotalConFormato = String.Format("{0:#,##0.00}", Registros[i].PorcentajeTotal);
                 Registros[i].ImporteTotal = Registros[i].ImporteDeAvance + Registros[i].ImporteDeAvanceAcumulado;
-                Registros[i].ImporteTotalConFormato = String.Format("{0:#,##0.00}", Registros[i].ImporteTotal);
+                Registros[i].ImporteTotalConFormato = String.Format("${0:#,##0.00}", Registros[i].ImporteTotal);
                 Registros[i].CantidadAvanceTotal = Registros[i].CantidadAvance + Registros[i].CantidadAvanceAcumulado;
-                Registros[i].CantidadAvanceTotalConFormato = String.Format("{0:#,##0.00}", Registros[i].CantidadAvanceTotal);
-                Registros[i].ImporteDeAvanceConFormato = String.Format("{0:#,##0.00}", Registros[i].ImporteDeAvance);
+                Registros[i].CantidadAvanceTotalConFormato = String.Format("${0:#,##0.00}", Registros[i].CantidadAvanceTotal);
+                Registros[i].ImporteDeAvanceConFormato = String.Format("${0:#,##0.00}", Registros[i].ImporteDeAvance);
             }
             var listaEstructurada = await Estructurar(Registros);
             var listaResult = listaEstructurada.OrderBy(z => z.Id).ToList();
@@ -382,9 +382,9 @@ namespace ERP_TECKIO
                         IdEstimacion = EstimacionAsignar.Id,
                         IdPeriodo = periodo.Id,
                         Avance = EstimacionAsignar.CantidadAvance,
-                        AvanceConFormato = String.Format("{0:#,##0.00}", EstimacionAsignar.CantidadAvance),
+                        AvanceConFormato = String.Format("${0:#,##0.00}", EstimacionAsignar.CantidadAvance),
                         Importe = EstimacionAsignar.ImporteDeAvance,
-                        ImporteConFormato = String.Format("{0:#,##0.00}", EstimacionAsignar.ImporteDeAvance),
+                        ImporteConFormato = String.Format("${0:#,##0.00}", EstimacionAsignar.ImporteDeAvance),
                         DescripcionPeriodo = "Periodo " + periodo.NumeroPeriodo + " " + periodo.FechaInicio.ToString("dd/MM/yyyy") +
                         " - " + periodo.FechaTermino.ToString("dd/MM/yyyy"),
                         IdProyecto = periodo.IdProyecto

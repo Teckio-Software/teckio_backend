@@ -501,13 +501,13 @@ namespace ERP_TECKIO
                 lista[i].Importe = lista[i].PrecioUnitario * lista[i].Cantidad;
                 lista[i].ImporteSeries = lista[i].Importe * lista[i].NoSerie;
                 lista[i].Expandido = true;
-                lista[i].CantidadConFormato = String.Format("{0:#,##0.0000}", lista[i].Cantidad);
-                lista[i].CantidadExcedenteConFormato = String.Format("{0:#,##0.0000}", lista[i].CantidadExcedente);
-                lista[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", lista[i].CostoUnitario);
-                lista[i].PrecioUnitarioConFormato = String.Format("{0:#,##0.00}", lista[i].PrecioUnitario);
-                lista[i].ImporteConFormato = String.Format("{0:#,##0.00}", lista[i].Importe);
-                lista[i].ImporteSeriesConFormato = String.Format("{0:#,##0.00}", lista[i].ImporteSeries);
-                lista[i].PorcentajeIndirectoConFormato = String.Format("{0:#,##0.0000}", lista[i].PorcentajeIndirecto);
+                lista[i].CantidadConFormato = String.Format("${0:#,##0.0000}", lista[i].Cantidad);
+                lista[i].CantidadExcedenteConFormato = String.Format("${0:#,##0.0000}", lista[i].CantidadExcedente);
+                lista[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", lista[i].CostoUnitario);
+                lista[i].PrecioUnitarioConFormato = String.Format("${0:#,##0.00}", lista[i].PrecioUnitario);
+                lista[i].ImporteConFormato = String.Format("${0:#,##0.00}", lista[i].Importe);
+                lista[i].ImporteSeriesConFormato = String.Format("${0:#,##0.00}", lista[i].ImporteSeries);
+                lista[i].PorcentajeIndirectoConFormato = String.Format("${0:#,##0.0000}", lista[i].PorcentajeIndirecto);
             }
             var listaEstructurada = await _PrecioUnitarioService.Estructurar(lista, indirectos);
             var listaResult = listaEstructurada.OrderBy(z => z.Posicion).ToList();
@@ -585,12 +585,12 @@ for json path
                 lista[i].Importe = lista[i].PrecioUnitario * lista[i].Cantidad;
                 lista[i].ImporteSeries = lista[i].Importe * lista[i].NoSerie;
                 lista[i].Expandido = true;
-                lista[i].CantidadConFormato = String.Format("{0:#,##0.0000}", lista[i].Cantidad);
-                lista[i].CantidadExcedenteConFormato = String.Format("{0:#,##0.0000}", lista[i].CantidadExcedente);
-                lista[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", lista[i].CostoUnitario);
-                lista[i].PrecioUnitarioConFormato = String.Format("{0:#,##0.00}", lista[i].PrecioUnitario);
-                lista[i].ImporteConFormato = String.Format("{0:#,##0.00}", lista[i].Importe);
-                lista[i].ImporteSeriesConFormato = String.Format("{0:#,##0.00}", lista[i].ImporteSeries);
+                lista[i].CantidadConFormato = String.Format("${0:#,##0.0000}", lista[i].Cantidad);
+                lista[i].CantidadExcedenteConFormato = String.Format("${0:#,##0.0000}", lista[i].CantidadExcedente);
+                lista[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", lista[i].CostoUnitario);
+                lista[i].PrecioUnitarioConFormato = String.Format("${0:#,##0.00}", lista[i].PrecioUnitario);
+                lista[i].ImporteConFormato = String.Format("${0:#,##0.00}", lista[i].Importe);
+                lista[i].ImporteSeriesConFormato = String.Format("${0:#,##0.00}", lista[i].ImporteSeries);
             }
             return lista;
         }
@@ -625,12 +625,12 @@ for json path
                     lista[i].Importe = lista[i].PrecioUnitario * lista[i].Cantidad;
                     lista[i].ImporteSeries = lista[i].Importe * lista[i].NoSerie;
                     lista[i].Expandido = true;
-                    lista[i].CantidadConFormato = String.Format("{0:#,##0.0000}", lista[i].Cantidad);
-                    lista[i].CantidadExcedenteConFormato = String.Format("{0:#,##0.0000}", lista[i].CantidadExcedente);
-                    lista[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", lista[i].CostoUnitario);
-                    lista[i].PrecioUnitarioConFormato = String.Format("{0:#,##0.00}", lista[i].PrecioUnitario);
-                    lista[i].ImporteConFormato = String.Format("{0:#,##0.00}", lista[i].Importe);
-                    lista[i].ImporteSeriesConFormato = String.Format("{0:#,##0.00}", lista[i].ImporteSeries);
+                    lista[i].CantidadConFormato = String.Format("${0:#,##0.0000}", lista[i].Cantidad);
+                    lista[i].CantidadExcedenteConFormato = String.Format("${0:#,##0.0000}", lista[i].CantidadExcedente);
+                    lista[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", lista[i].CostoUnitario);
+                    lista[i].PrecioUnitarioConFormato = String.Format("${0:#,##0.00}", lista[i].PrecioUnitario);
+                    lista[i].ImporteConFormato = String.Format("${0:#,##0.00}", lista[i].Importe);
+                    lista[i].ImporteSeriesConFormato = String.Format("${0:#,##0.00}", lista[i].ImporteSeries);
                 }
             }
             
@@ -708,12 +708,12 @@ for json path
                 lista[i].PrecioUnitario = lista[i].CostoUnitario * indirectos;
                 lista[i].Importe = lista[i].PrecioUnitario * lista[i].Cantidad;
                 lista[i].ImporteSeries = lista[i].Importe * lista[i].NoSerie;
-                lista[i].CantidadConFormato = String.Format("{0:#,##0.0000}", lista[i].Cantidad);
-                lista[i].CantidadExcedenteConFormato = String.Format("{0:#,##0.0000}", lista[i].CantidadExcedente);
-                lista[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", lista[i].CostoUnitario);
-                lista[i].PrecioUnitarioConFormato = String.Format("{0:#,##0.00}", lista[i].PrecioUnitario);
-                lista[i].ImporteConFormato = String.Format("{0:#,##0.00}", lista[i].Importe);
-                lista[i].ImporteSeriesConFormato = String.Format("{0:#,##0.00}", lista[i].ImporteSeries);
+                lista[i].CantidadConFormato = String.Format("${0:#,##0.0000}", lista[i].Cantidad);
+                lista[i].CantidadExcedenteConFormato = String.Format("${0:#,##0.0000}", lista[i].CantidadExcedente);
+                lista[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", lista[i].CostoUnitario);
+                lista[i].PrecioUnitarioConFormato = String.Format("${0:#,##0.00}", lista[i].PrecioUnitario);
+                lista[i].ImporteConFormato = String.Format("${0:#,##0.00}", lista[i].Importe);
+                lista[i].ImporteSeriesConFormato = String.Format("${0:#,##0.00}", lista[i].ImporteSeries);
             }
             return lista;
         }
@@ -1198,9 +1198,9 @@ for json path
         //        listaFiltrada[i].IdTipoInsumo = insumo.idTipoInsumo;
         //        listaFiltrada[i].IdFamiliaInsumo = insumo.idFamiliaInsumo;
         //        listaFiltrada[i].Importe = listaFiltrada[i].Cantidad * listaFiltrada[i].CostoUnitario;
-        //        listaFiltrada[i].ImporteConFormato = String.Format("{0:#,##0.00}", listaFiltrada[i].Importe);
-        //        listaFiltrada[i].CantidadConFormato = String.Format("{0:#,##0.0000}", listaFiltrada[i].Cantidad);
-        //        listaFiltrada[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", listaFiltrada[i].CostoUnitario);
+        //        listaFiltrada[i].ImporteConFormato = String.Format("${0:#,##0.00}", listaFiltrada[i].Importe);
+        //        listaFiltrada[i].CantidadConFormato = String.Format("${0:#,##0.0000}", listaFiltrada[i].Cantidad);
+        //        listaFiltrada[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", listaFiltrada[i].CostoUnitario);
         //    }
         //    return listaFiltrada;
         //}
@@ -1214,9 +1214,9 @@ for json path
                 PUD.IdInsumo,
                 PUD.EsCompuesto,
                 I.CostoUnitario,
-                FORMAT(I.CostoUnitario, 'N', 'en-us') as CostoUnitarioConFormato,
+                '$'+FORMAT(I.CostoUnitario, 'N', 'en-us') as CostoUnitarioConFormato,
                 I.CostoBase,
-                FORMAT(I.CostoBase, 'N', 'en-us') as CostoBaseConFormato,
+                '$'+FORMAT(I.CostoBase, 'N', 'en-us') as CostoBaseConFormato,
                 PUD.Cantidad,
                 FORMAT(PUD.Cantidad, '0.0000') as CantidadConFormato,
                 PUD.IdPrecioUnitarioDetallePerteneciente,
@@ -1226,7 +1226,7 @@ for json path
                 I.IdTipoInsumo,
                 I.IdFamiliaInsumo,
                 PUD.Cantidad * I.CostoUnitario as Importe,
-                FORMAT(PUD.Cantidad * I.CostoUnitario, 'N', 'en-us') as ImporteConFormato,
+                '$'+FORMAT(PUD.Cantidad * I.CostoUnitario, 'N', 'en-us') as ImporteConFormato,
                 I.EsAutorizado
                 from PrecioUnitarioDetalle PUD
                 Join Insumo I
@@ -1259,9 +1259,9 @@ for json path
                 listaFiltrada[i].IdTipoInsumo = insumo.idTipoInsumo;
                 listaFiltrada[i].IdFamiliaInsumo = insumo.idFamiliaInsumo;
                 listaFiltrada[i].Importe = listaFiltrada[i].Cantidad * listaFiltrada[i].CostoUnitario;
-                listaFiltrada[i].ImporteConFormato = String.Format("{0:#,##0.00}", listaFiltrada[i].Importe);
-                listaFiltrada[i].CantidadConFormato = String.Format("{0:#,##0.0000}", listaFiltrada[i].Cantidad);
-                listaFiltrada[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", listaFiltrada[i].CostoUnitario);
+                listaFiltrada[i].ImporteConFormato = String.Format("${0:#,##0.00}", listaFiltrada[i].Importe);
+                listaFiltrada[i].CantidadConFormato = String.Format("${0:#,##0.0000}", listaFiltrada[i].Cantidad);
+                listaFiltrada[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", listaFiltrada[i].CostoUnitario);
             }
             return listaFiltrada;
         }
@@ -1364,9 +1364,9 @@ for json path
         //        listaFiltrada[i].IdTipoInsumo = insumo.idTipoInsumo;
         //        listaFiltrada[i].IdFamiliaInsumo = insumo.idFamiliaInsumo;
         //        listaFiltrada[i].Importe = listaFiltrada[i].Cantidad * listaFiltrada[i].CostoUnitario;
-        //        listaFiltrada[i].ImporteConFormato = String.Format("{0:#,##0.00}", listaFiltrada[i].Importe);
-        //        listaFiltrada[i].CantidadConFormato = String.Format("{0:#,##0.0000}", listaFiltrada[i].Cantidad);
-        //        listaFiltrada[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", listaFiltrada[i].CostoUnitario);
+        //        listaFiltrada[i].ImporteConFormato = String.Format("${0:#,##0.00}", listaFiltrada[i].Importe);
+        //        listaFiltrada[i].CantidadConFormato = String.Format("${0:#,##0.0000}", listaFiltrada[i].Cantidad);
+        //        listaFiltrada[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", listaFiltrada[i].CostoUnitario);
         //    }
         //    return listaFiltrada;
         //}
@@ -2001,9 +2001,9 @@ for json path
             //    detallesFiltrados[i].IdFamiliaInsumo = buscaInsumo.idFamiliaInsumo;
             //    detallesFiltrados[i].CostoUnitario = buscaInsumo.CostoUnitario;
             //    detallesFiltrados[i].Importe = detalles[i].Cantidad * detalles[i].CostoUnitario;
-            //    detallesFiltrados[i].CantidadConFormato = String.Format("{0:#,##0.0000}", detalles[i].Cantidad);
-            //    detallesFiltrados[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", detalles[i].CostoUnitario);
-            //    detallesFiltrados[i].ImporteConFormato = String.Format("{0:#,##0.00}", detalles[i].Importe);
+            //    detallesFiltrados[i].CantidadConFormato = String.Format("${0:#,##0.0000}", detalles[i].Cantidad);
+            //    detallesFiltrados[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", detalles[i].CostoUnitario);
+            //    detallesFiltrados[i].ImporteConFormato = String.Format("${0:#,##0.00}", detalles[i].Importe);
             //}
             var crearInsumo = await _InsumoService.CrearYObtener(nuevoInsumo);
             if (crearInsumo.id <= 0)
@@ -2080,9 +2080,9 @@ for json path
         //            detallesFiltrados[i].IdFamiliaInsumo = insumo.idFamiliaInsumo;
         //            detallesFiltrados[i].CostoUnitario = insumo.CostoUnitario;
         //            detallesFiltrados[i].Importe = detallesFiltrados[i].Cantidad * detallesFiltrados[i].CostoUnitario;
-        //            detallesFiltrados[i].CantidadConFormato = String.Format("{0:#,##0.0000}", detallesFiltrados[i].Cantidad);
-        //            detallesFiltrados[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", detallesFiltrados[i].CostoUnitario);
-        //            detallesFiltrados[i].ImporteConFormato = String.Format("{0:#,##0.00}", detallesFiltrados[i].Importe);
+        //            detallesFiltrados[i].CantidadConFormato = String.Format("${0:#,##0.0000}", detallesFiltrados[i].Cantidad);
+        //            detallesFiltrados[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", detallesFiltrados[i].CostoUnitario);
+        //            detallesFiltrados[i].ImporteConFormato = String.Format("${0:#,##0.00}", detallesFiltrados[i].Importe);
         //        }
         //        return detallesFiltrados;
 
@@ -2112,6 +2112,12 @@ for json path
                             if (detallePadre.IdInsumo == registroPadre.IdInsumo)
                             {
                                 var PrecioUnitario = await _PrecioUnitarioService.ObtenXId(detalle.IdPrecioUnitario);
+                                var iguales = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(detalle.IdPrecioUnitario);
+                                iguales = iguales.Where(p => p.Codigo == detalle.Codigo).ToList();
+                                foreach(var det in iguales)
+                                {
+                                    await _PrecioUnitarioDetalleService.Eliminar(det.Id);
+                                }
                                 await _PrecioUnitarioDetalleService.Eliminar(detalle.Id);
                                 var insumos = await _InsumoService.ObtenXIdProyecto(PrecioUnitario.IdProyecto);
                                 var detalles = await ObtenerDetallesPorPU(PrecioUnitario.Id, db);
@@ -2210,6 +2216,137 @@ for json path
                 return new List<PrecioUnitarioDetalleDTO>();
             }
         }
+
+        public async Task<List<PrecioUnitarioDetalleDTO>> EliminarDetalles(List<int> Ids, DbContext db)
+        {
+            try
+            {
+                List<PrecioUnitarioDetalleDTO> lista = new List<PrecioUnitarioDetalleDTO>();
+                foreach(var Id in Ids)
+                {
+                    var registro = await _PrecioUnitarioDetalleService.ObtenerXId(Id);
+                    var registros = await ObtenerDetallesPorIdInsumo(registro.IdInsumo, db);
+                    var registroPadre = new PrecioUnitarioDetalleDTO();
+                    if (registro.IdPrecioUnitarioDetallePerteneciente != 0)
+                    {
+                        registroPadre = await _PrecioUnitarioDetalleService.ObtenerXId(registro.IdPrecioUnitarioDetallePerteneciente);
+                        foreach (var detalle in registros)
+                        {
+                            if (detalle.IdPrecioUnitarioDetallePerteneciente != 0)
+                            {
+                                var detallePadre = await _PrecioUnitarioDetalleService.ObtenerXId(detalle.IdPrecioUnitarioDetallePerteneciente);
+                                if (detallePadre.IdInsumo == registroPadre.IdInsumo)
+                                {
+                                    var PrecioUnitario = await _PrecioUnitarioService.ObtenXId(detalle.IdPrecioUnitario);
+                                    var iguales = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(detalle.IdPrecioUnitario);
+                                    iguales = iguales.Where(p => p.Codigo == detalle.Codigo).ToList();
+                                    foreach (var det in iguales)
+                                    {
+                                        await _PrecioUnitarioDetalleService.Eliminar(det.Id);
+                                    }
+                                    await _PrecioUnitarioDetalleService.Eliminar(detalle.Id);
+                                    var insumos = await _InsumoService.ObtenXIdProyecto(PrecioUnitario.IdProyecto);
+                                    var detalles = await ObtenerDetallesPorPU(PrecioUnitario.Id, db);
+                                    var valores = await RecalcularDetalles(PrecioUnitario.Id, detalles, insumos);
+                                    var concepto = await _ConceptoService.ObtenXId(PrecioUnitario.IdConcepto);
+                                    concepto.CostoUnitario = valores.Total;
+                                    await _ConceptoService.Editar(concepto);
+                                    await RecalcularPrecioUnitario(PrecioUnitario);
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var PrecioUnitario = await _PrecioUnitarioService.ObtenXId(registro.IdPrecioUnitario);
+                        var preciosUnitariosSinOrganizar = await ObtenerPrecioUnitarioSinEstructurar(PrecioUnitario.IdProyecto);
+                        var registrosFiltrados = preciosUnitariosSinOrganizar.Where(z => z.IdConcepto == PrecioUnitario.IdConcepto && z.TipoPrecioUnitario == 1).ToList();
+                        foreach (var partida in registrosFiltrados)
+                        {
+                            var detalles = await ObtenerDetallesPorPU(partida.Id, db);
+                            var detEliminar = detalles.Where(z => z.IdInsumo == registro.IdInsumo && z.IdPrecioUnitarioDetallePerteneciente == 0).ToList();
+                            foreach (var det in detEliminar)
+                            {
+                                await _PrecioUnitarioDetalleService.Eliminar(det.Id);
+                            }
+                            var insumos = await _InsumoService.ObtenXIdProyecto(PrecioUnitario.IdProyecto);
+                            detalles = await ObtenerDetallesPorPU(partida.Id, db);
+                            var valores = await RecalcularDetalles(partida.Id, detalles, insumos);
+                            var concepto = await _ConceptoService.ObtenXId(partida.IdConcepto);
+                            concepto.CostoUnitario = valores.Total;
+                            await _ConceptoService.Editar(concepto);
+                            await RecalcularPrecioUnitario(partida);
+                        }
+                    }
+                    var listaTemporal = (await ObtenerDetallesPorPU(registro.IdPrecioUnitario, _dbContex));
+                    lista.AddRange(listaTemporal.Where(z => z.IdPrecioUnitarioDetallePerteneciente == registro.IdPrecioUnitarioDetallePerteneciente).ToList());
+                    //Elimina el insumo si ya no hay más precios unitarios relacionados
+                    if (registros.Count <= 1)
+                    {
+                        //Validar casi todas excepto FSIXInsumo, FSRXInsumo y RelaciónFSRInsumo, esas se eliminan
+                        var IdInsumo = registro.IdInsumo;
+                        var almacenEntradaInsumos = await _almacenEntradaInsumoService.ObtenTodos();
+                        almacenEntradaInsumos = almacenEntradaInsumos.Where(a => a.IdInsumo == IdInsumo).ToList();
+                        var almacenSalidaInsumos = await _almacenSalidaInsumoService.ObtenTodos();
+                        almacenSalidaInsumos = almacenSalidaInsumos.Where(a => a.IdInsumo == IdInsumo).ToList();
+                        var insumoExistencias = await _insumoExistenciaService.ObtenTodos();
+                        insumoExistencias = insumoExistencias.Where(i => i.IdInsumo == IdInsumo).ToList();
+                        var insumosXProduccion = await _insumoXProduccionService.ObtenerTodos();
+                        insumosXProduccion = insumosXProduccion.Where(i => i.IdInsumo == IdInsumo).ToList();
+                        var insumosXProductoYServicio = await _insumoXProductoYServicioService.ObtenerTodos();
+                        insumosXProductoYServicio = insumosXProductoYServicio.Where(i => i.IdInsumo == IdInsumo).ToList();
+                        var insumosXRequisicion = await _insumoXRequisicionService.ObtenTodos();
+                        insumosXRequisicion = insumosXRequisicion.Where(i => i.IdInsumo == IdInsumo).ToList();
+                        if (almacenEntradaInsumos.Count <= 0 &&
+                            almacenSalidaInsumos.Count <= 0 &&
+                            insumoExistencias.Count <= 0 &&
+                            insumosXProduccion.Count <= 0 &&
+                            insumosXProductoYServicio.Count <= 0 &&
+                            insumosXRequisicion.Count <= 0)
+                        {
+                            var FSIXInsumo = await _FsixinsummoMdOService.ObtenerXIdInsumo(IdInsumo);
+                            if (FSIXInsumo.Id > 0)
+                            {
+                                var FSIXInsumoDetalles = await _FsixinsummoMdODetalleService.ObtenerXIdFsi(FSIXInsumo.Id);
+                                foreach (var detalle in FSIXInsumoDetalles)
+                                {
+                                    await _FsixinsummoMdODetalleService.Eliminar(detalle.Id);
+                                }
+                                await _FsixinsummoMdOService.Eliminar(FSIXInsumo.Id);
+                            }
+                            var FSRXInsumo = await _FsrxinsummoMdOService.ObtenerXIdInsumo(IdInsumo);
+                            if (FSRXInsumo.Id > 0)
+                            {
+                                var FSRXInsumoDetalles = await _FsrxinsummoMdODetalleService.ObtenerXIdFsr(FSRXInsumo.Id);
+                                foreach (var detalle in FSRXInsumoDetalles)
+                                {
+                                    await _FsrxinsummoMdODetalleService.Eliminar(detalle.Id);
+                                }
+                                await _FsrxinsummoMdOService.Eliminar(FSRXInsumo.Id);
+                            }
+                            var RelaciónFSRInsumo = await _relacionFSRInsumoService.ObtenerTodosXInsumo(IdInsumo);
+                            foreach (var relacion in RelaciónFSRInsumo)
+                            {
+                                await _relacionFSRInsumoService.Eliminar(relacion.Id);
+                            }
+                            await _InsumoService.Eliminar(registro.IdInsumo);
+                        }
+                    }
+                }
+                return lista;
+
+            }
+            catch (Exception ex)
+            {
+                string error = ex.Message.ToString();
+                return new List<PrecioUnitarioDetalleDTO>();
+            }
+        }
+
 
         public async Task RecalcularAfectados(int IdInsumo)
         {
@@ -3471,19 +3608,19 @@ for json path
                     insumo.Cantidad = registrosInsumos[i].Cantidad;
                     insumo.Importe = registrosInsumos[i].Importe;
                     insumo.IdProyecto = PrecioUnitario.IdProyecto;
-                    insumo.CostoUnitarioConFormato = String.Format("{0:#,##0.00}", insumo.CostoUnitario);
-                    insumo.CostoBaseConFormato = String.Format("{0:#,##0.00}", insumo.CostoBase);
+                    insumo.CostoUnitarioConFormato = String.Format("${0:#,##0.00}", insumo.CostoUnitario);
+                    insumo.CostoBaseConFormato = String.Format("${0:#,##0.00}", insumo.CostoBase);
                     ExplosionInsumos.Add(insumo);
                 }
             }
             for (int i = 0; i < ExplosionInsumos.Count; i++)
             {
                 ExplosionInsumos[i].Cantidad = ExplosionInsumos[i].Cantidad * PrecioUnitario.Cantidad;
-                ExplosionInsumos[i].CantidadConFormato = String.Format("{0:#,##0.0000}", ExplosionInsumos[i].Cantidad);
-                ExplosionInsumos[i].CostoBaseConFormato = String.Format("{0:#,##0.00}", ExplosionInsumos[i].CostoBase);
-                ExplosionInsumos[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", ExplosionInsumos[i].CostoUnitario);
+                ExplosionInsumos[i].CantidadConFormato = String.Format("${0:#,##0.0000}", ExplosionInsumos[i].Cantidad);
+                ExplosionInsumos[i].CostoBaseConFormato = String.Format("${0:#,##0.00}", ExplosionInsumos[i].CostoBase);
+                ExplosionInsumos[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", ExplosionInsumos[i].CostoUnitario);
                 ExplosionInsumos[i].Importe = ExplosionInsumos[i].Cantidad * ExplosionInsumos[i].CostoUnitario;
-                ExplosionInsumos[i].ImporteConFormato = String.Format("{0:#,##0.00}", ExplosionInsumos[i].Importe);
+                ExplosionInsumos[i].ImporteConFormato = String.Format("${0:#,##0.00}", ExplosionInsumos[i].Importe);
             }
             return ExplosionInsumos;
         }
@@ -3564,9 +3701,9 @@ for json path
                 Codigo = x.Key.Codigo,
                 Descripcion = x.Key.Descripcion,
                 Cantidad = x.Sum(z => z.Cantidad),
-                CantidadConFormato = String.Format("{0:#,##0.00}", x.Sum(z => z.Cantidad)),
+                CantidadConFormato = String.Format("${0:#,##0.00}", x.Sum(z => z.Cantidad)),
                 Importe = x.Sum(z => z.Cantidad) * x.First().CostoUnitario,
-                ImporteConFormato = String.Format("{0:#,##0.00}", x.Sum(z => z.Cantidad) * x.First().CostoUnitario)
+                ImporteConFormato = String.Format("${0:#,##0.00}", x.Sum(z => z.Cantidad) * x.First().CostoUnitario)
             }).ToList();
             //foreach (var item in agrupados) {
             //    var insumo = new InsumoParaExplosionDTO();
@@ -3584,9 +3721,9 @@ for json path
             //    insumo.CostoBaseConFormato = item.CostoBaseConFormato;
             //    decimal cantidadTotal = item.Cantidad;
             //    insumo.Cantidad = cantidadTotal;
-            //    insumo.CantidadConFormato = String.Format("{0:#,##0.00}", cantidadTotal);
+            //    insumo.CantidadConFormato = String.Format("${0:#,##0.00}", cantidadTotal);
             //    decimal importeTotal = item.Importe;
-            //    insumo.ImporteConFormato = String.Format("{0:#,##0.00}", importeTotal);
+            //    insumo.ImporteConFormato = String.Format("${0:#,##0.00}", importeTotal);
             //    insumo.Importe = importeTotal;
 
             //    ExplosionDeInsumosSinRepetir.Add(insumo);
@@ -3644,9 +3781,9 @@ for json path
                 Codigo = x.Key.Codigo,
                 Descripcion = x.Key.Descripcion,
                 Cantidad = x.Sum(z => z.Cantidad),
-                CantidadConFormato = String.Format("{0:#,##0.00}", x.Sum(z => z.Cantidad)),
+                CantidadConFormato = String.Format("${0:#,##0.00}", x.Sum(z => z.Cantidad)),
                 Importe = x.Sum(z => z.Cantidad) * x.First().CostoUnitario,
-                ImporteConFormato = String.Format("{0:#,##0.00}", x.Sum(z => z.Cantidad) * x.First().CostoUnitario)
+                ImporteConFormato = String.Format("${0:#,##0.00}", x.Sum(z => z.Cantidad) * x.First().CostoUnitario)
             }).ToList();
             
             return agrupados.Where(z => z.id != 0).OrderBy(z => z.idTipoInsumo).ToList();
@@ -3694,9 +3831,9 @@ for json path
                 listaFiltrada[i].IdTipoInsumo = insumo.idTipoInsumo;
                 listaFiltrada[i].IdFamiliaInsumo = insumo.idFamiliaInsumo;
                 listaFiltrada[i].Importe = listaFiltrada[i].Cantidad * listaFiltrada[i].CostoUnitario;
-                listaFiltrada[i].ImporteConFormato = String.Format("{0:#,##0.00}", listaFiltrada[i].Importe);
-                listaFiltrada[i].CantidadConFormato = String.Format("{0:#,##0.0000}", listaFiltrada[i].Cantidad);
-                listaFiltrada[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", listaFiltrada[i].CostoUnitario);
+                listaFiltrada[i].ImporteConFormato = String.Format("${0:#,##0.00}", listaFiltrada[i].Importe);
+                listaFiltrada[i].CantidadConFormato = String.Format("${0:#,##0.0000}", listaFiltrada[i].Cantidad);
+                listaFiltrada[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", listaFiltrada[i].CostoUnitario);
             }
             return listaFiltrada;
         }

@@ -82,7 +82,7 @@ namespace ERP_TECKIO
                 return respuesta;
             }
             respuesta.Estatus = true;
-            respuesta.Descripcion = "Se creo la requisicion";
+            respuesta.Descripcion = "Se creo la requisición";
             return respuesta;
         }
 
