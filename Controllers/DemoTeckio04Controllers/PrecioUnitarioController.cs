@@ -241,44 +241,79 @@ namespace ERP_TECKIO
         }
 
         [HttpPost("importarOpus")]
-        public async Task<IActionResult> ImportarOpus([FromForm] List<IFormFile> files, [FromForm] int IdProyecto)
+        public async Task<RespuestaDTO> ImportarOpus([FromForm] List<IFormFile> files, [FromForm] int IdProyecto)
         {
+            var respuesta = new RespuestaDTO();
             var ImportacionInsumoDBF = files.Where(z => z.FileName.Substring(z.FileName.Length - 5, 5) == "P.DBF").FirstOrDefault();
             if (ImportacionInsumoDBF == null || ImportacionInsumoDBF.Length == 0)
-                return BadRequest("Archivo DBF no válido.");
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Archivo DBF no válido.";
+                return respuesta;
+            }
             var ImportacionInsumoFPT = files.Where(z => z.FileName.Substring(z.FileName.Length - 5, 5) == "P.FPT").FirstOrDefault();
             if (ImportacionInsumoFPT == null || ImportacionInsumoFPT.Length == 0)
-                return BadRequest("Archivo FPT no válido.");
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Archivo FPT no válido.";
+                return respuesta;
+            }
 
             await _precioUnitarioProceso.ImportarInsumos(ImportacionInsumoDBF, ImportacionInsumoFPT, IdProyecto);
 
             var ImportacionConceptosDBF = files.Where(z => z.FileName.Substring(z.FileName.Length - 5, 5) == "A.DBF").FirstOrDefault();
             if (ImportacionConceptosDBF == null || ImportacionConceptosDBF.Length == 0)
-                return BadRequest("Archivo DBF no válido.");
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Archivo DBF no válido.";
+                return respuesta;
+            }
             var ImportacionConceptosFPT = files.Where(z => z.FileName.Substring(z.FileName.Length - 5, 5) == "A.FPT").FirstOrDefault();
             if (ImportacionConceptosFPT == null || ImportacionConceptosFPT.Length == 0)
-                return BadRequest("Archivo FPT no válido.");
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Archivo FPT no válido.";
+                return respuesta;
+            }
 
             await _precioUnitarioProceso.ImportarConceptos(ImportacionConceptosDBF, ImportacionConceptosFPT, IdProyecto);
 
             var ArmadoCatalogoConcepto = files.Where(z => z.FileName.Substring(z.FileName.Length - 5, 5) == "1.DBF").FirstOrDefault();
             if (ArmadoCatalogoConcepto == null || ArmadoCatalogoConcepto.Length == 0)
-                return BadRequest("Archivo DBF no válido.");
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Archivo DBF no válido.";
+                return respuesta;
+            }
             var ArmadoCatalogoConceptoFPT = files.Where(z => z.FileName.Substring(z.FileName.Length - 5, 5) == "1.FPT").FirstOrDefault();
             if (ArmadoCatalogoConceptoFPT == null || ArmadoCatalogoConceptoFPT.Length == 0)
-                return BadRequest("Archivo FPT no válido.");
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Archivo FPT no válido.";
+                return respuesta;
+            }
 
             await _precioUnitarioProceso.ArmarCatalogoConceptos(ArmadoCatalogoConcepto, ArmadoCatalogoConceptoFPT, IdProyecto);
 
             var ArmadoPU = files.Where(z => z.FileName.Substring(z.FileName.Length - 5, 5) == "F.DBF").FirstOrDefault();
             if (ArmadoPU == null || ArmadoPU.Length == 0)
-                return BadRequest("Archivo DBF no válido.");
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Archivo DBF no válido.";
+                return respuesta;
+            }
             var ArmadoPUFPT = files.Where(z => z.FileName.Substring(z.FileName.Length - 5, 5) == "F.FPT").FirstOrDefault();
             if (ArmadoPUFPT == null || ArmadoPUFPT.Length == 0)
-                return BadRequest("Archivo FPT no válido.");
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Archivo FPT no válido.";
+                return respuesta;
+            }
 
             await _precioUnitarioProceso.ArmarPreciosUnitarios(ArmadoPU, ArmadoPUFPT, IdProyecto);
-            return NoContent();
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Importación correcta";
+            return respuesta;
         }
         //public async Task ImportarOpus(List<IFormFile> archivosDBF)
         //{
