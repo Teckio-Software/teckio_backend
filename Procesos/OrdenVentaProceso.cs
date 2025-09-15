@@ -18,6 +18,7 @@ namespace ERP_TECKIO.Procesos
         private readonly EntradaProduccionAlmacenProceso<T> _entradaProduccionAlmacenProceso;
         private readonly IFacturaService<T> _facturaService;
         private readonly IFacturaDetalleService<T> _detalleFacturaService;
+        private readonly IProductoYservicioService<T> _productoYservicioService;
 
         public OrdenVentaProceso(
             IOrdenVentaService<T> ordenVentaService,
@@ -27,7 +28,8 @@ namespace ERP_TECKIO.Procesos
             IClientesService<T> clienteService,
             EntradaProduccionAlmacenProceso<T> entradaProduccionAlmacenProceso,
             IFacturaService<T> facturaService,
-            IFacturaDetalleService<T> detalleFacturaService
+            IFacturaDetalleService<T> detalleFacturaService,
+            IProductoYservicioService<T> productoYservicioService
             ) { 
             _ordenVentaService = ordenVentaService;
             _detalleOrdenVentaService = detalleOrdenVentaService;
@@ -37,6 +39,7 @@ namespace ERP_TECKIO.Procesos
             _entradaProduccionAlmacenProceso = entradaProduccionAlmacenProceso;
             _facturaService = facturaService;
             _detalleFacturaService = detalleFacturaService;
+            _productoYservicioService = productoYservicioService;
         }
 
         public async Task<OrdenVentaDTO> obtenerOrdenVentaXId(int IdOrdenVenta) {
@@ -46,8 +49,15 @@ namespace ERP_TECKIO.Procesos
             foreach (var detalle in detallesXordenVenta) {
                 var impuestosDetalles = await _impuestoDetalleOrdenVentaService.ObtenerXIdDetalle(detalle.Id);
                 detalle.ImpuestosDetalleOrdenVenta = impuestosDetalles;
+                var prodyserv = await _productoYservicioService.ObtenerXId(detalle.IdProductoYservicio);
+                detalle.Descripcion = prodyserv.Descripcion;
             }
             ordenVenta.DetalleOrdenVenta = detallesXordenVenta;
+            if (ordenVenta.IdCliente != null)
+            {
+                var cliente = await _clienteService.ObtenXId((int)ordenVenta.IdCliente);
+                ordenVenta.RazonSocialCliente = cliente.RazonSocial;
+            }
             return ordenVenta;
         }
 
