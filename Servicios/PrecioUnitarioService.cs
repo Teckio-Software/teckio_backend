@@ -65,8 +65,8 @@ namespace ERP_TECKIO.Servicios
                         }
                         padres[i].PrecioUnitario = (PUConIG) + (PUConIP);
                         padres[i].Importe = padres[i].PrecioUnitario * padres[i].Cantidad;
-                        padres[i].PrecioUnitarioConFormato = String.Format("{0:#,##0.00}", padres[i].PrecioUnitario);
-                        padres[i].ImporteConFormato = String.Format("{0:#,##0.00}", padres[i].Importe);
+                        padres[i].PrecioUnitarioConFormato = String.Format("${0:#,##0.00}", padres[i].PrecioUnitario);
+                        padres[i].ImporteConFormato = String.Format("${0:#,##0.00}", padres[i].Importe);
                     }
                     else
                     {
@@ -78,16 +78,16 @@ namespace ERP_TECKIO.Servicios
                         }
                         padres[i].PrecioUnitario = PUConIG + PUConIP;
                         padres[i].Importe = padres[i].PrecioUnitario * padres[i].Cantidad;
-                        padres[i].PrecioUnitarioConFormato = String.Format("{0:#,##0.00}", padres[i].PrecioUnitario);
-                        padres[i].ImporteConFormato = String.Format("{0:#,##0.00}", padres[i].Importe);
+                        padres[i].PrecioUnitarioConFormato = String.Format("${0:#,##0.00}", padres[i].PrecioUnitario);
+                        padres[i].ImporteConFormato = String.Format("${0:#,##0.00}", padres[i].Importe);
                     }
                 }
                 else
                 {
                     padres[i].PrecioUnitario = hijos.Sum(z => (z.Importe));
                     padres[i].Importe = padres[i].PrecioUnitario * padres[i].Cantidad;
-                    padres[i].PrecioUnitarioConFormato = String.Format("{0:#,##0.00}", padres[i].PrecioUnitario);
-                    padres[i].ImporteConFormato = String.Format("{0:#,##0.00}", padres[i].Importe);
+                    padres[i].PrecioUnitarioConFormato = String.Format("${0:#,##0.00}", padres[i].PrecioUnitario);
+                    padres[i].ImporteConFormato = String.Format("${0:#,##0.00}", padres[i].Importe);
                 }
                 var PU = registros.FindIndex(z => z.Id == padres[i].Id);
                 registros[PU].PrecioUnitario = padres[i].PrecioUnitario;
@@ -118,8 +118,8 @@ namespace ERP_TECKIO.Servicios
                         }
                         padres[i].PrecioUnitario = (PUConIG) + (PUConIP);
                         padres[i].Importe = padres[i].PrecioUnitario * padres[i].Cantidad;
-                        padres[i].PrecioUnitarioConFormato = String.Format("{0:#,##0.00}", padres[i].PrecioUnitario);
-                        padres[i].ImporteConFormato = String.Format("{0:#,##0.00}", padres[i].Importe);
+                        padres[i].PrecioUnitarioConFormato = String.Format("${0:#,##0.00}", padres[i].PrecioUnitario);
+                        padres[i].ImporteConFormato = String.Format("${0:#,##0.00}", padres[i].Importe);
                     }
                     else
                     {
@@ -131,16 +131,16 @@ namespace ERP_TECKIO.Servicios
                         }
                         padres[i].PrecioUnitario = PUConIG + PUConIP;
                         padres[i].Importe = padres[i].PrecioUnitario * padres[i].Cantidad;
-                        padres[i].PrecioUnitarioConFormato = String.Format("{0:#,##0.00}", padres[i].PrecioUnitario);
-                        padres[i].ImporteConFormato = String.Format("{0:#,##0.00}", padres[i].Importe);
+                        padres[i].PrecioUnitarioConFormato = String.Format("${0:#,##0.00}", padres[i].PrecioUnitario);
+                        padres[i].ImporteConFormato = String.Format("${0:#,##0.00}", padres[i].Importe);
                     }
                 }
                 else
                 {
                     padres[i].PrecioUnitario = hijos.Sum(z => (z.Importe));
                     padres[i].Importe = padres[i].PrecioUnitario * padres[i].Cantidad;
-                    padres[i].PrecioUnitarioConFormato = String.Format("{0:#,##0.00}", padres[i].PrecioUnitario);
-                    padres[i].ImporteConFormato = String.Format("{0:#,##0.00}", padres[i].Importe);
+                    padres[i].PrecioUnitarioConFormato = String.Format("${0:#,##0.00}", padres[i].PrecioUnitario);
+                    padres[i].ImporteConFormato = String.Format("${0:#,##0.00}", padres[i].Importe);
                 }
                 
                 var PU = registros.FindIndex(z => z.Id == padres[i].Id);

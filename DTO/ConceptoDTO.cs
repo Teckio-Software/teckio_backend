@@ -21,6 +21,7 @@
         public int? IdEspecialidad { get; set; }
         public string? DescripcionEspecialidad { get; set; }
         public decimal CostoUnitario { get; set; }
+        public string? CostoUnitarioConFormato { get; set; }
         public decimal PorcentajeIndirecto { get; set; }
         public decimal IdProyecto { get; set; }
     }
