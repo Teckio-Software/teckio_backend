@@ -514,6 +514,52 @@ namespace ERP_TECKIO
             return listaResult;
         }
 
+        public async Task<List<PrecioUnitarioDTO>> obtenerConceptosXProyecto(int IdProyecto) {
+            var items = _dbContex.Database.SqlQueryRaw<string>(""""
+                                select 
+                  PU.id as Id, 
+                  PU.idProyecto as IdProyecto, 
+                  PU.Cantidad, 
+                  PU.CantidadExcedente, 
+                  PU.TipoPrecioUnitario, 
+                  PU.Nivel, 
+                  PU.idPrecioUnitarioBase as IdPrecioUnitarioBase,
+                  PU.EsDetalle, 
+                  PU.idConcepto as IdConcepto, 
+                  PU.Posicion, 
+                  PU.EsCatalogoGeneral, 
+                  P.NoSerie as NoSerie, 
+                  C.Codigo, 
+                  C.Descripcion, 
+                  C.Unidad, 
+                  C.CostoUnitario, 
+                  (C.CostoUnitario) as PrecioUnitario,
+                  (C.CostoUnitario * PU.Cantidad) as Importe, 
+                  (C.CostoUnitario * PU.Cantidad * P.NoSerie) as ImporteSeries, 
+                  CAST(1 AS bit) as Expandido,
+                  FORMAT(PU.Cantidad, '0.0000') as CantidadConFormato,
+                  FORMAT(PU.CantidadExcedente, '0.0000') as CantidadExcedenteConFormato,
+                  FORMAT(C.CostoUnitario, '0.00') as CostoUnitarioConFormato,
+                  FORMAT(C.CostoUnitario, '0.00') as PrecioUnitarioConFormato,
+                  FORMAT((C.CostoUnitario * PU.Cantidad), '0.00') as ImporteConFormato,
+                  FORMAT((C.CostoUnitario * PU.Cantidad * P.NoSerie), '0.00') as ImporteSeriesConFormato
+                from PrecioUnitario as PU
+                left join Proyecto as P on P.Id = PU.idProyecto
+                left join Concepto as C on C.Id = PU.idConcepto
+                where PU.TipoPrecioUnitario = 1 and PU.idProyecto = 
+                """" + IdProyecto + """" 
+                for json path
+                """").ToList();
+
+            if (items.Count <= 0)
+            {
+                return new List<PrecioUnitarioDTO>();
+            }
+            string json = string.Join("", items);
+            var datos = JsonSerializer.Deserialize<List<PrecioUnitarioDTO>>(json);
+            return datos;
+        }
+
         public async Task<List<PrecioUnitarioDTO>> obtenerPrecioUnitarioCatalogoGeneral()
         {
             var items = _dbContex.Database.SqlQueryRaw<string>(
@@ -2580,8 +2626,17 @@ for json path
 
         public async Task ImportarCatalogoAPrecioUnitario(List<PrecioUnitarioDTO> precios, PrecioUnitarioDTO precioUniatrio)
         {
+            var conceptos = await obtenerConceptosXProyecto(precioUniatrio.IdProyecto);
+
             for (int i = 0; i < precios.Count; i++)
             {
+                var existeMismaClave = conceptos.Where(z => z.Codigo.Length >= precios[i].Codigo.Length &&
+                z.Codigo.Substring(0, precios[i].Codigo.Length) == precios[i].Codigo);
+
+                if (existeMismaClave.Count() >= 1) {
+                    precios[i].Codigo = precios[i].Codigo+"_"+(existeMismaClave.Count()+1).ToString();
+                }
+
                 precios[i].Nivel = precioUniatrio.TipoPrecioUnitario == 0 ? precioUniatrio.Nivel + 1 : precioUniatrio.Nivel;
                 precios[i].EsCatalogoGeneral = false;
                 precios[i].IdPrecioUnitarioBase = precioUniatrio.TipoPrecioUnitario == 0 ? precioUniatrio.Id : precioUniatrio.IdPrecioUnitarioBase;
