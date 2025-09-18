@@ -19,7 +19,7 @@
     public class AlmacenEntradaCreacionDTO
     {
         public int IdAlmacen { get; set; }
-        public int IdContratista { get; set; }
+        public int? IdContratista { get; set; }
         public string? Observaciones { get; set; }
         public List<AlmacenEntradaInsumoCreacionDTO> ListaInsumosEnAlmacenEntrada { get; set; }
     }

@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+﻿using Microsoft.AspNetCore.Mvc;
+using ERP_TECKIO;
 using Microsoft.AspNetCore.Authorization;
 
 
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ERP_TECKIO.DTO;
 
 
 namespace ERP_TECKIO.Controllers
@@ -92,6 +94,14 @@ namespace ERP_TECKIO.Controllers
         {
             var authen = HttpContext.User;
             return await _Proceso.CrearAlmacenSalida(CreacionDTO, authen.Claims.ToList());
+        }
+
+        [HttpPost("Transpaso")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<RespuestaDTO> Transpaso([FromBody] TranspasoAlmacenDTO parametro)
+        {
+            var authen = HttpContext.User;
+            return await _Proceso.transpasoInsumos(parametro, authen.Claims.ToList());
         }
 
         [HttpPost("EditarAlmacenSalida")]
