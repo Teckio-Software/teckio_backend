@@ -24,7 +24,7 @@
     public class AlmacenExistenciaInsumoCreacionDTO
     {
         public int IdInsumo { get; set; }
-        public int IdProyecto { get; set; }
+        public int? IdProyecto { get; set; }
         public int IdAlmacen { get; set; }
         public decimal CantidadInsumosAumenta { get; set; }
         public decimal CantidadInsumosRetira { get; set; } = 0;
@@ -40,6 +40,13 @@
         public int IdInsumo { get; set; }
         public decimal CantidadExistencia { get; set; }
         public int IdAlmacen { get; set; }
+    }
+
+    public class ExistenciaTranspasoDTO
+    {
+        public int IdInsumo { get; set; }
+        public decimal CantidadExistencia { get; set; }
+        public string? NombreInsumo { get; set; }
     }
 
 }

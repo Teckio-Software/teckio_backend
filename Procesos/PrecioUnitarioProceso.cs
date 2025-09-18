@@ -501,13 +501,13 @@ namespace ERP_TECKIO
                 lista[i].Importe = lista[i].PrecioUnitario * lista[i].Cantidad;
                 lista[i].ImporteSeries = lista[i].Importe * lista[i].NoSerie;
                 lista[i].Expandido = true;
-                lista[i].CantidadConFormato = String.Format("${0:#,##0.0000}", lista[i].Cantidad);
-                lista[i].CantidadExcedenteConFormato = String.Format("${0:#,##0.0000}", lista[i].CantidadExcedente);
+                lista[i].CantidadConFormato = String.Format("{0:#,##0.0000}", lista[i].Cantidad);
+                lista[i].CantidadExcedenteConFormato = String.Format("{0:#,##0.0000}", lista[i].CantidadExcedente);
                 lista[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", lista[i].CostoUnitario);
                 lista[i].PrecioUnitarioConFormato = String.Format("${0:#,##0.00}", lista[i].PrecioUnitario);
                 lista[i].ImporteConFormato = String.Format("${0:#,##0.00}", lista[i].Importe);
                 lista[i].ImporteSeriesConFormato = String.Format("${0:#,##0.00}", lista[i].ImporteSeries);
-                lista[i].PorcentajeIndirectoConFormato = String.Format("${0:#,##0.0000}", lista[i].PorcentajeIndirecto);
+                lista[i].PorcentajeIndirectoConFormato = String.Format("{0:#,##0.0000}", lista[i].PorcentajeIndirecto);
             }
             var listaEstructurada = await _PrecioUnitarioService.Estructurar(lista, indirectos);
             var listaResult = listaEstructurada.OrderBy(z => z.Posicion).ToList();
@@ -585,8 +585,8 @@ for json path
                 lista[i].Importe = lista[i].PrecioUnitario * lista[i].Cantidad;
                 lista[i].ImporteSeries = lista[i].Importe * lista[i].NoSerie;
                 lista[i].Expandido = true;
-                lista[i].CantidadConFormato = String.Format("${0:#,##0.0000}", lista[i].Cantidad);
-                lista[i].CantidadExcedenteConFormato = String.Format("${0:#,##0.0000}", lista[i].CantidadExcedente);
+                lista[i].CantidadConFormato = String.Format("{0:#,##0.0000}", lista[i].Cantidad);
+                lista[i].CantidadExcedenteConFormato = String.Format("{0:#,##0.0000}", lista[i].CantidadExcedente);
                 lista[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", lista[i].CostoUnitario);
                 lista[i].PrecioUnitarioConFormato = String.Format("${0:#,##0.00}", lista[i].PrecioUnitario);
                 lista[i].ImporteConFormato = String.Format("${0:#,##0.00}", lista[i].Importe);
@@ -625,8 +625,8 @@ for json path
                     lista[i].Importe = lista[i].PrecioUnitario * lista[i].Cantidad;
                     lista[i].ImporteSeries = lista[i].Importe * lista[i].NoSerie;
                     lista[i].Expandido = true;
-                    lista[i].CantidadConFormato = String.Format("${0:#,##0.0000}", lista[i].Cantidad);
-                    lista[i].CantidadExcedenteConFormato = String.Format("${0:#,##0.0000}", lista[i].CantidadExcedente);
+                    lista[i].CantidadConFormato = String.Format("{0:#,##0.0000}", lista[i].Cantidad);
+                    lista[i].CantidadExcedenteConFormato = String.Format("{0:#,##0.0000}", lista[i].CantidadExcedente);
                     lista[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", lista[i].CostoUnitario);
                     lista[i].PrecioUnitarioConFormato = String.Format("${0:#,##0.00}", lista[i].PrecioUnitario);
                     lista[i].ImporteConFormato = String.Format("${0:#,##0.00}", lista[i].Importe);
@@ -708,8 +708,8 @@ for json path
                 lista[i].PrecioUnitario = lista[i].CostoUnitario * indirectos;
                 lista[i].Importe = lista[i].PrecioUnitario * lista[i].Cantidad;
                 lista[i].ImporteSeries = lista[i].Importe * lista[i].NoSerie;
-                lista[i].CantidadConFormato = String.Format("${0:#,##0.0000}", lista[i].Cantidad);
-                lista[i].CantidadExcedenteConFormato = String.Format("${0:#,##0.0000}", lista[i].CantidadExcedente);
+                lista[i].CantidadConFormato = String.Format("{0:#,##0.0000}", lista[i].Cantidad);
+                lista[i].CantidadExcedenteConFormato = String.Format("{0:#,##0.0000}", lista[i].CantidadExcedente);
                 lista[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", lista[i].CostoUnitario);
                 lista[i].PrecioUnitarioConFormato = String.Format("${0:#,##0.00}", lista[i].PrecioUnitario);
                 lista[i].ImporteConFormato = String.Format("${0:#,##0.00}", lista[i].Importe);
@@ -1260,7 +1260,7 @@ for json path
                 listaFiltrada[i].IdFamiliaInsumo = insumo.idFamiliaInsumo;
                 listaFiltrada[i].Importe = listaFiltrada[i].Cantidad * listaFiltrada[i].CostoUnitario;
                 listaFiltrada[i].ImporteConFormato = String.Format("${0:#,##0.00}", listaFiltrada[i].Importe);
-                listaFiltrada[i].CantidadConFormato = String.Format("${0:#,##0.0000}", listaFiltrada[i].Cantidad);
+                listaFiltrada[i].CantidadConFormato = String.Format("{0:#,##0.0000}", listaFiltrada[i].Cantidad);
                 listaFiltrada[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", listaFiltrada[i].CostoUnitario);
             }
             return listaFiltrada;
@@ -1365,7 +1365,7 @@ for json path
         //        listaFiltrada[i].IdFamiliaInsumo = insumo.idFamiliaInsumo;
         //        listaFiltrada[i].Importe = listaFiltrada[i].Cantidad * listaFiltrada[i].CostoUnitario;
         //        listaFiltrada[i].ImporteConFormato = String.Format("${0:#,##0.00}", listaFiltrada[i].Importe);
-        //        listaFiltrada[i].CantidadConFormato = String.Format("${0:#,##0.0000}", listaFiltrada[i].Cantidad);
+        //        listaFiltrada[i].CantidadConFormato = String.Format("{0:#,##0.0000}", listaFiltrada[i].Cantidad);
         //        listaFiltrada[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", listaFiltrada[i].CostoUnitario);
         //    }
         //    return listaFiltrada;
@@ -2086,7 +2086,7 @@ for json path
             //    detallesFiltrados[i].IdFamiliaInsumo = buscaInsumo.idFamiliaInsumo;
             //    detallesFiltrados[i].CostoUnitario = buscaInsumo.CostoUnitario;
             //    detallesFiltrados[i].Importe = detalles[i].Cantidad * detalles[i].CostoUnitario;
-            //    detallesFiltrados[i].CantidadConFormato = String.Format("${0:#,##0.0000}", detalles[i].Cantidad);
+            //    detallesFiltrados[i].CantidadConFormato = String.Format("{0:#,##0.0000}", detalles[i].Cantidad);
             //    detallesFiltrados[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", detalles[i].CostoUnitario);
             //    detallesFiltrados[i].ImporteConFormato = String.Format("${0:#,##0.00}", detalles[i].Importe);
             //}
@@ -2165,7 +2165,7 @@ for json path
         //            detallesFiltrados[i].IdFamiliaInsumo = insumo.idFamiliaInsumo;
         //            detallesFiltrados[i].CostoUnitario = insumo.CostoUnitario;
         //            detallesFiltrados[i].Importe = detallesFiltrados[i].Cantidad * detallesFiltrados[i].CostoUnitario;
-        //            detallesFiltrados[i].CantidadConFormato = String.Format("${0:#,##0.0000}", detallesFiltrados[i].Cantidad);
+        //            detallesFiltrados[i].CantidadConFormato = String.Format("{0:#,##0.0000}", detallesFiltrados[i].Cantidad);
         //            detallesFiltrados[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", detallesFiltrados[i].CostoUnitario);
         //            detallesFiltrados[i].ImporteConFormato = String.Format("${0:#,##0.00}", detallesFiltrados[i].Importe);
         //        }
@@ -3701,7 +3701,7 @@ for json path
             for (int i = 0; i < ExplosionInsumos.Count; i++)
             {
                 ExplosionInsumos[i].Cantidad = ExplosionInsumos[i].Cantidad * PrecioUnitario.Cantidad;
-                ExplosionInsumos[i].CantidadConFormato = String.Format("${0:#,##0.0000}", ExplosionInsumos[i].Cantidad);
+                ExplosionInsumos[i].CantidadConFormato = String.Format("{0:#,##0.0000}", ExplosionInsumos[i].Cantidad);
                 ExplosionInsumos[i].CostoBaseConFormato = String.Format("${0:#,##0.00}", ExplosionInsumos[i].CostoBase);
                 ExplosionInsumos[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", ExplosionInsumos[i].CostoUnitario);
                 ExplosionInsumos[i].Importe = ExplosionInsumos[i].Cantidad * ExplosionInsumos[i].CostoUnitario;
@@ -3786,7 +3786,7 @@ for json path
                 Codigo = x.Key.Codigo,
                 Descripcion = x.Key.Descripcion,
                 Cantidad = x.Sum(z => z.Cantidad),
-                CantidadConFormato = String.Format("${0:#,##0.00}", x.Sum(z => z.Cantidad)),
+                CantidadConFormato = String.Format("{0:#,##0.00}", x.Sum(z => z.Cantidad)),
                 Importe = x.Sum(z => z.Cantidad) * x.First().CostoUnitario,
                 ImporteConFormato = String.Format("${0:#,##0.00}", x.Sum(z => z.Cantidad) * x.First().CostoUnitario)
             }).ToList();
@@ -3806,7 +3806,7 @@ for json path
             //    insumo.CostoBaseConFormato = item.CostoBaseConFormato;
             //    decimal cantidadTotal = item.Cantidad;
             //    insumo.Cantidad = cantidadTotal;
-            //    insumo.CantidadConFormato = String.Format("${0:#,##0.00}", cantidadTotal);
+            //    insumo.CantidadConFormato = String.Format("{0:#,##0.00}", cantidadTotal);
             //    decimal importeTotal = item.Importe;
             //    insumo.ImporteConFormato = String.Format("${0:#,##0.00}", importeTotal);
             //    insumo.Importe = importeTotal;
@@ -3866,7 +3866,7 @@ for json path
                 Codigo = x.Key.Codigo,
                 Descripcion = x.Key.Descripcion,
                 Cantidad = x.Sum(z => z.Cantidad),
-                CantidadConFormato = String.Format("${0:#,##0.00}", x.Sum(z => z.Cantidad)),
+                CantidadConFormato = String.Format("{0:#,##0.00}", x.Sum(z => z.Cantidad)),
                 Importe = x.Sum(z => z.Cantidad) * x.First().CostoUnitario,
                 ImporteConFormato = String.Format("${0:#,##0.00}", x.Sum(z => z.Cantidad) * x.First().CostoUnitario)
             }).ToList();
@@ -3917,7 +3917,7 @@ for json path
                 listaFiltrada[i].IdFamiliaInsumo = insumo.idFamiliaInsumo;
                 listaFiltrada[i].Importe = listaFiltrada[i].Cantidad * listaFiltrada[i].CostoUnitario;
                 listaFiltrada[i].ImporteConFormato = String.Format("${0:#,##0.00}", listaFiltrada[i].Importe);
-                listaFiltrada[i].CantidadConFormato = String.Format("${0:#,##0.0000}", listaFiltrada[i].Cantidad);
+                listaFiltrada[i].CantidadConFormato = String.Format("{0:#,##0.0000}", listaFiltrada[i].Cantidad);
                 listaFiltrada[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", listaFiltrada[i].CostoUnitario);
             }
             return listaFiltrada;

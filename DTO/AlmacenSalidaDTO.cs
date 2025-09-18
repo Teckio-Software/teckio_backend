@@ -32,7 +32,7 @@
         public int IdAlmacen { get; set; }
         public string? Observaciones { get; set; }
         public string? PersonaRecibio { get; set; }
-        public int IdProyecto { get; set; }
+        public int? IdProyecto { get; set; }
         public bool EsBaja { get; set; } 
 
         public List<AlmacenSalidaInsumoCreacionDTO> ListaAlmacenSalidaInsumoCreacion { get; set; }

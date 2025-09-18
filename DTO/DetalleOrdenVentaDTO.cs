@@ -5,5 +5,9 @@ namespace ERP_TECKIO.DTO
     public class DetalleOrdenVentaDTO : DetalleOrdenVentaAbstract
     {
         public List<ImpuestoDetalleOrdenVentaDTO> ImpuestosDetalleOrdenVenta { get; set; } = new List<ImpuestoDetalleOrdenVentaDTO>();
+
+        public string? Descripcion { get; set; }
+
     }
+
 }
