@@ -145,14 +145,14 @@ namespace ERP_TECKIO.Servicios.Facturacion
                 }
                 else
                 {
-                    respuesta.Descripcion = "Ocurrio un error al intentar crear el producto y servicio";
+                    respuesta.Descripcion = "Ocurrió un error al intentar crear el producto y servicio";
                     respuesta.Estatus = false;
                 }
                 return respuesta;
             }
             catch
             {
-                respuesta.Descripcion = "Ocurrio un error al intentar crear el producto y servicio";
+                respuesta.Descripcion = "Ocurrió un error al intentar crear el producto y servicio";
                 respuesta.Estatus = false;
                 return respuesta;
             }

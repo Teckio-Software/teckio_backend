@@ -541,10 +541,10 @@ select
   CAST(1 AS bit) as Expandido,
   FORMAT(PU.Cantidad, '0.0000') as CantidadConFormato,
   FORMAT(PU.CantidadExcedente, '0.0000') as CantidadExcedenteConFormato,
-  FORMAT(C.CostoUnitario, '0.00') as CostoUnitarioConFormato,
-  FORMAT(C.CostoUnitario, '0.00') as PrecioUnitarioConFormato,
-  FORMAT((C.CostoUnitario * PU.Cantidad), '0.00') as ImporteConFormato,
-  FORMAT((C.CostoUnitario * PU.Cantidad * P.NoSerie), '0.00') as ImporteSeriesConFormato
+  '$'+FORMAT(C.CostoUnitario, '0.00') as CostoUnitarioConFormato,
+  '$'+FORMAT(C.CostoUnitario, '0.00') as PrecioUnitarioConFormato,
+  '$'+FORMAT((C.CostoUnitario * PU.Cantidad), '0.00') as ImporteConFormato,
+  '$'+FORMAT((C.CostoUnitario * PU.Cantidad * P.NoSerie), '0.00') as ImporteSeriesConFormato
 from PrecioUnitario as PU
 left join Proyecto as P on P.Id = PU.idProyecto
 left join Concepto as C on C.Id = PU.idConcepto
@@ -665,10 +665,10 @@ select
   CAST(1 AS bit) as Expandido,
   FORMAT(PU.Cantidad, '0.0000') as CantidadConFormato,
   FORMAT(PU.CantidadExcedente, '0.0000') as CantidadExcedenteConFormato,
-  FORMAT(C.CostoUnitario, '0.00') as CostoUnitarioConFormato,
-  FORMAT(C.CostoUnitario, '0.00') as PrecioUnitarioConFormato,
-  FORMAT((C.CostoUnitario * PU.Cantidad), '0.00') as ImporteConFormato,
-  FORMAT((C.CostoUnitario * PU.Cantidad * P.NoSerie), '0.00') as ImporteSeriesConFormato
+  '$'+FORMAT(C.CostoUnitario, '0.00') as CostoUnitarioConFormato,
+  '$'+FORMAT(C.CostoUnitario, '0.00') as PrecioUnitarioConFormato,
+  '$'+FORMAT((C.CostoUnitario * PU.Cantidad), '0.00') as ImporteConFormato,
+  '$'+FORMAT((C.CostoUnitario * PU.Cantidad * P.NoSerie), '0.00') as ImporteSeriesConFormato
 from PrecioUnitario as PU
 left join Proyecto as P on P.Id = PU.idProyecto
 left join Concepto as C on C.Id = PU.idConcepto
@@ -1287,7 +1287,7 @@ for json path
                 I.IdTipoInsumo,
                 I.IdFamiliaInsumo,
                 PUD.Cantidad * I.CostoUnitario as Importe,
-                FORMAT(PUD.Cantidad * I.CostoUnitario, 'N', 'en-us') as ImporteConFormato,
+                '$'+FORMAT(PUD.Cantidad * I.CostoUnitario, 'N', 'en-us') as ImporteConFormato,
                 I.EsAutorizado
                 from PrecioUnitarioDetalle PUD
                 Join Insumo I
@@ -1325,7 +1325,7 @@ for json path
                 I.IdTipoInsumo,
                 I.IdFamiliaInsumo,
                 PUD.Cantidad * I.CostoUnitario as Importe,
-                FORMAT(PUD.Cantidad * I.CostoUnitario, 'N', 'en-us') as ImporteConFormato,
+                '$'+FORMAT(PUD.Cantidad * I.CostoUnitario, 'N', 'en-us') as ImporteConFormato,
                 I.EsAutorizado
                 from PrecioUnitarioDetalle PUD
                 Join Insumo I
