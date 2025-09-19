@@ -105,7 +105,7 @@ namespace ERP_TECKIO.Procesos
             var nuevaOrdenVenta = await _ordenVentaService.CrearYObtener(ordenVenta);
             if (nuevaOrdenVenta.Id <= 0) {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "No se genero la orden de venta";
+                respuesta.Descripcion = "No se generó la orden de venta";
                 return respuesta;
             }
 
@@ -125,7 +125,7 @@ namespace ERP_TECKIO.Procesos
             }
 
             respuesta.Estatus = true;
-            respuesta.Descripcion = "Se genero la orden de venta";
+            respuesta.Descripcion = "Se generó la orden de venta";
             return respuesta;
         }
 
@@ -140,7 +140,7 @@ namespace ERP_TECKIO.Procesos
             catch
             {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "Ocurrio un error al intentar editar la orden de venta";
+                respuesta.Descripcion = "Ocurrió un error al intentar editar la orden de venta";
                 return respuesta;
             }
         }
@@ -156,7 +156,7 @@ namespace ERP_TECKIO.Procesos
             catch
             {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "Ocurrio un error al intentar editar la orden de venta";
+                respuesta.Descripcion = "Ocurrió un error al intentar editar la orden de venta";
                 return respuesta;
             }
         }
@@ -195,7 +195,7 @@ namespace ERP_TECKIO.Procesos
             }
             catch
             {
-                respuesta.Descripcion = "Ocurrio un error al intentar autorizar la orden de venta";
+                respuesta.Descripcion = "Ocurrió un error al intentar autorizar la orden de venta";
                 respuesta.Estatus = false;
                 return respuesta;
             }
@@ -219,7 +219,7 @@ namespace ERP_TECKIO.Procesos
             }
             catch
             {
-                respuesta.Descripcion = "Ocurrio un error al intentar autorizar la orden de venta";
+                respuesta.Descripcion = "Ocurrió un error al intentar autorizar la orden de venta";
                 respuesta.Estatus = false;
                 return respuesta;
             }
@@ -234,14 +234,14 @@ namespace ERP_TECKIO.Procesos
                 var ordenVenta = await _ordenVentaService.ObtenerOrdenVentaXId(orden.IdOrdenVenta);
                 if (ordenVenta.Id <= 0)
                 {
-                    respuesta.Descripcion = "No se encontro la orden de venta";
+                    respuesta.Descripcion = "No se encontró la orden de venta";
                     respuesta.Estatus = false;
                     return respuesta;
                 }
                 var cliente = await _clienteService.ObtenXId((int)ordenVenta.IdCliente);
                 if (cliente.Id <= 0)
                 {
-                    respuesta.Descripcion = "No se encontro el cliente asociado a la orden de venta";
+                    respuesta.Descripcion = "No se encontró el cliente asociado a la orden de venta";
                     respuesta.Estatus = false;
                     return respuesta;
                 }
@@ -266,7 +266,7 @@ namespace ERP_TECKIO.Procesos
                         }
 
                         ///////////////
-                        respuesta.Descripcion = "Ocurrio un error al intentar crear la salida de producción al almacén";
+                        respuesta.Descripcion = "Ocurrió un error al intentar crear la salida de producción al almacén";
                         respuesta.Estatus = false;
                         return respuesta;
                     }
@@ -284,7 +284,7 @@ namespace ERP_TECKIO.Procesos
                     }
 
                     ///////////////
-                    respuesta.Descripcion = "Ocurrio un error al intentar autorizar la orden de venta";
+                    respuesta.Descripcion = "Ocurrió un error al intentar autorizar la orden de venta";
                     respuesta.Estatus = false;
                     return respuesta;
                 }
@@ -293,7 +293,7 @@ namespace ERP_TECKIO.Procesos
             }
             catch
             {
-                respuesta.Descripcion = "Ocurrio un error al intentar autorizar la orden de venta";
+                respuesta.Descripcion = "Ocurrió un error al intentar autorizar la orden de venta";
                 respuesta.Estatus = false;
                 return respuesta;
             }
@@ -308,7 +308,7 @@ namespace ERP_TECKIO.Procesos
                 var ordenVenta = await _ordenVentaService.ObtenerOrdenVentaXId(parametro.IdOrdenVenta);
                 if (ordenVenta.Id <= 0)
                 {
-                    respuesta.Descripcion = "No se encontro la orden de venta";
+                    respuesta.Descripcion = "No se encontró la orden de venta";
                     respuesta.Estatus = false;
                     return respuesta;
                 }
@@ -348,7 +348,7 @@ namespace ERP_TECKIO.Procesos
                 else
                 {
                     respuesta.Estatus = false;
-                    respuesta.Descripcion = "Ocurrio un error al intentar crear la entrada de producción al almacen";
+                    respuesta.Descripcion = "Ocurrió un error al intentar crear la entrada de producción al almacen";
                     return respuesta;
 
                 }
@@ -356,7 +356,7 @@ namespace ERP_TECKIO.Procesos
             }
             catch
             {
-                respuesta.Descripcion = "Ocurrio un error al intentar cancelar la orden de venta";
+                respuesta.Descripcion = "Ocurrió un error al intentar cancelar la orden de venta";
                 respuesta.Estatus = false;
                 return respuesta;
             }
@@ -446,7 +446,7 @@ namespace ERP_TECKIO.Procesos
                         if (resultFactura.Id <= 0)
                         {
                             respuesta.Estatus = false;
-                            respuesta.Descripcion = "Ocurrio un error al intentar facturar la orden de venta";
+                            respuesta.Descripcion = "Ocurrió un error al intentar facturar la orden de venta";
                             return respuesta;
                         }
 
@@ -466,7 +466,7 @@ namespace ERP_TECKIO.Procesos
                             if (resultDetalle.Id <= 0)
                             {
                                 respuesta.Estatus = false;
-                                respuesta.Descripcion = "Ocurrio un error al intentar facturar la orden de venta";
+                                respuesta.Descripcion = "Ocurrió un error al intentar facturar la orden de venta";
                                 return respuesta;
                             }
                         }
@@ -483,7 +483,7 @@ namespace ERP_TECKIO.Procesos
                     else
                     {
                         respuesta.Estatus = false;
-                        respuesta.Descripcion = "Ocurrio un error al intentar facturar la orden de venta";
+                        respuesta.Descripcion = "Ocurrió un error al intentar facturar la orden de venta";
                         return respuesta;
                     }
                 }
@@ -491,7 +491,7 @@ namespace ERP_TECKIO.Procesos
             catch
             {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "Ocurrio un error al intentar facturar la orden de venta";
+                respuesta.Descripcion = "Ocurrió un error al intentar facturar la orden de venta";
                 return respuesta;
             }
         }
