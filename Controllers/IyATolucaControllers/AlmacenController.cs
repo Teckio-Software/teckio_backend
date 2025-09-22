@@ -43,6 +43,19 @@ namespace ERP_TECKIO.Controllers
             return await _almacenServicio.ObtenTodos();
         }
 
+        [HttpGet("ObtenCentrales")]
+        public async Task<ActionResult<List<AlmacenDTO>>> ObtenCentrales()
+        {
+
+            return await _almacenServicio.ObtenCentrales();
+        }
+        [HttpGet("ObtenCentralesYDeProyecto/{IdProyecto:int}")]
+        public async Task<ActionResult<List<AlmacenDTO>>> ObtenCentralesYDeProyecto(int idProyecto)
+        {
+
+            return await _almacenServicio.ObtenerCentralesYDeProyecto(idProyecto);
+        }
+
         [HttpGet("{Id:int}")]
         public async Task<ActionResult<AlmacenDTO>> GetAlmacenXId(int Id)
         {

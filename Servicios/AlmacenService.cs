@@ -147,5 +147,45 @@ namespace ERP_TECKIO
         {
             throw new NotImplementedException();
         }
+
+        public async Task<List<AlmacenDTO>> ObtenCentrales()
+        {
+            try
+            {
+                var lista = await _Repositorio.ObtenerTodos(a => a.IdProyecto == null);
+                if (lista.Count <= 0)
+                {
+                    return new List<AlmacenDTO>();
+                }
+                else
+                {
+                    return _Mapper.Map<List<AlmacenDTO>>(lista);
+                }
+            }
+            catch
+            {
+                return new List<AlmacenDTO>();
+            }
+        }
+
+        public async Task<List<AlmacenDTO>> ObtenerCentralesYDeProyecto(int IdProyecto)
+        {
+            try
+            {
+                var lista = await _Repositorio.ObtenerTodos(a => a.IdProyecto == null || a.IdProyecto == IdProyecto);
+                if (lista.Count <= 0)
+                {
+                    return new List<AlmacenDTO>();
+                }
+                else
+                {
+                    return _Mapper.Map<List<AlmacenDTO>>(lista);
+                }
+            }
+            catch
+            {
+                return new List<AlmacenDTO>();
+            }
+        }
     }
 }
