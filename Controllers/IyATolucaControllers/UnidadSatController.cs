@@ -7,14 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace ERP_TECKIO.Controllers.IyAToluca
 {
 
-    [Route("api/unidadSat/1")]
+    [Route("api/unidadSat/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class UnidadSatController: ControllerBase
     {
-        private readonly IUnidadSatService<IyATolucaContext> _service;
+        private readonly IUnidadSatService<AppDbContext> _service;
 
-        public UnidadSatController(IUnidadSatService<IyATolucaContext> service)
+        public UnidadSatController(IUnidadSatService<AppDbContext> service)
         {
             _service = service;
         }

@@ -10,15 +10,15 @@ namespace ERP_TECKIO.Controllers
 {
 
 
-    [Route("api/almacen/1")]
+    [Route("api/almacen/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AlmacenIyATolucaController : ControllerBase
     {
-        private readonly IAlmacenService<IyATolucaContext> _almacenServicio;
+        private readonly IAlmacenService<AppDbContext> _almacenServicio;
 
         public AlmacenIyATolucaController(
-            IAlmacenService<IyATolucaContext> almacenServicio)
+            IAlmacenService<AppDbContext> almacenServicio)
         {
             _almacenServicio = almacenServicio;
         }

@@ -11,14 +11,14 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador del tipo InsumoXRequisicion que hereda <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/insumoxrequisicion/1")]
+    [Route("api/insumoxrequisicion/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class InsumoXRequisicionIyATolucaController : ControllerBase
     {
-        private readonly IInsumoXRequisicionService<IyATolucaContext> _Service;
+        private readonly IInsumoXRequisicionService<AppDbContext> _Service;
 
-        private readonly RequisicionProceso<IyATolucaContext> _Proceso;
+        private readonly RequisicionProceso<AppDbContext> _Proceso;
         /// <summary>
         /// Se usa para mostrar errores en consola
         /// </summary>
@@ -26,7 +26,7 @@ namespace ERP_TECKIO.Controllers
         /// <summary>
         /// Se usa para mandar en "headers" los registros totales de los registros
         /// </summary>
-        private readonly IyATolucaContext Context;
+        private readonly AppDbContext Context;
         /// <summary>
         /// Constructor del controlador de InsumoXRequisicion
         /// </summary>
@@ -34,9 +34,9 @@ namespace ERP_TECKIO.Controllers
         /// <param name="Context"></param>
         public InsumoXRequisicionIyATolucaController(
             ILogger<InsumoXRequisicionIyATolucaController> Logger,
-            RequisicionProceso<IyATolucaContext> Proceso,
-            IyATolucaContext Context
-            , IInsumoXRequisicionService<IyATolucaContext> Service)
+            RequisicionProceso<AppDbContext> Proceso,
+            AppDbContext Context
+            , IInsumoXRequisicionService<AppDbContext> Service)
         {
             _Logger = Logger;
             this.Context = Context;

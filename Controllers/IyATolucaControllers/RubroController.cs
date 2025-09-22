@@ -12,12 +12,12 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de los rubros que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/rubro/1")]
+    [Route("api/rubro/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionRubro-Empresa1")]
     public class RubroIyATolucaController : ControllerBase
     {
-        private readonly IRubroService<IyATolucaContext> _Service;
+        private readonly IRubroService<AppDbContext> _Service;
         /// <summary>
         /// Se usa para mostrar errores en consola
         /// </summary>
@@ -26,7 +26,7 @@ namespace ERP_TECKIO.Controllers
         /// <summary>
         /// Se usa para mandar en "headers" los registros totales de los registros
         /// </summary>
-        private readonly IyATolucaContext Context;
+        private readonly AppDbContext Context;
         //private readonly IGenericRepository2<Rubro, ErpContextTeckio> _GenericRepository2;
         /// <summary>
         /// Constructor del controlador de Almacenes
@@ -35,10 +35,10 @@ namespace ERP_TECKIO.Controllers
         /// <param name="context">Para mandar inofrmación de los registros</param>
         public RubroIyATolucaController(
             ILogger<RubroIyATolucaController> logger,
-            IyATolucaContext context
+            AppDbContext context
             , IMapper mapper
             //, IGenericRepository2<Rubro, ErpContextTeckio> genericRepository2
-            , IRubroService<IyATolucaContext> service
+            , IRubroService<AppDbContext> service
             )
         {
             //_Service = service;
@@ -66,7 +66,7 @@ namespace ERP_TECKIO.Controllers
             try
             {
                 var resultado = await _Service.Crear(creacionDTO);
-                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<IyATolucaContext>(resultado.Estatus, resultado.Descripcion);
+                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<AppDbContext>(resultado.Estatus, resultado.Descripcion);
             }
             catch (Exception ex)
             {
@@ -82,7 +82,7 @@ namespace ERP_TECKIO.Controllers
             try
             {
                 var resultado = await _Service.Editar(parametroDTO);
-                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<IyATolucaContext>(resultado.Estatus, resultado.Descripcion);
+                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<AppDbContext>(resultado.Estatus, resultado.Descripcion);
             }
             catch (Exception ex)
             {

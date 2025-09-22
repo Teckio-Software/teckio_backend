@@ -13,14 +13,14 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de las cuentas contables que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/cuentacontable/1")]
+    [Route("api/cuentacontable/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionCuentaContable-Empresa1")]
     public class CuentaContableIyATolucaController : ControllerBase
     {
-        private readonly ICuentaContableService<IyATolucaContext> _Service;
-        private readonly ICodigoAgrupadorService<IyATolucaContext> _CodigoAgrupadorService;
-        private readonly IRubroService<IyATolucaContext> _RubroService;
+        private readonly ICuentaContableService<AppDbContext> _Service;
+        private readonly ICodigoAgrupadorService<AppDbContext> _CodigoAgrupadorService;
+        private readonly IRubroService<AppDbContext> _RubroService;
         /// <summary>
         /// Se usa para mostrar errores en consola
         /// </summary>
@@ -28,8 +28,8 @@ namespace ERP_TECKIO.Controllers
         /// <summary>
         /// Se usa para mandar en "headers" los registros totales de los registros
         /// </summary>
-        private readonly IyATolucaContext Context;
-        private readonly CuentaContableProceso<IyATolucaContext> _proceso;
+        private readonly AppDbContext Context;
+        private readonly CuentaContableProceso<AppDbContext> _proceso;
         /// <summary>
         /// Constructor del controlador de las cuentas contables
         /// </summary>
@@ -37,11 +37,11 @@ namespace ERP_TECKIO.Controllers
         /// <param name="context">Para mandar información de los registros</param>
         public CuentaContableIyATolucaController(
             ILogger<CuentaContableIyATolucaController> logger,
-            IyATolucaContext context
-            , ICuentaContableService<IyATolucaContext> Service
-            , ICodigoAgrupadorService<IyATolucaContext> CodigoAgrupadorService
-            , IRubroService<IyATolucaContext> RubroService
-            , CuentaContableProceso<IyATolucaContext> proceso
+            AppDbContext context
+            , ICuentaContableService<AppDbContext> Service
+            , ICodigoAgrupadorService<AppDbContext> CodigoAgrupadorService
+            , IRubroService<AppDbContext> RubroService
+            , CuentaContableProceso<AppDbContext> proceso
             )
         {
             Logger = logger;

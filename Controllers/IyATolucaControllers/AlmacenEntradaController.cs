@@ -10,14 +10,14 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de las entradas a almacén que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/almacenentrada/1")]
+    [Route("api/almacenentrada/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AlmacenEntradaIyATolucaController : ControllerBase
     {
-        private readonly IAlmacenEntradaService<IyATolucaContext> _AlmacenEntradaServicio;
-        private readonly IInsumoXAlmacenEntradaService<IyATolucaContext> _AlmacenEntradaDetalleServicio;
-        private readonly AlmacenEntradaProceso<IyATolucaContext> _Proceso;
+        private readonly IAlmacenEntradaService<AppDbContext> _AlmacenEntradaServicio;
+        private readonly IInsumoXAlmacenEntradaService<AppDbContext> _AlmacenEntradaDetalleServicio;
+        private readonly AlmacenEntradaProceso<AppDbContext> _Proceso;
         /// <summary>
         /// Se usa para mostrar errores en consola
         /// </summary>
@@ -25,7 +25,7 @@ namespace ERP_TECKIO.Controllers
         /// <summary>
         /// Se usa para mandar en "headers" los registros totales de los registros
         /// </summary>
-        private readonly IyATolucaContext Context;
+        private readonly AppDbContext Context;
         /// <summary>
         /// Constructor del controlador de Almacenes
         /// </summary>
@@ -33,10 +33,10 @@ namespace ERP_TECKIO.Controllers
         /// <param name="context">Para mandar inofrmación de los registros</param>
         public AlmacenEntradaIyATolucaController(
             ILogger<AlmacenEntradaIyATolucaController> logger,
-            IyATolucaContext context
-            , IAlmacenEntradaService<IyATolucaContext> almacenServicio
-            , IInsumoXAlmacenEntradaService<IyATolucaContext> AlmacenEntradaDetalleServicio
-            , AlmacenEntradaProceso<IyATolucaContext> Proceso
+            AppDbContext context
+            , IAlmacenEntradaService<AppDbContext> almacenServicio
+            , IInsumoXAlmacenEntradaService<AppDbContext> AlmacenEntradaDetalleServicio
+            , AlmacenEntradaProceso<AppDbContext> Proceso
             )
         {
             Logger = logger;

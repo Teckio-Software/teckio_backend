@@ -11,12 +11,12 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de los conceptos que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/compradirectainsumos/1")]
+    [Route("api/compradirectainsumos/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionOrdenCompra-Empresa1")]
     public class CompraDirectaInsumoIyATolucaController : ControllerBase
     {
-        private readonly IInsumoXCompraDirectaService<IyATolucaContext> _Service;
+        private readonly IInsumoXCompraDirectaService<AppDbContext> _Service;
         /// <summary>
         /// Se usa para mostrar errores en consola
         /// </summary>
@@ -24,7 +24,7 @@ namespace ERP_TECKIO.Controllers
         /// <summary>
         /// Se usa para mandar en "headers" los registros totales de los registros
         /// </summary>
-        private readonly IyATolucaContext _Context;
+        private readonly AppDbContext _Context;
         /// <summary>
         /// Constructor del controlador de Conceptos
         /// </summary>
@@ -32,8 +32,8 @@ namespace ERP_TECKIO.Controllers
         /// <param name="context">Para mandar información de los registros</param>
         public CompraDirectaInsumoIyATolucaController(
             ILogger<CompraDirectaInsumoIyATolucaController> logger
-            , IyATolucaContext context
-            , IInsumoXCompraDirectaService<IyATolucaContext> Service)
+            , AppDbContext context
+            , IInsumoXCompraDirectaService<AppDbContext> Service)
         {
             _Logger = logger;
             _Context = context;
@@ -103,7 +103,7 @@ namespace ERP_TECKIO.Controllers
             try
             {
                 var resultado = await _Service.ActualizarEstatusCancelar(Id);
-                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<IyATolucaContext>(resultado.Estatus, resultado.Descripcion);
+                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<AppDbContext>(resultado.Estatus, resultado.Descripcion);
             }
             catch (Exception ex)
             {

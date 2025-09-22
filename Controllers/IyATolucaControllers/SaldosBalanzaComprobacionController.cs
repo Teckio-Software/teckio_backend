@@ -8,20 +8,20 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace ERP_TECKIO.Controllers
 {
-    [Route("api/saldosbalanzacomprobacion/1")]
+    [Route("api/saldosbalanzacomprobacion/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionSaldosBalanza-Empresa1")]
     public class SaldosBalanzaComprobacionIyATolucaController : ControllerBase
     {
-        private readonly ISaldosBalanzaComprobacionService<IyATolucaContext> _Service;
-        private readonly ICuentaContableService<IyATolucaContext> _CuentaContableService;
+        private readonly ISaldosBalanzaComprobacionService<AppDbContext> _Service;
+        private readonly ICuentaContableService<AppDbContext> _CuentaContableService;
         private readonly ILogger<SaldosBalanzaComprobacionIyATolucaController> _Logger;
-        private readonly IyATolucaContext _Context;
+        private readonly AppDbContext _Context;
         public SaldosBalanzaComprobacionIyATolucaController(
             ILogger<SaldosBalanzaComprobacionIyATolucaController> logger
-            , IyATolucaContext context
-            , ISaldosBalanzaComprobacionService<IyATolucaContext> service
-            , ICuentaContableService<IyATolucaContext> cuentaContableService
+            , AppDbContext context
+            , ISaldosBalanzaComprobacionService<AppDbContext> service
+            , ICuentaContableService<AppDbContext> cuentaContableService
             )
         {
             _Service = service;

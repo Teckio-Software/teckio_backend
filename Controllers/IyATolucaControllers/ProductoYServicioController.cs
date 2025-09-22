@@ -9,18 +9,18 @@ using System.Diagnostics;
 
 namespace ERP_TECKIO.Controllers.IyAToluca
 {
-    [Route("api/productoyservicio/1")]
+    [Route("api/productoyservicio/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ProductoYServicioIyATolucaController : ControllerBase
     {
 
-        private readonly IProductoYservicioService<IyATolucaContext> _productoYServicioService;
+        private readonly IProductoYservicioService<AppDbContext> _productoYServicioService;
 
-        private readonly ProductoYServicioProceso<IyATolucaContext> _process;
+        private readonly ProductoYServicioProceso<AppDbContext> _process;
 
-        public ProductoYServicioIyATolucaController(IProductoYservicioService<IyATolucaContext> productoYServicioService,
-            ProductoYServicioProceso<IyATolucaContext> process
+        public ProductoYServicioIyATolucaController(IProductoYservicioService<AppDbContext> productoYServicioService,
+            ProductoYServicioProceso<AppDbContext> process
             )
         {
             _productoYServicioService = productoYServicioService;

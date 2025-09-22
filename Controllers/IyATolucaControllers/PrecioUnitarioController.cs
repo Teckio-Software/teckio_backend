@@ -9,20 +9,20 @@ using System.Data;
 
 namespace ERP_TECKIO
 {
-    [Route("api/preciounitario/1")]
+    [Route("api/preciounitario/{empresa:int}")]
     [ApiController]
     //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPrecioUnitario-Empresa2")]
     public class PrecioUnitarioIyATolucaController : ControllerBase
     {
-        private readonly PrecioUnitarioProceso<IyATolucaContext> _precioUnitarioProceso;
-        private readonly IProgramacionEstimadaService<IyATolucaContext> _programacionestimadaService;
-        private readonly DbContextOptionsBuilder<IyATolucaContext> _Options;
-        private readonly ExplocionInsumosProceso<IyATolucaContext> _explocionInsumosProceso;
+        private readonly PrecioUnitarioProceso<AppDbContext> _precioUnitarioProceso;
+        private readonly IProgramacionEstimadaService<AppDbContext> _programacionestimadaService;
+        private readonly DbContextOptionsBuilder<AppDbContext> _Options;
+        private readonly ExplocionInsumosProceso<AppDbContext> _explocionInsumosProceso;
         public PrecioUnitarioIyATolucaController(
-            PrecioUnitarioProceso<IyATolucaContext> precioUnitarioProceso
-            , IProgramacionEstimadaService<IyATolucaContext> programacionEstimadaService
-            , DbContextOptionsBuilder<IyATolucaContext> options,
-            ExplocionInsumosProceso<IyATolucaContext> explocionInsumosProceso
+            PrecioUnitarioProceso<AppDbContext> precioUnitarioProceso
+            , IProgramacionEstimadaService<AppDbContext> programacionEstimadaService
+            , DbContextOptionsBuilder<AppDbContext> options,
+            ExplocionInsumosProceso<AppDbContext> explocionInsumosProceso
             )
         {
             _precioUnitarioProceso = precioUnitarioProceso;
@@ -55,7 +55,7 @@ namespace ERP_TECKIO
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "CrearPrecioUnitario-Empresa2")]
         public async Task<ActionResult<List<PrecioUnitarioDTO>>> CrearYObtener([FromBody] PrecioUnitarioDTO registro)
         {
-            using (var db = new IyATolucaContext(_Options.Options))
+            using (var db = new AppDbContext(_Options.Options))
             {
                 return await _precioUnitarioProceso.CrearYObtener(registro, db);
             }
@@ -108,7 +108,7 @@ namespace ERP_TECKIO
         public async Task<ActionResult<List<PrecioUnitarioDTO>>> CopiarRegistros([FromBody] DatosParaCopiarDTO datos)
         {
             var registros = new List<PrecioUnitarioDTO>();
-            using (var db = new IyATolucaContext(_Options.Options))
+            using (var db = new AppDbContext(_Options.Options))
             {
                 registros = await _precioUnitarioProceso.CrearRegistrosCopias(datos.Registros, datos.IdPrecioUnitarioBase, datos.IdProyecto, db);
             }
@@ -153,7 +153,7 @@ namespace ERP_TECKIO
         public async Task<ActionResult<List<PrecioUnitarioDTO>>> CopiarArmado([FromBody] DatosParaCopiarArmadoDTO datos)
         {
             var registros = new List<PrecioUnitarioDTO>();
-            using (var db = new IyATolucaContext(_Options.Options))
+            using (var db = new AppDbContext(_Options.Options))
             {
                 registros = await _precioUnitarioProceso.CrearRegistrosDetallesCopia(datos.Registros, datos.IdPrecioUnitarioBase, datos.IdProyecto, db);
             }
@@ -164,7 +164,7 @@ namespace ERP_TECKIO
         public async Task<ActionResult<List<PrecioUnitarioDTO>>> CopiarArmadoComoConcepto([FromBody] DatosParaCopiarArmadoDTO datos)
         {
             var registros = new List<PrecioUnitarioDTO>();
-            using (var db = new IyATolucaContext(_Options.Options))
+            using (var db = new AppDbContext(_Options.Options))
             {
                 registros = await _precioUnitarioProceso.CrearRegistrosDetallesCopiaConcepto(datos.Registros, datos.IdPrecioUnitarioBase, datos.IdProyecto, db);
             }
@@ -220,7 +220,7 @@ namespace ERP_TECKIO
         public async Task<ActionResult<List<PrecioUnitarioDTO>>> RecalcularPresupuest([FromBody] int IdProyecto)
         {
             var registros = new List<PrecioUnitarioDTO>();
-            using (var db = new IyATolucaContext(_Options.Options))
+            using (var db = new AppDbContext(_Options.Options))
             {
                 await _precioUnitarioProceso.RecalcularPresupuesto(IdProyecto, db);
                 registros = await _precioUnitarioProceso.ObtenerPrecioUnitario(IdProyecto);
@@ -232,7 +232,7 @@ namespace ERP_TECKIO
         public async Task<ActionResult<List<PrecioUnitarioDTO>>> MoverRegistros([FromBody] PreciosParaEditarPosicionDTO registro)
         {
             var registros = new List<PrecioUnitarioDTO>();
-            using (var db = new IyATolucaContext(_Options.Options))
+            using (var db = new AppDbContext(_Options.Options))
             {
                 await _precioUnitarioProceso.modificarPosicion(registro);
                 registros = await _precioUnitarioProceso.ObtenerPrecioUnitario(registro.Seleccionado.IdProyecto);

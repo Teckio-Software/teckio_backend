@@ -11,7 +11,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de las cuentas bancarias de los contratistas que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/contratistacuentabancaria/1")]
+    [Route("api/contratistacuentabancaria/{empresa:int}")]
     [ApiController]
     public class ContratistaCuentaBancariaIyATolucaController : ControllerBase
     {
@@ -22,7 +22,7 @@ namespace ERP_TECKIO.Controllers
         /// <summary>
         /// Se usa para mandar en "headers" los registros totales de los registros
         /// </summary>
-        private readonly IyATolucaContext Context;
+        private readonly AppDbContext Context;
         /// <summary>
         /// Constructor del controlador de las cuentas bancarias del contratista
         /// </summary>
@@ -30,7 +30,7 @@ namespace ERP_TECKIO.Controllers
         /// <param name="context">Para mandar información de los registros</param>
         public ContratistaCuentaBancariaIyATolucaController(
             ILogger<ContratistaCuentaBancariaIyATolucaController> logger,
-            IyATolucaContext context)
+            AppDbContext context)
         {
             Logger = logger;
             Context = context;

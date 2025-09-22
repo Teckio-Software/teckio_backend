@@ -7,17 +7,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ERP_TECKIO.Controllers.IyAToluca
 {
-    [Route("api/precioUnitarioXEmpleado/1")]
+    [Route("api/precioUnitarioXEmpleado/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
     public class PrecioUnitarioXEmpleadoIyATolucaController : ControllerBase
     {
-        private readonly IPrecioUnitarioXEmpleadoService<IyATolucaContext> _service;
-        private readonly PrecioUnitarioXEmpleadoProceso<IyATolucaContext> _proceso;
+        private readonly IPrecioUnitarioXEmpleadoService<AppDbContext> _service;
+        private readonly PrecioUnitarioXEmpleadoProceso<AppDbContext> _proceso;
         public PrecioUnitarioXEmpleadoIyATolucaController(
-            IPrecioUnitarioXEmpleadoService<IyATolucaContext> service,
-            PrecioUnitarioXEmpleadoProceso<IyATolucaContext> proceso
+            IPrecioUnitarioXEmpleadoService<AppDbContext> service,
+            PrecioUnitarioXEmpleadoProceso<AppDbContext> proceso
             ) { 
             _service = service;
             _proceso = proceso;

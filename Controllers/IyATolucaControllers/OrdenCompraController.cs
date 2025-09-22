@@ -12,25 +12,25 @@ using ERP_TECKIO.DTO.Factura;
 
 namespace ERP_TECKIO.Controllers
 {
-    [Route("api/ordencompra/1")]
+    [Route("api/ordencompra/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class OrdenCompraIyATolucaController : ControllerBase
     {
-        private readonly IOrdenCompraService<IyATolucaContext> _Service;
-        private readonly OrdenCompraProceso<IyATolucaContext> _Proceso;
+        private readonly IOrdenCompraService<AppDbContext> _Service;
+        private readonly OrdenCompraProceso<AppDbContext> _Proceso;
         private readonly ILogger<OrdenCompraIyATolucaController> _Logger;
-        private readonly IyATolucaContext Context;
-        private readonly PolizaProceso<IyATolucaContext> _polizaProceso;
-        private readonly ObtenFacturaProceso<IyATolucaContext> _obtenFacturaProceso;
+        private readonly AppDbContext Context;
+        private readonly PolizaProceso<AppDbContext> _polizaProceso;
+        private readonly ObtenFacturaProceso<AppDbContext> _obtenFacturaProceso;
 
         public OrdenCompraIyATolucaController(
             ILogger<OrdenCompraIyATolucaController> Logger
-            , IyATolucaContext Context
-            , IOrdenCompraService<IyATolucaContext> Service
-            , OrdenCompraProceso<IyATolucaContext> Proceso
-            , PolizaProceso<IyATolucaContext> polizaProceso
-            , ObtenFacturaProceso<IyATolucaContext> obtenFacturaProceso
+            , AppDbContext Context
+            , IOrdenCompraService<AppDbContext> Service
+            , OrdenCompraProceso<AppDbContext> Proceso
+            , PolizaProceso<AppDbContext> polizaProceso
+            , ObtenFacturaProceso<AppDbContext> obtenFacturaProceso
             )
         {
             _Logger = Logger;
@@ -64,7 +64,7 @@ namespace ERP_TECKIO.Controllers
             try
             {
                 var resultado = await _Service.Crear(creacionDTO);
-                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<IyATolucaContext>(resultado.Estatus, resultado.Descripcion);
+                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<AppDbContext>(resultado.Estatus, resultado.Descripcion);
             }
             catch (Exception ex)
             {
@@ -81,7 +81,7 @@ namespace ERP_TECKIO.Controllers
             try
             {
                 var resultado = await _Service.Editar(parametros);
-                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<IyATolucaContext>(resultado.Estatus, resultado.Descripcion);
+                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<AppDbContext>(resultado.Estatus, resultado.Descripcion);
             }
             catch (Exception ex)
             {
@@ -96,7 +96,7 @@ namespace ERP_TECKIO.Controllers
             try
             {
                 var resultado = await _Service.ActualizarEstatusCancelar(Id);
-                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<IyATolucaContext>(resultado.Estatus, resultado.Descripcion);
+                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<AppDbContext>(resultado.Estatus, resultado.Descripcion);
             }
             catch (Exception ex)
             {

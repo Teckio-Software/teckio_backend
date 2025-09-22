@@ -9,17 +9,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ERP_TECKIO.Controllers.IyAToluca
 {
-    [Route("api/factura/1")]
+    [Route("api/factura/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
     public class FacturaIyATolucaController : ControllerBase
     {
-        private readonly ObtenFacturaProceso<IyATolucaContext> _obtenFacturaProceso;
-        private readonly ICategoriaProductoYServicioService<IyATolucaContext> _categoriaProductoYServicioService;
+        private readonly ObtenFacturaProceso<AppDbContext> _obtenFacturaProceso;
+        private readonly ICategoriaProductoYServicioService<AppDbContext> _categoriaProductoYServicioService;
         public FacturaIyATolucaController(
-            ObtenFacturaProceso<IyATolucaContext> obtenFacturaProceso,
-            ICategoriaProductoYServicioService<IyATolucaContext> categoriaProductoYServicioService
+            ObtenFacturaProceso<AppDbContext> obtenFacturaProceso,
+            ICategoriaProductoYServicioService<AppDbContext> categoriaProductoYServicioService
             )
         {
             _obtenFacturaProceso = obtenFacturaProceso;

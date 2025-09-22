@@ -6,14 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ERP_TECKIO.Controllers.IyAToluca
 {
-    [Route("api/detalleordencompra/1")]
+    [Route("api/detalleordencompra/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class DetalleOrdenVentaController: ControllerBase
     {
-        private readonly DetalleOrdenVentaProceso<IyATolucaContext> _Proceso;
+        private readonly DetalleOrdenVentaProceso<AppDbContext> _Proceso;
 
-        public DetalleOrdenVentaController(DetalleOrdenVentaProceso<IyATolucaContext> proceso)
+        public DetalleOrdenVentaController(DetalleOrdenVentaProceso<AppDbContext> proceso)
         {
             _Proceso = proceso;
         }

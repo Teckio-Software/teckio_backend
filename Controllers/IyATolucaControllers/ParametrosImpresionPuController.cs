@@ -6,15 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ERP_TECKIO.Controllers.IyAToluca
 {
-    [Route("api/parametrosImpresionPu/1")]
+    [Route("api/parametrosImpresionPu/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ParametrosImpresionPuController : ControllerBase
     {
 
-        private readonly ParametrosImpresionPuProceso<IyATolucaContext> _proceso;
+        private readonly ParametrosImpresionPuProceso<AppDbContext> _proceso;
 
-        public ParametrosImpresionPuController(ParametrosImpresionPuProceso<IyATolucaContext> proceso)
+        public ParametrosImpresionPuController(ParametrosImpresionPuProceso<AppDbContext> proceso)
         {
             _proceso = proceso;
         }

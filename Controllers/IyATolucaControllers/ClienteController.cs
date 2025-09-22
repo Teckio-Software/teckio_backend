@@ -9,19 +9,19 @@ using ERP_TECKIO.Procesos;
 
 namespace ERP_TECKIO.Controllers
 {
-    [Route("api/cliente/1")]
+    [Route("api/cliente/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ClienteIyATolucaController : ControllerBase
     {
-        private readonly IClientesService<IyATolucaContext> _Service;
+        private readonly IClientesService<AppDbContext> _Service;
 
-        private readonly ClienteProceso<IyATolucaContext> _Proceso;
-        private readonly ClienteCuentasContablesProceso<IyATolucaContext> _clientesCuentasContablesProceso;
+        private readonly ClienteProceso<AppDbContext> _Proceso;
+        private readonly ClienteCuentasContablesProceso<AppDbContext> _clientesCuentasContablesProceso;
         public ClienteIyATolucaController(
-            IClientesService<IyATolucaContext> service
-            , ClienteProceso<IyATolucaContext> proceso,
-            ClienteCuentasContablesProceso<IyATolucaContext> clientesCuentasContablesProceso)
+            IClientesService<AppDbContext> service
+            , ClienteProceso<AppDbContext> proceso,
+            ClienteCuentasContablesProceso<AppDbContext> clientesCuentasContablesProceso)
         {
             _Service = service;
             _Proceso = proceso;

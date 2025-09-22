@@ -11,14 +11,14 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de los proyectos que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/proyecto/1")]
+    [Route("api/proyecto/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//)]//, Policy = "SeccionProyecto-Empresa1")]
     public class ProyectoIyATolucaController : ControllerBase
     {
-        private readonly ProyectoProceso<IyATolucaContext> _ProyectoProceso;
+        private readonly ProyectoProceso<AppDbContext> _ProyectoProceso;
         public ProyectoIyATolucaController(
-            ProyectoProceso<IyATolucaContext> proyectoProceso)
+            ProyectoProceso<AppDbContext> proyectoProceso)
         {
             _ProyectoProceso = proyectoProceso;
         }

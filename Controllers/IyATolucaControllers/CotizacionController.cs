@@ -8,25 +8,25 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace ERP_TECKIO.Controllers
 {
-    [Route("api/cotizacion/1")]
+    [Route("api/cotizacion/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CotizacionIyATolucaController : ControllerBase
     {
-        private readonly ICotizacionService<IyATolucaContext> _Service;
-        private readonly CotizacionProceso<IyATolucaContext> _Proceso;
-        private readonly IOrdenCompraService<IyATolucaContext> _OrdenCompraService;
-        private readonly ITipoImpuestoService<IyATolucaContext> _TipoImpuestoService;
+        private readonly ICotizacionService<AppDbContext> _Service;
+        private readonly CotizacionProceso<AppDbContext> _Proceso;
+        private readonly IOrdenCompraService<AppDbContext> _OrdenCompraService;
+        private readonly ITipoImpuestoService<AppDbContext> _TipoImpuestoService;
         private readonly ILogger<CotizacionIyATolucaController> _Logger;
-        private readonly IyATolucaContext Context;
+        private readonly AppDbContext Context;
         public CotizacionIyATolucaController(
 
             ILogger<CotizacionIyATolucaController> Logger
-            , IyATolucaContext Context
-            , ICotizacionService<IyATolucaContext> Service
-            , IOrdenCompraService<IyATolucaContext> OrdenCompraService,
-              ITipoImpuestoService<IyATolucaContext> TipoImpuestoService
-            , CotizacionProceso<IyATolucaContext> Proceso)
+            , AppDbContext Context
+            , ICotizacionService<AppDbContext> Service
+            , IOrdenCompraService<AppDbContext> OrdenCompraService,
+              ITipoImpuestoService<AppDbContext> TipoImpuestoService
+            , CotizacionProceso<AppDbContext> Proceso)
         {
             _Logger = Logger;
             this.Context = Context;
@@ -82,7 +82,7 @@ namespace ERP_TECKIO.Controllers
             try
             {
                 var resultado = await _Service.Crear(creacionDTO);
-                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<IyATolucaContext>(resultado.Estatus, resultado.Descripcion);
+                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<AppDbContext>(resultado.Estatus, resultado.Descripcion);
             }
             catch (Exception ex)
             {
@@ -98,7 +98,7 @@ namespace ERP_TECKIO.Controllers
             try
             {
                 var resultado = await _Service.Editar(parametros);
-                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<IyATolucaContext>(resultado.Estatus, resultado.Descripcion);
+                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<AppDbContext>(resultado.Estatus, resultado.Descripcion);
             }
             catch (Exception ex)
             {
@@ -114,7 +114,7 @@ namespace ERP_TECKIO.Controllers
             try
             {
                 var resultado = await _Service.ActualizarEstatusAutorizar(Id);
-                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<IyATolucaContext>(resultado.Estatus, resultado.Descripcion);
+                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<AppDbContext>(resultado.Estatus, resultado.Descripcion);
             }
             catch (Exception ex)
             {
@@ -130,7 +130,7 @@ namespace ERP_TECKIO.Controllers
             try
             {
                 var resultado = await _Service.ActualizarEstatusCancelar(Id);
-                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<IyATolucaContext>(resultado.Estatus, resultado.Descripcion);
+                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<AppDbContext>(resultado.Estatus, resultado.Descripcion);
             }
             catch (Exception ex)
             {
@@ -146,7 +146,7 @@ namespace ERP_TECKIO.Controllers
             try
             {
                 var resultado = await _Service.ActualizarEstatusRemoverAutorizar(Id);
-                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<IyATolucaContext>(resultado.Estatus, resultado.Descripcion);
+                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<AppDbContext>(resultado.Estatus, resultado.Descripcion);
             }
             catch (Exception ex)
             {

@@ -13,14 +13,14 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador para las Salidas de almacén
     /// </summary>
-    [Route("api/almacenSalida/1")]
+    [Route("api/almacenSalida/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionSalidaAlmacen-Empresa1")]
     public class AlmacenSalidaIyATolucaController : ControllerBase
     {
-        private readonly IAlmacenSalidaService<IyATolucaContext> _AlmacenSalidaServicio;
-        private readonly IInsumoXAlmacenSalidaService<IyATolucaContext> _AlmacenSalidaDetalleServicio;
-        private readonly AlmacenSalidaProceso<IyATolucaContext> _Proceso;
+        private readonly IAlmacenSalidaService<AppDbContext> _AlmacenSalidaServicio;
+        private readonly IInsumoXAlmacenSalidaService<AppDbContext> _AlmacenSalidaDetalleServicio;
+        private readonly AlmacenSalidaProceso<AppDbContext> _Proceso;
         /// <summary>
         /// Se usa para mostrar errores en consola
         /// </summary>
@@ -29,7 +29,7 @@ namespace ERP_TECKIO.Controllers
         /// <summary>
         /// Se usa para mandar en "headers" los registros totales de los registros
         /// </summary>
-        private readonly IyATolucaContext Context;
+        private readonly AppDbContext Context;
         /// <summary>
         /// Constructor del controlador de Almacenes
         /// </summary>
@@ -38,10 +38,10 @@ namespace ERP_TECKIO.Controllers
         public AlmacenSalidaIyATolucaController(
             //UserManager<IdentityUser> zUserManager,
             ILogger<AlmacenSalidaIyATolucaController> logger,
-            IyATolucaContext context
-            , IAlmacenSalidaService<IyATolucaContext> AlmacenSalidaServicio
-            , IInsumoXAlmacenSalidaService<IyATolucaContext> AlmacenSalidaDetalleServicio
-            , AlmacenSalidaProceso<IyATolucaContext> Proceso
+            AppDbContext context
+            , IAlmacenSalidaService<AppDbContext> AlmacenSalidaServicio
+            , IInsumoXAlmacenSalidaService<AppDbContext> AlmacenSalidaDetalleServicio
+            , AlmacenSalidaProceso<AppDbContext> Proceso
             )
         {
             //zvUserManager = zUserManager;

@@ -11,15 +11,15 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador para las Requisiciones a las que accede el usuario
     /// </summary>
-    [Route("api/requisicion/1")]
+    [Route("api/requisicion/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class RequisicionIyATolucaController : ControllerBase
     {
-        private readonly IRequisicionService<IyATolucaContext> _RequisicionService;
-        private readonly RequisicionProceso<IyATolucaContext> _Proceso;
-        private readonly ObjetoRequisicionProceso<IyATolucaContext> _ObjetoRequisicionProceso;
-        private readonly IProyectoService<IyATolucaContext> _ProyectoService;
+        private readonly IRequisicionService<AppDbContext> _RequisicionService;
+        private readonly RequisicionProceso<AppDbContext> _Proceso;
+        private readonly ObjetoRequisicionProceso<AppDbContext> _ObjetoRequisicionProceso;
+        private readonly IProyectoService<AppDbContext> _ProyectoService;
         //private readonly IMapper _mapper;
         /// <summary>
         /// Se usa para mostrar errores en la consola
@@ -28,7 +28,7 @@ namespace ERP_TECKIO.Controllers
         /// <summary>
         /// Se usa para mandar en "headers" los registros totales de los registros
         /// </summary>
-        private readonly IyATolucaContext _Context;
+        private readonly AppDbContext _Context;
         /// <summary>
         /// Constructor del controlador de Requisiciones
         /// </summary>
@@ -36,11 +36,11 @@ namespace ERP_TECKIO.Controllers
         /// <param name="_Context"></param>
         public RequisicionIyATolucaController(
             ILogger<RequisicionIyATolucaController> Logger
-            , IyATolucaContext Context
-            , IRequisicionService<IyATolucaContext> RequisicionService
-            , RequisicionProceso<IyATolucaContext> Proceso
-            , ObjetoRequisicionProceso<IyATolucaContext> ObjetoRequisicionProceso
-            , IProyectoService<IyATolucaContext> ProyectoService
+            , AppDbContext Context
+            , IRequisicionService<AppDbContext> RequisicionService
+            , RequisicionProceso<AppDbContext> Proceso
+            , ObjetoRequisicionProceso<AppDbContext> ObjetoRequisicionProceso
+            , IProyectoService<AppDbContext> ProyectoService
             )
         {
             _Logger = Logger;
@@ -103,7 +103,7 @@ namespace ERP_TECKIO.Controllers
             try
             {
                 var resultado = await _RequisicionService.Editar(parametros);
-                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<IyATolucaContext>(resultado.Estatus, resultado.Descripcion);
+                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<AppDbContext>(resultado.Estatus, resultado.Descripcion);
             }
             catch (Exception ex)
             {
@@ -124,7 +124,7 @@ namespace ERP_TECKIO.Controllers
             try
             {
                 var resultado = await _RequisicionService.ActualizarEstatusAutorizar(Edita.Id);
-                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<IyATolucaContext>(resultado.Estatus, resultado.Descripcion);
+                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<AppDbContext>(resultado.Estatus, resultado.Descripcion);
             }
             catch (Exception ex)
             {
@@ -146,7 +146,7 @@ namespace ERP_TECKIO.Controllers
             try
             {
                 var resultado = await _RequisicionService.ActualizarEstatusRemoverAutorizar(Edita.Id);
-                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<IyATolucaContext>(resultado.Estatus, resultado.Descripcion);
+                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<AppDbContext>(resultado.Estatus, resultado.Descripcion);
             }
             catch (Exception ex)
             {
@@ -168,7 +168,7 @@ namespace ERP_TECKIO.Controllers
             try
             {
                 var resultado = await _RequisicionService.ActualizarEstatusCancelar(Edita.Id);
-                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<IyATolucaContext>(resultado.Estatus, resultado.Descripcion);
+                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<AppDbContext>(resultado.Estatus, resultado.Descripcion);
             }
             catch (Exception ex)
             {

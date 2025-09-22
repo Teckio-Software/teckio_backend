@@ -8,20 +8,20 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace ERP_TECKIO.Controllers
 {
-    [Route("api/insumoxordencompra/1")]
+    [Route("api/insumoxordencompra/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class InsumoXOrdenCompraIyATolucaController : ControllerBase
     {
-        private readonly IInsumoXOrdenCompraService<IyATolucaContext> _Service;
-        private readonly OrdenCompraProceso<IyATolucaContext> _Proceso;
+        private readonly IInsumoXOrdenCompraService<AppDbContext> _Service;
+        private readonly OrdenCompraProceso<AppDbContext> _Proceso;
         private readonly ILogger<InsumoXOrdenCompraIyATolucaController> _Logger;
-        private readonly IyATolucaContext _Context;
+        private readonly AppDbContext _Context;
         public InsumoXOrdenCompraIyATolucaController(
             ILogger<InsumoXOrdenCompraIyATolucaController> Logger,
-            IyATolucaContext Context
-            , IInsumoXOrdenCompraService<IyATolucaContext> Service
-            , OrdenCompraProceso<IyATolucaContext> Proceso)
+            AppDbContext Context
+            , IInsumoXOrdenCompraService<AppDbContext> Service
+            , OrdenCompraProceso<AppDbContext> Proceso)
         {
             _Logger = Logger;
             _Context = Context;
@@ -94,7 +94,7 @@ namespace ERP_TECKIO.Controllers
             try
             {
                 var resultado = await _Service.ActualizarEstatusCancelar(Id);
-                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<IyATolucaContext>(resultado.Estatus, resultado.Descripcion);
+                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<AppDbContext>(resultado.Estatus, resultado.Descripcion);
             }
             catch (Exception ex)
             {

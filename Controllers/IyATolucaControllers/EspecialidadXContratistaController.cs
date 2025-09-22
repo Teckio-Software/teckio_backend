@@ -11,7 +11,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de las especialIdades por contratista que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/especialIdadxcontratista/1")]
+    [Route("api/especialIdadxcontratista/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionEspecialidadContratista-Empresa1")]
     public class EspecialIdadXContratistaIyATolucaController : ControllerBase
@@ -23,7 +23,7 @@ namespace ERP_TECKIO.Controllers
         /// <summary>
         /// Se usa para mandar en "headers" los registros totales de los registros
         /// </summary>
-        private readonly IyATolucaContext Context;
+        private readonly AppDbContext Context;
         /// <summary>
         /// Constructor del controlador de las especialIdades por contratista
         /// </summary>
@@ -31,7 +31,7 @@ namespace ERP_TECKIO.Controllers
         /// <param name="context">Para mandar información de los registros</param>
         public EspecialIdadXContratistaIyATolucaController(
             ILogger<EspecialIdadXContratistaIyATolucaController> logger,
-            IyATolucaContext context)
+            AppDbContext context)
         {
             Logger = logger;
             Context = context;

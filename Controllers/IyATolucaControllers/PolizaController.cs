@@ -10,28 +10,28 @@ using ERP_TECKIO.Procesos;
 
 namespace ERP_TECKIO.Controllers
 {
-    [Route("api/poliza/1")]
+    [Route("api/poliza/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPoliza-Empresa1")]
     public class PolizaIyATolucaController : ControllerBase
     {
-        private readonly IPolizaService<IyATolucaContext> _Service;
-        private readonly IPolizaDetalleService<IyATolucaContext> _DetalleService;
-        private readonly ITipoPolizaService<IyATolucaContext> _TipoPolizaService;
-        private readonly ICuentaContableService<IyATolucaContext> _CuentaContableService;
-        private readonly ISaldosBalanzaComprobacionService<IyATolucaContext> _SaldosService;
+        private readonly IPolizaService<AppDbContext> _Service;
+        private readonly IPolizaDetalleService<AppDbContext> _DetalleService;
+        private readonly ITipoPolizaService<AppDbContext> _TipoPolizaService;
+        private readonly ICuentaContableService<AppDbContext> _CuentaContableService;
+        private readonly ISaldosBalanzaComprobacionService<AppDbContext> _SaldosService;
         private readonly ILogger<PolizaIyATolucaController> _Logger;
-        private readonly IyATolucaContext _Context;
-        private readonly PolizaProceso<IyATolucaContext> _polizaProceso;
+        private readonly AppDbContext _Context;
+        private readonly PolizaProceso<AppDbContext> _polizaProceso;
         public PolizaIyATolucaController(
             ILogger<PolizaIyATolucaController> logger
-            , IyATolucaContext context
-            , IPolizaService<IyATolucaContext> service
-            , IPolizaDetalleService<IyATolucaContext> detalleService
-            , ITipoPolizaService<IyATolucaContext> tipoPolizaService
-            , ISaldosBalanzaComprobacionService<IyATolucaContext> saldosService
-            , ICuentaContableService<IyATolucaContext> cuentaContableService
-            , PolizaProceso<IyATolucaContext> polizaProceso
+            , AppDbContext context
+            , IPolizaService<AppDbContext> service
+            , IPolizaDetalleService<AppDbContext> detalleService
+            , ITipoPolizaService<AppDbContext> tipoPolizaService
+            , ISaldosBalanzaComprobacionService<AppDbContext> saldosService
+            , ICuentaContableService<AppDbContext> cuentaContableService
+            , PolizaProceso<AppDbContext> polizaProceso
             )
         {
             _DetalleService = detalleService;

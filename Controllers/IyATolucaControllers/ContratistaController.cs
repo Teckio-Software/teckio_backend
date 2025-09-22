@@ -13,12 +13,12 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de los insumos por contratista que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/contratista/1")]
+    [Route("api/contratista/{empresa:int}")]
     [ApiController]
     //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionContratista-Empresa1")]
     public class ContratistaIyATolucaController : ControllerBase
     {
-        private readonly IContratistaService<IyATolucaContext> _ContratistaService;
+        private readonly IContratistaService<AppDbContext> _ContratistaService;
         /// <summary>
         /// Para mostrar los errores en consola
         /// </summary>
@@ -26,19 +26,19 @@ namespace ERP_TECKIO.Controllers
         /// <summary>
         /// Se usa para mandar en "headers" los registros totales de los registros
         /// </summary> 
-        private readonly IyATolucaContext Context;
+        private readonly AppDbContext Context;
         /// <summary>
         /// Constructor del controlador de contratista
         /// </summary>
         /// <param name="logger">Para mostrar errores en consola</param>
         /// <param name="context">Para mandar información de los registros</param>
         /// 
-        private readonly ContratistaCuentasContablesProceso<IyATolucaContext> _contratistaCuentasContablesProceso;
+        private readonly ContratistaCuentasContablesProceso<AppDbContext> _contratistaCuentasContablesProceso;
         public ContratistaIyATolucaController(
             ILogger<ContratistaIyATolucaController> logger,
-            IyATolucaContext context
-            , IContratistaService<IyATolucaContext> ContratistaService,
-            ContratistaCuentasContablesProceso<IyATolucaContext> contratistaCuentasContablesProceso
+            AppDbContext context
+            , IContratistaService<AppDbContext> ContratistaService,
+            ContratistaCuentasContablesProceso<AppDbContext> contratistaCuentasContablesProceso
             )
         {
             Logger = logger;

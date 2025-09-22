@@ -11,7 +11,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de las entradas a almacén que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/almacenentradainsumo/1")]
+    [Route("api/almacenentradainsumo/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionEntradaAlmacen-Empresa1")]
     public class AlmacenEntradaInsumoIyATolucaController : ControllerBase
@@ -23,9 +23,9 @@ namespace ERP_TECKIO.Controllers
         /// <summary>
         /// Se usa para mandar en "headers" los registros totales de los registros
         /// </summary>
-        private readonly IyATolucaContext Context;
-        private readonly IInsumoXAlmacenEntradaService<IyATolucaContext> _AlmacenEntradaDetalle;
-        private readonly AlmacenEntradaProceso<IyATolucaContext> _Proceso;
+        private readonly AppDbContext Context;
+        private readonly IInsumoXAlmacenEntradaService<AppDbContext> _AlmacenEntradaDetalle;
+        private readonly AlmacenEntradaProceso<AppDbContext> _Proceso;
         /// <summary>
         /// Constructor del controlador de Almacenes
         /// </summary>
@@ -33,9 +33,9 @@ namespace ERP_TECKIO.Controllers
         /// <param name="context">Para mandar inofrmación de los registros</param>
         public AlmacenEntradaInsumoIyATolucaController(
             ILogger<AlmacenEntradaInsumoIyATolucaController> logger,
-            IyATolucaContext context
-            , IInsumoXAlmacenEntradaService<IyATolucaContext> AlmacenEntradaDetalle
-            , AlmacenEntradaProceso<IyATolucaContext> Proceso
+            AppDbContext context
+            , IInsumoXAlmacenEntradaService<AppDbContext> AlmacenEntradaDetalle
+            , AlmacenEntradaProceso<AppDbContext> Proceso
             )
         {
             Logger = logger;

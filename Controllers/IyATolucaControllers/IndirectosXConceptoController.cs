@@ -8,16 +8,16 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace ERP_TECKIO.Controllers
 {
-    [Route("api/indirectosXConcepto/1")]
+    [Route("api/indirectosXConcepto/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class IndirectosXConceptoIyATolucaController : ControllerBase
     {
-        private readonly IIndirectosXConceptoService<IyATolucaContext> _indirectosXConceptoService;
-        private readonly IndirectosXConceptoProceso<IyATolucaContext> _indirectosXConceptoProceso;
+        private readonly IIndirectosXConceptoService<AppDbContext> _indirectosXConceptoService;
+        private readonly IndirectosXConceptoProceso<AppDbContext> _indirectosXConceptoProceso;
         public IndirectosXConceptoIyATolucaController(
-            IIndirectosXConceptoService<IyATolucaContext> indirectosXConceptoService,
-            IndirectosXConceptoProceso<IyATolucaContext> indirectosXConceptoProceso
+            IIndirectosXConceptoService<AppDbContext> indirectosXConceptoService,
+            IndirectosXConceptoProceso<AppDbContext> indirectosXConceptoProceso
             ) { 
             _indirectosXConceptoService = indirectosXConceptoService;
             _indirectosXConceptoProceso = indirectosXConceptoProceso;

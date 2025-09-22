@@ -8,20 +8,20 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace ERP_TECKIO.Controllers
 {
-    [Route("api/polizadetalle/1")]
+    [Route("api/polizadetalle/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPoliza-Empresa1")]
     public class PolizaDetalleIyATolucaController : ControllerBase
     {
-        private readonly IPolizaDetalleService<IyATolucaContext> _Service;
-        private readonly ICuentaContableService<IyATolucaContext> _CuentaContableService;
+        private readonly IPolizaDetalleService<AppDbContext> _Service;
+        private readonly ICuentaContableService<AppDbContext> _CuentaContableService;
         private readonly ILogger<PolizaDetalleIyATolucaController> _Logger;
-        private readonly IyATolucaContext _Context;
+        private readonly AppDbContext _Context;
         public PolizaDetalleIyATolucaController(
             ILogger<PolizaDetalleIyATolucaController> logger
-            , IyATolucaContext context
-            , IPolizaDetalleService<IyATolucaContext> service
-            , ICuentaContableService<IyATolucaContext> cuentaContableService)
+            , AppDbContext context
+            , IPolizaDetalleService<AppDbContext> service
+            , ICuentaContableService<AppDbContext> cuentaContableService)
         {
             _Service = service;
             _Logger = logger;

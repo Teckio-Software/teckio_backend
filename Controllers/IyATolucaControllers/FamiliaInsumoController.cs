@@ -11,14 +11,14 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de las familias de Insumo que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/familiainsumo/1")]
+    [Route("api/familiainsumo/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionFamiliaInsumo-Empresa1")]
     public class FamiliaInsumoIyATolucaController : ControllerBase
     {
-        private readonly FamiliaInsumoProceso<IyATolucaContext> _FamiliaInsumoProceso;
+        private readonly FamiliaInsumoProceso<AppDbContext> _FamiliaInsumoProceso;
         public FamiliaInsumoIyATolucaController(
-            FamiliaInsumoProceso<IyATolucaContext> familiaInsumoProceso)
+            FamiliaInsumoProceso<AppDbContext> familiaInsumoProceso)
         {
             _FamiliaInsumoProceso = familiaInsumoProceso;
         }

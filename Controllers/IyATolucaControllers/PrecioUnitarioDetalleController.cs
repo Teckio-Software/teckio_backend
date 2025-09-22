@@ -12,15 +12,15 @@ using ERP_TECKIO.DTO;
 
 namespace SistemaERP.API.IyATolucaControllers.Procomi
 {
-    [Route("api/preciounitariodetalle/1")]
+    [Route("api/preciounitariodetalle/{empresa:int}")]
     [ApiController]
     public class PrecioUnitarioDetalleIyATolucaController : ControllerBase
     {
-        private readonly PrecioUnitarioProceso<IyATolucaContext> _precioUnitarioProceso;
-        private readonly DbContextOptionsBuilder<IyATolucaContext> _Options;
+        private readonly PrecioUnitarioProceso<AppDbContext> _precioUnitarioProceso;
+        private readonly DbContextOptionsBuilder<AppDbContext> _Options;
         public PrecioUnitarioDetalleIyATolucaController(
-            PrecioUnitarioProceso<IyATolucaContext> precioUnitarioProceso,
-            DbContextOptionsBuilder<IyATolucaContext> options
+            PrecioUnitarioProceso<AppDbContext> precioUnitarioProceso,
+            DbContextOptionsBuilder<AppDbContext> options
             )
         {
             _precioUnitarioProceso = precioUnitarioProceso;
@@ -31,7 +31,7 @@ namespace SistemaERP.API.IyATolucaControllers.Procomi
         public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> Obtener(int IdPrecioUnitario)
         {
             var registros = new List<PrecioUnitarioDetalleDTO>();
-            using (var db = new IyATolucaContext(_Options.Options))
+            using (var db = new AppDbContext(_Options.Options))
             {
                 registros = await _precioUnitarioProceso.ObtenerDetalles(IdPrecioUnitario, db);
             }
@@ -42,7 +42,7 @@ namespace SistemaERP.API.IyATolucaControllers.Procomi
         public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> ObtenerFiltrado(int IdPrecioUnitario, int IdTipoInsumo)
         {
             var registros = new List<PrecioUnitarioDetalleDTO>();
-            using (var db = new IyATolucaContext(_Options.Options))
+            using (var db = new AppDbContext(_Options.Options))
             {
                 registros = await _precioUnitarioProceso.ObtenerDetallesPorTipoInsumo(IdPrecioUnitario, IdTipoInsumo, db);
             }
@@ -53,7 +53,7 @@ namespace SistemaERP.API.IyATolucaControllers.Procomi
         public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> ObtenerHijos([FromBody] PrecioUnitarioDetalleDTO registro)
         {
             var registros = new List<PrecioUnitarioDetalleDTO>();
-            using (var db = new IyATolucaContext(_Options.Options))
+            using (var db = new AppDbContext(_Options.Options))
             {
                 registros = await _precioUnitarioProceso.ObtenerDetallesHijos(registro, db);
             }
@@ -93,7 +93,7 @@ namespace SistemaERP.API.IyATolucaControllers.Procomi
         public async Task<ActionResult<List<PrecioUnitarioDetalleDTO>>> Eliminar([FromBody] int Id)
         {
             var registros = new List<PrecioUnitarioDetalleDTO>();
-            using (var db = new IyATolucaContext(_Options.Options))
+            using (var db = new AppDbContext(_Options.Options))
             {
                 registros = await _precioUnitarioProceso.EliminarDetalle(Id, db);
             }

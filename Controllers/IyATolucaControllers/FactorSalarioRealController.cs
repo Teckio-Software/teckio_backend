@@ -12,18 +12,18 @@ using ERP_TECKIO.Modelos;
 
 namespace ERP_TECKIO.Controllers.IyAToluca
 {
-    [Route("api/fsr/1")]
+    [Route("api/fsr/{empresa:int}")]
     [ApiController]
     public class FactorSalarioRealController : ControllerBase
     {
-        private readonly FactorSalarioRealProceso<IyATolucaContext> _FactorSalarioRealProceso;
-        private readonly IParametrosFsrService<IyATolucaContext> _parametrosFsrService;
-        private readonly IPorcentajeCesantiaEdadService<IyATolucaContext> _porcentajeCesantiaEdadService;
+        private readonly FactorSalarioRealProceso<AppDbContext> _FactorSalarioRealProceso;
+        private readonly IParametrosFsrService<AppDbContext> _parametrosFsrService;
+        private readonly IPorcentajeCesantiaEdadService<AppDbContext> _porcentajeCesantiaEdadService;
         
         public FactorSalarioRealController(
-            FactorSalarioRealProceso<IyATolucaContext> factorSalarioRealProceso,
-            IParametrosFsrService<IyATolucaContext> parametrosFsrService,
-            IPorcentajeCesantiaEdadService<IyATolucaContext> porcentajeCesantiaEdadService
+            FactorSalarioRealProceso<AppDbContext> factorSalarioRealProceso,
+            IParametrosFsrService<AppDbContext> parametrosFsrService,
+            IPorcentajeCesantiaEdadService<AppDbContext> porcentajeCesantiaEdadService
             )
         {
             _FactorSalarioRealProceso = factorSalarioRealProceso;

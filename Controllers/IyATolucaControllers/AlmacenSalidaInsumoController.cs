@@ -8,13 +8,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace ERP_TECKIO.Controllers
 {
-    [Route("api/almacenSalidainsumo/1")]
+    [Route("api/almacenSalidainsumo/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionSalidaAlmacen-Empresa1")]
     public class AlmacenSalidaInsumoIyATolucaController : ControllerBase
     {
-        private readonly IInsumoXAlmacenSalidaService<IyATolucaContext> _AlmacenSalidaDetalleServicio;
-        private readonly AlmacenSalidaProceso<IyATolucaContext> _Proceso;
+        private readonly IInsumoXAlmacenSalidaService<AppDbContext> _AlmacenSalidaDetalleServicio;
+        private readonly AlmacenSalidaProceso<AppDbContext> _Proceso;
         /// <summary>
         /// Se usa para mostrar errores en consola
         /// </summary>
@@ -22,7 +22,7 @@ namespace ERP_TECKIO.Controllers
         /// <summary>
         /// Se usa para mandar en "headers" los registros totales de los registros
         /// </summary>
-        private readonly IyATolucaContext Context;
+        private readonly AppDbContext Context;
         /// <summary>
         /// Constructor del controlador de Almacenes
         /// </summary>
@@ -30,9 +30,9 @@ namespace ERP_TECKIO.Controllers
         /// <param name="context">Para mandar inofrmación de los registros</param>
         public AlmacenSalidaInsumoIyATolucaController(
             ILogger<AlmacenSalidaInsumoIyATolucaController> logger,
-            IyATolucaContext context
-            , IInsumoXAlmacenSalidaService<IyATolucaContext> AlmacenSalidaDetalleServicio
-            , AlmacenSalidaProceso<IyATolucaContext> Proceso
+            AppDbContext context
+            , IInsumoXAlmacenSalidaService<AppDbContext> AlmacenSalidaDetalleServicio
+            , AlmacenSalidaProceso<AppDbContext> Proceso
             )
         {
             Logger = logger;

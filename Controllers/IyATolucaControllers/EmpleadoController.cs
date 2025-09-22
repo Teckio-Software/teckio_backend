@@ -7,15 +7,15 @@ using ERP_TECKIO.DTO.Usuario;
 
 namespace ERP_TECKIO
 {
-    [Route("api/empleado/1")]
+    [Route("api/empleado/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
     public class EmpleadoIyATolucaController : ControllerBase
     {
-        private readonly IEmpleadoService<IyATolucaContext> _empleadoService;
+        private readonly IEmpleadoService<AppDbContext> _empleadoService;
         public EmpleadoIyATolucaController(
-            IEmpleadoService<IyATolucaContext> empleadoService
+            IEmpleadoService<AppDbContext> empleadoService
             )
         {
             _empleadoService = empleadoService;

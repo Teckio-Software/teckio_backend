@@ -11,14 +11,14 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de las EspecialIdades que hereda <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/especialidad/1")]
+    [Route("api/especialidad/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionEspecialidad-Empresa1")]
     public class EspecialidadIyATolucaController : ControllerBase
     {
-        private readonly EspecialidadProceso<IyATolucaContext> _EspecialidadProceso;
+        private readonly EspecialidadProceso<AppDbContext> _EspecialidadProceso;
         public EspecialidadIyATolucaController(
-            EspecialidadProceso<IyATolucaContext> especialidadProceso)
+            EspecialidadProceso<AppDbContext> especialidadProceso)
         {
             _EspecialidadProceso = especialidadProceso;
         }

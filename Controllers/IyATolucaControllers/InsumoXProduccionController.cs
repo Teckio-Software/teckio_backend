@@ -8,14 +8,14 @@ using System.Diagnostics;
 namespace ERP_TECKIO.Controllers.IyAToluca
 {
 
-    [Route("api/insumoXproduccion/1")]
+    [Route("api/insumoXproduccion/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class InsumoXProduccionController: ControllerBase
     {
-        private readonly InsumoXProduccionProceso<IyATolucaContext> _proceso;
+        private readonly InsumoXProduccionProceso<AppDbContext> _proceso;
 
-        public InsumoXProduccionController(InsumoXProduccionProceso<IyATolucaContext> proces)
+        public InsumoXProduccionController(InsumoXProduccionProceso<AppDbContext> proces)
         {
             _proceso = proces;
         }

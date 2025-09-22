@@ -11,15 +11,15 @@ namespace ERP_TECKIO.Controllers.IyAToluca
     /// <summary>
     /// Controlador de los Insumos por producto y servicio que hereda <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/insumoxproductoyservicio/1")]
+    [Route("api/insumoxproductoyservicio/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionInsumo-Empresa1")]
     public class InsumoXProductoYServicioController: ControllerBase
     {
-        private readonly IInsumoXProductoYServicioService<IyATolucaContext> _service;
-        private readonly InsumoXProductoYServicioProceso<IyATolucaContext> _process;
+        private readonly IInsumoXProductoYServicioService<AppDbContext> _service;
+        private readonly InsumoXProductoYServicioProceso<AppDbContext> _process;
 
-        public InsumoXProductoYServicioController(IInsumoXProductoYServicioService<IyATolucaContext> service, InsumoXProductoYServicioProceso<IyATolucaContext> process)
+        public InsumoXProductoYServicioController(IInsumoXProductoYServicioService<AppDbContext> service, InsumoXProductoYServicioProceso<AppDbContext> process)
         {
             _service = service;
             _process = process;

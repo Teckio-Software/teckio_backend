@@ -11,15 +11,15 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de los tipos de insumo que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/tipoinsumo/1")]
+    [Route("api/tipoinsumo/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionTipoInsumo-Empresa1")]
     public class TipoInsumoIyATolucaController : ControllerBase
     {
-        private readonly TipoInsumoProceso<IyATolucaContext> _TipoInsumoProceso;
+        private readonly TipoInsumoProceso<AppDbContext> _TipoInsumoProceso;
 
         public TipoInsumoIyATolucaController(
-            TipoInsumoProceso<IyATolucaContext> tipoInsumoProceso
+            TipoInsumoProceso<AppDbContext> tipoInsumoProceso
             )
         {
             _TipoInsumoProceso = tipoInsumoProceso;

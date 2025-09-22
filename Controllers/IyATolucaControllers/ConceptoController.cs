@@ -8,14 +8,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace ERP_TECKIO.Controllers
 {
-    [Route("api/concepto/1")]
+    [Route("api/concepto/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionConcepto-Empresa1")]
     public class ConceptoIyATolucaController : ControllerBase
     {
-        private readonly ConceptoProceso<IyATolucaContext> _ConceptoProceso;
+        private readonly ConceptoProceso<AppDbContext> _ConceptoProceso;
         public ConceptoIyATolucaController(
-            ConceptoProceso<IyATolucaContext> conceptoProceso)
+            ConceptoProceso<AppDbContext> conceptoProceso)
         {
             _ConceptoProceso = conceptoProceso;
         }

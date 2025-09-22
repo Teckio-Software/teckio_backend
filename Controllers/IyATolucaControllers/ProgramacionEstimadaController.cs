@@ -8,20 +8,20 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace ERP_TECKIO.Controllers
 {
-    [Route("api/programacionestimada/1")]
+    [Route("api/programacionestimada/{empresa:int}")]
     [ApiController]
     public class ProgramacionEstimadaIyATolucaController : ControllerBase
     {
-        private readonly ProgramacionEstimadaProceso<IyATolucaContext> _ProgramacionEstimadaProceso;
-        private readonly IProyectoService<IyATolucaContext> _ProyectoService;
-        private readonly IPrecioUnitarioService<IyATolucaContext> _PrecioUnitarioService;
+        private readonly ProgramacionEstimadaProceso<AppDbContext> _ProgramacionEstimadaProceso;
+        private readonly IProyectoService<AppDbContext> _ProyectoService;
+        private readonly IPrecioUnitarioService<AppDbContext> _PrecioUnitarioService;
 
 
         public ProgramacionEstimadaIyATolucaController(
-            ProgramacionEstimadaProceso<IyATolucaContext> programacionEstimadaProceso,
-            IProyectoService<IyATolucaContext> proyectoProceso,
-            IPrecioUnitarioService<IyATolucaContext> precioUnitarioService,
-            IyATolucaContext context)
+            ProgramacionEstimadaProceso<AppDbContext> programacionEstimadaProceso,
+            IProyectoService<AppDbContext> proyectoProceso,
+            IPrecioUnitarioService<AppDbContext> precioUnitarioService,
+            AppDbContext context)
         {
             _ProgramacionEstimadaProceso = programacionEstimadaProceso;
             _ProyectoService = proyectoProceso;

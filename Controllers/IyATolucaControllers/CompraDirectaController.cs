@@ -11,12 +11,12 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de los conceptos que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/compradirecta/1")]
+    [Route("api/compradirecta/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionOrdenCompra-Empresa1")]
     public class CompraDirectaIyATolucaController : ControllerBase
     {
-        private readonly ICompraDirectaService<IyATolucaContext> _Service;
+        private readonly ICompraDirectaService<AppDbContext> _Service;
         /// <summary>
         /// Se usa para mostrar errores en consola
         /// </summary>
@@ -24,7 +24,7 @@ namespace ERP_TECKIO.Controllers
         /// <summary>
         /// Se usa para mandar en "headers" los registros totales de los registros
         /// </summary>
-        private readonly IyATolucaContext Context;
+        private readonly AppDbContext Context;
         /// <summary>
         /// Constructor del controlador de Conceptos
         /// </summary>
@@ -32,8 +32,8 @@ namespace ERP_TECKIO.Controllers
         /// <param name="context">Para mandar información de los registros</param>
         public CompraDirectaIyATolucaController(
             ILogger<CompraDirectaIyATolucaController> logger,
-            IyATolucaContext context
-            , ICompraDirectaService<IyATolucaContext> Service)
+            AppDbContext context
+            , ICompraDirectaService<AppDbContext> Service)
         {
             Logger = logger;
             Context = context;
@@ -100,7 +100,7 @@ namespace ERP_TECKIO.Controllers
             try
             {
                 var resultado = await _Service.Crear(CreacionDTO);
-                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<IyATolucaContext>(resultado.Estatus, resultado.Descripcion);
+                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<AppDbContext>(resultado.Estatus, resultado.Descripcion);
             }
             catch (Exception ex)
             {
@@ -122,7 +122,7 @@ namespace ERP_TECKIO.Controllers
             try
             {
                 var resultado = await _Service.Editar(Edita);
-                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<IyATolucaContext>(resultado.Estatus, resultado.Descripcion);
+                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<AppDbContext>(resultado.Estatus, resultado.Descripcion);
             }
             catch (Exception ex)
             {
@@ -143,7 +143,7 @@ namespace ERP_TECKIO.Controllers
             try
             {
                 var resultado = await _Service.ActualizarEstatusCancelar(Edita.Id);
-                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<IyATolucaContext>(resultado.Estatus, resultado.Descripcion);
+                await HttpContext.InsertarParametrosCreacionEdicionEnCabecera<AppDbContext>(resultado.Estatus, resultado.Descripcion);
             }
             catch (Exception ex)
             {

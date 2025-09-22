@@ -7,14 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace ERP_TECKIO.Controllers.IyAToluca
 {
 
-    [Route("api/produccion/1")]
+    [Route("api/produccion/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ProduccionController: ControllerBase
     {
-        private readonly ProduccionProceso<IyATolucaContext> _proceso;
+        private readonly ProduccionProceso<AppDbContext> _proceso;
 
-        public ProduccionController(ProduccionProceso<IyATolucaContext> proceso)
+        public ProduccionController(ProduccionProceso<AppDbContext> proceso)
         {
             _proceso = proceso;
         }

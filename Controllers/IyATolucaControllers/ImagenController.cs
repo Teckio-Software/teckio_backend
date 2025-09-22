@@ -6,14 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ERP_TECKIO.Controllers.IyAToluca
 {
-    [Route("api/imagen/1")]
+    [Route("api/imagen/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ImagenController: ControllerBase
     {
-        private readonly ImagenProceso<IyATolucaContext> _proceso;
+        private readonly ImagenProceso<AppDbContext> _proceso;
 
-        public ImagenController(ImagenProceso<IyATolucaContext> proceso)
+        public ImagenController(ImagenProceso<AppDbContext> proceso)
         {
             _proceso = proceso;
         }

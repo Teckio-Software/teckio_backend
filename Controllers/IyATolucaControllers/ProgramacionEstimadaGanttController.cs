@@ -5,18 +5,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SistemaERP.API.Controllers.IyAToluca
 {
-    [Route("api/programacionestimadaGantt/1")]
+    [Route("api/programacionestimadaGantt/{empresa:int}")]
     [ApiController]
     public class ProgramacionEstimadaGanttIyATolucaController : ControllerBase
     {
-        private readonly ProgramacionEstimadaGanttProceso<IyATolucaContext> _ProgramacionEstimadaGanttProceso;
-        private readonly DbContextOptionsBuilder<IyATolucaContext> _Options;
-        private readonly ImporteSemanalGanttProceso<IyATolucaContext> _importeSemanalGanttProceso;
+        private readonly ProgramacionEstimadaGanttProceso<AppDbContext> _ProgramacionEstimadaGanttProceso;
+        private readonly DbContextOptionsBuilder<AppDbContext> _Options;
+        private readonly ImporteSemanalGanttProceso<AppDbContext> _importeSemanalGanttProceso;
 
         public ProgramacionEstimadaGanttIyATolucaController(
-            ProgramacionEstimadaGanttProceso<IyATolucaContext> programacionEstimadaGanttProceso,
-            ImporteSemanalGanttProceso<IyATolucaContext> importeSemanalGanttProceso,
-            DbContextOptionsBuilder<IyATolucaContext> options
+            ProgramacionEstimadaGanttProceso<AppDbContext> programacionEstimadaGanttProceso,
+            ImporteSemanalGanttProceso<AppDbContext> importeSemanalGanttProceso,
+            DbContextOptionsBuilder<AppDbContext> options
             )
         {
             _ProgramacionEstimadaGanttProceso = programacionEstimadaGanttProceso;
@@ -27,7 +27,7 @@ namespace SistemaERP.API.Controllers.IyAToluca
         [HttpGet("obtenerGanttXIdProyecto/{IdProyecto:int}")]
         public async Task<List<ProgramacionEstimadaGanttDTO>> ObtenerProgramacionEstimadaGantt(int IdProyecto)
         {
-            using (var db = new IyATolucaContext(_Options.Options))
+            using (var db = new AppDbContext(_Options.Options))
             {
                 var programacionesEstimadas = await _ProgramacionEstimadaGanttProceso.ObtenerProgramacionEstimadaXIdProyecto(IdProyecto, db);
                 return programacionesEstimadas;
@@ -44,7 +44,7 @@ namespace SistemaERP.API.Controllers.IyAToluca
         [HttpPost("EditarFechaGantt")]
         public async Task<List<ProgramacionEstimadaGanttDTO>> EditarProgramacionEstimadaGantt(ProgramacionEstimadaGanttDTO registro)
         {
-            using (var db = new IyATolucaContext(_Options.Options))
+            using (var db = new AppDbContext(_Options.Options))
             {
                 var programaciones = await _ProgramacionEstimadaGanttProceso.EditarFechaProgramacionEstimada(registro, db);
                 return programaciones;
@@ -66,7 +66,7 @@ namespace SistemaERP.API.Controllers.IyAToluca
         [HttpPut("asignarProgreso")]
         public async Task AsignarProgreso(ProgramacionEstimadaGanttDTO registro)
         {
-            using (var db = new IyATolucaContext(_Options.Options))
+            using (var db = new AppDbContext(_Options.Options))
             {
                 await _ProgramacionEstimadaGanttProceso.AsignarProgreso(registro, db);
             }
@@ -75,7 +75,7 @@ namespace SistemaERP.API.Controllers.IyAToluca
         [HttpPut("asignarDuracion")]
         public async Task<List<ProgramacionEstimadaGanttDTO>> AsignarDuracion(ProgramacionEstimadaGanttDTO registro)
         {
-            using (var db = new IyATolucaContext(_Options.Options))
+            using (var db = new AppDbContext(_Options.Options))
             {
                 registro.End = registro.Start.AddDays(registro.Duracion);
                 var programaciones = await _ProgramacionEstimadaGanttProceso.EditarFechaProgramacionEstimada(registro, db);
@@ -86,7 +86,7 @@ namespace SistemaERP.API.Controllers.IyAToluca
         [HttpPut("generarDependenciaXNumerador")]
         public async Task AsignarDependenciaXNumerador(ProgramacionEstimadaGanttDTO registro)
         {
-            using (var db = new IyATolucaContext(_Options.Options))
+            using (var db = new AppDbContext(_Options.Options))
             {
                 await _ProgramacionEstimadaGanttProceso.GenerarDependenciaXNumerador(registro, db);
             }
@@ -95,7 +95,7 @@ namespace SistemaERP.API.Controllers.IyAToluca
         [HttpPut("asignarComando")]
         public async Task AsignarComando(ProgramacionEstimadaGanttDTO registro)
         {
-            using (var db = new IyATolucaContext(_Options.Options))
+            using (var db = new AppDbContext(_Options.Options))
             {
                 await _ProgramacionEstimadaGanttProceso.AsignarComando(registro, db);
             }
@@ -104,7 +104,7 @@ namespace SistemaERP.API.Controllers.IyAToluca
         [HttpPut("asignarDesfase")]
         public async Task AsignarDesfase(ProgramacionEstimadaGanttDTO registro)
         {
-            using (var db = new IyATolucaContext(_Options.Options))
+            using (var db = new AppDbContext(_Options.Options))
             {
                 await _ProgramacionEstimadaGanttProceso.AsignarDesfase(registro, db);
             }

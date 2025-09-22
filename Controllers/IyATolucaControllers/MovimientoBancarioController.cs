@@ -11,13 +11,13 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de los movimientos bancarios que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/movimientobancario/1")]
+    [Route("api/movimientobancario/{empresa:int}")]
     [ApiController]
     public class MovimientoBancarioIyATolucaController : ControllerBase
     {
-        private readonly MovimientoBancarioProceso<IyATolucaContext> _movimientoBancarioProceso;
+        private readonly MovimientoBancarioProceso<AppDbContext> _movimientoBancarioProceso;
         public MovimientoBancarioIyATolucaController(
-            MovimientoBancarioProceso<IyATolucaContext> movimientoBancarioProceso
+            MovimientoBancarioProceso<AppDbContext> movimientoBancarioProceso
             )
         {
             _movimientoBancarioProceso = movimientoBancarioProceso;

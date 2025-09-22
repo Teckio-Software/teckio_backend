@@ -8,14 +8,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace ERP_TECKIO.Controllers
 {
-    [Route("api/Banco/1")]
+    [Route("api/Banco/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class BancoIyATolucaController : ControllerBase 
     {
-        private readonly IBancoService<IyATolucaContext> _bancoService;
+        private readonly IBancoService<AppDbContext> _bancoService;
 
-        public BancoIyATolucaController(IBancoService<IyATolucaContext> bancoService)
+        public BancoIyATolucaController(IBancoService<AppDbContext> bancoService)
         {
             _bancoService = bancoService;
         }

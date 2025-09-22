@@ -11,7 +11,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de Explosion de Insumos que hereda <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/explosioninsumos/1")]
+    [Route("api/explosioninsumos/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionInsumo-Empresa1")]
     public class ExplosionInsumoIyATolucaController : ControllerBase
@@ -24,7 +24,7 @@ namespace ERP_TECKIO.Controllers
         /// <summary>
         /// Se usa para mandar en "headers" los registros totales de los registros
         /// </summary>
-        private readonly IyATolucaContext Context;
+        private readonly AppDbContext Context;
         /// <summary>
         /// Constructor del controlador de EspecialIdad
         /// </summary>
@@ -32,7 +32,7 @@ namespace ERP_TECKIO.Controllers
         /// <param name="Context">Para mandar información de los registros</param>
         public ExplosionInsumoIyATolucaController(
             ILogger<ExplosionInsumoIyATolucaController> Logger,
-            IyATolucaContext Context
+            AppDbContext Context
             , IExplosionInsumoService ExplosionInsumoService
             )
         {

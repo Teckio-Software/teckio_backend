@@ -7,14 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace ERP_TECKIO.Controllers.IyAToluca
 {
 
-    [Route("api/subcategoriaProductoServicio/1")]
+    [Route("api/subcategoriaProductoServicio/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class SubcategoriaProductoServicioController: ControllerBase
     {
-        private readonly ISubcategoriaProdutoYServicio<IyATolucaContext> _service;
+        private readonly ISubcategoriaProdutoYServicio<AppDbContext> _service;
 
-        public SubcategoriaProductoServicioController(ISubcategoriaProdutoYServicio<IyATolucaContext> service)
+        public SubcategoriaProductoServicioController(ISubcategoriaProdutoYServicio<AppDbContext> service)
         {
             _service = service;
         }

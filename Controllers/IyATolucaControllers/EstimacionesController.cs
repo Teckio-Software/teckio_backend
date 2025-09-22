@@ -8,13 +8,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace ERP_TECKIO.Controllers
 {
-    [Route("api/estimaciones/1")]
+    [Route("api/estimaciones/{empresa:int}")]
     [ApiController]
     public class EstimacionesIyATolucaController : ControllerBase
     {
-        private readonly EstimacionesProceso<IyATolucaContext> _estimacionesProceso;
+        private readonly EstimacionesProceso<AppDbContext> _estimacionesProceso;
         public EstimacionesIyATolucaController(
-            EstimacionesProceso<IyATolucaContext> estimacionesProceso
+            EstimacionesProceso<AppDbContext> estimacionesProceso
             )
         {
             _estimacionesProceso = estimacionesProceso;

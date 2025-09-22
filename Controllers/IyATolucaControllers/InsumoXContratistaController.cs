@@ -11,7 +11,7 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de los insumos por contratista que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/insumoxcontratista/1")]
+    [Route("api/insumoxcontratista/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionInsumoXContratista-Empresa1")]
     public class InsumoXContratistaIyATolucaController : ControllerBase
@@ -23,7 +23,7 @@ namespace ERP_TECKIO.Controllers
         /// <summary>
         /// Se usa para mandar en "headers" los registros totales de los registros
         /// </summary>  
-        private readonly IyATolucaContext Context;
+        private readonly AppDbContext Context;
         /// <summary>
         /// Constructor del controlador de los insumos por contratista
         /// </summary>
@@ -31,7 +31,7 @@ namespace ERP_TECKIO.Controllers
         /// <param name="context">Para mandar información de los registros</param>
         public InsumoXContratistaIyATolucaController(
             ILogger<InsumoXContratistaIyATolucaController> logger,
-            IyATolucaContext context)
+            AppDbContext context)
         {
             Logger = logger;
             Context = context;

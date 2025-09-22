@@ -11,15 +11,15 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de las cuentas bancarias de la empresa que hereda de <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/cuentabancaria/1")]
+    [Route("api/cuentabancaria/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CuentaBancariaIyATolucaController : ControllerBase
     {
-        private readonly CuentaBancariaProceso<IyATolucaContext> _proceso;
+        private readonly CuentaBancariaProceso<AppDbContext> _proceso;
 
-        private readonly ICuentaBancariaService<IyATolucaContext> _servicio;
-        public CuentaBancariaIyATolucaController(CuentaBancariaProceso<IyATolucaContext> _proceso, ICuentaBancariaService<IyATolucaContext> _servicio
+        private readonly ICuentaBancariaService<AppDbContext> _servicio;
+        public CuentaBancariaIyATolucaController(CuentaBancariaProceso<AppDbContext> _proceso, ICuentaBancariaService<AppDbContext> _servicio
            )
         {
             this._proceso = _proceso;

@@ -11,13 +11,13 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador para las Requisiciones a las que accede el usuario
     /// </summary>
-    [Route("api/existencias/1")]
+    [Route("api/existencias/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionEspecialidad-Empresa1")]
     public class ExistenciasIyATolucaController : ControllerBase
     {
-        private readonly IAlmacenExistenciaInsumoService<IyATolucaContext> _ExistenciaService;
-        private readonly ExistenciasProceso<IyATolucaContext> _Proceso;
+        private readonly IAlmacenExistenciaInsumoService<AppDbContext> _ExistenciaService;
+        private readonly ExistenciasProceso<AppDbContext> _Proceso;
         /// <summary>
         /// Se usa para mostrar errores en la consola
         /// </summary>
@@ -25,7 +25,7 @@ namespace ERP_TECKIO.Controllers
         /// <summary>
         /// Se usa para mandar en "headers" los registros totales de los registros
         /// </summary>
-        private readonly IyATolucaContext Context;
+        private readonly AppDbContext Context;
         /// <summary>
         /// Constructor del controlador de Requisiciones
         /// </summary>
@@ -33,9 +33,9 @@ namespace ERP_TECKIO.Controllers
         /// <param name="Context"></param>
         public ExistenciasIyATolucaController(
             ILogger<ExistenciasIyATolucaController> Logger,
-            IyATolucaContext Context
-            , IAlmacenExistenciaInsumoService<IyATolucaContext> ExistenciaService
-            , ExistenciasProceso<IyATolucaContext> Proceso
+            AppDbContext Context
+            , IAlmacenExistenciaInsumoService<AppDbContext> ExistenciaService
+            , ExistenciasProceso<AppDbContext> Proceso
             )
         {
             _Logger = Logger;

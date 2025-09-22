@@ -11,14 +11,14 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de los Insumos que hereda <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/generadores/1")]
+    [Route("api/generadores/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionPrecioUnitario-Empresa1")]
     public class GeneradoresIyATolucaController : ControllerBase
     {
-        private readonly GeneradoresProceso<IyATolucaContext> _GeneradoresProceso;
+        private readonly GeneradoresProceso<AppDbContext> _GeneradoresProceso;
         public GeneradoresIyATolucaController(
-            GeneradoresProceso<IyATolucaContext> generadoresProceso)
+            GeneradoresProceso<AppDbContext> generadoresProceso)
         {
             _GeneradoresProceso = generadoresProceso;
         }

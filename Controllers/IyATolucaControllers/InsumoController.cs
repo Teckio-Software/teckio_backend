@@ -11,14 +11,14 @@ namespace ERP_TECKIO.Controllers
     /// <summary>
     /// Controlador de los Insumos que hereda <see cref="ControllerBase"/>
     /// </summary>
-    [Route("api/insumo/1")]
+    [Route("api/insumo/{empresa:int}")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "SeccionInsumo-Empresa1")]
     public class InsumoIyATolucaController : ControllerBase
     {
-        private readonly InsumoProceso<IyATolucaContext> _InsumoProceso;
+        private readonly InsumoProceso<AppDbContext> _InsumoProceso;
         public InsumoIyATolucaController(
-            InsumoProceso<IyATolucaContext> insumoProceso)
+            InsumoProceso<AppDbContext> insumoProceso)
         {
             _InsumoProceso = insumoProceso;
         }
