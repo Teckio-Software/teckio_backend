@@ -3,7 +3,9 @@ using ERP_TECKIO.Procesos;
 using ERP_TECKIO.Procesos.Facturacion;
 using ERP_TECKIO.Servicios;
 using ERP_TECKIO.Servicios.Contratos;
+using ERP_TECKIO.Servicios.Contratos.Documentacion;
 using ERP_TECKIO.Servicios.Contratos.Facturacion;
+using ERP_TECKIO.Servicios.Documentacion;
 using ERP_TECKIO.Servicios.Facturacion;
 using Microsoft.EntityFrameworkCore;
 namespace ERP_TECKIO
@@ -194,6 +196,9 @@ namespace ERP_TECKIO
             //dbo
             services.AddScoped(typeof(IParametrosImpresionPuService<>), typeof(ParametrosImpresionPuService<>));
             services.AddScoped(typeof(IImagenService<>), typeof(ImagenService<>));
+
+            //documentacion
+            services.AddScoped(typeof(IGlosarioService<>), typeof(GlosarioService<>));
         }
     }
 }
