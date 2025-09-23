@@ -77,6 +77,13 @@ namespace ERP_TECKIO.Controllers
             var respuesta = await _Proceso.existenciaYAlmacenDeInsumo(IdInsumo, IdProyecto);
             return respuesta;
         }
+
+        [HttpGet("existenciaYAlmacenDeInsumoCantidad/{idInsumo:int}/{idProyecto:int}")]
+        public async Task<ActionResult<decimal>> existenciaYAlmacenDeInsumoCantidad(int IdInsumo, int IdProyecto)
+        {
+            var respuesta = await _Proceso.existenciaYAlmacenDeInsumoCantidad(IdInsumo, IdProyecto);
+            return respuesta;
+        }
         /// <summary>
         /// 
         /// </summary>

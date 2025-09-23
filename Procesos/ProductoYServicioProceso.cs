@@ -113,7 +113,7 @@ namespace ERP_TECKIO.Procesos
                 return new RespuestaDTO
                 {
                     Estatus = false,
-                    Descripcion = "Ocurrio un arror al intentar editar el producto y servicio"
+                    Descripcion = "Ocurrió un arror al intentar editar el producto y servicio"
                 };
             }
         }
@@ -130,7 +130,7 @@ namespace ERP_TECKIO.Procesos
                 return new RespuestaDTO
                 {
                     Estatus = false,
-                    Descripcion = "Ocurrio un arror al intentar editar el producto y servicio"
+                    Descripcion = "Ocurrió un arror al intentar editar el producto y servicio"
                 };
             }
         }
@@ -145,7 +145,7 @@ namespace ERP_TECKIO.Procesos
             }
             catch
             {
-                respuesta.Descripcion = "Ocurrio un error al intentar crear el producto y servicio";
+                respuesta.Descripcion = "Ocurrió un error al intentar crear el producto y servicio";
                 respuesta.Estatus = false;
                 return respuesta;
             }

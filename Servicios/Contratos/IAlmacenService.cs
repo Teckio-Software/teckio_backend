@@ -11,6 +11,8 @@ namespace ERP_TECKIO
         Task<List<AlmacenDTO>> ObtenerXIdProyecto(int IdProyecto);
         Task<List<AlmacenDTO>> ObtenerXCodigo(string parametro);
         Task<List<AlmacenDTO>> ObtenTodos();
+        Task<List<AlmacenDTO>> ObtenCentrales();
+        Task<List<AlmacenDTO>> ObtenerCentralesYDeProyecto(int IdProyecto);
         Task<AlmacenDTO> ObtenXId(int Id);
         Task<RespuestaDTO> Crear(AlmacenCreacionDTO modelo);
         Task<RespuestaDTO> Crear(AlmacenDTO modelo);

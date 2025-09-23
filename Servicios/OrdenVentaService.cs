@@ -101,7 +101,7 @@ namespace ERP_TECKIO.Servicios
                 if(objetoEncontrado.Estatus == 1 && modelo.Estatus == 0)
                 {
                     respuesta.Estatus = false;
-                    respuesta.Descripcion = "La orden de venta ta está autorizada y no se puede capturar";
+                    respuesta.Descripcion = "La orden de venta está autorizada y no se puede capturar";
                     return respuesta;
                 }
                 objetoEncontrado.Autorizo = modelo.Autorizo;
@@ -140,7 +140,7 @@ namespace ERP_TECKIO.Servicios
                 if (modelo.Id <= 0)
                 {
                     respuesta.Estatus = false;
-                    respuesta.Descripcion = "No se encontro la orden de venta";
+                    respuesta.Descripcion = "No se encontró la orden de venta";
                     return respuesta;
                 }
                 respuesta.Estatus = await _repository.Eliminar(objetoEncontrado);
@@ -155,7 +155,7 @@ namespace ERP_TECKIO.Servicios
             catch
             {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "Ocurrio un error al intentar eliminar la orden de venta";
+                respuesta.Descripcion = "Ocurrió un error al intentar eliminar la orden de venta";
                 return respuesta;
             }
         }

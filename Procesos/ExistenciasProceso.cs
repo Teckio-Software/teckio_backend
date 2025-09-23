@@ -132,5 +132,46 @@ namespace ERP_TECKIO
 
             return respuesta;   
         }
+
+
+        public async Task<decimal> existenciaYAlmacenDeInsumoCantidad(int IdInsumo, int IdProyecto)
+        {
+            var insumosExistencia = await _almacenExistenciaInsumoService.ObtenXIdProyecto(IdProyecto);
+            if (insumosExistencia.Count() <= 0)
+            {
+                return 0;
+            }
+            var insumosExistenciaXIdInsumo = insumosExistencia.Where(z => z.IdInsumo == IdInsumo);
+            if (insumosExistenciaXIdInsumo.Count() <= 0)
+            {
+                return 0;
+            }
+            var insumosExistentesAgrupado = insumosExistenciaXIdInsumo.GroupBy(z => z.IdAlmacen);
+            decimal InsumosDisponibles = 0;
+            decimal InsumosAumenta = 0;
+            decimal InsumosRetira = 0;
+            string almacenes = "";
+            foreach (var IExistencia in insumosExistentesAgrupado)
+            {
+                InsumosAumenta += IExistencia.Sum(z => z.CantidadInsumosAumenta);
+                InsumosRetira += IExistencia.Sum(z => z.CantidadInsumosRetira);
+                var almacen = await _almacenService.ObtenXId(IExistencia.Key);
+                almacenes += almacen.AlmacenNombre + ", ";
+            }
+
+            InsumosDisponibles = InsumosAumenta - InsumosRetira;
+
+            if (InsumosDisponibles <= 0 || insumosExistentesAgrupado.Count() <= 0)
+            {
+                return 0;
+            }
+
+            if (insumosExistentesAgrupado.Count() > 0)
+            {
+                return InsumosDisponibles;
+            }
+
+            return InsumosDisponibles;
+        }
     }
 }

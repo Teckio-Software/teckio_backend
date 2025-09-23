@@ -67,7 +67,7 @@ namespace ERP_TECKIO.Servicios.Facturacion
             RespuestaDTO respuesta = new RespuestaDTO();
             try
             {
-                var objetoEncontrado = await ObtenerXId(registro.Id);
+                var objetoEncontrado = await _repository.Obtener(ps=>ps.Id==registro.Id);
                 if (objetoEncontrado == null || objetoEncontrado.Id <= 0)
                 {
                     respuesta.Estatus = false;
@@ -79,6 +79,8 @@ namespace ERP_TECKIO.Servicios.Facturacion
                 objetoEncontrado.IdUnidad = registro.IdUnidad;
                 objetoEncontrado.IdProductoYservicioSat = registro.IdProductoYservicioSat;
                 objetoEncontrado.IdUnidadSat = registro.IdUnidadSat;
+                objetoEncontrado.IdCategoriaProductoYServicio = registro.IdCategoriaProductoYServicio;
+                objetoEncontrado.IdSubategoriaProductoYServicio = registro.IdSubategoriaProductoYServicio;
 
                 var modelo = _mapper.Map<ProductoYservicio>(objetoEncontrado);
                 respuesta.Estatus = await _repository.Editar(modelo);
@@ -145,14 +147,14 @@ namespace ERP_TECKIO.Servicios.Facturacion
                 }
                 else
                 {
-                    respuesta.Descripcion = "Ocurrio un error al intentar crear el producto y servicio";
+                    respuesta.Descripcion = "Ocurrió un error al intentar crear el producto y servicio";
                     respuesta.Estatus = false;
                 }
                 return respuesta;
             }
             catch
             {
-                respuesta.Descripcion = "Ocurrio un error al intentar crear el producto y servicio";
+                respuesta.Descripcion = "Ocurrió un error al intentar crear el producto y servicio";
                 respuesta.Estatus = false;
                 return respuesta;
             }
