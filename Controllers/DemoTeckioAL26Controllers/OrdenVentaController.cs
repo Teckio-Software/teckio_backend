@@ -66,7 +66,8 @@ namespace ERP_TECKIO.Controllers.DemoTeckioAL26
         [HttpPut("cancelar")]
         public async Task<ActionResult<RespuestaDTO>> Cancelar(OrdenVentaCancelarDTO ordenVenta)
         {
-            var respuesta = await _ordenVentaProceso.Cancelar(ordenVenta);
+            var authen = HttpContext.User;
+            var respuesta = await _ordenVentaProceso.Cancelar(ordenVenta, authen.Claims.ToList());
             return respuesta;
         }
     }

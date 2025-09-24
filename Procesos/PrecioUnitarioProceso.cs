@@ -997,8 +997,54 @@ for json path
             foreach (var insumo in insumos) {
                 insumo.EsAutorizado = true;
             }
-
+                
             await _InsumoService.EditarMultiple(insumos);
+        }
+
+        public async Task<RespuestaDTO> RemoverAutorizacionPresupuesto(int IdProyecto) {
+            var respuesta = new RespuestaDTO();
+
+            var estimacionesPadre = await estimacionesPadreXIdProyecto(IdProyecto);
+            var existeAvance = estimacionesPadre.Where(z => z.ImporteDeAvance > 0 || z.PorcentajeAvance > 0);
+            if (existeAvance.Count() > 0) {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Ya hay avance en estimaciones";
+                return respuesta;
+            }
+
+            var PUs = await _PrecioUnitarioService.ObtenerTodos(IdProyecto);
+            foreach (var pu in PUs)
+            {
+                pu.EsAvanceObra = false;
+            }
+
+            await _PrecioUnitarioService.RemoverAutorizacionMultiple(PUs);
+            //todos los insumos autorizados
+            var insumos = await _InsumoService.ObtenXIdProyecto(IdProyecto);
+            foreach (var insumo in insumos)
+            {
+                insumo.EsAutorizado = false;
+            }
+
+            await _InsumoService.RemoverAutorizacionMultiple(insumos);
+
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Presupuesto editable";
+            return respuesta;
+        }
+
+        public async Task<List<EstimacionesDTO>> estimacionesPadreXIdProyecto(int IdProyecto) {
+            var items = _dbContex.Database.SqlQueryRaw<string>(""""
+                select * from Estimaciones
+                where IdProyecto =
+                """" + IdProyecto + """" and IdPadre = 0 for json path"""").ToList();
+            if (items.Count <= 0)
+            {
+                return new List<EstimacionesDTO>();
+            }
+            string json = string.Join("", items);
+            var datos = JsonSerializer.Deserialize<List<EstimacionesDTO>>(json);
+            return datos;
         }
 
         public async Task AutorizarXPartida(PrecioUnitarioDTO partida) {
