@@ -152,9 +152,10 @@ namespace ERP_TECKIO.Controllers.DemoTeckioAL17
         }
 
         [HttpPost("crearParametrosFsr")]
-        public async Task crearParametrosFsr(ParametrosFsrDTO parametrosFsr)
+        public async Task<RespuestaDTO> crearParametrosFsr(ParametrosFsrDTO parametrosFsr)
         {
-            await _FactorSalarioRealProceso.CrearParametrosFsr(parametrosFsr);
+            var respuesta = await _FactorSalarioRealProceso.CrearParametrosFsr(parametrosFsr);
+            return respuesta;
         }
 
         [HttpPut("editarParametrosFsr")]
