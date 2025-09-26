@@ -956,6 +956,9 @@ namespace ERP_TECKIO
                     if (pocentajesCesantia.Count() <= 0)
                     {
                         fsr.PorcentajeFsr = 1;
+                        insumoMO.CostoUnitario = (insumoMO.CostoBase * fsr.PorcentajeFsr);
+                        await _InsumoService.Editar(insumoMO);
+                        return;
                     }
                     else
                     {
@@ -1217,6 +1220,8 @@ namespace ERP_TECKIO
                     if (pocentajesCesantia.Count() <= 0)
                     {
                         fsr.PorcentajeFsr = 1;
+                        costoUnitario = (costoBase * fsr.PorcentajeFsr);
+                        return costoUnitario;
                     }
                     else
                     {

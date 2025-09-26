@@ -997,8 +997,54 @@ for json path
             foreach (var insumo in insumos) {
                 insumo.EsAutorizado = true;
             }
-
+                
             await _InsumoService.EditarMultiple(insumos);
+        }
+
+        public async Task<RespuestaDTO> RemoverAutorizacionPresupuesto(int IdProyecto) {
+            var respuesta = new RespuestaDTO();
+
+            var estimacionesPadre = await estimacionesPadreXIdProyecto(IdProyecto);
+            var existeAvance = estimacionesPadre.Where(z => z.ImporteDeAvance > 0 || z.PorcentajeAvance > 0);
+            if (existeAvance.Count() > 0) {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Ya hay avance en estimaciones";
+                return respuesta;
+            }
+
+            var PUs = await _PrecioUnitarioService.ObtenerTodos(IdProyecto);
+            foreach (var pu in PUs)
+            {
+                pu.EsAvanceObra = false;
+            }
+
+            await _PrecioUnitarioService.RemoverAutorizacionMultiple(PUs);
+            //todos los insumos autorizados
+            var insumos = await _InsumoService.ObtenXIdProyecto(IdProyecto);
+            foreach (var insumo in insumos)
+            {
+                insumo.EsAutorizado = false;
+            }
+
+            await _InsumoService.RemoverAutorizacionMultiple(insumos);
+
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Presupuesto editable";
+            return respuesta;
+        }
+
+        public async Task<List<EstimacionesDTO>> estimacionesPadreXIdProyecto(int IdProyecto) {
+            var items = _dbContex.Database.SqlQueryRaw<string>(""""
+                select * from Estimaciones
+                where IdProyecto =
+                """" + IdProyecto + """" and IdPadre = 0 for json path"""").ToList();
+            if (items.Count <= 0)
+            {
+                return new List<EstimacionesDTO>();
+            }
+            string json = string.Join("", items);
+            var datos = JsonSerializer.Deserialize<List<EstimacionesDTO>>(json);
+            return datos;
         }
 
         public async Task AutorizarXPartida(PrecioUnitarioDTO partida) {
@@ -2569,11 +2615,25 @@ for json path
 
         public async Task CrearRegistrosSeleccionados(List<PrecioUnitarioCopiaDTO> precios, int IdPrecioUnitarioBase, int IdProyecto, DbContext db)
         {
+            var registrosSinEstructurar = await ObtenerPrecioUnitarioSinEstructurar(IdProyecto);
+            //var soloConceptos = await obtenerConceptosXProyecto(IdProyecto);
+
             if (IdPrecioUnitarioBase > 0)
             {
+                var registrosFiltrados = registrosSinEstructurar.Where(z => z.IdPrecioUnitarioBase == IdPrecioUnitarioBase).OrderBy(z => z.Posicion).ToList();
                 var precioUnitarioBase = await _PrecioUnitarioService.ObtenXId(IdPrecioUnitarioBase);
                 for (int i = 0; i < precios.Count; i++)
                 {
+                    var existeMismaClave = registrosSinEstructurar.Where(z => z.Codigo.Length >= precios[i].Codigo.Length &&
+                    z.Codigo.Substring(0, precios[i].Codigo.Length) == precios[i].Codigo);
+
+                    if (existeMismaClave.Count() >= 1)
+                    {
+                        precios[i].Codigo = precios[i].Codigo + "_" + (existeMismaClave.Count() + 1).ToString();
+                    }
+
+                    precios[i].Posicion = registrosFiltrados.Count() + (i+1);
+
                     precios[i].Nivel = precioUnitarioBase.Nivel + 1;
                     precios[i].EsCatalogoGeneral = false;
                     precios[i].EsAvanceObra = false;
@@ -2711,16 +2771,21 @@ for json path
 
         public async Task ImportarCatalogoAPrecioUnitario(List<PrecioUnitarioDTO> precios, PrecioUnitarioDTO precioUniatrio)
         {
-            var conceptos = await obtenerConceptosXProyecto(precioUniatrio.IdProyecto);
+            var registrosSinEstructurar = await ObtenerPrecioUnitarioSinEstructurar(precioUniatrio.IdProyecto);
+            var idTipoPrecio = precioUniatrio.TipoPrecioUnitario == 0 ? precioUniatrio.Id : precioUniatrio.IdPrecioUnitarioBase;
+            var registrosFiltrados = registrosSinEstructurar.Where(z => z.IdPrecioUnitarioBase == idTipoPrecio).ToList();
+            //var conceptos = await obtenerConceptosXProyecto(precioUniatrio.IdProyecto);
 
             for (int i = 0; i < precios.Count; i++)
             {
-                var existeMismaClave = conceptos.Where(z => z.Codigo.Length >= precios[i].Codigo.Length &&
+                var existeMismaClave = registrosFiltrados.Where(z => z.Codigo.Length >= precios[i].Codigo.Length &&
                 z.Codigo.Substring(0, precios[i].Codigo.Length) == precios[i].Codigo);
 
                 if (existeMismaClave.Count() >= 1) {
                     precios[i].Codigo = precios[i].Codigo+"_"+(existeMismaClave.Count()+1).ToString();
                 }
+
+                precios[i].Posicion = registrosFiltrados.Count() + (i + 1);
 
                 precios[i].Nivel = precioUniatrio.TipoPrecioUnitario == 0 ? precioUniatrio.Nivel + 1 : precioUniatrio.Nivel;
                 precios[i].EsCatalogoGeneral = false;
