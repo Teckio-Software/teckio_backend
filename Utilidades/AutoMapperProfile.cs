@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using ERP_TECKIO.DTO;
+using ERP_TECKIO.DTO.Documentacion;
 using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.DTO.Usuario;
 using ERP_TECKIO.Modelos;
 using ERP_TECKIO.Modelos.Contabilidad;
+using ERP_TECKIO.Modelos.Documentacion;
 using ERP_TECKIO.Modelos.Facturacion;
 using ERP_TECKIO.Modelos.Facturaion;
 using ERP_TECKIO.Modelos.Presupuesto;
@@ -245,7 +247,7 @@ namespace ERP_TECKIO
             #region Cotizacion
             CreateMap<Cotizacion, CotizacionDTO>()
                 .ForMember(destino => destino.IdContratista,
-                opt => opt.MapFrom(origen => origen.IdContratista == null? 0 : origen.IdContratista));
+                opt => opt.MapFrom(origen => origen.IdContratista == null ? 0 : origen.IdContratista));
             CreateMap<CotizacionDTO, Cotizacion>()
                 .ForMember(destino => destino.IdProyectoNavigation,
                 opt => opt.Ignore())
@@ -638,7 +640,7 @@ namespace ERP_TECKIO
             CreateMap<TipoPolizaCreacionDTO, TipoPoliza>();
             ///////////////////////////////////////////////////////////////
             CreateMap<CuentaContable, CuentaContableDTO>()
-                .ForMember(detino => detino.TipoCuentaContable, 
+                .ForMember(detino => detino.TipoCuentaContable,
                 opt => opt.MapFrom(origen => origen.TipoCuentaContable == null ? 0 : origen.TipoCuentaContable));
             CreateMap<CuentaContableDTO, CuentaContable>()
                 .ForMember(destino => destino.IdRubroNavigation,
@@ -886,20 +888,20 @@ namespace ERP_TECKIO
                 opt => opt.MapFrom(origien => origien.EstatusEnviadoCentroCostos == null ? false : origien.EstatusEnviadoCentroCostos));
             CreateMap<FacturaDTO, Factura>();
 
-           // CreateMap<Factura, FacturaBaseDTO>()
-           //     .ForMember(destino => destino.MetodoPago,
-           //     opt => opt.MapFrom(origen => origen.MetodoPago == null ? "" : origen.MetodoPago))
-           //     .ForMember(destino => destino.FormaPago,
-           //     opt => opt.MapFrom(origen => origen.FormaPago == null ? "" : origen.FormaPago));
-           // CreateMap<FacturaBaseDTO, Factura>()
-           //     .ForMember(destino => destino.MetodoPago,
-           //     opt => opt.MapFrom(origen => string.IsNullOrEmpty(origen.MetodoPago) ? "" : origen.MetodoPago))
-           //     .ForMember(destino => destino.FormaPago,
-           //     opt => opt.MapFrom(origen => string.IsNullOrEmpty(origen.FormaPago) ? "" : origen.FormaPago))
-           //.ForMember(destino => destino.IdArchivoNavigation,
-           //     opt => opt.Ignore())
-           //.ForMember(destino => destino.IdArchivoPdfNavigation,
-           //     opt => opt.Ignore());
+            // CreateMap<Factura, FacturaBaseDTO>()
+            //     .ForMember(destino => destino.MetodoPago,
+            //     opt => opt.MapFrom(origen => origen.MetodoPago == null ? "" : origen.MetodoPago))
+            //     .ForMember(destino => destino.FormaPago,
+            //     opt => opt.MapFrom(origen => origen.FormaPago == null ? "" : origen.FormaPago));
+            // CreateMap<FacturaBaseDTO, Factura>()
+            //     .ForMember(destino => destino.MetodoPago,
+            //     opt => opt.MapFrom(origen => string.IsNullOrEmpty(origen.MetodoPago) ? "" : origen.MetodoPago))
+            //     .ForMember(destino => destino.FormaPago,
+            //     opt => opt.MapFrom(origen => string.IsNullOrEmpty(origen.FormaPago) ? "" : origen.FormaPago))
+            //.ForMember(destino => destino.IdArchivoNavigation,
+            //     opt => opt.Ignore())
+            //.ForMember(destino => destino.IdArchivoPdfNavigation,
+            //     opt => opt.Ignore());
             #endregion
             #region FacturaDetalles
             CreateMap<FacturaDetalle, FacturaDetalleDTO>();
@@ -1048,8 +1050,8 @@ namespace ERP_TECKIO
             #region FacturaXOrdenCompra
             CreateMap<FacturaXOrdenCompraDTO, FacturaXOrdenCompra>();
             CreateMap<FacturaXOrdenCompra, FacturaXOrdenCompraDTO>()
-                .ForMember(destino => destino.TotalSaldado, 
-                opt => opt.MapFrom(origen => origen.TotalSaldado == null ? 0 : origen.TotalSaldado ));
+                .ForMember(destino => destino.TotalSaldado,
+                opt => opt.MapFrom(origen => origen.TotalSaldado == null ? 0 : origen.TotalSaldado));
             #endregion
             #region FacturaEntradaMaterial
             // CreateMap<FacturaEntradaMaterial, FacturaEntradaMaterialDTO>();
@@ -1212,6 +1214,10 @@ namespace ERP_TECKIO
             CreateMap<ImagenDTO, Imagen>();
             #endregion
 
+            #region Glosario
+            CreateMap<Glosario, GlosarioDTO>();
+            CreateMap<GlosarioDTO, Glosario>();
+            #endregion
         }
     }
 }
