@@ -27,6 +27,13 @@ namespace ERP_TECKIO.Servicios.Documentacion
         {
             var respuesta = new RespuestaDTO();
 
+            if (glosarioDTO.EsBase)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No se puede editar un término base";
+                return respuesta;
+            }
+
             var glosario = await _glosarioRepository.Obtener(z => z.Id == glosarioDTO.Id);
 
             if (glosario == null)
@@ -59,6 +66,13 @@ namespace ERP_TECKIO.Servicios.Documentacion
             var respuesta = new RespuestaDTO();
 
             var buscarGlosario = await _glosarioRepository.Obtener(z => z.Id == IdGlosario);
+
+            if (buscarGlosario.EsBase)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No se puede eliminar un término base";
+                return respuesta;
+            }
 
             if(buscarGlosario == null)
             {
