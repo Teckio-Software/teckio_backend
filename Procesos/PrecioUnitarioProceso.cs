@@ -2615,11 +2615,25 @@ for json path
 
         public async Task CrearRegistrosSeleccionados(List<PrecioUnitarioCopiaDTO> precios, int IdPrecioUnitarioBase, int IdProyecto, DbContext db)
         {
+            var registrosSinEstructurar = await ObtenerPrecioUnitarioSinEstructurar(IdProyecto);
+            //var soloConceptos = await obtenerConceptosXProyecto(IdProyecto);
+
             if (IdPrecioUnitarioBase > 0)
             {
+                var registrosFiltrados = registrosSinEstructurar.Where(z => z.IdPrecioUnitarioBase == IdPrecioUnitarioBase).OrderBy(z => z.Posicion).ToList();
                 var precioUnitarioBase = await _PrecioUnitarioService.ObtenXId(IdPrecioUnitarioBase);
                 for (int i = 0; i < precios.Count; i++)
                 {
+                    var existeMismaClave = registrosSinEstructurar.Where(z => z.Codigo.Length >= precios[i].Codigo.Length &&
+                    z.Codigo.Substring(0, precios[i].Codigo.Length) == precios[i].Codigo);
+
+                    if (existeMismaClave.Count() >= 1)
+                    {
+                        precios[i].Codigo = precios[i].Codigo + "_" + (existeMismaClave.Count() + 1).ToString();
+                    }
+
+                    precios[i].Posicion = registrosFiltrados.Count() + (i+1);
+
                     precios[i].Nivel = precioUnitarioBase.Nivel + 1;
                     precios[i].EsCatalogoGeneral = false;
                     precios[i].EsAvanceObra = false;
@@ -2757,16 +2771,21 @@ for json path
 
         public async Task ImportarCatalogoAPrecioUnitario(List<PrecioUnitarioDTO> precios, PrecioUnitarioDTO precioUniatrio)
         {
-            var conceptos = await obtenerConceptosXProyecto(precioUniatrio.IdProyecto);
+            var registrosSinEstructurar = await ObtenerPrecioUnitarioSinEstructurar(precioUniatrio.IdProyecto);
+            var idTipoPrecio = precioUniatrio.TipoPrecioUnitario == 0 ? precioUniatrio.Id : precioUniatrio.IdPrecioUnitarioBase;
+            var registrosFiltrados = registrosSinEstructurar.Where(z => z.IdPrecioUnitarioBase == idTipoPrecio).ToList();
+            //var conceptos = await obtenerConceptosXProyecto(precioUniatrio.IdProyecto);
 
             for (int i = 0; i < precios.Count; i++)
             {
-                var existeMismaClave = conceptos.Where(z => z.Codigo.Length >= precios[i].Codigo.Length &&
+                var existeMismaClave = registrosFiltrados.Where(z => z.Codigo.Length >= precios[i].Codigo.Length &&
                 z.Codigo.Substring(0, precios[i].Codigo.Length) == precios[i].Codigo);
 
                 if (existeMismaClave.Count() >= 1) {
                     precios[i].Codigo = precios[i].Codigo+"_"+(existeMismaClave.Count()+1).ToString();
                 }
+
+                precios[i].Posicion = registrosFiltrados.Count() + (i + 1);
 
                 precios[i].Nivel = precioUniatrio.TipoPrecioUnitario == 0 ? precioUniatrio.Nivel + 1 : precioUniatrio.Nivel;
                 precios[i].EsCatalogoGeneral = false;
