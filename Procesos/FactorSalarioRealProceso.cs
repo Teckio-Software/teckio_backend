@@ -799,12 +799,30 @@ namespace ERP_TECKIO
             
         }
 
-        public async Task CrearParametrosFsr(ParametrosFsrDTO parametrosFsr)
+        public async Task<RespuestaDTO> CrearParametrosFsr(ParametrosFsrDTO parametrosFsr)
         {
+            RespuestaDTO resp = new RespuestaDTO();
+            var fsi = await _FSIService.ObtenerTodosXProyecto(parametrosFsr.IdProyecto);
+            if (fsi.Count <= 0)
+            {
+                resp.Descripcion = "No se encontró un factor salario integrado";
+                resp.Estatus = false;
+                return resp;
+            }
+            var diasConsiderados = await _DiasConsideradosService.ObtenerTodosXFSI(fsi[0].Id);
+            var diasPagados = diasConsiderados.Where(z => z.EsLaborableOPagado == true).ToList();
+            if (diasPagados.Count <= 0)
+            {
+                resp.Descripcion = "No se encontró ningún día pagado";
+                resp.Estatus = false;
+                return resp;
+            }
             var respuesta = await _parametrosFsrService.Crear(parametrosFsr);
             if (!respuesta.Estatus)
             {
-                return;
+                resp.Descripcion = "Ocurrió un error al intentar crear";
+                resp.Estatus = false;
+                return resp;
             }
             var ExisteFSR = await _FSRService.ObtenerTodosXProyecto(parametrosFsr.IdProyecto);
             if (ExisteFSR.Count > 0)
@@ -819,7 +837,9 @@ namespace ERP_TECKIO
                     await RecalcularFsrEsCompuesto(FSR);
                 }
             }
-            return;
+            resp.Descripcion = "Parametros creados exitosamente";
+            resp.Estatus = true;
+            return resp;
         }
 
         public async Task EditarParametrosFsr(ParametrosFsrDTO parametrosFsr)
