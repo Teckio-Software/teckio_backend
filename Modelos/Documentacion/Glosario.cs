@@ -5,5 +5,6 @@
         public int Id { get; set; }
         public string Termino { get; set; }
         public string Definicion { get; set; }
+        public bool EsBase { get; set; }
     }
 }

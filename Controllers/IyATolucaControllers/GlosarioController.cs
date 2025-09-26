@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ERP_TECKIO.Controllers.IyATolucaControllers
 {
 
-    [Route("api/glosario/1")]
+    [Route("api/glosario")]
     [ApiController]
     //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GlosarioController : ControllerBase
