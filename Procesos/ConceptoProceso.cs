@@ -74,6 +74,10 @@ namespace ERP_TECKIO
                     lista[i].DescripcionEspecialidad = especialidad.Descripcion;
                 }
             }
+            foreach(var concepto in lista)
+            {
+                concepto.CostoUnitarioConFormato = String.Format("${0:#,##0.00}", concepto.CostoUnitario);
+            }
             return lista;
         }
 

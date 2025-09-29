@@ -867,6 +867,14 @@ namespace ERP_TECKIO
 
             #endregion
 
+            #region EntradaProduccionAlmacen
+
+            CreateMap<EntradaProduccionAlmacen, EntradaProduccionAlmacenDTO>();
+            CreateMap<EntradaProduccionAlmacenDTO, EntradaProduccionAlmacen>()
+                .ForMember(destino => destino.IdAlmacenNavigation, opt => opt.Ignore())
+                .ForMember(destino => destino.ProductosXentradaProduccionAlmacens, opt => opt.Ignore());
+
+            #endregion
 
             #region Facturas
 

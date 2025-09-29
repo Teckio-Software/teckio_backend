@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-
-using Microsoft.AspNetCore.Mvc;using ERP_TECKIO;
+﻿using DocumentFormat.OpenXml.InkML;
+using ERP_TECKIO;
+using ERP_TECKIO.DTO;
+using ERP_TECKIO.Modelos;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ERP_TECKIO
 {
@@ -13,6 +15,9 @@ namespace ERP_TECKIO
         private readonly IAlmacenSalidaService<T> _almacenSalidaService;
         private readonly IInsumoXAlmacenSalidaService<T> _inusmoXAlmacenSalidaService;
         private readonly IAlmacenExistenciaInsumoService<T> _almacenExistenciaInsumoService;
+        private readonly ExistenciasProceso<T> _existenciasProceso;
+        private readonly IAlmacenEntradaService<T> _almacenEntradaService;
+        private readonly AlmacenEntradaProceso<T> _almacenEntradaProceso;
 
         public AlmacenSalidaProceso(
             IAlmacenExistenciaInsumoService<T> existenciaInsumos,
@@ -20,7 +25,10 @@ namespace ERP_TECKIO
             IAlmacenService<T> almacenService,
             IAlmacenSalidaService<T> almacenSalidaService, 
             IInsumoXAlmacenSalidaService<T> insumoXAlmacenSalidaService,
-            IAlmacenExistenciaInsumoService<T> almacenExistenciaInsumoService
+            IAlmacenExistenciaInsumoService<T> almacenExistenciaInsumoService,
+            ExistenciasProceso<T> existenciasProceso,
+            IAlmacenEntradaService<T> almacenEntradaService,
+            AlmacenEntradaProceso<T> almacenEntradaProceso
             ) {
             _existenciaInsumos = existenciaInsumos;
             _insumoService = insumoService;
@@ -28,6 +36,9 @@ namespace ERP_TECKIO
             _almacenSalidaService = almacenSalidaService;
             _inusmoXAlmacenSalidaService = insumoXAlmacenSalidaService;
             _almacenExistenciaInsumoService = almacenExistenciaInsumoService;
+            _existenciasProceso = existenciasProceso;
+            _almacenEntradaService = almacenEntradaService;
+            _almacenEntradaProceso = almacenEntradaProceso;
         }
         public async Task<RespuestaDTO> CrearAlmacenSalida(AlmacenSalidaCreacionDTO parametros, List<System.Security.Claims.Claim> claims)
         {
@@ -349,5 +360,165 @@ namespace ERP_TECKIO
             }
             return ListaID;
         } 
+
+        public async Task<RespuestaDTO> transpasoInsumos(TranspasoAlmacenDTO parametro, List<System.Security.Claims.Claim> claims)
+        {
+            RespuestaDTO respuesta = new RespuestaDTO();
+            try
+            {
+                //Valida que al DTO no le hagan falta datos
+                if (parametro.Insumos.Count <= 0 || parametro.IdAlmacenDestino<=0 || parametro.IdAlmacenOrigen <= 0)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "No se puede realizar un transpaso sin insumos o sin seleccionar un almacen de destino";
+                    return respuesta;
+                }
+                
+                //Valida que el almacen de orign no sea el mismo que el de destino
+                if (parametro.IdAlmacenOrigen == parametro.IdAlmacenDestino)
+                {
+                    respuesta.Descripcion = "No puedes transefir al mismo almacen con el que trabajas";
+                    respuesta.Estatus = false;
+                    return respuesta;
+                }
+
+                //Obtiene el nombre de usuario
+                var usuarioNombre = claims.Where(z => z.Type == "username").ToList();
+
+                //Obtiene los almacenes y las existencias
+                var almacenOriInfo = await _almacenService.ObtenXId(parametro.IdAlmacenOrigen);
+                var almacenDestInfo = await _almacenService.ObtenXId(parametro.IdAlmacenDestino);
+                var existencias = await _existenciasProceso.obtenInsumosExistentes(parametro.IdAlmacenOrigen);
+                //Comprueba que hayan existencias suficientes para los procesos
+                foreach (var insumo in parametro.Insumos)
+                {
+                    var existencia = existencias.Find(e => e.IdInsumo == insumo.IdInsumo);
+                    if (existencia == null)
+                    {
+                        respuesta.Estatus = false;
+                        respuesta.Descripcion = "No hay existencias para algunos insumos";
+                        return respuesta;
+                    }
+                    if (existencia.CantidadInsumos < insumo.CantidadExistencia)
+                    {
+                        respuesta.Estatus = false;
+                        respuesta.Descripcion = "No hay existencias suficientes para algunos insumos";
+                        return respuesta;
+                    }
+                }
+                //var existenciasDestino = await _almacenExistenciaInsumoService.ObtenTodos();
+                //Crea un par de listas para almacenar la información de los movimientos de los insumos.
+                List<AlmacenSalidaInsumoCreacionDTO> insumosSalida = new List<AlmacenSalidaInsumoCreacionDTO>();
+                List<AlmacenEntradaInsumoCreacionDTO> insumosEntrada = new List<AlmacenEntradaInsumoCreacionDTO>();
+                foreach (var insumo in parametro.Insumos)
+                {
+                    var insumoObjeto = await _insumoService.ObtenXId(insumo.IdInsumo);
+                    //Omití crear las existencias como tal, pues las entradas y salidas realizan la función de definir las existencias
+
+                    //Crea la existencia para sacar el insumo del origen
+                    //AlmacenExistenciaInsumoCreacionDTO existenciaOrigen = new AlmacenExistenciaInsumoCreacionDTO
+                    //{
+                    //    IdInsumo = insumo.IdInsumo,
+                    //    IdProyecto = almacenOriInfo.IdProyecto,
+                    //    IdAlmacen = parametro.IdAlmacenOrigen,
+                    //    CantidadInsumosAumenta = 0,
+                    //    CantidadInsumosRetira = insumo.CantidadExistencia,
+                    //    EsNoConsumible = false,
+                    //    FechaRegistro = DateTime.Now
+                    //};
+                    //respuesta = await _almacenExistenciaInsumoService.CreaExistenciaInsumoEntrada(existenciaOrigen);
+                    //if (!respuesta.Estatus)
+                    //{
+                    //    return respuesta;
+                    //}
+
+                    ////Crea la existencia para ingresar el insumo al otro almacen
+                    //AlmacenExistenciaInsumoCreacionDTO exist = new AlmacenExistenciaInsumoCreacionDTO
+                    //{
+                    //    IdInsumo = insumo.IdInsumo,
+                    //    IdProyecto = almacenDestInfo.IdProyecto,
+                    //    IdAlmacen = parametro.IdAlmacenDestino,
+                    //    CantidadInsumosAumenta = insumo.CantidadExistencia,
+                    //    CantidadInsumosRetira = 0,
+                    //    EsNoConsumible = false,
+                    //    FechaRegistro = DateTime.Now
+                    //};
+                    //respuesta = await _almacenExistenciaInsumoService.CreaExistenciaInsumoEntrada(exist);
+                    insumosSalida.Add(new AlmacenSalidaInsumoCreacionDTO
+                    {
+                        IdInsumo = insumo.IdInsumo,
+                        CantidadPorSalir = insumo.CantidadExistencia,
+                        EsPrestamo = false
+                    });
+                    insumosEntrada.Add(new AlmacenEntradaInsumoCreacionDTO
+                    {
+                        IdInsumo = insumo.IdInsumo, 
+                        IdAlmacenEntrada = parametro.IdAlmacenDestino,
+                        Descripcion = "Transpaso desde el almacen "+almacenDestInfo.AlmacenNombre,
+                        Unidad = insumoObjeto.Unidad,
+                        IdTipoInsumo = insumoObjeto.idTipoInsumo,
+                        CantidadPorRecibir = insumo.CantidadExistencia,
+                        CantidadRecibIda = insumo.CantidadExistencia,
+                        IdOrdenCompra = 0,
+                        IdInsumoXOrdenCompra = 0
+                    });
+                    //if (!respuesta.Estatus)
+                    //{
+                    //    existenciaOrigen = new AlmacenExistenciaInsumoCreacionDTO
+                    //    {
+                    //        IdInsumo = insumo.IdInsumo,
+                    //        IdProyecto = almacenOriInfo.IdProyecto,
+                    //        IdAlmacen = parametro.IdAlmacenOrigen,
+                    //        CantidadInsumosAumenta = insumo.CantidadExistencia,
+                    //        CantidadInsumosRetira = 0,
+                    //        EsNoConsumible = false,
+                    //        FechaRegistro = DateTime.Now
+                    //    };
+                    //    await _almacenExistenciaInsumoService.Crear(existenciaOrigen);
+                    //    return respuesta;
+                    //}
+
+                }
+                AlmacenSalidaCreacionDTO almacenSalida = new AlmacenSalidaCreacionDTO
+                {
+                    IdAlmacen = parametro.IdAlmacenOrigen,
+                    Observaciones = "Transpaso al almacen "+almacenDestInfo.AlmacenNombre,
+                    PersonaRecibio = usuarioNombre[0].Value,
+                    IdProyecto = almacenOriInfo.IdProyecto,
+                    EsBaja = false,
+                    ListaAlmacenSalidaInsumoCreacion = insumosSalida
+                };
+                var almacenSalResult = await CrearAlmacenSalida1(almacenSalida,claims);
+                if (!almacenSalResult.Estatus)
+                {
+                    return almacenSalResult;
+                }
+                AlmacenEntradaCreacionDTO almacenEntrada = new AlmacenEntradaCreacionDTO
+                {
+                    IdAlmacen = parametro.IdAlmacenDestino,
+                    IdContratista = null,
+                    Observaciones = "Transpaso desde almacen " + almacenOriInfo.AlmacenNombre,
+                    ListaInsumosEnAlmacenEntrada = insumosEntrada
+                };
+                respuesta = await _almacenEntradaProceso.CrearAjusteEntradaAlmacen1(almacenEntrada, claims);
+                if (respuesta.Estatus)
+                {
+                    respuesta.Descripcion = "Transpaso realizado exitosamente";
+                }
+                else
+                {
+                    respuesta.Descripcion = "Ocurrió un error al intentar crear el transpaso";
+                }
+                return respuesta;
+
+            }
+            catch
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Ocurrió un error al intentar realizar el transpaso";
+                return respuesta;
+            }
+        }
+
     }
 }

@@ -4,5 +4,6 @@
     {
         public List<DetalleOrdenVentaDTO> DetalleOrdenVenta { get; set; } = new List<DetalleOrdenVentaDTO>();
 
+        public string? RazonSocialCliente { get; set; }
     }
 }

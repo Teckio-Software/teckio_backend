@@ -183,9 +183,30 @@ namespace ERP_TECKIO
             }
         }
 
-        public Task<RespuestaDTO> Crear(AlmacenEntradaCreacionDTO parametro)
+        public async Task<RespuestaDTO> Crear(AlmacenEntradaCreacionDTO parametro)
         {
-            throw new NotImplementedException();
+            RespuestaDTO respuesta = new RespuestaDTO();
+            try
+            {
+                var creacion = await _Repositorio.Crear(_Mapper.Map<AlmacenEntrada>(parametro));
+
+                if (creacion.Id == 0)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "Ocurrió un error al intentar crear la entrada al almacen";
+                    return respuesta;
+                }
+
+                respuesta.Estatus = true;
+                respuesta.Descripcion = "Entrada al almacen creada exitosamente";
+                return respuesta;
+            }
+            catch (Exception ex)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Ocurrió un error al intentar crear la entrada al almacen";
+                return respuesta;
+            }
         }
 
         public async Task<AlmacenEntradaDTO> CrearYObtener(AlmacenEntradaDTO parametro)
