@@ -194,6 +194,8 @@ namespace ERP_TECKIO
             //dbo
             services.AddScoped(typeof(IParametrosImpresionPuService<>), typeof(ParametrosImpresionPuService<>));
             services.AddScoped(typeof(IImagenService<>), typeof(ImagenService<>));
+
+            services.AddScoped(typeof(LogProcess));
         }
     }
 }
