@@ -2113,7 +2113,9 @@ for json path
                             {
                                 var PrecioUnitario = await _PrecioUnitarioService.ObtenXId(detalle.IdPrecioUnitario);
                                 var iguales = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(detalle.IdPrecioUnitario);
-                                iguales = iguales.Where(p => p.Codigo == detalle.Codigo).ToList();
+                                //Esta linea solia obtener todos los detalles con el mismo Id de insumo para eliminarlos
+                                //iguales = iguales.Where(p => p.Codigo == detalle.Codigo).ToList();
+                                iguales = iguales.Where(p => p.Id == Id).ToList();
                                 foreach(var det in iguales)
                                 {
                                     await _PrecioUnitarioDetalleService.Eliminar(det.Id);
@@ -2142,7 +2144,10 @@ for json path
                     foreach(var partida in registrosFiltrados)
                     {
                         var detalles = await ObtenerDetallesPorPU(partida.Id, db);
-                        var detEliminar = detalles.Where(z => z.IdInsumo == registro.IdInsumo && z.IdPrecioUnitarioDetallePerteneciente == 0).ToList();
+                        //Esta linea solia obtener todos los detalles con el mismo Id de insumo para eliminarlos
+                        //var detEliminar = detalles.Where(z => z.IdInsumo == registro.IdInsumo && z.IdPrecioUnitarioDetallePerteneciente == 0).ToList();
+                        //La nueva linea solo tiene en cuenta el Id de detalle más el 'IdPrecioUnitarioDetallePerteneciente'
+                        var detEliminar = detalles.Where(z => z.Id == Id && z.IdPrecioUnitarioDetallePerteneciente == 0).ToList();
                         foreach (var det in detEliminar) {
                             await _PrecioUnitarioDetalleService.Eliminar(det.Id);
                         }

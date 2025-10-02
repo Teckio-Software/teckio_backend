@@ -24,5 +24,12 @@ namespace ERP_TECKIO.Controllers.IyAToluca
             var resultado = await _proceso.ObtenerXId(id);
             return resultado;
         }
+
+        [HttpPost("CargarImagen")]
+        public async Task<ActionResult<int>> cargarImagen(IFormFile file)
+        {
+            var resultado = await _proceso.GuardarImagen(file);
+            return resultado;
+        }
     }
 }
