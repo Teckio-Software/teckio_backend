@@ -33,7 +33,7 @@ namespace ERP_TECKIO.Procesos
                 var fecha = DateTime.Now;
                 var mes = fecha.ToString("MMMM", new System.Globalization.CultureInfo("es-ES"));
                 //Obtiene el nombre del archivo
-                var nombreArchivo = archivo.FileName;
+                var nombreArchivo = DateTime.Now.Millisecond+archivo.FileName;
                 //Genera la ruta compuesta
                 var rutaCompuesta = Path.Combine(ruta, fecha.Year.ToString(), mes, fecha.Day.ToString());
                 //Comprueba si la ruta existe, si no existe la crea
@@ -57,9 +57,9 @@ namespace ERP_TECKIO.Procesos
                     {
                         //Lee el archivo y lo guarda en la ruta final
                         await archivo.CopyToAsync(memoryStream);
-                        var contenIdo = memoryStream.ToArray();
-                        pesoBytes = contenIdo.Length;
-                        await File.WriteAllBytesAsync(ruta, contenIdo);
+                        var contenido = memoryStream.ToArray();
+                        pesoBytes = contenido.Length;
+                        await File.WriteAllBytesAsync(rutaFinal, contenido);
                     }
                     catch
                     {
@@ -72,7 +72,7 @@ namespace ERP_TECKIO.Procesos
                 try
                 {
                     var resultado = await _ImagenService.CrearYObtener(imagen);
-                    return imagen.Id;
+                    return resultado.Id;
                 }
                 catch
                 {
