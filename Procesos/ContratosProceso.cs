@@ -166,9 +166,9 @@ namespace ERP_TECKIO
                 Registro.CostoUnitario = PreciosUnitarios[i].CostoUnitario;
                 Registro.CostoUnitarioConFormato = String.Format("{0:#,##0.00}", Registro.CostoUnitario);
                 Registro.Cantidad = PreciosUnitarios[i].Cantidad;
-                Registro.CantidadConFormato = String.Format("{0:#,##0.00}", Registro.Cantidad);
+                Registro.CantidadConFormato = String.Format("{0:#,##0.0000}", Registro.Cantidad);
                 Registro.Importe = PreciosUnitarios[i].Importe;
-                Registro.ImporteConFormato = String.Format("{0:#,##0.00}", Registro.Importe);
+                Registro.ImporteConFormato = String.Format("${0:#,##0.00}", Registro.Importe);
                 Registro.TipoPrecioUnitario = PreciosUnitarios[i].TipoPrecioUnitario;
                 Registro.IdContrato = idContrato;
                 Registro.IdPrecioUnitarioBase = PreciosUnitarios[i].IdPrecioUnitarioBase;
@@ -200,7 +200,7 @@ namespace ERP_TECKIO
                     padres[i].CostoUnitario = importeMO;
                     padres[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", padres[i].CostoUnitario);
                     padres[i].Importe = padres[i].CostoUnitario * padres[i].Cantidad;
-                    padres[i].ImporteConFormato = String.Format("{0:#,##0.00}", padres[i].Importe);
+                    padres[i].ImporteConFormato = String.Format("${0:#,##0.00}", padres[i].Importe);
                     padres[i].ImporteDestajo = importeDestajo;
                     padres[i].ImporteDestajoConFormato = String.Format("{0:#,##0.00}", padres[i].ImporteDestajo);
                     if (padres[i].Importe > 0)
@@ -235,7 +235,7 @@ namespace ERP_TECKIO
                     padres[i].CostoUnitario = importeMO;
                     padres[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", padres[i].CostoUnitario);
                     padres[i].Importe = padres[i].CostoUnitario * padres[i].Cantidad;
-                    padres[i].ImporteConFormato = String.Format("{0:#,##0.00}", padres[i].Importe);
+                    padres[i].ImporteConFormato = String.Format("${0:#,##0.00}", padres[i].Importe);
                     padres[i].ImporteDestajo = importeDestajo;
                     padres[i].ImporteDestajoConFormato = String.Format("{0:#,##0.00}", padres[i].ImporteDestajo);
                     if (padres[i].Importe > 0)

@@ -1266,6 +1266,18 @@ for json path
             return listaFiltrada;
         }
 
+        public async Task<List<PrecioUnitarioDetalleDTO>> ObtenerDetallesPorPUImpresion(List<int> IdPreciosUnitarios, List<System.Security.Claims.Claim> claims)
+        {
+            var items = new List<PrecioUnitarioDetalleDTO>();
+            foreach(var id in IdPreciosUnitarios)
+            {
+                var lista = await ObtenerDetallesPorPU(id, _dbContex);
+                items.AddRange(lista);
+            }
+            return items;
+        }
+
+
         public async Task<List<PrecioUnitarioDetalleDTO>> ObtenerDetallesPorPU(int IdPrecioUnitario, DbContext db)
         {
             var items = db.Database.SqlQueryRaw<string>(""""

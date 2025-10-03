@@ -18,17 +18,27 @@ namespace ERP_TECKIO.Controllers.IyAToluca
             _proceso = proceso;
         }
 
-        [HttpGet("obtenerXId/{id:int}")]
-        public async Task<ActionResult<ImagenDTO>> ObtenerXId(int id)
+        [HttpGet("obtenerseleccionada")]
+        public async Task<ActionResult<ImagenDTO>> ObtenerXId()
         {
-            var resultado = await _proceso.ObtenerXId(id);
+            var authen = HttpContext.User;
+            var resultado = await _proceso.ObtenerSeleccionada(authen.Claims.ToList());
             return resultado;
         }
 
         [HttpPost("CargarImagen")]
         public async Task<ActionResult<int>> cargarImagen(IFormFile file)
         {
-            var resultado = await _proceso.GuardarImagen(file);
+            var authen = HttpContext.User;
+            var resultado = await _proceso.GuardarImagen(file, authen.Claims.ToList());
+            return resultado;
+        }
+
+        [HttpGet("SeleccionarImagen/{id:int}")]
+        public async Task<ActionResult<RespuestaDTO>> seleccionarImagen(int id)
+        {
+            var authen = HttpContext.User;
+            var resultado = await _proceso.SeleccionaImagen(id, authen.Claims.ToList());
             return resultado;
         }
     }
