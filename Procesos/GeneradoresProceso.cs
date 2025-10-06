@@ -110,7 +110,7 @@ namespace ERP_TECKIO
                 lista[i].YDecimal = String.Format("{0:#,##0.00}", lista[i].Y);
                 lista[i].ZDecimal = String.Format("{0:#,##0.00}", lista[i].Z);
                 lista[i].CantidadDecimal = String.Format("{0:#,##0.00}", lista[i].Cantidad);
-                lista[i].TotalDecimal = String.Format("${0:#,##0.00}", lista[i].CantidadTotal);
+                lista[i].TotalDecimal = String.Format("{0:#,##0.00}", lista[i].CantidadTotal);
             }
             return lista;
         }

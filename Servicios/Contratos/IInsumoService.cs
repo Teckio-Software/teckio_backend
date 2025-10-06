@@ -19,6 +19,7 @@ namespace ERP_TECKIO
         Task<RespuestaDTO> Eliminar(int Id);
         Task<List<InsumoDTO>> ObtenerTodos();
         Task<bool> EditarMultiple(List<InsumoDTO> registros);
+        Task<bool> RemoverAutorizacionMultiple(List<InsumoDTO> registros);
         Task<bool> AutorizarMultiple(List<InsumoParaExplosionDTO> registros);
         Task<bool> AutorizarMultipleXPU(List<PrecioUnitarioDetalleDTO> registros);
 

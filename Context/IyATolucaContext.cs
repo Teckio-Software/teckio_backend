@@ -2,6 +2,7 @@
 using ERP_TECKIO;
 using ERP_TECKIO.Modelos;
 using ERP_TECKIO.Modelos.Contabilidad;
+using ERP_TECKIO.Modelos.Documentacion;
 using ERP_TECKIO.Modelos.Facturacion;
 using ERP_TECKIO.Modelos.Facturaion;
 using ERP_TECKIO.Modelos.Presupuesto;
@@ -173,10 +174,20 @@ public partial class IyATolucaContext : DbContext
     public virtual DbSet<Imagen> Imagens { get; set; }
     public virtual DbSet<ParametrosImpresionPu> ParametrosImpresionPus { get; set; }
 
+    public virtual DbSet<Glosario> Glosarios { get; set; }
+
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Glosario>(entity => 
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Glosario__3214EC07C4B34A63");
+            entity.ToTable("Glosario");
+            entity.Property(e => e.Termino).HasMaxLength(50);
+            entity.Property(e => e.Definicion).HasMaxLength(2500);
+        });
+
         modelBuilder.Entity<ParametrosFsr>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Parametr__3214EC0730D8920B");
@@ -1202,6 +1213,8 @@ public partial class IyATolucaContext : DbContext
             entity.ToTable("Contrato");
 
             entity.Property(e => e.CostoDestajo).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Anticipo).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Iva).HasColumnType("decimal(28, 6)");
             entity.Property(e => e.FechaRegistro).HasColumnType("datetime");
 
 

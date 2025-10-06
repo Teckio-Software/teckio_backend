@@ -203,6 +203,18 @@ namespace ERP_TECKIO.Servicios
             return await _Repositorio.EditarMultiple(insumos);
         }
 
+        public async Task<bool> RemoverAutorizacionMultiple(List<InsumoDTO> registros)
+        {
+            var insumos = new List<Insumo>();
+            foreach (var insumo in registros)
+            {
+                var objetoEncontrado = await _Repositorio.Obtener(z => z.Id == insumo.id);
+                objetoEncontrado.EsAutorizado = false;
+                insumos.Add(objetoEncontrado);
+            }
+            return await _Repositorio.EditarMultiple(insumos);
+        }
+
         public async Task<bool> AutorizarMultipleXPU(List<PrecioUnitarioDetalleDTO> registros)
         {
             var insumos = new List<Insumo>();

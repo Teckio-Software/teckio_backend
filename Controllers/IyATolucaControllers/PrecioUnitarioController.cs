@@ -75,6 +75,12 @@ namespace ERP_TECKIO
             await _precioUnitarioProceso.AutorizarPresupuesto(IdProyecto);
         }
 
+        [HttpGet("RemoverAutorizacionPresupuesto/{IdProyecto:int}")]
+        public async Task<ActionResult<RespuestaDTO>> removerAutorizacionPresupuesto(int IdProyecto) {
+            var respuesta = await _precioUnitarioProceso.RemoverAutorizacionPresupuesto(IdProyecto);
+            return respuesta;
+        }
+
         [HttpPost("AutorizarXPrecioUnitario")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]//, Policy = "EditarPrecioUnitario-Empresa2")]
         public async Task AutorizarXPrecioUnitario(PrecioUnitarioDTO partida)
