@@ -138,26 +138,27 @@ namespace ERP_TECKIO
                 }
                 listaFiltrada[i].DescripcionTipoInsumo = tipo.Descripcion;
             }
-            var listaPrioridad = new List<string> { "mano de obra", "(%)mo", "material", "herramienta", "equipo", "auxiliar", "compuesto", "costo horario" };
-            var ordenPrioritario = new Dictionary<int, int>();
-            for(int i = 0; i< listaPrioridad.Count; i++)
-            {
-                var tipoInsumo = tiposInsumo.Find(t => t.Descripcion.ToLower().Equals(listaPrioridad[i]));
-                if (tipoInsumo != null && tipoInsumo.Id > 0)
-                {
-                    ordenPrioritario.Add(tipoInsumo.Id, (i + 1));
-                }
-            }
+            //var listaPrioridad = new List<string> { "mano de obra", "(%)mo", "material", "herramienta", "equipo", "auxiliar", "compuesto", "costo horario" };
+            var ordenPrioritario = new Dictionary<int, int>
+            //for(int i = 0; i< listaPrioridad.Count; i++)
             //{
-            //    { 10000, 1 }, // 1er grupo: 'Mano de obra'
-            //    { 10001, 2 }, // 2do grupo: 'Cuadrilla / (%)mo'
-            //    { 10004, 3 },  // 3er grupo: 'Material'
-            //    { 10002, 4 }, //Herramienta
-            //    { 10003, 5 }, //Equipo
-            //    { 10005, 6 }, //Auxiliar
-            //    { 10006, 7 }, //Compuesto
-            //    { 10007, 8 }, //Costo horario
-            //};
+            //    var tipoInsumo = tiposInsumo.Find(t => t.Descripcion.ToLower().Equals(listaPrioridad[i]));
+            //    if (tipoInsumo != null && tipoInsumo.Id > 0)
+            //    {
+            //        ordenPrioritario.Add(tipoInsumo.Id, (i + 1));
+            //    }
+            //}
+            {
+                { 10000, 1 }, // 1er grupo: 'Mano de obra'
+                { 10001, 2 }, // 2do grupo: 'Cuadrilla / (%)mo'
+                { 10004, 3 },  // 3er grupo: 'Material'
+                { 10002, 4 }, //Herramienta
+                { 10003, 5 }, //Equipo
+                { 10005, 6 }, //Auxiliar
+                { 10006, 7 }, //Compuesto
+                { 10007, 8 }, //Costo horario
+            }
+            ;
             listaFiltrada = listaFiltrada.OrderBy(i =>
             {
                 if (ordenPrioritario.TryGetValue(i.idTipoInsumo, out int prioridad))

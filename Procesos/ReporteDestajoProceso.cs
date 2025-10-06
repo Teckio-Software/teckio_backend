@@ -70,15 +70,15 @@ namespace ERP_TECKIO
                                         reporteDestajo[existeConcepto].IdContrato = DC.IdContrato;
                                         reporteDestajo[existeConcepto].PorcentajeDestajo += DC.PorcentajeDestajo; 
                                         reporteDestajo[existeConcepto].ImporteDestajo += DC.ImporteDestajo; 
-                                        reporteDestajo[existeConcepto].ImporteDestajoConFormato = String.Format("{0:#,##0.00}", reporteDestajo[existeConcepto].ImporteDestajo);
+                                        reporteDestajo[existeConcepto].ImporteDestajoConFormato = String.Format("${0:#,##0.00}", reporteDestajo[existeConcepto].ImporteDestajo);
                                         reporteDestajo[existeConcepto].Importe += importe;
-                                        reporteDestajo[existeConcepto].ImporteConFormato = String.Format("{0:#,##0.00}", reporteDestajo[existeConcepto].Importe);
+                                        reporteDestajo[existeConcepto].ImporteConFormato = String.Format("${0:#,##0.00}", reporteDestajo[existeConcepto].Importe);
                                     }
                                     if (parametrosBusqueda.IdPeriodoEstimacion == P.Id) {
                                         reporteDestajo[existeConcepto].PorcentajePago = (porcentajeE * reporteDestajo[existeConcepto].PorcentajeDestajo / 100);
-                                        reporteDestajo[existeConcepto].PorcentajePagoConFormato = String.Format("{0:#,##0.00}", reporteDestajo[existeConcepto].PorcentajePago);
+                                        reporteDestajo[existeConcepto].PorcentajePagoConFormato = String.Format("{0:#,##0.00}%", reporteDestajo[existeConcepto].PorcentajePago);
                                         reporteDestajo[existeConcepto].Acumulado = (PEAcumulado * reporteDestajo[existeConcepto].PorcentajeDestajo / 100);
-                                        reporteDestajo[existeConcepto].AcumuladoConFormato = String.Format("{0:#,##0.00}", reporteDestajo[existeConcepto].Acumulado);
+                                        reporteDestajo[existeConcepto].AcumuladoConFormato = String.Format("${0:#,##0.00}", reporteDestajo[existeConcepto].Acumulado);
                                     }
                                 }
                                 else
@@ -97,15 +97,15 @@ namespace ERP_TECKIO
                                                 Descripcion = PrecioUnitario[0].Descripcion,
                                                 PorcentajeDestajo = DC.PorcentajeDestajo,
                                                 PorcentajeEstimacion = porcentajeE,
-                                                porcentajeEstimacionConFormato = String.Format("{0:#,##0.00}", porcentajeE),
+                                                porcentajeEstimacionConFormato = String.Format("{0:#,##0.00}%", porcentajeE),
                                                 PorcentajePago = (porcentajeE * DC.PorcentajeDestajo / 100),
-                                                PorcentajePagoConFormato = String.Format("{0:#,##0.00}", (porcentajeE * DC.PorcentajeDestajo / 100)),
+                                                PorcentajePagoConFormato = String.Format("{0:#,##0.00}%", (porcentajeE * DC.PorcentajeDestajo / 100)),
                                                 Acumulado = porcentajeE * DC.PorcentajeDestajo / 100,
-                                                AcumuladoConFormato = String.Format("{0:#,##0.00}", porcentajeE * DC.PorcentajeDestajo / 100),
+                                                AcumuladoConFormato = String.Format("${0:#,##0.00}", porcentajeE * DC.PorcentajeDestajo / 100),
                                                 Importe = importe,
-                                                ImporteConFormato = String.Format("{0:#,##0.00}", importe),
+                                                ImporteConFormato = String.Format("${0:#,##0.00}", importe),
                                                 ImporteDestajo = DC.ImporteDestajo,
-                                                ImporteDestajoConFormato = String.Format("{0:#,##0.00}", DC.ImporteDestajo)
+                                                ImporteDestajoConFormato = String.Format("${0:#,##0.00}", DC.ImporteDestajo)
                                             });
                                             if (PEAcumulado != porcentajeE)
                                             {
@@ -113,7 +113,7 @@ namespace ERP_TECKIO
                                                 if (existeConceptoReciente >= 0)
                                                 {
                                                     reporteDestajo[existeConceptoReciente].Acumulado = (PEAcumulado * reporteDestajo[existeConceptoReciente].PorcentajeDestajo / 100);
-                                                    reporteDestajo[existeConceptoReciente].AcumuladoConFormato = String.Format("{0:#,##0.00}", reporteDestajo[existeConceptoReciente].Acumulado);
+                                                    reporteDestajo[existeConceptoReciente].AcumuladoConFormato = String.Format("${0:#,##0.00}", reporteDestajo[existeConceptoReciente].Acumulado);
                                                 }
                                             }
                                         }
@@ -153,13 +153,13 @@ namespace ERP_TECKIO
                                     PorcentajeEstimacion = porcentajeE,
                                     porcentajeEstimacionConFormato = String.Format("{0:#,##0.00}", porcentajeE),
                                     Importe = importe,
-                                    ImporteConFormato = String.Format("{0:#,##0.00}", importe),
+                                    ImporteConFormato = String.Format("${0:#,##0.00}", importe),
                                     PorcentajePago = (porcentajeE * DC.PorcentajeDestajo / 100),
-                                    PorcentajePagoConFormato = String.Format("{0:#,##0.00}", (porcentajeE * DC.PorcentajeDestajo / 100)),
+                                    PorcentajePagoConFormato = String.Format("{0:#,##0.00}%", (porcentajeE * DC.PorcentajeDestajo / 100)),
                                     Acumulado = PEAcumulado,
-                                    AcumuladoConFormato = String.Format("{0:#,##0.00}", PEAcumulado),
+                                    AcumuladoConFormato = String.Format("${0:#,##0.00}", PEAcumulado),
                                     ImporteDestajo = DC.ImporteDestajo,
-                                    ImporteDestajoConFormato = String.Format("{0:#,##0.00}", DC.ImporteDestajo)
+                                    ImporteDestajoConFormato = String.Format("${0:#,##0.00}", DC.ImporteDestajo)
                                 });
                             }
                         }
@@ -170,7 +170,7 @@ namespace ERP_TECKIO
                                 if (existeConcepto >= 0)
                                 {
                                     reporteDestajo[existeConcepto].Acumulado = PEAcumulado;
-                                    reporteDestajo[existeConcepto].AcumuladoConFormato = String.Format("{0:#,##0.00}", PEAcumulado);
+                                    reporteDestajo[existeConcepto].AcumuladoConFormato = String.Format("${0:#,##0.00}", PEAcumulado);
                                 }
                             }
                         }
@@ -256,12 +256,12 @@ namespace ERP_TECKIO
                     {
                         Id = objetoAcumulado.destajos[i].IdPrecioUnitario,
                         Importe = porcentajeEstimacion == 0 ? 0 : porcentajeEstimacion / 100 * objetoAcumulado.destajos[i].ImporteDestajo,
-                        ImporteConFormato = String.Format("{0:#,##0.00}", porcentajeEstimacion == 0 ? 0 : porcentajeEstimacion / 100 * objetoAcumulado.destajos[i].ImporteDestajo),
+                        ImporteConFormato = String.Format("${0:#,##0.00}", porcentajeEstimacion == 0 ? 0 : porcentajeEstimacion / 100 * objetoAcumulado.destajos[i].ImporteDestajo),
                         Avance = porcentajeEstimacion == 0 ? 0 : porcentajeEstimacion * objetoAcumulado.destajos[i].PorcentajeDestajo / 100,
-                        AvanceConFormato = String.Format("{0:#,##0.00}", porcentajeEstimacion == 0 ? 0 : porcentajeEstimacion * objetoAcumulado.destajos[i].PorcentajeDestajo / 100),
+                        AvanceConFormato = String.Format("${0:#,##0.00}", porcentajeEstimacion == 0 ? 0 : porcentajeEstimacion * objetoAcumulado.destajos[i].PorcentajeDestajo / 100),
                     });
                     objetoAcumulado.destajos[i].Importe += porcentajeEstimacion == 0 ? 0 : porcentajeEstimacion / 100 * objetoAcumulado.destajos[i].ImporteDestajo;
-                    objetoAcumulado.destajos[i].ImporteConFormato = String.Format("{0:#,##0.00}", objetoAcumulado.destajos[i].Importe);
+                    objetoAcumulado.destajos[i].ImporteConFormato = String.Format("${0:#,##0.00}", objetoAcumulado.destajos[i].Importe);
                 }
                 var peridoTotal = detalles.Sum(z => z.Importe);
                 if (peridoTotal <= 0) {
@@ -375,9 +375,9 @@ namespace ERP_TECKIO
                                 {
                                     IdContratista = contratista.Id,
                                     Importe = 0,
-                                    ImporteConFormato = String.Format("{0:#,##0.00}", 0),
+                                    ImporteConFormato = String.Format("${0:#,##0.00}", 0),
                                     Avance = 0,
-                                    AvanceConFormato = String.Format("{0:#,##0.00}", 0)
+                                    AvanceConFormato = String.Format("${0:#,##0.00}", 0)
                                 });
                             }
                             
@@ -389,23 +389,23 @@ namespace ERP_TECKIO
                                     if (existeTotal >= 0)
                                     {
                                         per.totales[existeTotal].Importe += perAcu.detalles.Sum(z => z.Importe);
-                                        per.totales[existeTotal].ImporteConFormato = String.Format("{0:#,##0.00}", per.totales[existeTotal].Importe);
+                                        per.totales[existeTotal].ImporteConFormato = String.Format("${0:#,##0.00}", per.totales[existeTotal].Importe);
                                         per.totales[existeTotal].Avance += perAcu.detalles.Sum(z => z.Avance);
-                                        per.totales[existeTotal].AvanceConFormato = String.Format("{0:#,##0.00}", per.totales[existeTotal].Avance);
+                                        per.totales[existeTotal].AvanceConFormato = String.Format("${0:#,##0.00}", per.totales[existeTotal].Avance);
                                         objetoDestajoTotal.contratistas[indice].Importe += perAcu.detalles.Sum(z => z.Importe);
-                                        objetoDestajoTotal.contratistas[indice].ImporteConFormato = String.Format("{0:#,##0.00}", objetoDestajoTotal.contratistas[indice].Importe);
+                                        objetoDestajoTotal.contratistas[indice].ImporteConFormato = String.Format("${0:#,##0.00}", objetoDestajoTotal.contratistas[indice].Importe);
                                     }
                                     else
                                     {
                                         objetoDestajoTotal.contratistas[indice].Importe += perAcu.detalles.Sum(z => z.Importe);
-                                        objetoDestajoTotal.contratistas[indice].ImporteConFormato = String.Format("{0:#,##0.00}", objetoDestajoTotal.contratistas[indice].Importe);
+                                        objetoDestajoTotal.contratistas[indice].ImporteConFormato = String.Format("${0:#,##0.00}", objetoDestajoTotal.contratistas[indice].Importe);
                                         per.totales.Add(new TotalesDTO()
                                         {
                                             IdContratista = contratista.Id,
                                             Importe = perAcu.detalles.Sum(z => z.Importe),
-                                            ImporteConFormato = String.Format("{0:#,##0.00}", perAcu.detalles.Sum(z => z.Importe)),
+                                            ImporteConFormato = String.Format("${0:#,##0.00}", perAcu.detalles.Sum(z => z.Importe)),
                                             Avance = perAcu.detalles.Sum(z => z.Avance),
-                                            AvanceConFormato = String.Format("{0:#,##0.00}", perAcu.detalles.Sum(z => z.Avance))
+                                            AvanceConFormato = String.Format("$0:#,##0.00}", perAcu.detalles.Sum(z => z.Avance))
                                         });
                                     }
                                 }

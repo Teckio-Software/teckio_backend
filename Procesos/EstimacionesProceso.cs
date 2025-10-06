@@ -66,7 +66,7 @@ namespace ERP_TECKIO
                     Importe = importe,
                     ImporteConFormato = String.Format("${0:#,##0.00}", importe),
                     Avance = avance,
-                    AvanceConFormato = String.Format("{0:#,##0.00}", avance)
+                    AvanceConFormato = String.Format("${0:#,##0.00}", avance)
                 }); 
             }
             return listPeridos;
