@@ -1025,7 +1025,23 @@ namespace ERP_TECKIO
                         InvalidezVida = 0,
                         Retiro = 0,
                         PrestaconSocial = 0,
-                        Infonavit = 0
+                        Infonavit = 0,
+                        CostoBaseConFormato = String.Format("${0:#,##0.00}", insumoFiltrados[y].CostoBase),
+                        CostoUnitarioConFormato = String.Format("${0:#,##0.00}", insumoFiltrados[y].CostoUnitario),
+                        SBCFormato = String.Format("${0:#,##0.00}", 0),
+                        RiesgoTrabajoConFormato = String.Format("${0:#,##0.00}", 0),
+                        CuotaFijaFormato = String.Format("${0:#,##0.00}", 0),
+                        AplicacionExcedenteConFormato = String.Format("${0:#,##0.00}", 0),
+                        PrestacionDineroConFormato = String.Format("${0:#,##0.00}", 0),
+                        GastoMedicoConFormato = String.Format("${0:#,##0.00}", 0),
+                        InvalidezVidaConFormato = String.Format("${0:#,##0.00}", 0),
+                        RetiroConFormato = String.Format("${0:#,##0.00}", 0),
+                        CesantiaConFormato = String.Format("${0:#,##0.00}", 0),
+                        PrestacionSocialConFormato = String.Format("${0:#,##0.00}", 0),
+                        InfonavitConFormato = String.Format("${0:#,##0.00}", 0),
+                        SumaDePrestacionesConFormato = String.Format("${0:#,##0.00}", 0),
+                        SPSBCConFormato = String.Format("${0:#,##0.00}", 0),
+                        FSRConFormato = String.Format("${0:#,##0.00}", 0),
                     });
                 }
             }
@@ -1055,7 +1071,23 @@ namespace ERP_TECKIO
                             InvalidezVida = 0,
                             Retiro = 0,
                             PrestaconSocial = 0,
-                            Infonavit = 0
+                            Infonavit = 0,
+                            CostoBaseConFormato = String.Format("${0:#,##0.00}", insumoFiltrados[y].CostoBase),
+                            CostoUnitarioConFormato = String.Format("${0:#,##0.00}", insumoFiltrados[y].CostoUnitario),
+                            SBCFormato = String.Format("${0:#,##0.00}", 0),
+                            RiesgoTrabajoConFormato = String.Format("${0:#,##0.00}", 0),
+                            CuotaFijaFormato = String.Format("${0:#,##0.00}", 0),
+                            AplicacionExcedenteConFormato = String.Format("${0:#,##0.00}", 0),
+                            PrestacionDineroConFormato = String.Format("${0:#,##0.00}", 0),
+                            GastoMedicoConFormato = String.Format("${0:#,##0.00}", 0),
+                            InvalidezVidaConFormato = String.Format("${0:#,##0.00}", 0),
+                            RetiroConFormato = String.Format("${0:#,##0.00}", 0),
+                            CesantiaConFormato = String.Format("${0:#,##0.00}", 0),
+                            PrestacionSocialConFormato = String.Format("${0:#,##0.00}", 0),
+                            InfonavitConFormato = String.Format("${0:#,##0.00}", 0),
+                            SumaDePrestacionesConFormato = String.Format("${0:#,##0.00}", 0),
+                            SPSBCConFormato = String.Format("${0:#,##0.00}", 0),
+                            FSRConFormato = String.Format("${0:#,##0.00}", 0),
                         });
                     }
                 }
