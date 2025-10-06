@@ -18,10 +18,11 @@ namespace ERP_TECKIO.Controllers.DemoTeckioAL24
             _proceso = proceso;
         }
 
-        [HttpGet("obtenerXId/{id:int}")]
-        public async Task<ActionResult<ImagenDTO>> ObtenerXId(int id)
+        [HttpGet("obtenerseleccionada")]
+        public async Task<ActionResult<ImagenDTO>> ObtenerXId()
         {
-            var resultado = await _proceso.ObtenerXId(id);
+            var authen = HttpContext.User;
+            var resultado = await _proceso.ObtenerSeleccionada(authen.Claims.ToList());
             return resultado;
         }
     }

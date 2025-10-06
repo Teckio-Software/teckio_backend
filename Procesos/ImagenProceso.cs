@@ -10,18 +10,74 @@ namespace ERP_TECKIO.Procesos
     {
         private readonly IConfiguration _Configuration;
         private readonly IImagenService<TContext> _ImagenService;
+        private readonly LogProcess _logProcess;
 
         public ImagenProceso(
             IConfiguration configuration,
-            IImagenService<TContext> imagenService
+            IImagenService<TContext> imagenService,
+            LogProcess logProcess
             )
         {
             _Configuration = configuration;
             _ImagenService = imagenService;
+            _logProcess = logProcess;
         }
 
-        public async Task<int> GuardarImagen(IFormFile archivo)
+        public async Task<RespuestaDTO> SeleccionaImagen(int id, List<System.Security.Claims.Claim> claims)
         {
+            RespuestaDTO respuesta = new RespuestaDTO();
+            var IdUsStr = claims.Where(z => z.Type == "idUsuario").ToList();
+            string metodo = "ObtenerSeleccionada";
+            if (IdUsStr[0].Value == null)
+            {
+                respuesta.Descripcion = "La información del usuario es inconsistente";
+                respuesta.Estatus = false;
+                return respuesta;
+            }
+            int IdUsuario = int.Parse(IdUsStr[0].Value);
+            try
+            {
+                var imagen = await _ImagenService.Obtener(id);
+                var imagenSeleccionada = await _ImagenService.ObtenerTodos();
+                imagenSeleccionada = imagenSeleccionada.Where(i => i.Seleccionado).ToList();
+                foreach (var img in imagenSeleccionada)
+                {
+                    img.Seleccionado = false;
+                    await _ImagenService.Editar(img);
+                }
+                imagen.Seleccionado = true;
+                respuesta = await _ImagenService.Editar(imagen);
+                if (respuesta.Estatus)
+                {
+                    await _logProcess.RegistrarLog(NivelesLog.Critical, metodo, "Imagen seleccionada exitosamente", "", IdUsuario, 1);
+                    respuesta.Descripcion = "Imagen seleccionada exitosamente";
+                }
+                else
+                {
+                    await _logProcess.RegistrarLog(NivelesLog.Error, metodo, "Ocurrió un error al intentar seleccionar la imagen", "", IdUsuario, 1);
+                    respuesta.Descripcion = "Ocurrió un error al intentar seleccionar la imagen";
+                }
+
+                return respuesta;
+            }
+            catch
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Ocurrió un error al intentar seleccionar la imagen";
+                await _logProcess.RegistrarLog(NivelesLog.Critical, metodo, "Ocurrió un error al intentar seleccionar la imagen", "", IdUsuario, 1);
+                return respuesta;
+            }
+        }
+
+        public async Task<int> GuardarImagen(IFormFile archivo, List<System.Security.Claims.Claim> claims)
+        {
+            var IdUsStr = claims.Where(z => z.Type == "idUsuario").ToList();
+            string metodo = "ObtenerSeleccionada";
+            if (IdUsStr[0].Value == null)
+            {
+                return 0;
+            }
+            int IdUsuario = int.Parse(IdUsStr[0].Value);
             try
             {
                 //Obtiene la ruta base para guardar las imagenes
@@ -33,7 +89,7 @@ namespace ERP_TECKIO.Procesos
                 var fecha = DateTime.Now;
                 var mes = fecha.ToString("MMMM", new System.Globalization.CultureInfo("es-ES"));
                 //Obtiene el nombre del archivo
-                var nombreArchivo = archivo.FileName;
+                var nombreArchivo = DateTime.Now.Millisecond+archivo.FileName;
                 //Genera la ruta compuesta
                 var rutaCompuesta = Path.Combine(ruta, fecha.Year.ToString(), mes, fecha.Day.ToString());
                 //Comprueba si la ruta existe, si no existe la crea
@@ -57,9 +113,9 @@ namespace ERP_TECKIO.Procesos
                     {
                         //Lee el archivo y lo guarda en la ruta final
                         await archivo.CopyToAsync(memoryStream);
-                        var contenIdo = memoryStream.ToArray();
-                        pesoBytes = contenIdo.Length;
-                        await File.WriteAllBytesAsync(ruta, contenIdo);
+                        var contenido = memoryStream.ToArray();
+                        pesoBytes = contenido.Length;
+                        await File.WriteAllBytesAsync(rutaFinal, contenido);
                     }
                     catch
                     {
@@ -72,15 +128,18 @@ namespace ERP_TECKIO.Procesos
                 try
                 {
                     var resultado = await _ImagenService.CrearYObtener(imagen);
-                    return imagen.Id;
+                    await _logProcess.RegistrarLog(NivelesLog.Info, metodo, "Imagen creada exitosamente", "", IdUsuario, 1);
+                    return resultado.Id;
                 }
                 catch
                 {
+                    await _logProcess.RegistrarLog(NivelesLog.Error, metodo, "Ocurrió un error al intentar crear un registro para la imagen", "", IdUsuario, 1);
                     return 0;
                 }
             }
             catch
             {
+                await _logProcess.RegistrarLog(NivelesLog.Critical, metodo, "Ocurrió un error al intentar subir la imagen", "", IdUsuario, 1);
                 return 0;
             }
         }
@@ -190,21 +249,38 @@ namespace ERP_TECKIO.Procesos
 
         }
 
-        public async Task<ImagenDTO> ObtenerXId(int id)
+        public async Task<ImagenDTO> ObtenerSeleccionada(List<System.Security.Claims.Claim> claims)
         {
+            var IdUsStr = claims.Where(z => z.Type == "idUsuario").ToList();
+            string metodo = "ObtenerSeleccionada";
+            if (IdUsStr[0].Value == null)
+            {
+                return new ImagenDTO();
+            }
+            int IdUsuario = int.Parse(IdUsStr[0].Value);
             try
             {
-                var imagen = await _ImagenService.Obtener(id);
+                var imagenes = await _ImagenService.ObtenerTodos();
+                var imagen = imagenes.Where(i => i.Seleccionado).FirstOrDefault();
+                if (imagen == null)
+                {
+                    return new ImagenDTO();
+                }
                 byte[] bytesImagen = File.ReadAllBytes(imagen.Ruta);
                 if (bytesImagen.Length <= 0)
                 {
                     return new ImagenDTO();
                 }
                 imagen.Base64 = Convert.ToBase64String(bytesImagen);
+                if (imagen.Id > 0)
+                {
+                    await _logProcess.RegistrarLog(NivelesLog.Info, metodo, "Imagen "+imagen.Id+" consultada exitosamente", "", IdUsuario, 1);
+                }
                 return imagen;
             }
             catch
             {
+                await _logProcess.RegistrarLog(NivelesLog.Critical, metodo, "Ocurrió un error al intentar consultar la imagen", "", IdUsuario, 1);
                 return new ImagenDTO();
             }
         }

@@ -199,6 +199,7 @@ namespace ERP_TECKIO
 
             //documentacion
             services.AddScoped(typeof(IGlosarioService<>), typeof(GlosarioService<>));
+            services.AddScoped(typeof(LogProcess));
         }
     }
 }

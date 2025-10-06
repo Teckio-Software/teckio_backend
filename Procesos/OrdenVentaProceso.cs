@@ -19,6 +19,7 @@ namespace ERP_TECKIO.Procesos
         private readonly IFacturaService<T> _facturaService;
         private readonly IFacturaDetalleService<T> _detalleFacturaService;
         private readonly IProductoYservicioService<T> _productoYservicioService;
+        private readonly LogProcess _logProcess;
 
         public OrdenVentaProceso(
             IOrdenVentaService<T> ordenVentaService,
@@ -29,7 +30,8 @@ namespace ERP_TECKIO.Procesos
             EntradaProduccionAlmacenProceso<T> entradaProduccionAlmacenProceso,
             IFacturaService<T> facturaService,
             IFacturaDetalleService<T> detalleFacturaService,
-            IProductoYservicioService<T> productoYservicioService
+            IProductoYservicioService<T> productoYservicioService,
+            LogProcess logProcess
             ) { 
             _ordenVentaService = ordenVentaService;
             _detalleOrdenVentaService = detalleOrdenVentaService;
@@ -40,6 +42,7 @@ namespace ERP_TECKIO.Procesos
             _facturaService = facturaService;
             _detalleFacturaService = detalleFacturaService;
             _productoYservicioService = productoYservicioService;
+            _logProcess = logProcess;
         }
 
         public async Task<OrdenVentaDTO> obtenerOrdenVentaXId(int IdOrdenVenta) {
@@ -62,9 +65,20 @@ namespace ERP_TECKIO.Procesos
         }
 
         public async Task<RespuestaDTO> CrearOrdenVenta(OrdenVentaDTO ordenVenta, List<System.Security.Claims.Claim> claims) { 
+
+            
             var respuesta = new RespuestaDTO();
 
             var usuarioNombre = claims.Where(z => z.Type == "username").ToList();
+            var IdUsStr = claims.Where(z => z.Type == "idUsuario").ToList();
+            string metodo = "CrearOrdenVenta";
+            if (IdUsStr[0].Value == null)
+            {
+                respuesta.Descripcion = "La información del usuario es inconsistente";
+                respuesta.Estatus = false;
+                return respuesta;
+            }
+            int IdUsuario = int.Parse(IdUsStr[0].Value);
             var ordenesVenta = await _ordenVentaService.ObtenerTodos();
 
             //OV (Probablemente el nombre de la empresa) + El Mes + EL número de factura.
@@ -106,6 +120,7 @@ namespace ERP_TECKIO.Procesos
             if (nuevaOrdenVenta.Id <= 0) {
                 respuesta.Estatus = false;
                 respuesta.Descripcion = "No se generó la orden de venta";
+                await _logProcess.RegistrarLog(NivelesLog.Error, metodo, "No se generó la orden de venta", "", IdUsuario, 1);
                 return respuesta;
             }
 
@@ -126,6 +141,7 @@ namespace ERP_TECKIO.Procesos
 
             respuesta.Estatus = true;
             respuesta.Descripcion = "Se generó la orden de venta";
+            await _logProcess.RegistrarLog(NivelesLog.Info, metodo, "Se generó la orden de venta", "", IdUsuario, 1);
             return respuesta;
         }
 

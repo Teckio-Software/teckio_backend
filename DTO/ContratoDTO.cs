@@ -27,6 +27,11 @@ namespace ERP_TECKIO
         public DateTime? FechaRegistro { get; set; }
 
         public string NumeroDestajoDescripcion { get; set; }
+        public decimal Anticipo { get; set; }
+        public string AnticipoConFormato { get; set; }
+        public decimal Iva { get; set; }
+        public string IvaConFormato { get; set; }
+        public decimal ImporteTotalConFormato { get; set; }
     }
 
     public class ParametrosParaBuscarContratos {

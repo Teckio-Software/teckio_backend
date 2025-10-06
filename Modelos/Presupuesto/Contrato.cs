@@ -18,6 +18,8 @@ namespace ERP_TECKIO.Modelos
         public int IdContratista { get; set; }
 
         public DateTime? FechaRegistro { get; set; }
+        public decimal Anticipo { get; set; }
+        public decimal Iva { get; set; }
 
         public virtual Proyecto IdProyectoNavigation { get; set; } = null!;
         public virtual Contratista IdContratistaNavigation { get; set; } = null!;

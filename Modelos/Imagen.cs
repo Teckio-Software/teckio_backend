@@ -10,5 +10,7 @@
 
         public string Ruta { get; set; } = null!;
 
+        public bool Seleccionado { get; set; }
+
     }
 }
