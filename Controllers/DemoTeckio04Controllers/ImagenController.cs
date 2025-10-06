@@ -27,7 +27,7 @@ namespace ERP_TECKIO.Controllers.DemoTeckioAL04
         }
 
         [HttpPost("CargarImagen")]
-        public async Task<ActionResult<int>> cargarImagen(IFormFile file)
+        public async Task<ActionResult<RespuestaDTO>> cargarImagen(IFormFile file)
         {
             var authen = HttpContext.User;
             var resultado = await _proceso.GuardarImagen(file, authen.Claims.ToList());

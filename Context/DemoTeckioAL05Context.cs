@@ -2342,6 +2342,7 @@ public partial class DemoTeckioAL05Context : DbContext
             entity.ToTable("Imagen");
 
             entity.Property(e => e.Ruta).HasMaxLength(1000);
+            entity.Property(e => e.Tipo).HasMaxLength(8);
         });
         modelBuilder.Entity<ParametrosImpresionPu>(entity =>
         {

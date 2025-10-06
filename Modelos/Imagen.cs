@@ -12,5 +12,7 @@
 
         public bool Seleccionado { get; set; }
 
+        public string? Tipo { get; set; }
+
     }
 }
