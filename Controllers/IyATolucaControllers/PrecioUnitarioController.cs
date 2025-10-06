@@ -155,6 +155,15 @@ namespace ERP_TECKIO
             return await _precioUnitarioProceso.ObtenerPrecioUnitarioCopia(IdProyecto);
         }
 
+        [HttpPost("ObtenerDetallesPorPUImpresion")]
+        public async Task<List<PrecioUnitarioDetalleDTO>> ObtenerDetallesPorPUImpresion(List<int> IdPreciosUnitarios)
+        {
+            var authen = HttpContext.User;
+            var resultado = await _precioUnitarioProceso.ObtenerDetallesPorPUImpresion(IdPreciosUnitarios, authen.Claims.ToList());
+            return resultado;
+        }
+
+
         [HttpPost("copiararmado")]
         public async Task<ActionResult<List<PrecioUnitarioDTO>>> CopiarArmado([FromBody] DatosParaCopiarArmadoDTO datos)
         {

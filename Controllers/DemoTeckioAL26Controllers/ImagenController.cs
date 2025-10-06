@@ -9,7 +9,7 @@ namespace ERP_TECKIO.Controllers.DemoTeckioAL26
     [Route("api/imagen/26")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class ImagenController: ControllerBase
+    public class ImagenController : ControllerBase
     {
         private readonly ImagenProceso<DemoTeckioAL26Context> _proceso;
 
@@ -18,10 +18,11 @@ namespace ERP_TECKIO.Controllers.DemoTeckioAL26
             _proceso = proceso;
         }
 
-        [HttpGet("obtenerXId/{id:int}")]
-        public async Task<ActionResult<ImagenDTO>> ObtenerXId(int id)
+        [HttpGet("obtenerseleccionada")]
+        public async Task<ActionResult<ImagenDTO>> ObtenerXId()
         {
-            var resultado = await _proceso.ObtenerXId(id);
+            var authen = HttpContext.User;
+            var resultado = await _proceso.ObtenerSeleccionada(authen.Claims.ToList());
             return resultado;
         }
     }

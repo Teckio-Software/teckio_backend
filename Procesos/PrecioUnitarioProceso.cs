@@ -1358,6 +1358,18 @@ for json path
             return listaFiltrada;
         }
 
+        public async Task<List<PrecioUnitarioDetalleDTO>> ObtenerDetallesPorPUImpresion(List<int> IdPreciosUnitarios, List<System.Security.Claims.Claim> claims)
+        {
+            var items = new List<PrecioUnitarioDetalleDTO>();
+            foreach(var id in IdPreciosUnitarios)
+            {
+                var lista = await ObtenerDetallesPorPU(id, _dbContex);
+                items.AddRange(lista);
+            }
+            return items;
+        }
+
+
         public async Task<List<PrecioUnitarioDetalleDTO>> ObtenerDetallesPorPU(int IdPrecioUnitario, DbContext db)
         {
             var items = db.Database.SqlQueryRaw<string>(""""
@@ -2290,7 +2302,9 @@ for json path
                             {
                                 var PrecioUnitario = await _PrecioUnitarioService.ObtenXId(detalle.IdPrecioUnitario);
                                 var iguales = await _PrecioUnitarioDetalleService.ObtenerTodosXIdPrecioUnitario(detalle.IdPrecioUnitario);
-                                iguales = iguales.Where(p => p.Codigo == detalle.Codigo).ToList();
+                                //Esta linea solia obtener todos los detalles con el mismo Id de insumo para eliminarlos
+                                //iguales = iguales.Where(p => p.Codigo == detalle.Codigo).ToList();
+                                iguales = iguales.Where(p => p.Id == Id).ToList();
                                 foreach(var det in iguales)
                                 {
                                     await _PrecioUnitarioDetalleService.Eliminar(det.Id);
@@ -2319,7 +2333,10 @@ for json path
                     foreach(var partida in registrosFiltrados)
                     {
                         var detalles = await ObtenerDetallesPorPU(partida.Id, db);
-                        var detEliminar = detalles.Where(z => z.IdInsumo == registro.IdInsumo && z.IdPrecioUnitarioDetallePerteneciente == 0).ToList();
+                        //Esta linea solia obtener todos los detalles con el mismo Id de insumo para eliminarlos
+                        //var detEliminar = detalles.Where(z => z.IdInsumo == registro.IdInsumo && z.IdPrecioUnitarioDetallePerteneciente == 0).ToList();
+                        //La nueva linea solo tiene en cuenta el Id de detalle más el 'IdPrecioUnitarioDetallePerteneciente'
+                        var detEliminar = detalles.Where(z => z.Id == Id && z.IdPrecioUnitarioDetallePerteneciente == 0).ToList();
                         foreach (var det in detEliminar) {
                             await _PrecioUnitarioDetalleService.Eliminar(det.Id);
                         }
