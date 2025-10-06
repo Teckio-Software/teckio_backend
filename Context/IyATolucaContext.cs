@@ -1202,6 +1202,8 @@ public partial class IyATolucaContext : DbContext
             entity.ToTable("Contrato");
 
             entity.Property(e => e.CostoDestajo).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Anticipo).HasColumnType("decimal(28, 6)");
+            entity.Property(e => e.Iva).HasColumnType("decimal(28, 6)");
             entity.Property(e => e.FechaRegistro).HasColumnType("datetime");
 
 
