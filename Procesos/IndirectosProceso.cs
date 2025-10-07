@@ -79,6 +79,10 @@ namespace ERP_TECKIO
             var indirectos = await _indirectosService.ObtenerXIdConjunto(conjunto.Id);
 
             indirectos = await ObtenerIndirectosConEstructura(indirectos);
+            foreach(var indirecto in indirectos)
+            {
+                indirecto.PorcentajeConFormato = String.Format("{0:#,##0.00}%", indirecto.Porcentaje);
+            }
 
             return indirectos;
         }
