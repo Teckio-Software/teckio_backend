@@ -53,6 +53,8 @@ namespace ERP_TECKIO.Servicios
                 objetoEncontrado.IdProyecto = modelo.IdProyecto;
                 objetoEncontrado.CostoDestajo = modelo.CostoDestajo;
                 objetoEncontrado.IdContratista = modelo.IdContratista;
+                objetoEncontrado.Anticipo = modelo.Anticipo;
+                objetoEncontrado.Iva= modelo.Iva;
                 respuesta.Estatus = await _Repositorio.Editar(objetoEncontrado);
                 if (!respuesta.Estatus)
                 {

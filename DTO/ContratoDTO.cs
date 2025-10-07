@@ -28,10 +28,12 @@ namespace ERP_TECKIO
 
         public string NumeroDestajoDescripcion { get; set; }
         public decimal Anticipo { get; set; }
+        public decimal ImporteAnticipo { get; set; }
         public string AnticipoConFormato { get; set; }
         public decimal Iva { get; set; }
         public string IvaConFormato { get; set; }
-        public decimal ImporteTotalConFormato { get; set; }
+        public decimal ImporteTotal { get; set; }
+        public string ImporteTotalConFormato { get; set; }
     }
 
     public class ParametrosParaBuscarContratos {
