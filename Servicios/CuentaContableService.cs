@@ -177,7 +177,7 @@ namespace ERP_TECKIO.Servicios
                         break;
                 }
 
-                CodigoPrimerCuenta = CodigoPrimerCuenta + "-0000-0000-0000-0000-0000-0000";
+                CodigoPrimerCuenta = CodigoPrimerCuenta + "-0000-0000-0000-0000";
                 var lista = await _Repositorio.ObtenerTodos(z => z.Codigo == CodigoPrimerCuenta);
                 if (lista.Count() > 0)
                 {
@@ -221,7 +221,9 @@ namespace ERP_TECKIO.Servicios
                     string[] codigoSplit = modelo.Codigo.Split('-');
                     codigoSplit[modelo.Nivel - 1] = digitosListaString;
                     CodigoPrimerCuenta = codigoSplit[0].ToString() + "-" + codigoSplit[1].ToString() + "-" + codigoSplit[2].ToString() + "-" +
-                        codigoSplit[3].ToString() + "-" + codigoSplit[4].ToString() + "-" + codigoSplit[5].ToString() + "-" + codigoSplit[6].ToString();
+                    codigoSplit[3].ToString() + "-" + codigoSplit[4].ToString();
+                    //+ "-" + codigoSplit[5].ToString() + "-" + codigoSplit[6].ToString();
+                    //CodigoPrimerCuenta = digitosListaString;
                 }
                 modelo.Codigo = CodigoPrimerCuenta;
                 var objetoCreado = await _Repositorio.Crear(_Mapper.Map<CuentaContable>(modelo));
