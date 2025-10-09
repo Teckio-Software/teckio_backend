@@ -40,7 +40,7 @@ namespace ERP_TECKIO
             var Periodos = await _periodoEstimacionesService.ObtenTodosXIdProyecto(parametrosBusqueda.IdProyecto);
             if (parametrosBusqueda.IdContrato == 0) {
                 var contratos = await _ContratoService.ObtenerRegistrosXIdProyecto(parametrosBusqueda.IdProyecto);
-                var contratosXContratista = contratos.Where(z => z.IdContratista == parametrosBusqueda.IdContratista).ToList();
+                var contratosXContratista = contratos.Where(z => z.IdContratista == parametrosBusqueda.IdContratista && z.TipoContrato == parametrosBusqueda.TipoContrato).ToList();
                 if (contratosXContratista.Count <= 0) {
                     return reporteDestajo;
                 }
@@ -202,7 +202,7 @@ namespace ERP_TECKIO
 
             if (parametros.IdContrato == 0) {
                 var contratos = await _ContratoService.ObtenerRegistrosXIdProyecto(parametros.IdProyecto);
-                var contratosXContratista = contratos.Where(z => z.IdContratista == parametros.IdContratista).ToList();
+                var contratosXContratista = contratos.Where(z => z.IdContratista == parametros.IdContratista && z.TipoContrato == parametros.TipoContrato).ToList();
                 if (contratosXContratista.Count() <= 0) {
                     return objetoAcumulado;
                 }
@@ -316,6 +316,7 @@ namespace ERP_TECKIO
             var objetoDestajoTotal = new ObjetoDestajoTotalDTO();
 
             var contratos = await _ContratoService.ObtenerRegistrosXIdProyecto(parametros.IdProyecto);
+            var contratoFiltrados = contratos.Where(z => z.TipoContrato == parametros.TipoContrato);
             var peridosEstimaciones = await _periodoEstimacionesService.ObtenTodosXIdProyecto(parametros.IdProyecto);
 
             if (parametros.FechaInicio != null && parametros.FechaFin != null) {
@@ -328,7 +329,7 @@ namespace ERP_TECKIO
                 return objetoDestajoTotal;
             }
 
-            if (contratos.Count() <= 0) {
+            if (contratoFiltrados.Count() <= 0) {
                 return objetoDestajoTotal;
             }
             else
@@ -344,7 +345,7 @@ namespace ERP_TECKIO
             var contratistas = await _contratistaService.ObtenTodos();
             var contratistaLista = new List<ContratistaDTO>();
 
-            foreach (var contrato in contratos) {
+            foreach (var contrato in contratoFiltrados) {
                 var existe = objetoDestajoTotal.contratistas.Count(z => z.Id == contrato.IdContratista);
                 if (existe <= 0) {
                     var contartista = contratistas.Where(z => z.Id == contrato.IdContratista).FirstOrDefault();
@@ -359,7 +360,7 @@ namespace ERP_TECKIO
             foreach (var contratista in contratistaLista) {
                 var indice = objetoDestajoTotal.contratistas.FindIndex(z => z.Id == contratista.Id);
 
-                var contratosXContratista = contratos.Where(z => z.IdContratista == contratista.Id);
+                var contratosXContratista = contratoFiltrados.Where(z => z.IdContratista == contratista.Id);
                 int existePeridos = 0;
                 foreach (var c in contratosXContratista) {
                     parametros.IdContrato = c.Id;
