@@ -308,6 +308,10 @@ namespace ERP_TECKIO
                     sumaPorcentaje = sumaPorcentaje + registrosHijos[i].PorcentajeAvance;
                 }
                 registroPadre.ImporteDeAvance = importe;
+                if(registroPadre.Importe == 0)
+                {
+                    return;
+                }
                 registroPadre.PorcentajeAvance = (importe / registroPadre.Importe) * 100;
                 var resultado = await _EstimacionService.Editar(registroPadre);
                 await RecalcularEstimacion(registroPadre);
