@@ -440,108 +440,112 @@ namespace ERP_TECKIO.Procesos.Facturacion
             return true;
         }
 
-        public async Task<RespuestaDTO> cargarFactura(List<IFormFile> archivos) {
+        public async Task<RespuestaDTO> cargarFacturas(List<IFormFile> archivos) {
             var respuesta = new RespuestaDTO();
             respuesta.Estatus = true;
             respuesta.Descripcion = "Se ha cargado correctamente la factura";
-            var xmls = archivos.FirstOrDefault(file => string.Equals(Path.GetExtension(file.FileName), ".xml", StringComparison.OrdinalIgnoreCase));
-            if (xmls == null)
+            var xmls = archivos.Where(file => string.Equals(Path.GetExtension(file.FileName), ".xml", StringComparison.OrdinalIgnoreCase));
+            if (xmls.Count() == 0)
             {
                 respuesta.Estatus = false;
                 respuesta.Descripcion = "No se han cargado comprobante";
                 return respuesta;
             }
 
-            var pdfs = archivos.FirstOrDefault(file => string.Equals(Path.GetExtension(file.FileName), ".pdf", StringComparison.OrdinalIgnoreCase));
+            //var pdfs = archivos.FirstOrDefault(file => string.Equals(Path.GetExtension(file.FileName), ".pdf", StringComparison.OrdinalIgnoreCase));
 
-            using (var memorystream = new MemoryStream())
-            {
-                await xmls.CopyToAsync(memorystream);
-                byte[] xmlFile = memorystream.ToArray();
-
-                XDocument documento = XDocument.Load(new MemoryStream(xmlFile), System.Xml.Linq.LoadOptions.None);
-
-                var ns = documento.Root.GetNamespaceOfPrefix("cfdi");
-                DateTime fechaValidacion = DateTime.Now;
-                var comprobante = documento.Descendants(ns + "Comprobante").FirstOrDefault();
-                var complemento = documento.Descendants(ns + "Complemento").FirstOrDefault();
-                var nodoTimbre = complemento.Elements().FirstOrDefault(e => e.Name.LocalName == "TimbreFiscalDigital");
-                XNamespace tfd = nodoTimbre.Name.Namespace;
-                var timbreFiscalDigital = complemento.Element(tfd + "TimbreFiscalDigital");
-                var uuid = timbreFiscalDigital.Attribute("UUID")?.Value;
-                var fechaTimbrado = timbreFiscalDigital.Attribute("FechaTimbrado")?.Value;
-
-                var numArchivos = await _ArchivoService.ObtenXContenido(uuid);
-                var numeroFacturas = numArchivos.Count() + 1;
-
-                var tipoComprobante = comprobante.Attribute("TipoDeComprobante")?.Value;
-                var facturaEmisor = documento.Descendants(ns + "Emisor").FirstOrDefault();
-                var facturaReceptor = documento.Descendants(ns + "Receptor").FirstOrDefault();
-                var descuento = documento.Descendants(ns + "Descuento").FirstOrDefault();
-
-                var resultadoRutaArchivo = await GuardarArchivoFactura(facturaReceptor.Attribute("Rfc")?.Value, facturaEmisor.Attribute("Rfc")?.Value,
-                fechaValidacion.Year.ToString(), fechaValidacion.Month.ToString(), uuid, numeroFacturas, xmls);
-                if (string.IsNullOrEmpty(resultadoRutaArchivo))
+            foreach (var xml in xmls) {
+                using (var memorystream = new MemoryStream())
                 {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "No se guardo el archivo";
-                    return respuesta;
+                    await xml.CopyToAsync(memorystream);
+                    byte[] xmlFile = memorystream.ToArray();
+
+                    XDocument documento = XDocument.Load(new MemoryStream(xmlFile), System.Xml.Linq.LoadOptions.None);
+
+                    var ns = documento.Root.GetNamespaceOfPrefix("cfdi");
+                    DateTime fechaValidacion = DateTime.Now;
+                    var comprobante = documento.Descendants(ns + "Comprobante").FirstOrDefault();
+                    var complemento = documento.Descendants(ns + "Complemento").FirstOrDefault();
+                    var nodoTimbre = complemento.Elements().FirstOrDefault(e => e.Name.LocalName == "TimbreFiscalDigital");
+                    XNamespace tfd = nodoTimbre.Name.Namespace;
+                    var timbreFiscalDigital = complemento.Element(tfd + "TimbreFiscalDigital");
+                    var uuid = timbreFiscalDigital.Attribute("UUID")?.Value;
+                    var fechaTimbrado = timbreFiscalDigital.Attribute("FechaTimbrado")?.Value;
+
+                    var numArchivos = await _ArchivoService.ObtenXContenido(uuid);
+                    var numeroFacturas = numArchivos.Count() + 1;
+
+                    var tipoComprobante = comprobante.Attribute("TipoDeComprobante")?.Value;
+                    var facturaEmisor = documento.Descendants(ns + "Emisor").FirstOrDefault();
+                    var facturaReceptor = documento.Descendants(ns + "Receptor").FirstOrDefault();
+                    var descuento = documento.Descendants(ns + "Descuento").FirstOrDefault();
+
+                    var resultadoRutaArchivo = await GuardarArchivoFactura(facturaReceptor.Attribute("Rfc")?.Value, facturaEmisor.Attribute("Rfc")?.Value,
+                    fechaValidacion.Year.ToString(), fechaValidacion.Month.ToString(), uuid, numeroFacturas, xml);
+                    if (string.IsNullOrEmpty(resultadoRutaArchivo))
+                    {
+                        respuesta.Estatus = false;
+                        respuesta.Descripcion = "No se guardo el archivo";
+                        return respuesta;
+                    }
+                    var extension = Path.GetExtension(xml.FileName);
+                    var nombreArchivo = $"{uuid}{extension}";
+                    var resultadoArchivoXml = await _ArchivoService.CrearYObtener(new ArchivoDTO()
+                    {
+                        Nombre = nombreArchivo,
+                        Ruta = resultadoRutaArchivo
+                    });
+                    if (resultadoArchivoXml.Id <= 0)
+                    {
+                        respuesta.Estatus = false;
+                        respuesta.Descripcion = "No se guardo el archivo";
+                        return respuesta;
+                    }
+                    int estatusFactura = 1;
+                    //if (nombreDocumento.EstatusFactura == "Vigente")
+                    //{
+                    //    estatusFactura = 1;
+                    //}
+                    //if (nombreDocumento.EstatusFactura == "Cancelada")
+                    //{
+                    //    estatusFactura = 2;
+                    //}
+                    //if (nombreDocumento.EstatusFactura == "Cancelación Rechazada")
+                    //{
+                    //    estatusFactura = 3;
+                    //}
+
+                    var registrarFactura = await RegistrarFactura(comprobante, ns, resultadoArchivoXml.Id, uuid, fechaValidacion, Convert.ToDateTime(fechaTimbrado),
+                        facturaEmisor, facturaReceptor, estatusFactura, descuento);
+
+                    if (registrarFactura.Id <= 0)
+                    {
+                        respuesta.Estatus = false;
+                        respuesta.Descripcion = "No se guardo la factura";
+                        return respuesta;
+                    }
+
+
+                    int IdFactura = registrarFactura.Id;
+
+                    var facturaDetalles = documento.Descendants(ns + "Conceptos").FirstOrDefault();
+                    await leerFacturaDetalle(facturaDetalles, ns, IdFactura);
+
+                    await leerFacturaEmisor(facturaEmisor, IdFactura);
+
+                    //await leerFacturaReceptor(facturaReceptor, IdFactura);
+
+                    var facturaImpuestos = documento.Descendants(ns + "Impuestos").FirstOrDefault();
+                    await leerFacturaImpuestos(facturaImpuestos, ns, IdFactura);
+
+                    var facturaComplementoPago = documento.Descendants(ns + "Complemento").FirstOrDefault();
+                    var nodoPagos = complemento.Elements().FirstOrDefault(e => e.Name.LocalName == "Pagos");
+                    XNamespace pago20 = nodoTimbre.Name.Namespace;
+                    await leerFacturaComplementoPago(facturaComplementoPago, pago20, IdFactura);
                 }
-                var extension = Path.GetExtension(xmls.FileName);
-                var nombreArchivo = $"{uuid}{extension}";
-                var resultadoArchivoXml = await _ArchivoService.CrearYObtener(new ArchivoDTO()
-                {
-                    Nombre = nombreArchivo,
-                    Ruta = resultadoRutaArchivo
-                });
-                if (resultadoArchivoXml.Id <= 0)
-                {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "No se guardo el archivo";
-                    return respuesta;
-                }
-                int estatusFactura = 1;
-                //if (nombreDocumento.EstatusFactura == "Vigente")
-                //{
-                //    estatusFactura = 1;
-                //}
-                //if (nombreDocumento.EstatusFactura == "Cancelada")
-                //{
-                //    estatusFactura = 2;
-                //}
-                //if (nombreDocumento.EstatusFactura == "Cancelación Rechazada")
-                //{
-                //    estatusFactura = 3;
-                //}
-
-                var registrarFactura = await RegistrarFactura(comprobante, ns, resultadoArchivoXml.Id, uuid, fechaValidacion, Convert.ToDateTime(fechaTimbrado),
-                    facturaEmisor, facturaReceptor, estatusFactura, descuento);
-
-                if (registrarFactura.Id <= 0)
-                {
-                    respuesta.Estatus = false;
-                    respuesta.Descripcion = "No se guardo la factura";
-                    return respuesta;
-                }
-
-
-                int IdFactura = registrarFactura.Id;
-
-                var facturaDetalles = documento.Descendants(ns + "Conceptos").FirstOrDefault();
-                await leerFacturaDetalle(facturaDetalles, ns, IdFactura);
-
-                await leerFacturaEmisor(facturaEmisor, IdFactura);
-
-                //await leerFacturaReceptor(facturaReceptor, IdFactura);
-
-                var facturaImpuestos = documento.Descendants(ns + "Impuestos").FirstOrDefault();
-                await leerFacturaImpuestos(facturaImpuestos, ns, IdFactura);
-
-                var facturaComplementoPago = documento.Descendants(ns + "Complemento").FirstOrDefault();
-                var nodoPagos = complemento.Elements().FirstOrDefault(e => e.Name.LocalName == "Pagos");
-                XNamespace pago20 = nodoTimbre.Name.Namespace;
-                await leerFacturaComplementoPago(facturaComplementoPago, pago20, IdFactura);
             }
+
+            
 
             return respuesta;
         }
