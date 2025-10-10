@@ -21,6 +21,7 @@ namespace ERP_TECKIO
         public string PorcentajePagoConFormato { get; set; }
         public decimal Acumulado { get; set; }
         public string AcumuladoConFormato { get; set; }
+        public bool TipoContrato { get; set; }
     }
 
     public class ObjetoDestajoacumuladoDTO

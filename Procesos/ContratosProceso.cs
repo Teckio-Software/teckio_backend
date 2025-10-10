@@ -69,6 +69,9 @@ namespace ERP_TECKIO
                 }
 
                 contratos.NumeroDestajoDescripcion = codigoProyecto + "_" + numeroDestajo + "_" + contratos.FechaRegistro.ToString();
+                contratos.AnticipoConFormato = "";
+                contratos.ImporteTotalConFormato = "";
+                contratos.IvaConFormato = "";
             }
 
             return ContratosFiltrados;
@@ -168,7 +171,7 @@ namespace ERP_TECKIO
                 Registro.Cantidad = PreciosUnitarios[i].Cantidad;
                 Registro.CantidadConFormato = String.Format("{0:#,##0.0000}", Registro.Cantidad);
                 Registro.Importe = PreciosUnitarios[i].Importe;
-                Registro.ImporteConFormato = String.Format("${0:#,##0.00}", Registro.Importe);
+                Registro.ImporteConFormato = String.Format("${0:#,##0.00}", Registro.Cantidad * Registro.CostoUnitario);
                 Registro.TipoPrecioUnitario = PreciosUnitarios[i].TipoPrecioUnitario;
                 Registro.IdContrato = idContrato;
                 Registro.IdPrecioUnitarioBase = PreciosUnitarios[i].IdPrecioUnitarioBase;
