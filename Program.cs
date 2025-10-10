@@ -125,15 +125,7 @@ builder.Services.AddSingleton(provIder =>
     {
         config.AddProfile(new AutoMapperProfile());
     }).CreateMapper());
-
-var origenesPermitidos =
-    builder.Configuration.GetSection("OrigenesPermitidos").Get<string[]>() ??
-    (builder.Configuration["OrigenesPermitidos"] ?? "")
-        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
-if (origenesPermitidos.Length == 0)
-    throw new InvalidOperationException("Falta 'OrigenesPermitidos' en configuración.");
-
+var origenesPermitidos = builder.Configuration.GetValue<string>("OrigenesPermitidos")!.Split(",");
 builder.Services.AddCors(zOptions =>
 {
     //var zvFrontEndUrl = builder.Configuration.GetValue<string>("FrontEnd_Url");
@@ -179,5 +171,7 @@ app.UseCors();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
+
 app.Run();

@@ -1,9 +1,0 @@
-bin
-obj
-.git
-.gitignore
-.vs
-.vscode
-.env
-*.user
-*.csproj.user
