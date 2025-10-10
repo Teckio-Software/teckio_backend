@@ -76,6 +76,8 @@ namespace ERP_TECKIO.Servicios
                     return respuesta;
                 }
                 objeto.Ruta = modelo.Ruta;
+                objeto.Seleccionado = modelo.Seleccionado;
+                objeto.Tipo = modelo.Tipo;
                 var resultado = await _Repository.Editar(objeto);
                 if (!resultado)
                 {

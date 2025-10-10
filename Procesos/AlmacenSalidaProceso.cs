@@ -370,7 +370,7 @@ namespace ERP_TECKIO
                 if (parametro.Insumos.Count <= 0 || parametro.IdAlmacenDestino<=0 || parametro.IdAlmacenOrigen <= 0)
                 {
                     respuesta.Estatus = false;
-                    respuesta.Descripcion = "No se puede realizar un transpaso sin insumos o sin seleccionar un almacen de destino";
+                    respuesta.Descripcion = "No se puede realizar un traspaso sin insumos o sin seleccionar un almacen de destino";
                     return respuesta;
                 }
                 
@@ -454,7 +454,7 @@ namespace ERP_TECKIO
                     {
                         IdInsumo = insumo.IdInsumo, 
                         IdAlmacenEntrada = parametro.IdAlmacenDestino,
-                        Descripcion = "Transpaso desde el almacen "+almacenDestInfo.AlmacenNombre,
+                        Descripcion = "Traspaso desde el almacén "+almacenDestInfo.AlmacenNombre,
                         Unidad = insumoObjeto.Unidad,
                         IdTipoInsumo = insumoObjeto.idTipoInsumo,
                         CantidadPorRecibir = insumo.CantidadExistencia,
@@ -482,7 +482,7 @@ namespace ERP_TECKIO
                 AlmacenSalidaCreacionDTO almacenSalida = new AlmacenSalidaCreacionDTO
                 {
                     IdAlmacen = parametro.IdAlmacenOrigen,
-                    Observaciones = "Transpaso al almacen "+almacenDestInfo.AlmacenNombre,
+                    Observaciones = "Traspaso al almacen "+almacenDestInfo.AlmacenNombre,
                     PersonaRecibio = usuarioNombre[0].Value,
                     IdProyecto = almacenOriInfo.IdProyecto,
                     EsBaja = false,
@@ -497,17 +497,17 @@ namespace ERP_TECKIO
                 {
                     IdAlmacen = parametro.IdAlmacenDestino,
                     IdContratista = null,
-                    Observaciones = "Transpaso desde almacen " + almacenOriInfo.AlmacenNombre,
+                    Observaciones = "Traspaso desde almacen " + almacenOriInfo.AlmacenNombre,
                     ListaInsumosEnAlmacenEntrada = insumosEntrada
                 };
                 respuesta = await _almacenEntradaProceso.CrearAjusteEntradaAlmacen1(almacenEntrada, claims);
                 if (respuesta.Estatus)
                 {
-                    respuesta.Descripcion = "Transpaso realizado exitosamente";
+                    respuesta.Descripcion = "Traspaso realizado exitosamente";
                 }
                 else
                 {
-                    respuesta.Descripcion = "Ocurrió un error al intentar crear el transpaso";
+                    respuesta.Descripcion = "Ocurrió un error al intentar crear el traspaso";
                 }
                 return respuesta;
 
@@ -515,7 +515,7 @@ namespace ERP_TECKIO
             catch
             {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "Ocurrió un error al intentar realizar el transpaso";
+                respuesta.Descripcion = "Ocurrió un error al intentar realizar el traspaso";
                 return respuesta;
             }
         }

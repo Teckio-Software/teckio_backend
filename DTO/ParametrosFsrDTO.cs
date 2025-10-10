@@ -18,5 +18,21 @@ namespace ERP_TECKIO.DTO
         public decimal SumaPrestaciones { get; set; }
         public decimal SumaSOBRECostoBase { get; set; }
         public decimal FsrInsumo { get; set; }
+        public string? CostoBaseConFormato { get; set; }
+        public string? CostoUnitarioConFormato { get; set; }
+        public string? SBCFormato { get; set; }
+        public string? RiesgoTrabajoConFormato { get; set; }
+        public string? CuotaFijaFormato { get; set; }
+        public string? AplicacionExcedenteConFormato { get; set; }
+        public string? PrestacionDineroConFormato { get; set; }
+        public string? GastoMedicoConFormato { get; set; }
+        public string? InvalidezVidaConFormato { get; set; }
+        public string? RetiroConFormato { get; set; }
+        public string? CesantiaConFormato { get; set; }
+        public string? PrestacionSocialConFormato { get; set; }
+        public string? InfonavitConFormato { get; set; }
+        public string? SumaDePrestacionesConFormato { get; set; }
+        public string? SPSBCConFormato { get; set; }
+        public string? FSRConFormato { get; set; }
     }
 }

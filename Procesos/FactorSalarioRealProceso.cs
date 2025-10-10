@@ -662,9 +662,15 @@ namespace ERP_TECKIO
         public async Task EliminarDiasFSI(int IdDetalleFSI)
         {
             var diaFSI = await _DiasConsideradosService.ObtenXId(IdDetalleFSI);
+            var FSI = await _FSIService.ObtenXId(diaFSI.IdFactorSalarioIntegrado);
+            var parametrosFsr = await _parametrosFsrService.ObtenerXIdProyecto(FSI.IdProyecto);
+            var diasFsi = await _DiasConsideradosService.ObtenerTodosXFSI(FSI.Id);
+            if (parametrosFsr.Id > 0 && diasFsi.Count<=1)
+            {
+                return;
+            }
             await _DiasConsideradosService.Eliminar(IdDetalleFSI);
             await RecalcularFSI(diaFSI.IdFactorSalarioIntegrado);
-            var FSI = await _FSIService.ObtenXId(diaFSI.IdFactorSalarioIntegrado);
             var ExisteFSR = await _FSRService.ObtenerTodosXProyecto(FSI.IdProyecto);
             if (ExisteFSR.Count > 0)
             {
@@ -745,6 +751,11 @@ namespace ERP_TECKIO
                     }
 
                     diasLaborales = 365 - diasNoLaborados;
+                    //Esta validación evita que el proyecto se detenga en el hipotetico caso de que la variable sea 0
+                    if(diasLaborales == 0)
+                    {
+                        return;
+                    }
                     decimal pagadosSOBREnolaborales = diasPagados / diasLaborales;
 
 
@@ -776,6 +787,11 @@ namespace ERP_TECKIO
                         }
                         else
                         {
+                            //Esta validación evita que el proyecto se detenga en el hipotetico caso de que la variable sea 0
+                            if (parametros.UMA == 0)
+                            {
+                                return;
+                            }
                             decimal rangoUma = insumoFiltrados[y].CostoBase / parametros.UMA;
                             var rangoActuales = pocentajesCesantia.Where(z => z.RangoUMA <= rangoUma);
                             var ordenado = rangoActuales.OrderByDescending(z => z.RangoUMA);
@@ -785,6 +801,12 @@ namespace ERP_TECKIO
                         }
 
                         decimal sumaPresataciones = riesgoTrabajo + cuotaFija + aplicacionExcedente + prestacionDinero + gastoMedico + invalidezVida + retiro + prestacionSocial + infinavit + cesantiaEdad;
+                        //Esta validación evita que el proyecto se detenga en el hipotetico caso de que la variable sea 0
+                        if (SalarioBaseCotizacion
+                            == 0)
+                        {
+                            return;
+                        }
                         decimal sumaSOBREcostoBase = sumaPresataciones / SalarioBaseCotizacion;
                         
                         decimal FsrInsumo = sumaSOBREcostoBase * pagadosSOBREnolaborales + pagadosSOBREnolaborales; 
@@ -805,7 +827,7 @@ namespace ERP_TECKIO
             var fsi = await _FSIService.ObtenerTodosXProyecto(parametrosFsr.IdProyecto);
             if (fsi.Count <= 0)
             {
-                resp.Descripcion = "No se encontró un factor salario integrado";
+                resp.Descripcion = "No se encontró un factor salario integrado.";
                 resp.Estatus = false;
                 return resp;
             }
@@ -813,14 +835,14 @@ namespace ERP_TECKIO
             var diasPagados = diasConsiderados.Where(z => z.EsLaborableOPagado == true).ToList();
             if (diasPagados.Count <= 0)
             {
-                resp.Descripcion = "No se encontró ningún día pagado";
+                resp.Descripcion = "No se encontró ningún día pagado.";
                 resp.Estatus = false;
                 return resp;
             }
             var respuesta = await _parametrosFsrService.Crear(parametrosFsr);
             if (!respuesta.Estatus)
             {
-                resp.Descripcion = "Ocurrió un error al intentar crear";
+                resp.Descripcion = "Ocurrió un error al intentar crear.";
                 resp.Estatus = false;
                 return resp;
             }
@@ -837,7 +859,7 @@ namespace ERP_TECKIO
                     await RecalcularFsrEsCompuesto(FSR);
                 }
             }
-            resp.Descripcion = "Parametros creados exitosamente";
+            resp.Descripcion = "Parametros creados exitosamente.";
             resp.Estatus = true;
             return resp;
         }
@@ -1025,7 +1047,23 @@ namespace ERP_TECKIO
                         InvalidezVida = 0,
                         Retiro = 0,
                         PrestaconSocial = 0,
-                        Infonavit = 0
+                        Infonavit = 0,
+                        CostoBaseConFormato = String.Format("${0:#,##0.00}", insumoFiltrados[y].CostoBase),
+                        CostoUnitarioConFormato = String.Format("${0:#,##0.00}", insumoFiltrados[y].CostoUnitario),
+                        SBCFormato = String.Format("${0:#,##0.00}", 0),
+                        RiesgoTrabajoConFormato = String.Format("${0:#,##0.00}", 0),
+                        CuotaFijaFormato = String.Format("${0:#,##0.00}", 0),
+                        AplicacionExcedenteConFormato = String.Format("${0:#,##0.00}", 0),
+                        PrestacionDineroConFormato = String.Format("${0:#,##0.00}", 0),
+                        GastoMedicoConFormato = String.Format("${0:#,##0.00}", 0),
+                        InvalidezVidaConFormato = String.Format("${0:#,##0.00}", 0),
+                        RetiroConFormato = String.Format("${0:#,##0.00}", 0),
+                        CesantiaConFormato = String.Format("${0:#,##0.00}", 0),
+                        PrestacionSocialConFormato = String.Format("${0:#,##0.00}", 0),
+                        InfonavitConFormato = String.Format("${0:#,##0.00}", 0),
+                        SumaDePrestacionesConFormato = String.Format("${0:#,##0.00}", 0),
+                        SPSBCConFormato = String.Format("${0:#,##0.00}", 0),
+                        FSRConFormato = String.Format("${0:#,##0.00}", 0),
                     });
                 }
             }
@@ -1055,7 +1093,23 @@ namespace ERP_TECKIO
                             InvalidezVida = 0,
                             Retiro = 0,
                             PrestaconSocial = 0,
-                            Infonavit = 0
+                            Infonavit = 0,
+                            CostoBaseConFormato = String.Format("${0:#,##0.00}", insumoFiltrados[y].CostoBase),
+                            CostoUnitarioConFormato = String.Format("${0:#,##0.00}", insumoFiltrados[y].CostoUnitario),
+                            SBCFormato = String.Format("${0:#,##0.00}", 0),
+                            RiesgoTrabajoConFormato = String.Format("${0:#,##0.00}", 0),
+                            CuotaFijaFormato = String.Format("${0:#,##0.00}", 0),
+                            AplicacionExcedenteConFormato = String.Format("${0:#,##0.00}", 0),
+                            PrestacionDineroConFormato = String.Format("${0:#,##0.00}", 0),
+                            GastoMedicoConFormato = String.Format("${0:#,##0.00}", 0),
+                            InvalidezVidaConFormato = String.Format("${0:#,##0.00}", 0),
+                            RetiroConFormato = String.Format("${0:#,##0.00}", 0),
+                            CesantiaConFormato = String.Format("${0:#,##0.00}", 0),
+                            PrestacionSocialConFormato = String.Format("${0:#,##0.00}", 0),
+                            InfonavitConFormato = String.Format("${0:#,##0.00}", 0),
+                            SumaDePrestacionesConFormato = String.Format("${0:#,##0.00}", 0),
+                            SPSBCConFormato = String.Format("${0:#,##0.00}", 0),
+                            FSRConFormato = String.Format("${0:#,##0.00}", 0),
                         });
                     }
                 }

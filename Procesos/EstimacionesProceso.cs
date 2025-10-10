@@ -66,7 +66,7 @@ namespace ERP_TECKIO
                     Importe = importe,
                     ImporteConFormato = String.Format("${0:#,##0.00}", importe),
                     Avance = avance,
-                    AvanceConFormato = String.Format("{0:#,##0.00}", avance)
+                    AvanceConFormato = String.Format("${0:#,##0.00}", avance)
                 }); 
             }
             return listPeridos;
@@ -308,6 +308,10 @@ namespace ERP_TECKIO
                     sumaPorcentaje = sumaPorcentaje + registrosHijos[i].PorcentajeAvance;
                 }
                 registroPadre.ImporteDeAvance = importe;
+                if(registroPadre.Importe == 0)
+                {
+                    return;
+                }
                 registroPadre.PorcentajeAvance = (importe / registroPadre.Importe) * 100;
                 var resultado = await _EstimacionService.Editar(registroPadre);
                 await RecalcularEstimacion(registroPadre);
