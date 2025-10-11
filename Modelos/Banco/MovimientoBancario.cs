@@ -16,6 +16,8 @@ public partial class MovimientoBancario : MovimientoBancarioAbstract
     public ICollection<MovimientoBancarioEmpresa> MBEmpresa { get; set; } = new List<MovimientoBancarioEmpresa>();
     public ICollection<OrdenCompraXMovimientoBancario> OrdenCompraXMovimientoBancarios { get; set; } = new List<OrdenCompraXMovimientoBancario>();
     public ICollection<FacturaXOrdenCompraXMovimientoBancario> FacturaXOrdenCompraXMovimientoBancarios { get; set; } = new List<FacturaXOrdenCompraXMovimientoBancario>();
+    public ICollection<OrdenVentaXMovimientoBancario> OrdenVentaXMovimientoBancarios { get; set; } = new List<OrdenVentaXMovimientoBancario>();
+    public ICollection<FacturaXOrdenVentaXMovimientoBancario> FacturaXOrdenVentaXMovimientoBancarios { get; set; } = new List<FacturaXOrdenVentaXMovimientoBancario>(); 
 }
 
 public abstract class MovimientoBancarioAbstract{
