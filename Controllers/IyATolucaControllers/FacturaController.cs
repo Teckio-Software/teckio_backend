@@ -52,5 +52,11 @@ namespace ERP_TECKIO.Controllers.IyAToluca
             var categorias = await _categoriaProductoYServicioService.ObtenerTodos();
             return categorias;
         }
+
+        [HttpPost("CargarFactura")]
+        public async Task<ActionResult<RespuestaDTO>> cargarFacturas(List<IFormFile> files) {
+            var respuesta = await _obtenFacturaProceso.cargarFacturas(files);
+            return respuesta;
+        }
     }
 }

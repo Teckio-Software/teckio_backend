@@ -443,7 +443,7 @@ namespace ERP_TECKIO.Procesos.Facturacion
         public async Task<RespuestaDTO> cargarFacturas(List<IFormFile> archivos) {
             var respuesta = new RespuestaDTO();
             respuesta.Estatus = true;
-            respuesta.Descripcion = "Se ha cargado correctamente la factura";
+            respuesta.Descripcion = "Se han cargado correctamente las facturas";
             var xmls = archivos.Where(file => string.Equals(Path.GetExtension(file.FileName), ".xml", StringComparison.OrdinalIgnoreCase));
             if (xmls.Count() == 0)
             {
@@ -484,9 +484,7 @@ namespace ERP_TECKIO.Procesos.Facturacion
                     fechaValidacion.Year.ToString(), fechaValidacion.Month.ToString(), uuid, numeroFacturas, xml);
                     if (string.IsNullOrEmpty(resultadoRutaArchivo))
                     {
-                        respuesta.Estatus = false;
-                        respuesta.Descripcion = "No se guardo el archivo";
-                        return respuesta;
+                        continue;
                     }
                     var extension = Path.GetExtension(xml.FileName);
                     var nombreArchivo = $"{uuid}{extension}";
@@ -497,9 +495,7 @@ namespace ERP_TECKIO.Procesos.Facturacion
                     });
                     if (resultadoArchivoXml.Id <= 0)
                     {
-                        respuesta.Estatus = false;
-                        respuesta.Descripcion = "No se guardo el archivo";
-                        return respuesta;
+                        continue;
                     }
                     int estatusFactura = 1;
                     //if (nombreDocumento.EstatusFactura == "Vigente")
@@ -520,16 +516,14 @@ namespace ERP_TECKIO.Procesos.Facturacion
 
                     if (registrarFactura.Id <= 0)
                     {
-                        respuesta.Estatus = false;
-                        respuesta.Descripcion = "No se guardo la factura";
-                        return respuesta;
+                        continue;
                     }
 
 
                     int IdFactura = registrarFactura.Id;
 
                     var facturaDetalles = documento.Descendants(ns + "Conceptos").FirstOrDefault();
-                    await leerFacturaDetalle(facturaDetalles, ns, IdFactura);
+                    await leerFacturaDetalleOrdenCompra(facturaDetalles, ns, IdFactura);
 
                     await leerFacturaEmisor(facturaEmisor, IdFactura);
 
@@ -640,6 +634,9 @@ namespace ERP_TECKIO.Procesos.Facturacion
             nuevaFactura.Subtotal = Convert.ToDecimal(comprobante.Attribute("SubTotal")?.Value);
             nuevaFactura.Total = Convert.ToDecimal(comprobante.Attribute("Total")?.Value);
             nuevaFactura.SerieCfdi = comprobante.Attribute("Serie")?.Value;
+            if (nuevaFactura.SerieCfdi == null) {
+                nuevaFactura.SerieCfdi = "";
+            }
             nuevaFactura.FolioCfdi = comprobante.Attribute("Folio")?.Value;
             nuevaFactura.Estatus = estatus;
 
