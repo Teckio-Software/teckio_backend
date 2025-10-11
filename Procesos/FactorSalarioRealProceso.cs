@@ -859,7 +859,7 @@ namespace ERP_TECKIO
                     await RecalcularFsrEsCompuesto(FSR);
                 }
             }
-            resp.Descripcion = "Parametros creados exitosamente.";
+            resp.Descripcion = "Información guardada con éxito.";
             resp.Estatus = true;
             return resp;
         }
@@ -1173,10 +1173,19 @@ namespace ERP_TECKIO
 
                             cesantiaEdad = SalarioBaseCotizacion * rangoUbicado.Porcentaje / 100;
                         }
-
+                        //Este fragmento de código producia un error si el SalarioBaseCotizacion era 0 así que lo ajuste para evitar el error imtentando alterar lo menos posible el flujo
                         decimal sumaPresataciones = riesgoTrabajo + cuotaFija + aplicacionExcedente + prestacionDinero + gastoMedico + invalidezVida + retiro + prestacionSocial + infinavit + cesantiaEdad;
-                        decimal sumaSOBREcostoBase = sumaPresataciones / SalarioBaseCotizacion;
+                        decimal sumaSOBREcostoBase = 0;
+                        if (SalarioBaseCotizacion == 0)
+                        {
+                            sumaSOBREcostoBase = 0;
+                        }
+                        else
+                        {
+                            sumaSOBREcostoBase = sumaPresataciones / SalarioBaseCotizacion;
 
+                        }
+                        //////////////////////////
                         decimal FsrInsumo = sumaSOBREcostoBase * pagadosSOBREnolaborales + pagadosSOBREnolaborales;
 
                         parametrosXInsumo.Add(new ParametrosFsrXInsumoDTO()

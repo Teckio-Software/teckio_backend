@@ -58,6 +58,8 @@ namespace ERP_TECKIO
         private readonly IFsixinsummoMdOService<TContext> _FsixinsummoMdOService;
         private readonly IFsixinsummoMdOdetalleService<TContext> _FsixinsummoMdODetalleService;
         private readonly IRelacionFSRInsumoService<TContext> _relacionFSRInsumoService;
+        private readonly LogProcess _logProcess;
+
         public PrecioUnitarioProceso(
             IProyectoService<TContext> proyectoService
             , IPrecioUnitarioService<TContext> precioUnitarioService
@@ -87,6 +89,7 @@ namespace ERP_TECKIO
             , IFsixinsummoMdOService<TContext> fsixinsummoMdOService
             , IFsixinsummoMdOdetalleService<TContext> fsixinsummoMdODetalleService
             , IRelacionFSRInsumoService<TContext> relacionFSRInsumoService
+            , LogProcess logProcess
 
             )
         {
@@ -118,6 +121,7 @@ namespace ERP_TECKIO
             _FsixinsummoMdOService = fsixinsummoMdOService;
             _FsixinsummoMdODetalleService = fsixinsummoMdODetalleService;
             _relacionFSRInsumoService = relacionFSRInsumoService;
+            _logProcess = logProcess;
         }
 
         public async Task RecalcularPrecioUnitario(PrecioUnitarioDTO registro)
@@ -1360,12 +1364,20 @@ for json path
 
         public async Task<List<PrecioUnitarioDetalleDTO>> ObtenerDetallesPorPUImpresion(List<int> IdPreciosUnitarios, List<System.Security.Claims.Claim> claims)
         {
+            var IdUsStr = claims.Where(z => z.Type == "idUsuario").ToList();
+            string metodo = "ObtenerDetallesPorPUImpresion";
+            if (IdUsStr[0].Value == null)
+            {
+                return new List<PrecioUnitarioDetalleDTO>();
+            }
+            int IdUsuario = int.Parse(IdUsStr[0].Value);
             var items = new List<PrecioUnitarioDetalleDTO>();
             foreach(var id in IdPreciosUnitarios)
             {
                 var lista = await ObtenerDetallesPorPU(id, _dbContex);
                 items.AddRange(lista);
             }
+            await _logProcess.RegistrarLog(NivelesLog.Info, metodo, "Lista de detalles de precios unitarios consultada", "", IdUsuario, 1);
             return items;
         }
 
