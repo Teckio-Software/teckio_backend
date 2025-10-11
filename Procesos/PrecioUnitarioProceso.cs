@@ -22,6 +22,7 @@ using SpreadsheetLight;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq.Expressions;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 
@@ -608,6 +609,49 @@ for json path
             string json = string.Join("", items);
             var datos = JsonSerializer.Deserialize<List<PrecioUnitarioDTO>>(json);
             return datos;
+        }
+
+        public async Task<PrecioUnitarioManoDeObraConjuntoDTO> obtenerPrecioUnitarioImprimirManoDeObra(int IdProyecto, List<System.Security.Claims.Claim> claims)
+        {
+            var Registros = new PrecioUnitarioManoDeObraConjuntoDTO
+            {
+                Total = 0,
+                TotalConFormato = ""
+            };
+            var IdUsStr = claims.Where(z => z.Type == "idUsuario").ToList();
+            string metodo = "obtenerPrecioUnitarioImprimirManoDeObra";
+            if (IdUsStr[0].Value == null)
+            {
+                return Registros;
+            }
+            int IdUsuario = int.Parse(IdUsStr[0].Value);
+            var PreciosUnitarios = await ObtenerPrecioUnitarioSinEstructurar(IdProyecto);
+            foreach(var pu in PreciosUnitarios)
+            {
+                PrecioUnitarioManoDeObraDTO precioUnitarioMO = new PrecioUnitarioManoDeObraDTO
+                {
+                    Codigo = pu.Codigo,
+                    Descripcion = pu.Descripcion,
+                    TotalDePU = 0,
+                    TotalConFormatoDePU = ""
+                };
+                if (pu.TipoPrecioUnitario == 1)
+                {
+                    var ExplosionConcepto = await ObtenerExplosionDeInsumoXConcepto(pu.Id);
+                    var InsumosManoDeObra = ExplosionConcepto.Where(z => z.idTipoInsumo == 10000).ToList();
+                    precioUnitarioMO.Detalles = InsumosManoDeObra;
+                    foreach (var detalle in precioUnitarioMO.Detalles)
+                    {
+                        precioUnitarioMO.TotalDePU += detalle.Importe;
+                    }
+                    precioUnitarioMO.TotalConFormatoDePU = String.Format("${0:#,##0.00}", precioUnitarioMO.TotalDePU);
+                    Registros.PreciosUnitarios.Add(precioUnitarioMO);
+                    Registros.Total += precioUnitarioMO.TotalDePU;
+                }
+            }
+            Registros.TotalConFormato = String.Format("${0:#,##0.00}", Registros.Total);
+            await _logProcess.RegistrarLog(NivelesLog.Info, metodo, "Información obtenida exitosamente", "", IdUsuario, 1);
+            return Registros;
         }
 
         public async Task<List<PrecioUnitarioDTO>> ObtenerPrecioUnitarioSinEstructurar(int IdProyecto)
