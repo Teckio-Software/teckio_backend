@@ -1,4 +1,5 @@
-﻿using ERP_TECKIO.DTO.Factura;
+﻿using ERP_TECKIO.DTO;
+using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.Modelos;
 
 namespace ERP_TECKIO
@@ -18,9 +19,13 @@ namespace ERP_TECKIO
         public decimal saldo { get; set; }
         public bool EsFactura { get; set; }
         public bool EsOrdenCompra { get; set; }
+        public bool EsFacturaOrdenVenta { get; set; }
+        public bool EsOrdenVenta { get; set; }
 
         public List<FacturaXOrdenCompraDTO> FacturasXOrdenCompra { get; set; } = new List<FacturaXOrdenCompraDTO>();
         public List<OrdenCompraDTO> OrdenCompras { get; set; } = new List<OrdenCompraDTO>();
+        public List<FacturaXOrdenVentaDTO> FacturasXOrdenVenta { get; set; } = new List<FacturaXOrdenVentaDTO>();
+        public List<OrdenVentaDTO> OrdenVentas { get; set; } = new List<OrdenVentaDTO>();
     } 
     public class MovimientoBancarioProyectoDTO
     {

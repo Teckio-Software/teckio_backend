@@ -21,24 +21,42 @@ namespace ERP_TECKIO.Servicios
             _mapper = mapper;
         }
 
-        public Task<bool> Crear(OrdenVentaXMovimientoBancarioDTO modelo)
+        public async Task<bool> Crear(OrdenVentaXMovimientoBancarioDTO modelo)
         {
-            throw new NotImplementedException();
+            var respuesta = await _genericRepository.Crear(_mapper.Map<OrdenVentaXMovimientoBancario>(modelo));
+            if (respuesta.Id <= 0)
+            {
+                return false;
+            }
+            return true;
         }
 
-        public Task<bool> Editar(OrdenVentaXMovimientoBancarioDTO modelo)
+        public async Task<bool> Editar(OrdenVentaXMovimientoBancarioDTO modelo)
         {
-            throw new NotImplementedException();
+            var objetoEncontrado = await _genericRepository.Obtener(z => z.Id == modelo.Id);
+            if (objetoEncontrado.Id <= 0)
+            {
+                return false;
+            }
+            objetoEncontrado.TotalSaldado = modelo.TotalSaldado;
+            var editar = await _genericRepository.Editar(objetoEncontrado);
+            if (!editar)
+            {
+                return false;
+            }
+            return true;
         }
 
-        public Task<List<OrdenVentaXMovimientoBancarioDTO>> ObtenXIdMovimientoBancario(int IdMovimientoBancario)
+        public async Task<List<OrdenVentaXMovimientoBancarioDTO>> ObtenXIdMovimientoBancario(int IdMovimientoBancario)
         {
-            throw new NotImplementedException();
+            var lista = await _genericRepository.ObtenerTodos(z => z.IdMovimientoBancario == IdMovimientoBancario);
+            return _mapper.Map<List<OrdenVentaXMovimientoBancarioDTO>>(lista);
         }
 
-        public Task<List<OrdenVentaXMovimientoBancarioDTO>> ObtenXIdOrdenVenta(int IdOrdenVenta)
+        public async Task<List<OrdenVentaXMovimientoBancarioDTO>> ObtenXIdOrdenVenta(int IdOrdenVenta)
         {
-            throw new NotImplementedException();
+            var lista = await _genericRepository.ObtenerTodos(z => z.IdOrdenVenta == IdOrdenVenta);
+            return _mapper.Map<List<OrdenVentaXMovimientoBancarioDTO>>(lista);
         }
     }
 }

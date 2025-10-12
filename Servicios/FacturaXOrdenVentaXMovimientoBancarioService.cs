@@ -21,24 +21,42 @@ namespace ERP_TECKIO.Servicios
             _mapper = mapper;
         }
 
-        public Task<bool> Crear(FacturaXOrdenVentaXMovimientoBancarioDTO modelo)
+        public async Task<bool> Crear(FacturaXOrdenVentaXMovimientoBancarioDTO modelo)
         {
-            throw new NotImplementedException();
+            var respuesta = await _genericRepository.Crear(_mapper.Map<FacturaXOrdenVentaXMovimientoBancario>(modelo));
+            if (respuesta.Id <= 0)
+            {
+                return false;
+            }
+            return true;
         }
 
-        public Task<bool> Editar(FacturaXOrdenVentaXMovimientoBancarioDTO modelo)
+        public async Task<bool> Editar(FacturaXOrdenVentaXMovimientoBancarioDTO modelo)
         {
-            throw new NotImplementedException();
+            var objetoEncontrado = await _genericRepository.Obtener(z => z.Id == modelo.Id);
+            if (objetoEncontrado.Id <= 0)
+            {
+                return false;
+            }
+            objetoEncontrado.TotalSaldado = modelo.TotalSaldado;
+            var editar = await _genericRepository.Editar(objetoEncontrado);
+            if (!editar)
+            {
+                return false;
+            }
+            return true;
         }
 
-        public Task<List<FacturaXOrdenVentaXMovimientoBancarioDTO>> ObtenXIdFacturaXOrdenVenta(int IdFacturaXOrdenVenta)
+        public async Task<List<FacturaXOrdenVentaXMovimientoBancarioDTO>> ObtenXIdFacturaXOrdenVenta(int IdFacturaXOrdenVenta)
         {
-            throw new NotImplementedException();
+            var lista = await _genericRepository.ObtenerTodos(z => z.IdFacturaXOrdenVenta == IdFacturaXOrdenVenta);
+            return _mapper.Map<List<FacturaXOrdenVentaXMovimientoBancarioDTO>>(lista);
         }
 
-        public Task<List<FacturaXOrdenVentaXMovimientoBancarioDTO>> ObtenXIdMovimientoBancario(int IdMovimientoBancario)
+        public async Task<List<FacturaXOrdenVentaXMovimientoBancarioDTO>> ObtenXIdMovimientoBancario(int IdMovimientoBancario)
         {
-            throw new NotImplementedException();
+            var lista = await _genericRepository.ObtenerTodos(z => z.IdMovimientoBancario == IdMovimientoBancario);
+            return _mapper.Map<List<FacturaXOrdenVentaXMovimientoBancarioDTO>>(lista);
         }
     }
 }

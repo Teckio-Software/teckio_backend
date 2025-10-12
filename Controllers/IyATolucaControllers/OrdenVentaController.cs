@@ -1,5 +1,7 @@
 ﻿using ERP_TECKIO.DTO;
+using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.Procesos;
+using ERP_TECKIO.Procesos.Facturacion;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +14,14 @@ namespace ERP_TECKIO.Controllers.IyAToluca
     public class OrdenVentaIyATolucaController : ControllerBase
     {
         private readonly OrdenVentaProceso<IyATolucaContext> _ordenVentaProceso;
+        private readonly ObtenFacturaProceso<IyATolucaContext> _obtenFacturaProceso;
+
         public OrdenVentaIyATolucaController(
-            OrdenVentaProceso<IyATolucaContext> ordenVentaProceso
+            OrdenVentaProceso<IyATolucaContext> ordenVentaProceso,
+            ObtenFacturaProceso<IyATolucaContext> obtenFacturaProceso
             ) { 
             _ordenVentaProceso = ordenVentaProceso;
+            _obtenFacturaProceso = obtenFacturaProceso;
         }
 
         [HttpPost("crearOrdenVenta")]
@@ -76,6 +82,32 @@ namespace ERP_TECKIO.Controllers.IyAToluca
             var authen = HttpContext.User;
             var respuesta = await _ordenVentaProceso.Cancelar(ordenVenta, authen.Claims.ToList());
             return respuesta;
+        }
+
+        [HttpPost("cargarFacturasXOrdenVenta")]
+        public async Task<ActionResult<RespuestaDTO>> CargarFacturaXOrdenVenta([FromForm] List<IFormFile> files, [FromForm] int IdOrdenVenta)
+        {
+            return await _obtenFacturaProceso.CargarFacturaXOrdenVenta(files, IdOrdenVenta);
+        }
+
+        [HttpGet("obtenerFacturasXOrdenVenta/{IdOrdenVenta:int}")]
+        public async Task<ActionResult<OrdenVentaFacturasDTO>> obtenerFacturasXOrdenVenta(int IdOrdenVenta)
+        {
+            return await _obtenFacturaProceso.ObtenFacturaXOrdenVenta(IdOrdenVenta);
+        }
+
+        [HttpPost("AutorizarFacturaXOrdenVenta")]
+        public async Task<ActionResult<RespuestaDTO>> AutorizarFacturaXOrdenVenta(FacturaXOrdenVentaDTO facturaXOrdenVenta)
+        {
+            var lista = await _obtenFacturaProceso.AutorizarFacturaXOrdenVenta(facturaXOrdenVenta);
+            return lista;
+        }
+
+        [HttpPost("CancelarFacturaXOrdenVenta")]
+        public async Task<ActionResult<RespuestaDTO>> CancelarFacturaXOrdenVenta(FacturaXOrdenVentaDTO facturaXOrdenVenta)
+        {
+            var lista = await _obtenFacturaProceso.CancelarFacturaXOrdenVenta(facturaXOrdenVenta);
+            return lista;
         }
     }
 }
