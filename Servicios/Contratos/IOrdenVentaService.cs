@@ -11,6 +11,7 @@ namespace ERP_TECKIO.Servicios.Contratos
         Task<RespuestaDTO> Editar(OrdenVentaDTO modelo);
         Task<RespuestaDTO> Eliminar(OrdenVentaDTO modelo);
         Task<OrdenVentaDTO> ObtenerOrdenVentaXId(int id);
+        Task<List<OrdenVentaDTO>> ObtenerXIdCliente(int IdCliente);
         Task<RespuestaDTO> Pagar(OrdenVentaDTO modelo);
 
     }
