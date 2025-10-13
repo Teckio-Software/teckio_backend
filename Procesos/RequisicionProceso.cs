@@ -43,13 +43,13 @@ namespace ERP_TECKIO
             if(requisicion.IdProduccion == null && requisicion.IdProyecto == null)
             {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "La requisición debe estar asociada a un proyecto o a una producción";
+                respuesta.Descripcion = "La requisición debe estar asociada a un proyecto o a una producción.";
                 return respuesta;
             }
             if (requisicion.IdProduccion != null && requisicion.IdProyecto != null)
             {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "La requisición no puede estar asociada a un proyecto y a una producción";
+                respuesta.Descripcion = "La requisición no puede estar asociada a un proyecto y a una producción.";
                 return respuesta;
             }
 
@@ -78,11 +78,11 @@ namespace ERP_TECKIO
             if (crearobjetoR.Id <= 0)
             {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "No se creó la requisición";
+                respuesta.Descripcion = "No se creó la requisición.";
                 return respuesta;
             }
             respuesta.Estatus = true;
-            respuesta.Descripcion = "Se creo la requisición";
+            respuesta.Descripcion = "Se creo la requisición.";
             return respuesta;
         }
 
@@ -91,10 +91,10 @@ namespace ERP_TECKIO
             var editar = await _requisicionService.Editar(parametros);
             if (!editar.Estatus) { 
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "No se edito";
+                respuesta.Descripcion = "No se edito.";
             }
             respuesta.Estatus = true;
-            respuesta.Descripcion = "registro editado";
+            respuesta.Descripcion = "registro editado.";
             return respuesta;
         }
 
@@ -107,7 +107,7 @@ namespace ERP_TECKIO
                    )
             {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "Capture todos los campos";
+                respuesta.Descripcion = "Capture todos los campos.";
                 return respuesta;
             }
             var requisicion = await _requisicionService.ObtenXId(parametro.IdRequisicion);
@@ -137,7 +137,7 @@ namespace ERP_TECKIO
             if (insumosXRequisicionFiltrado.Count >= 1)
             {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "Ya existe este insumo";
+                respuesta.Descripcion = "Ya existe este insumo.";
                 return respuesta;
             }
 
@@ -158,11 +158,11 @@ namespace ERP_TECKIO
             var crearInsumoXRequisicion = await _insumoXRequisicionService.Crear(insumoXRequsicion);
             if (!crearInsumoXRequisicion.Estatus) {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "No se creo el insumo";
+                respuesta.Descripcion = "No se creo el insumo.";
                 return respuesta;
             }
             respuesta.Estatus = true;
-            respuesta.Descripcion = "Se creo el insumo";
+            respuesta.Descripcion = "Se creo el insumo.";
             return respuesta;
         }
 
@@ -172,14 +172,14 @@ namespace ERP_TECKIO
             var usuarioNombre = claims.Where(z => z.Type == "username").ToList();
             if (usuarioNombre.Count() <= 0) {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "No esta logueado";
+                respuesta.Descripcion = "No esta logueado.";
                 return respuesta;
             }
             if (parametros.IdProyecto <= 0 ||
                 parametros.Observaciones == "" ||
                 parametros.ListaInsumosRequisicion.Count() <= 0) {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "Capture todos los campos";
+                respuesta.Descripcion = "Capture todos los campos.";
                 return respuesta;
             }
             for (int i = 0; i < parametros.ListaInsumosRequisicion.Count; i++)
@@ -191,7 +191,7 @@ namespace ERP_TECKIO
                    parametros.ListaInsumosRequisicion[i].Observaciones == ""
                    ) {
                     respuesta.Estatus = false;
-                    respuesta.Descripcion = "Capture todos los campos";
+                    respuesta.Descripcion = "Capture todos los campos.";
                     return respuesta;
                 }
             }
@@ -223,7 +223,7 @@ namespace ERP_TECKIO
             var crearobjetoR = await _requisicionService.CrearYObtener(requisicion);
             if (crearobjetoR.Id <= 0) {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "No se creó la requisición";
+                respuesta.Descripcion = "No se creó la requisición.";
                 return respuesta;
             }
 
@@ -278,12 +278,12 @@ namespace ERP_TECKIO
             var resultado = await _insumoXRequisicionService.CrearLista(insumos);
             if (!resultado) {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "Ocurrió un problema";
+                respuesta.Descripcion = "Ocurrió un problema.";
                 return respuesta;
             }
 
             respuesta.Estatus = true;
-            respuesta.Descripcion = "Requisicón creada";
+            respuesta.Descripcion = "Requisicón creada.";
             return respuesta;
         }
 
@@ -301,7 +301,7 @@ namespace ERP_TECKIO
                     switch (item.EstatusInsumoComprado)
                     {
                         case 0:
-                            descripcionEstatusInsumoComprado = "No hay ordenes de compra";
+                            descripcionEstatusInsumoComprado = "No hay ordenes de compra.";
                             break;
                         case 1:
                             descripcionEstatusInsumoComprado = "Capturada";

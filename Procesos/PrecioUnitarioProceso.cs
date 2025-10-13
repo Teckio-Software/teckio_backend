@@ -1056,7 +1056,7 @@ for json path
             var existeAvance = estimacionesPadre.Where(z => z.ImporteDeAvance > 0 || z.PorcentajeAvance > 0);
             if (existeAvance.Count() > 0) {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "Ya hay avance en estimaciones";
+                respuesta.Descripcion = "Esta acción no puede ser realizada debido a que ya existen estimaciones en el proyecto.";
                 return respuesta;
             }
 

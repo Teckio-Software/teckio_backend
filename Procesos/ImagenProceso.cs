@@ -96,7 +96,7 @@ namespace ERP_TECKIO.Procesos
                 if (!(System.IO.Path.GetExtension(archivo.FileName).ToLower().Contains("png")|| System.IO.Path.GetExtension(archivo.FileName).ToLower().Contains("jpg") || System.IO.Path.GetExtension(archivo.FileName).ToLower().Contains("jpeg")))
                 {
                     respuesta.Estatus = false;
-                    respuesta.Descripcion = "El tipo de archivo es incorrecto, debe ser jpg, jpeg, webp o png";
+                    respuesta.Descripcion = "El tipo de archivo es incorrecto, debe ser jpg, jpeg o png";
                     await _logProcess.RegistrarLog(NivelesLog.Warn, metodo, "El tipo de archivo es incorrecto, debe ser jpg, jpeg o png", "", IdUsuario, 1);
                     return respuesta;
                 }
