@@ -125,6 +125,7 @@ namespace ERP_TECKIO
             services.AddScoped(typeof(PrecioUnitarioXEmpleadoProceso<>));
             services.AddScoped(typeof(ExplocionInsumosProceso<>));
             services.AddScoped(typeof(ObtenFacturaProceso<>));
+            services.AddScoped(typeof(AlmacenProceso<>));
             //services.AddScoped(typeof(RegistraFacturaProceso<>));
             //services.AddScoped(typeof(ObtenFacturasProceso<>));
             services.AddScoped(typeof(MovimientoBancarioProceso<>));

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ERP_TECKIO.Procesos;
 
 namespace ERP_TECKIO.Controllers
 {
@@ -16,11 +17,14 @@ namespace ERP_TECKIO.Controllers
     public class AlmacenIyATolucaController : ControllerBase
     {
         private readonly IAlmacenService<IyATolucaContext> _almacenServicio;
+        private readonly AlmacenProceso<IyATolucaContext> _almacenProceso;
 
         public AlmacenIyATolucaController(
-            IAlmacenService<IyATolucaContext> almacenServicio)
+            IAlmacenService<IyATolucaContext> almacenServicio,
+            AlmacenProceso<IyATolucaContext> almacenProceso)
         {
             _almacenServicio = almacenServicio;
+            _almacenProceso = almacenProceso;
         }
 
         [HttpPost("Crear")]
@@ -75,5 +79,10 @@ namespace ERP_TECKIO.Controllers
             return await _almacenServicio.Editar(Edit);
         }
 
+        [HttpGet("ObtenTodosConProyecto")]
+        public async Task<ActionResult<List<AlmacenDTO>>> ObtenTodosConProyecto()
+        {
+            return await _almacenProceso.ObtenerConNombresProyecto();
+        }
     }
 }
