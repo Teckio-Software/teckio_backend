@@ -1053,6 +1053,18 @@ namespace ERP_TECKIO
                 .ForMember(destino => destino.TotalSaldado,
                 opt => opt.MapFrom(origen => origen.TotalSaldado == null ? 0 : origen.TotalSaldado));
             #endregion
+            #region FacturaXOrdenVenta
+            CreateMap<FacturaXOrdenVenta, FacturaXOrdenVentaDTO>();
+            CreateMap<FacturaXOrdenVentaDTO, FacturaXOrdenVenta>();
+            #endregion
+            #region FacturaXOrdenVentaXMovimientoBancario
+            CreateMap<FacturaXOrdenVentaXMovimientoBancario, FacturaXOrdenVentaXMovimientoBancarioDTO>();
+            CreateMap<FacturaXOrdenVentaXMovimientoBancarioDTO, FacturaXOrdenVentaXMovimientoBancario>();
+            #endregion
+            #region OrdenVentaXMovimientoBancario
+            CreateMap<OrdenVentaXMovimientoBancario, OrdenVentaXMovimientoBancarioDTO>();
+            CreateMap<OrdenVentaXMovimientoBancarioDTO, OrdenVentaXMovimientoBancario>();
+            #endregion
             #region FacturaEntradaMaterial
             // CreateMap<FacturaEntradaMaterial, FacturaEntradaMaterialDTO>();
             // CreateMap<FacturaEntradaMaterialDTO, FacturaEntradaMaterial>()

@@ -45,6 +45,6 @@ namespace ERP_TECKIO.Controllers.DemoTeckio
         {
             return await _proceso.ObtenerParaAsignarPreciosUniatrios(IdEmpleado, IdProyceto);
         }
-
+        
     }
 }

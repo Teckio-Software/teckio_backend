@@ -176,10 +176,71 @@ public partial class IyATolucaContext : DbContext
 
     public virtual DbSet<Glosario> Glosarios { get; set; }
 
+    public virtual DbSet<FacturaXOrdenVenta> FacturaXOrdenVentas { get; set; }
+    public virtual DbSet<FacturaXOrdenVentaXMovimientoBancario> FacturaXOrdenVentaXMovimientoBancarios { get; set; }
+    public virtual DbSet<OrdenVentaXMovimientoBancario> OrdenVentaXMovimientoBancarios { get; set; }
+
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<FacturaXOrdenVenta>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Porcenta__3214EC07E295DCC5");
+
+            entity.ToTable("FacturaXOrdenVenta", "OrdenVenta");
+
+            entity.Property(e => e.Estatus).HasColumnName("Estatus");
+            entity.Property(e => e.TotalSaldado).HasColumnType("decimal(28, 6)");
+
+            entity.HasOne(d => d.IdFacturaNavigation).WithMany(p => p.FacturaXOrdenVentas)
+                .HasForeignKey(d => d.IdFactura)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_IdFactura_FacturaXOrdenVenta");
+            entity.HasOne(d => d.IdOrdenVentumNavigation).WithMany(p => p.FacturaXOrdenVentas)
+                .HasForeignKey(d => d.IdOrdenVenta)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_IdOrdenVenta_FacturaXOrdenVenta");
+        });
+
+        modelBuilder.Entity<OrdenVentaXMovimientoBancario>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Porcenta__3214EC07E295DCC5");
+
+            entity.ToTable("OrdenVentaXMovimientoBancario", "OrdenVenta");
+
+            entity.Property(e => e.Estatus).HasColumnName("Estatus");
+            entity.Property(e => e.TotalSaldado).HasColumnType("decimal(28, 6)");
+
+            entity.HasOne(d => d.IdOrdenVentumNavigation).WithMany(p => p.OrdenVentaXMovimientoBancarios)
+                .HasForeignKey(d => d.IdOrdenVenta)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_IdOrdenVenta_OrdenVentaXMovimientoBancario");
+            entity.HasOne(d => d.IdMovimientoBancarioNavigation).WithMany(p => p.OrdenVentaXMovimientoBancarios)
+                .HasForeignKey(d => d.IdMovimientoBancario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_IdMovimientoBancario_OrdenVentaXMovimientoBancario");
+        });
+
+        modelBuilder.Entity<FacturaXOrdenVentaXMovimientoBancario>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Porcenta__3214EC07E295DCC5");
+
+            entity.ToTable("FacturaXOrdenVentaXMovimientoBancario", "OrdenVenta");
+
+            entity.Property(e => e.Estatus).HasColumnName("Estatus");
+            entity.Property(e => e.TotalSaldado).HasColumnType("decimal(28, 6)");
+
+            entity.HasOne(d => d.IdFacturaXOrdenVentaNavigation).WithMany(p => p.FacturaXOrdenVentaXMovimientoBancarios)
+                .HasForeignKey(d => d.IdFacturaXOrdenVenta)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_IdFactuaXOrdenVenta_FacturaXOrdenVentaXMovimientoBancario");
+            entity.HasOne(d => d.IdMovimientoBancarioNavigation).WithMany(p => p.FacturaXOrdenVentaXMovimientoBancarios)
+                .HasForeignKey(d => d.IdMovimientoBancario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_IdMovimientoBancario_FacturaXOrdenVentaXMovimientoBancario");
+        });
+
         modelBuilder.Entity<Glosario>(entity => 
         {
             entity.HasKey(e => e.Id).HasName("PK__Glosario__3214EC07C4B34A63");
@@ -859,6 +920,7 @@ public partial class IyATolucaContext : DbContext
             entity.ToTable("FacturaDetalle", "Factura");
 
             entity.Property(e => e.Cantidad).HasColumnType("decimal(28, 6)");
+            entity.Ignore(e => e.Descripcion);
             entity.Ignore(e => e.UnidadSat);
             entity.Property(e => e.Descuento).HasColumnType("decimal(28, 6)");
             entity.Property(e => e.IdProductoYservicio).HasColumnName("IdProductoYServicio");

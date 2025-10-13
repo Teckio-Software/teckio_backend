@@ -135,39 +135,39 @@ namespace ERP_TECKIO
                 {
                     Registro.IdDetalleXContrato = Detalle[0].Id;
                     Registro.PorcentajeDestajo = Detalle[0].PorcentajeDestajo;
-                    Registro.PorcentajeDestajoConFormato = String.Format("{0:#,##0.00}", Registro.PorcentajeDestajo);
+                    Registro.PorcentajeDestajoConFormato = String.Format("{0:#,##0.00}%", Registro.PorcentajeDestajo);
                     Registro.FactorDestajo = Detalle[0].FactorDestajo;
-                    Registro.FactorDestajoConFormato = String.Format("{0:#,##0.00}", Registro.FactorDestajo);
+                    Registro.FactorDestajoConFormato = String.Format("{0:#,##0.00}%", Registro.FactorDestajo);
                     Registro.ImporteDestajo = Detalle[0].ImporteDestajo;
-                    Registro.ImporteDestajoConFormato = String.Format("{0:#,##0.00}", Registro.ImporteDestajo);
+                    Registro.ImporteDestajoConFormato = String.Format("${0:#,##0.00}", Registro.ImporteDestajo);
                 }
                 else
                 {
                     Registro.IdDetalleXContrato = 0;
                     Registro.PorcentajeDestajo = 0;
-                    Registro.PorcentajeDestajoConFormato = String.Format("{0:#,##0.00}", Registro.PorcentajeDestajo);
+                    Registro.PorcentajeDestajoConFormato = String.Format("{0:#,##0.00}%", Registro.PorcentajeDestajo);
                     Registro.FactorDestajo = 0;
-                    Registro.FactorDestajoConFormato = String.Format("{0:#,##0.00}", Registro.FactorDestajo);
+                    Registro.FactorDestajoConFormato = String.Format("{0:#,##0.00}%", Registro.FactorDestajo);
                     Registro.ImporteDestajo = 0;
-                    Registro.ImporteDestajoConFormato = String.Format("{0:#,##0.00}", Registro.ImporteDestajo);
+                    Registro.ImporteDestajoConFormato = String.Format("${0:#,##0.00}", Registro.ImporteDestajo);
                 }
                 var PorcentajeAcumulado = PorcentajesAcumulados.Where(z => z.IdPrecioUnitario == PreciosUnitarios[i].Id).ToList();
                 if (PorcentajeAcumulado.Count > 0)
                 {
                     Registro.PorcentajeDestajoAcumulado = PorcentajeAcumulado[0].PorcentajeDestajoAcumulado;
-                    Registro.PorcentajeDestajoAcumuladoConFormato = String.Format("{0:#,##0.00}", Registro.PorcentajeDestajoAcumulado);
+                    Registro.PorcentajeDestajoAcumuladoConFormato = String.Format("{0:#,##0.00}%", Registro.PorcentajeDestajoAcumulado);
                 }
                 else
                 {
                     Registro.PorcentajeDestajoAcumulado = 0;
-                    Registro.PorcentajeDestajoAcumuladoConFormato = String.Format("{0:#,##0.00}", Registro.PorcentajeDestajoAcumulado);
+                    Registro.PorcentajeDestajoAcumuladoConFormato = String.Format("{0:#,##0.00}%", Registro.PorcentajeDestajoAcumulado);
                 }
                 Registro.IdPrecioUnitario = PreciosUnitarios[i].Id;
                 Registro.Codigo = PreciosUnitarios[i].Codigo;
                 Registro.Descripcion = PreciosUnitarios[i].Descripcion;
                 Registro.Unidad = PreciosUnitarios[i].Unidad;
                 Registro.CostoUnitario = PreciosUnitarios[i].CostoUnitario;
-                Registro.CostoUnitarioConFormato = String.Format("{0:#,##0.00}", Registro.CostoUnitario);
+                Registro.CostoUnitarioConFormato = String.Format("${0:#,##0.00}", Registro.CostoUnitario);
                 Registro.Cantidad = PreciosUnitarios[i].Cantidad;
                 Registro.CantidadConFormato = String.Format("{0:#,##0.0000}", Registro.Cantidad);
                 Registro.Importe = PreciosUnitarios[i].Importe;
@@ -201,18 +201,18 @@ namespace ERP_TECKIO
                         importeMO = importeMO + padres[i].Hijos[j].Importe;
                     }
                     padres[i].CostoUnitario = importeMO;
-                    padres[i].CostoUnitarioConFormato = String.Format("{0:#,##0.00}", padres[i].CostoUnitario);
+                    padres[i].CostoUnitarioConFormato = String.Format("${0:#,##0.00}", padres[i].CostoUnitario);
                     padres[i].Importe = padres[i].CostoUnitario * padres[i].Cantidad;
                     padres[i].ImporteConFormato = String.Format("${0:#,##0.00}", padres[i].Importe);
                     padres[i].ImporteDestajo = importeDestajo;
-                    padres[i].ImporteDestajoConFormato = String.Format("{0:#,##0.00}", padres[i].ImporteDestajo);
+                    padres[i].ImporteDestajoConFormato = String.Format("${0:#,##0.00}", padres[i].ImporteDestajo);
                     if (padres[i].Importe > 0)
                     {
                         padres[i].PorcentajeDestajo = (importeDestajo / padres[i].Importe) * 100;
                         padres[i].PorcentajeDestajoAcumulado = (importeAcumulado / padres[i].Importe) * 100;
                     }
-                    padres[i].PorcentajeDestajoConFormato = String.Format("{0:#,##0.00}", padres[i].PorcentajeDestajo);
-                    padres[i].PorcentajeDestajoAcumuladoConFormato = String.Format("{0:#,##0.00}", padres[i].PorcentajeDestajoAcumulado);
+                    padres[i].PorcentajeDestajoConFormato = String.Format("{0:#,##0.00}%", padres[i].PorcentajeDestajo);
+                    padres[i].PorcentajeDestajoAcumuladoConFormato = String.Format("{0:#,##0.00}%", padres[i].PorcentajeDestajoAcumulado);
                 }
             }
             return padres;
@@ -240,14 +240,14 @@ namespace ERP_TECKIO
                     padres[i].Importe = padres[i].CostoUnitario * padres[i].Cantidad;
                     padres[i].ImporteConFormato = String.Format("${0:#,##0.00}", padres[i].Importe);
                     padres[i].ImporteDestajo = importeDestajo;
-                    padres[i].ImporteDestajoConFormato = String.Format("{0:#,##0.00}", padres[i].ImporteDestajo);
+                    padres[i].ImporteDestajoConFormato = String.Format("${0:#,##0.00}", padres[i].ImporteDestajo);
                     if (padres[i].Importe > 0)
                     {
                         padres[i].PorcentajeDestajo = (importeDestajo / padres[i].Importe) * 100;
                         padres[i].PorcentajeDestajoAcumulado = (importeAcumulado / padres[i].Importe) * 100;
                     }
-                    padres[i].PorcentajeDestajoConFormato = String.Format("{0:#,##0.00}", padres[i].PorcentajeDestajo);
-                    padres[i].PorcentajeDestajoAcumuladoConFormato = String.Format("{0:#,##0.00}", padres[i].PorcentajeDestajoAcumulado);
+                    padres[i].PorcentajeDestajoConFormato = String.Format("{0:#,##0.00}%", padres[i].PorcentajeDestajo);
+                    padres[i].PorcentajeDestajoAcumuladoConFormato = String.Format("{0:#,##0.00}%", padres[i].PorcentajeDestajoAcumulado);
                 }
             }
             return padres;
@@ -502,7 +502,7 @@ namespace ERP_TECKIO
                     NumeroDestajo = contrato.NumeroDestajo.ToString(),
                     IdDetalleXContrato = detalle.Id,
                     PorcentajeDestajo = detalle.PorcentajeDestajo,
-                    PorcentajeDestajoConFormato = String.Format("{0:#,##0.00}", detalle.PorcentajeDestajo)
+                    PorcentajeDestajoConFormato = String.Format("{0:#,##0.00}%", detalle.PorcentajeDestajo)
                 });
             }
             return DestajistasXConcepto;

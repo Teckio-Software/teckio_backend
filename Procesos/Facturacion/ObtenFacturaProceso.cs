@@ -42,6 +42,11 @@ namespace ERP_TECKIO.Procesos.Facturacion
         private readonly IOrdenCompraXMovimientoBancarioService<T> _ordenCompraXMovimientoBancarioService;
         private readonly IInsumoXOrdenCompraService<T> _insumoXOrdenCompraService;
         private readonly IFacturaXOrdenCompraXMovimientoBancarioService<T> _facturaXOrdenCompraXMovimientoBancarioService;
+        private readonly IOrdenVentaService<T> _ordenVentaService;
+        private readonly IDetalleOrdenVentaService<T> _detalleOrdenVentaService;
+        private readonly IFacturaXOrdenVentaService<T> _facturaXOrdenVentaService;
+        private readonly IOrdenVentaXMovimientoBancarioService<T> _ordenVentaXMovimientoBancarioService;
+        private readonly IFacturaXOrdenVentaXMovimientoBancarioService<T> _facturaXOrdenVentaXMovimientoBancarioService;
 
         public ObtenFacturaProceso(
             IWebHostEnvironment env, IHttpContextAccessor httpContextAccessor,
@@ -71,7 +76,12 @@ namespace ERP_TECKIO.Procesos.Facturacion
             OrdenCompraProceso<T> ordenCompraProceso,
             IOrdenCompraXMovimientoBancarioService<T> ordenCompraXMovimientoBancarioService,
             IInsumoXOrdenCompraService<T> insumoXOrdenCompraService,
-            IFacturaXOrdenCompraXMovimientoBancarioService<T> facturaXOrdenCompraXMovimientoBancarioService
+            IFacturaXOrdenCompraXMovimientoBancarioService<T> facturaXOrdenCompraXMovimientoBancarioService,
+            IOrdenVentaService<T> ordenVentaService,
+            IDetalleOrdenVentaService<T> detalleOrdenVentaService,
+            IFacturaXOrdenVentaService<T> facturaXOrdenVentaService,
+            IOrdenVentaXMovimientoBancarioService<T> ordenVentaXMovimientoBancarioService,
+            IFacturaXOrdenVentaXMovimientoBancarioService<T> facturaXOrdenVentaXMovimientoBancarioService
             )
         {
             this.env = env;
@@ -103,6 +113,11 @@ namespace ERP_TECKIO.Procesos.Facturacion
             _ordenCompraXMovimientoBancarioService = ordenCompraXMovimientoBancarioService;
             _insumoXOrdenCompraService = insumoXOrdenCompraService;
             _facturaXOrdenCompraXMovimientoBancarioService = facturaXOrdenCompraXMovimientoBancarioService;
+            _ordenVentaService = ordenVentaService;
+            _detalleOrdenVentaService = detalleOrdenVentaService;
+            _facturaXOrdenVentaService = facturaXOrdenVentaService;
+            _ordenVentaXMovimientoBancarioService = ordenVentaXMovimientoBancarioService;
+            _facturaXOrdenVentaXMovimientoBancarioService = facturaXOrdenVentaXMovimientoBancarioService;
         }
 
         public class ConceptosExcelDTO
@@ -180,6 +195,26 @@ namespace ERP_TECKIO.Procesos.Facturacion
             return respuesta;
         }
 
+        public async Task<RespuestaDTO> validaFacturaOV(ClienteDTO cliente, XElement comprobante, XElement facturaReceptor)
+        {
+            var respuesta = new RespuestaDTO();
+            respuesta.Estatus = true;
+            if (facturaReceptor.Attribute("Rfc")?.Value != cliente.Rfc)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "El rfc del cliente no coincide con la factura";
+                return respuesta;
+            }
+            if (comprobante.Attribute("TipoDeComprobante")?.Value != "I")
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "El tipo de comprobante no coincide";
+                return respuesta;
+            }
+
+            return respuesta;
+        }
+
         public async Task<RespuestaDTO> validaTotalFacturaXOC(int IdOrdenCompra, decimal TotalOC, decimal TotalFactura, string uuid) {
             var respuesta = new RespuestaDTO();
             respuesta.Estatus = true;
@@ -205,6 +240,41 @@ namespace ERP_TECKIO.Procesos.Facturacion
             if ((totalFacturas + TotalFactura) > (TotalOC+10)) {
                 respuesta.Estatus = false;
                 respuesta.Descripcion = "Se esta superando el total de la orden de compra";
+                return respuesta;
+            }
+
+            return respuesta;
+        }
+
+        public async Task<RespuestaDTO> validaTotalFacturaXOV(int IdOrdenVenta, decimal TotalOV, decimal TotalFactura, string uuid)
+        {
+            var respuesta = new RespuestaDTO();
+            respuesta.Estatus = true;
+
+            var facturaXOV = await _facturaXOrdenVentaService.ObtenerXIdOrdenVenta(IdOrdenVenta);
+            foreach (var fact in facturaXOV)
+            {
+                var factura = await _facturaService.ObtenXId(fact.IdFactura);
+                if (factura.Uuid == uuid)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "Esta factura ya se ha cargado en esta orden de venta";
+                    return respuesta;
+                }
+            }
+
+            var facturaTotales = facturaXOV.Where(z => z.Estatus != 5);
+            decimal totalFacturas = 0;
+            foreach (var fact in facturaTotales)
+            {
+                var factura = await _facturaService.ObtenXId(fact.IdFactura);
+                totalFacturas += factura.Total;
+            }
+
+            if ((totalFacturas + TotalFactura) > (TotalOV + 10))
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Se esta superando el total de la orden de venta";
                 return respuesta;
             }
 
@@ -342,6 +412,139 @@ namespace ERP_TECKIO.Procesos.Facturacion
             return respuesta;
         }
 
+        public async Task<RespuestaDTO> CargarFacturaXOrdenVenta(List<IFormFile> archivos, int IdOrdenVenta)
+        {
+            var respuesta = new RespuestaDTO();
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Se ha cargado correctamente la factura";
+            var xmls = archivos.FirstOrDefault(file => string.Equals(Path.GetExtension(file.FileName), ".xml", StringComparison.OrdinalIgnoreCase));
+            if (xmls == null)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "No se han cargado comprobante";
+                return respuesta;
+            }
+
+            var pdfs = archivos.FirstOrDefault(file => string.Equals(Path.GetExtension(file.FileName), ".pdf", StringComparison.OrdinalIgnoreCase));
+
+            var ordenVenta = await _ordenVentaService.ObtenerOrdenVentaXId(IdOrdenVenta);
+            var detllesOV = await _detalleOrdenVentaService.ObtenerXIdOrdenVenta(ordenVenta.Id);
+            decimal totalOV = ordenVenta.ImporteTotal;
+
+            var cliente = await _clientesService.ObtenXId((int)ordenVenta.IdCliente);
+
+            using (var memorystream = new MemoryStream())
+            {
+                await xmls.CopyToAsync(memorystream);
+                byte[] xmlFile = memorystream.ToArray();
+
+                XDocument documento = XDocument.Load(new MemoryStream(xmlFile), System.Xml.Linq.LoadOptions.None);
+
+                var ns = documento.Root.GetNamespaceOfPrefix("cfdi");
+                DateTime fechaValidacion = DateTime.Now;
+                var comprobante = documento.Descendants(ns + "Comprobante").FirstOrDefault();
+                var complemento = documento.Descendants(ns + "Complemento").FirstOrDefault();
+                var nodoTimbre = complemento.Elements().FirstOrDefault(e => e.Name.LocalName == "TimbreFiscalDigital");
+                XNamespace tfd = nodoTimbre.Name.Namespace;
+                var timbreFiscalDigital = complemento.Element(tfd + "TimbreFiscalDigital");
+                var uuid = timbreFiscalDigital.Attribute("UUID")?.Value;
+
+                decimal TotalFactura = Convert.ToDecimal(comprobante.Attribute("Total")?.Value);
+                var respuestaTotales = await validaTotalFacturaXOV(IdOrdenVenta, totalOV, TotalFactura, uuid);
+                if (!respuestaTotales.Estatus)
+                {
+                    return respuestaTotales;
+                }
+
+                var existeFactura = await _facturaService.ObtenXUuid(uuid);
+                var existeFacturaValida = existeFactura.Where(z => z.Estatus == 1);
+                if (existeFacturaValida.Count() > 0)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "Alguna factura valida ya habia sido cargada con el mismo identificador";
+                    return respuesta;
+                }
+
+                var fechaTimbrado = timbreFiscalDigital.Attribute("FechaTimbrado")?.Value;
+
+                var numArchivos = await _ArchivoService.ObtenXContenido(uuid);
+                var numeroFacturas = numArchivos.Count() + 1;
+
+                var tipoComprobante = comprobante.Attribute("TipoDeComprobante")?.Value;
+                var facturaEmisor = documento.Descendants(ns + "Emisor").FirstOrDefault();
+                var facturaReceptor = documento.Descendants(ns + "Receptor").FirstOrDefault();
+
+                var respuestaValidacion = await validaFacturaOV(cliente, comprobante, facturaReceptor);
+                if (!respuestaValidacion.Estatus)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "La factura no coincide con la orden de venta";
+                    return respuesta;
+                }
+
+                var descuento = documento.Descendants(ns + "Descuento").FirstOrDefault();
+
+                var resultadoRutaArchivo = await GuardarArchivoFactura(facturaEmisor.Attribute("Rfc")?.Value, facturaReceptor.Attribute("Rfc")?.Value,
+                fechaValidacion.Year.ToString(), fechaValidacion.Month.ToString(), uuid, numeroFacturas, xmls);
+                if (string.IsNullOrEmpty(resultadoRutaArchivo))
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "No se guardo el archivo xml";
+                    return respuesta;
+                }
+                var extension = Path.GetExtension(xmls.FileName);
+                var nombreArchivo = $"{uuid}{extension}";
+                var resultadoArchivoXml = await _ArchivoService.CrearYObtener(new ArchivoDTO()
+                {
+                    Nombre = nombreArchivo,
+                    Ruta = resultadoRutaArchivo
+                });
+                if (resultadoArchivoXml.Id <= 0)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "No se guardó la ruta del archivo";
+                    return respuesta;
+                }
+                int estatusFactura = 1;
+
+                var registrarFactura = await RegistrarFacturaXOrdenVenta(comprobante, ns, resultadoArchivoXml.Id, uuid, fechaValidacion, Convert.ToDateTime(fechaTimbrado),
+                    facturaEmisor, facturaReceptor, estatusFactura, descuento);
+
+                if (registrarFactura.Id <= 0)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "No se guardó la factura";
+                    return respuesta;
+                }
+
+                //RegistrarRelacion con Factura y Orden de Compra
+                var nuevaFacturaXOrdenVenta = await _facturaXOrdenVentaService.Crear(new FacturaXOrdenVentaDTO()
+                {
+                    IdOrdenVenta = IdOrdenVenta,
+                    IdFactura = registrarFactura.Id,
+                    Estatus = 1
+                });
+
+                int IdFactura = registrarFactura.Id;
+
+                var facturaDetalles = documento.Descendants(ns + "Conceptos").FirstOrDefault();
+                await leerFacturaDetalleOrdenCompra(facturaDetalles, ns, IdFactura);
+
+                await leerFacturaEmisor(facturaEmisor, IdFactura);
+
+                var facturaImpuestos = documento.Descendants(ns + "Impuestos").FirstOrDefault();
+                await leerFacturaImpuestos(facturaImpuestos, ns, IdFactura);
+
+                var facturaComplementoPago = documento.Descendants(ns + "Complemento").FirstOrDefault();
+                var nodoPagos = complemento.Elements().FirstOrDefault(e => e.Name.LocalName == "Pagos");
+                XNamespace pago20 = nodoTimbre.Name.Namespace;
+                await leerFacturaComplementoPago(facturaComplementoPago, pago20, IdFactura);
+
+            }
+
+            return respuesta;
+        }
+
         public async Task<bool> leerFacturas()
         {
             string rutaExcel = @"C:\Users\dev_8\Downloads\ListadoCfdi.xlsx";
@@ -443,7 +646,7 @@ namespace ERP_TECKIO.Procesos.Facturacion
         public async Task<RespuestaDTO> cargarFacturas(List<IFormFile> archivos) {
             var respuesta = new RespuestaDTO();
             respuesta.Estatus = true;
-            respuesta.Descripcion = "Se ha cargado correctamente la factura";
+            respuesta.Descripcion = "Se han cargado correctamente las facturas";
             var xmls = archivos.Where(file => string.Equals(Path.GetExtension(file.FileName), ".xml", StringComparison.OrdinalIgnoreCase));
             if (xmls.Count() == 0)
             {
@@ -484,9 +687,7 @@ namespace ERP_TECKIO.Procesos.Facturacion
                     fechaValidacion.Year.ToString(), fechaValidacion.Month.ToString(), uuid, numeroFacturas, xml);
                     if (string.IsNullOrEmpty(resultadoRutaArchivo))
                     {
-                        respuesta.Estatus = false;
-                        respuesta.Descripcion = "No se guardo el archivo";
-                        return respuesta;
+                        continue;
                     }
                     var extension = Path.GetExtension(xml.FileName);
                     var nombreArchivo = $"{uuid}{extension}";
@@ -497,9 +698,7 @@ namespace ERP_TECKIO.Procesos.Facturacion
                     });
                     if (resultadoArchivoXml.Id <= 0)
                     {
-                        respuesta.Estatus = false;
-                        respuesta.Descripcion = "No se guardo el archivo";
-                        return respuesta;
+                        continue;
                     }
                     int estatusFactura = 1;
                     //if (nombreDocumento.EstatusFactura == "Vigente")
@@ -520,16 +719,14 @@ namespace ERP_TECKIO.Procesos.Facturacion
 
                     if (registrarFactura.Id <= 0)
                     {
-                        respuesta.Estatus = false;
-                        respuesta.Descripcion = "No se guardo la factura";
-                        return respuesta;
+                        continue;
                     }
 
 
                     int IdFactura = registrarFactura.Id;
 
                     var facturaDetalles = documento.Descendants(ns + "Conceptos").FirstOrDefault();
-                    await leerFacturaDetalle(facturaDetalles, ns, IdFactura);
+                    await leerFacturaDetalleOrdenCompra(facturaDetalles, ns, IdFactura);
 
                     await leerFacturaEmisor(facturaEmisor, IdFactura);
 
@@ -627,6 +824,83 @@ namespace ERP_TECKIO.Procesos.Facturacion
             return guardarFactura;
         }
 
+        public async Task<FacturaDTO> RegistrarFacturaXOrdenVenta(XElement comprobante, XNamespace ns, long IdArchivo, string uuid, DateTime fechaValidacion, DateTime fechaTimbrado
+            , XElement FacturaEmisor, XElement FacturaReceptor, int estatus, XElement descuento)
+        {
+            var nuevaFactura = new FacturaDTO();
+            nuevaFactura.Uuid = uuid;
+            nuevaFactura.FechaValidacion = fechaValidacion;
+            nuevaFactura.FechaTimbrado = fechaTimbrado;
+            nuevaFactura.FechaEmision = Convert.ToDateTime(comprobante.Attribute("Fecha")?.Value);
+            nuevaFactura.RfcEmisor = FacturaEmisor.Attribute("Rfc")?.Value;
+            nuevaFactura.Subtotal = Convert.ToDecimal(comprobante.Attribute("SubTotal")?.Value);
+            nuevaFactura.Total = Convert.ToDecimal(comprobante.Attribute("Total")?.Value);
+            nuevaFactura.SerieCfdi = comprobante.Attribute("Serie")?.Value;
+            nuevaFactura.FolioCfdi = comprobante.Attribute("Folio")?.Value;
+            nuevaFactura.Estatus = estatus;
+            nuevaFactura.CodigoPostal = comprobante.Attribute("LugarExpedicion")?.Value;
+
+
+            if (comprobante.Attribute("TipoDeComprobante")?.Value == "I")
+            {
+                nuevaFactura.Tipo = 1;
+                nuevaFactura.MetodoPago = comprobante.Attribute("MetodoPago")?.Value;
+
+                var FormaPago = await _formaPagoSatService.ObtenerXClave(comprobante.Attribute("FormaPago")?.Value);
+                nuevaFactura.IdFormaPago = FormaPago.Id;
+            }
+            if (comprobante.Attribute("TipoDeComprobante")?.Value == "E")
+            {
+                nuevaFactura.Tipo = 2;
+                nuevaFactura.MetodoPago = comprobante.Attribute("MetodoPago")?.Value;
+            }
+            if (comprobante.Attribute("TipoDeComprobante")?.Value == "P")
+            {
+                nuevaFactura.Tipo = 5;
+                nuevaFactura.MetodoPago = "PUE";
+                nuevaFactura.IdFormaPago = null;
+            }
+            if (comprobante.Attribute("TipoDeComprobante")?.Value == "T")
+            {
+                nuevaFactura.Tipo = 4;
+                nuevaFactura.MetodoPago = "NA";
+                if (comprobante.Attribute("FormaPago")?.Value != null)
+                {
+                    var FormaPago = await _formaPagoSatService.ObtenerXClave(comprobante.Attribute("FormaPago")?.Value);
+                    nuevaFactura.IdFormaPago = FormaPago.Id;
+                }
+                else
+                {
+                    nuevaFactura.IdFormaPago = null;
+                }
+            }
+
+
+            //1 = Cargada por proveedor
+            //2 = Carga masiva ftp
+            //3 = Descarga SAT
+            nuevaFactura.Modalidad = 1;
+            nuevaFactura.IdArchivo = IdArchivo;
+            nuevaFactura.Descuento = descuento != null ? Convert.ToDecimal(descuento.Attribute("Descuento")?.Value) : 0;
+            nuevaFactura.IdArchivoPdf = null;
+            nuevaFactura.EstatusEnviadoCentroCostos = false;
+
+            nuevaFactura.VersionFactura = "4.0";
+            nuevaFactura.TipoCambio = 1;
+
+            var regimenFiscal = await _regimenFiscalSatService.ObtenerXClave(FacturaReceptor.Attribute("RegimenFiscalReceptor")?.Value);
+            nuevaFactura.IdRegimenFiscalSat = regimenFiscal.Id;
+
+            var usoCfdi = await _usoCfdiSatService.ObtenerXClave(FacturaReceptor.Attribute("UsoCFDI")?.Value);
+            nuevaFactura.IdUsoCfdi = usoCfdi.Id;
+
+            var moneda = await _monedaSatService.ObtenerXClave(comprobante.Attribute("Moneda")?.Value);
+            nuevaFactura.IdMonedaSat = moneda.Id;
+
+            var guardarFactura = await _facturaService.CrearYObtener(nuevaFactura);
+            return guardarFactura;
+        }
+
         public async Task<FacturaDTO> RegistrarFactura(XElement comprobante, XNamespace ns, long IdArchivo, string uuid, DateTime fechaValidacion, DateTime fechaTimbrado
             , XElement FacturaEmisor, XElement FacturaReceptor, int estatus, XElement descuento)
         {
@@ -640,6 +914,9 @@ namespace ERP_TECKIO.Procesos.Facturacion
             nuevaFactura.Subtotal = Convert.ToDecimal(comprobante.Attribute("SubTotal")?.Value);
             nuevaFactura.Total = Convert.ToDecimal(comprobante.Attribute("Total")?.Value);
             nuevaFactura.SerieCfdi = comprobante.Attribute("Serie")?.Value;
+            if (nuevaFactura.SerieCfdi == null) {
+                nuevaFactura.SerieCfdi = "";
+            }
             nuevaFactura.FolioCfdi = comprobante.Attribute("Folio")?.Value;
             nuevaFactura.Estatus = estatus;
 
@@ -1172,6 +1449,47 @@ namespace ERP_TECKIO.Procesos.Facturacion
             return ordenCompraFacturas;
         }
 
+        public async Task<OrdenVentaFacturasDTO> ObtenFacturaXOrdenVenta(int IdOrdenVenta)
+        {
+            var ordenVentaFacturas = new OrdenVentaFacturasDTO();
+            ordenVentaFacturas.FacturasXOrdenVenta = new List<FacturaXOrdenVentaDTO>();
+            decimal MontoTotalOV = 0;
+            decimal MontoTotalFactura = 0;
+
+            var ordenVenta = await _ordenVentaService.ObtenerOrdenVentaXId(IdOrdenVenta);
+            MontoTotalOV = ordenVenta.ImporteTotal;
+
+            var facturasXOrdenVenta = await _facturaXOrdenVentaService.ObtenerXIdOrdenVenta(IdOrdenVenta);
+
+            foreach (var fxov in facturasXOrdenVenta)
+            {
+                var factura = await _facturaService.ObtenXId(fxov.IdFactura);
+                if (fxov.Estatus != 1 && fxov.Estatus != 5)
+                {
+                    MontoTotalFactura += factura.Total;
+                }
+                var detallesFactura = await _facturaDetalleService.ObtenXIdFactura(factura.Id);
+                foreach (var det in detallesFactura)
+                {
+                    var producto = await _productoYservicioService.ObtenerXId(det.IdProductoYservicio);
+                    det.Descripcion = producto.Descripcion;
+                    var unidad = await _unidadSatService.ObtenerXId((int)producto.IdUnidadSat);
+                    det.UnidadSat = unidad.Clave;
+                }
+                fxov.FechaEmision = factura.FechaEmision;
+                fxov.Uuid = factura.Uuid;
+                fxov.Total = factura.Total;
+                fxov.DetalleFactura.AddRange(detallesFactura);
+            }
+
+            ordenVentaFacturas.MontoTotalFactura = MontoTotalFactura;
+            ordenVentaFacturas.MontoTotalFactura = MontoTotalOV;
+            ordenVentaFacturas.FacturasXOrdenVenta = facturasXOrdenVenta;
+            ordenVentaFacturas.EstatusSaldado = ordenVenta.EstatusSaldado;
+
+            return ordenVentaFacturas;
+        }
+
         public async Task<RespuestaDTO> AutorizarFacturaXOrdenCompra(FacturaXOrdenCompraDTO facturaXOrdenCompra) {
             var respuesta = new RespuestaDTO();
             respuesta.Estatus = true;
@@ -1304,6 +1622,141 @@ namespace ERP_TECKIO.Procesos.Facturacion
             return respuesta;
         }
 
+        public async Task<RespuestaDTO> AutorizarFacturaXOrdenVenta(FacturaXOrdenVentaDTO facturaXOrdenVenta)
+        {
+            var respuesta = new RespuestaDTO();
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Se autorizo la factura";
+            if (facturaXOrdenVenta.Estatus != 1)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "La factura debe ser capturada para poder autorizarla";
+                return respuesta;
+            }
+
+            var ordenVenta = await _ordenVentaService.ObtenerOrdenVentaXId(facturaXOrdenVenta.IdOrdenVenta);
+            var facturasXOV = await _facturaXOrdenVentaService.ObtenerXIdOrdenVenta(facturaXOrdenVenta.IdOrdenVenta);
+            var facturasPagadas = facturasXOV.Where(z => z.Estatus == 3 || z.Estatus == 4);
+
+            var totalF = facturasPagadas.Sum(z => z.TotalSaldado);
+            if (totalF >= ordenVenta.ImporteTotal)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "Ya se a facturado en su totalidad";
+                return respuesta;
+            }
+
+            var OVxMB = await _ordenVentaXMovimientoBancarioService.ObtenXIdOrdenVenta(facturaXOrdenVenta.IdOrdenVenta);
+            var OVxMBordenados = OVxMB.Where(z => z.Estatus == 1).OrderBy(z => z.Id);
+
+            if (ordenVenta.TotalSaldado > totalF)
+            {
+                decimal diferencia = ordenVenta.TotalSaldado - (decimal)totalF;
+                if (diferencia > 0)
+                {
+                    var factura = await _facturaService.ObtenXId(facturaXOrdenVenta.IdFactura);
+                    decimal TotalFactura = 0;
+                    if (diferencia >= factura.Total)
+                    {
+                        facturaXOrdenVenta.TotalSaldado = factura.Total;
+                        facturaXOrdenVenta.Estatus = 4;
+                        TotalFactura = factura.Total;
+                    }
+                    else if (diferencia < factura.Total)
+                    {
+                        facturaXOrdenVenta.TotalSaldado = factura.Total - diferencia;
+                        facturaXOrdenVenta.Estatus = 3;
+                        TotalFactura = factura.Total - diferencia;
+                    }
+
+                    var editaFacturaXOV = await _facturaXOrdenVentaService.Editar(facturaXOrdenVenta);
+                    if (!editaFacturaXOV)
+                    {
+                        respuesta.Estatus = false;
+                        respuesta.Descripcion = "No se pudo autorizar la facura";
+                        return respuesta;
+                    }
+
+                    var facturasXOV2 = await _facturaXOrdenVentaService.ObtenerXIdOrdenVenta(facturaXOrdenVenta.IdOrdenVenta);
+                    var facturasPagadas2 = facturasXOV.Where(z => z.Estatus == 3 || z.Estatus == 4);
+
+                    foreach (var OVMB in OVxMBordenados)
+                    {
+                        var facturaXMB = await _facturaXOrdenVentaXMovimientoBancarioService.ObtenXIdMovimientoBancario(OVMB.IdMovimientoBancario);
+                        var facturaXMBsinCancelar = facturaXMB.Where(z => z.Estatus == 1);
+                        decimal TotalFMB = 0;
+                        foreach (var fmb in facturaXMBsinCancelar)
+                        {
+                            foreach (var fxov in facturasPagadas2)
+                            {
+                                if (fmb.IdFacturaXOrdenVenta == fxov.Id)
+                                {
+                                    TotalFMB += fmb.TotalSaldado;
+                                }
+                            }
+                        }
+
+                        if (TotalFMB < OVMB.TotalSaldado)
+                        {
+                            decimal diferecia = (decimal)OVMB.TotalSaldado - TotalFMB;
+                            if (diferecia >= TotalFactura)
+                            {
+                                //crearFacturaMB
+                                await _facturaXOrdenVentaXMovimientoBancarioService.Crear(new FacturaXOrdenVentaXMovimientoBancarioDTO()
+                                {
+                                    IdFacturaXOrdenVenta = facturaXOrdenVenta.Id,
+                                    Estatus = 1,
+                                    IdMovimientoBancario = OVMB.IdMovimientoBancario,
+                                    TotalSaldado = TotalFactura,
+                                });
+                            }
+                            else
+                            {
+                                //crearFactuaMB
+                                await _facturaXOrdenVentaXMovimientoBancarioService.Crear(new FacturaXOrdenVentaXMovimientoBancarioDTO()
+                                {
+                                    IdFacturaXOrdenVenta = facturaXOrdenVenta.Id,
+                                    Estatus = 1,
+                                    IdMovimientoBancario = OVMB.IdMovimientoBancario,
+                                    TotalSaldado = diferecia,
+                                });
+                                TotalFactura -= diferecia;
+                            }
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                }
+                else
+                {
+                    facturaXOrdenVenta.Estatus = 2;
+                    var editaFacturaXOV = await _facturaXOrdenVentaService.Editar(facturaXOrdenVenta);
+                    if (!editaFacturaXOV)
+                    {
+                        respuesta.Estatus = false;
+                        respuesta.Descripcion = "No se pudo autorizar la facura";
+                        return respuesta;
+                    }
+                }
+            }
+            else
+            {
+                facturaXOrdenVenta.Estatus = 2;
+                var editaFacturaXOV = await _facturaXOrdenVentaService.Editar(facturaXOrdenVenta);
+                if (!editaFacturaXOV)
+                {
+                    respuesta.Estatus = false;
+                    respuesta.Descripcion = "No se pudo autorizar la facura";
+                    return respuesta;
+                }
+            }
+
+
+            return respuesta;
+        }
+
         public async Task<RespuestaDTO> CancelarFacturaXOrdenCompra(FacturaXOrdenCompraDTO facturaXOrdenCompra) {
             var respuesta = new RespuestaDTO();
             respuesta.Estatus = true;
@@ -1318,6 +1771,27 @@ namespace ERP_TECKIO.Procesos.Facturacion
             facturaXOrdenCompra.Estatus = 5;
             var editaFacturaXOC = await _facturaXOrdenCompraService.Editar(facturaXOrdenCompra);
             var factura = await _facturaService.ObtenXId(facturaXOrdenCompra.IdFactura);
+            factura.Estatus = 2;
+            var editarFactura = await _facturaService.Cancelar(factura);
+
+            return respuesta;
+        }
+
+        public async Task<RespuestaDTO> CancelarFacturaXOrdenVenta(FacturaXOrdenVentaDTO facturaXOrdenVenta)
+        {
+            var respuesta = new RespuestaDTO();
+            respuesta.Estatus = true;
+            respuesta.Descripcion = "Se ccanceó la factura";
+
+            if (facturaXOrdenVenta.Estatus != 1)
+            {
+                respuesta.Estatus = false;
+                respuesta.Descripcion = "la factura ya ha sido autorizada";
+                return respuesta;
+            }
+            facturaXOrdenVenta.Estatus = 5;
+            var editaFacturaXOC = await _facturaXOrdenVentaService.Editar(facturaXOrdenVenta);
+            var factura = await _facturaService.ObtenXId(facturaXOrdenVenta.IdFactura);
             factura.Estatus = 2;
             var editarFactura = await _facturaService.Cancelar(factura);
 

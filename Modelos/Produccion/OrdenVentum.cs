@@ -1,4 +1,6 @@
 ﻿using ERP_TECKIO.Modelos;
+using ERP_TECKIO.Modelos.Contabilidad;
+using ERP_TECKIO.Modelos.Facturaion;
 using System;
 using System.Collections.Generic;
 
@@ -7,6 +9,8 @@ namespace ERP_TECKIO;
 public partial class OrdenVentum : OrdenVentaAbstract
 {
     public virtual ICollection<DetalleOrdenVentum> DetalleOrdenVenta { get; set; } = new List<DetalleOrdenVentum>();
+    public virtual ICollection<FacturaXOrdenVenta> FacturaXOrdenVentas { get; set; } = new List<FacturaXOrdenVenta>();
+    public virtual ICollection<OrdenVentaXMovimientoBancario> OrdenVentaXMovimientoBancarios { get; set; } = new List<OrdenVentaXMovimientoBancario>();
 
     public virtual Clientes IdClienteNavigation { get; set; } = null!;
 }

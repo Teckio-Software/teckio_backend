@@ -3,7 +3,7 @@
     public class AlmacenEntradaInsumoDTO
     {
         public int Id { get; set; }
-        public int IdProyecto { get; set; }
+        public int? IdProyecto { get; set; }
         public string NombreProyecto { get; set; }
         public int? IdRequisicion { get; set; }
         public string NoRequisicion { get; set; }

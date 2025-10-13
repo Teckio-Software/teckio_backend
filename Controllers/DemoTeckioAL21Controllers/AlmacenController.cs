@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ERP_TECKIO;
-using Microsoft.AspNetCore.Authorization;
-
-
-
+﻿using ERP_TECKIO;
+using ERP_TECKIO.Procesos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ERP_TECKIO.Controllers
 {
@@ -16,11 +14,12 @@ namespace ERP_TECKIO.Controllers
     public class AlmacenDemoTeckioAL21Controller : ControllerBase
     {
         private readonly IAlmacenService<DemoTeckioAL21Context> _almacenServicio;
-
+        private readonly AlmacenProceso<DemoTeckioAL21Context> _almacenProceso;
         public AlmacenDemoTeckioAL21Controller(
-            IAlmacenService<DemoTeckioAL21Context> almacenServicio)
+            IAlmacenService<DemoTeckioAL21Context> almacenServicio, AlmacenProceso<DemoTeckioAL21Context> almacenProceso)
         {
             _almacenServicio = almacenServicio;
+            _almacenProceso = almacenProceso;
         }
 
         [HttpPost("Crear")]
@@ -61,6 +60,10 @@ namespace ERP_TECKIO.Controllers
         {
             return await _almacenServicio.Editar(Edit);
         }
-
+        [HttpGet("ObtenTodosConProyecto")]
+        public async Task<ActionResult<List<AlmacenDTO>>> ObtenTodosConProyecto()
+        {
+            return await _almacenProceso.ObtenerConNombresProyecto();
+        }
     }
 }

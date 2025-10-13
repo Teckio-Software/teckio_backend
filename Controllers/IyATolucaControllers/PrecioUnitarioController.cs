@@ -1,4 +1,5 @@
 ﻿
+using ERP_TECKIO.DTO;
 using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.Procesos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -346,5 +347,12 @@ namespace ERP_TECKIO
         //    }
         //    //DbfDataReader file = new DbfDataReader(ImportacionInsumo.FirstOrDefault(), FileMode.Open, FileAccess.Read);
         //}
+        [HttpGet("obtenerPrecioUnitarioImprimirManoDeObra/{id:int}")]
+        public async Task<ActionResult<PrecioUnitarioManoDeObraConjuntoDTO>> obtenerPrecioUnitarioImprimirManoDeObra(int id)
+        {
+            var authen = HttpContext.User;
+            var lista = await _precioUnitarioProceso.obtenerPrecioUnitarioImprimirManoDeObra(id, authen.Claims.ToList());
+            return lista;
+        }
     }
 }

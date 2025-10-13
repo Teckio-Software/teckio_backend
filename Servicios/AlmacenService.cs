@@ -60,25 +60,32 @@ namespace ERP_TECKIO
         public async Task<RespuestaDTO> Editar(AlmacenDTO parametro)
         {
             RespuestaDTO respuesta = new RespuestaDTO();
-           
-                var modelo = _Mapper.Map<Almacen>(parametro);
 
-                var objeto = await _Repositorio.Obtener(u => u.Id == modelo.Id);
+            var modelo = _Mapper.Map<Almacen>(parametro);
 
-                if (objeto == null)
+            var objeto = await _Repositorio.Obtener(u => u.Id == modelo.Id);
+
+            if (objeto == null)
             {
                 return respuesta;
             }
 
-                objeto.Codigo = modelo.Codigo;
-                objeto.AlmacenNombre = modelo.AlmacenNombre;
-                objeto.Central = modelo.Central;
-                objeto.Responsable = modelo.Responsable;
-                objeto.Domicilio = modelo.Domicilio;
-                objeto.Colonia = modelo.Colonia;
-                objeto.Ciudad = modelo.Ciudad;
-                objeto.Telefono = modelo.Telefono;
-
+            objeto.Codigo = modelo.Codigo;
+            objeto.AlmacenNombre = modelo.AlmacenNombre;
+            objeto.Central = modelo.Central;
+            objeto.Responsable = modelo.Responsable;
+            objeto.Domicilio = modelo.Domicilio;
+            objeto.Colonia = modelo.Colonia;
+            objeto.Ciudad = modelo.Ciudad;
+            objeto.Telefono = modelo.Telefono;
+            if (objeto.Central == true)
+            {
+                objeto.IdProyecto = null;
+            }
+            else
+            {
+                objeto.IdProyecto = parametro.IdProyecto;
+            }
                 respuesta.Estatus = await _Repositorio.Editar(objeto);
 
                 if (!respuesta.Estatus)

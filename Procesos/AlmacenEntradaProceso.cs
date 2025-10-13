@@ -395,13 +395,23 @@ namespace ERP_TECKIO
             if (almacenEntradaCreacion.Id <= 0)
             {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "No se creó la entrdada de material";
+                respuesta.Descripcion = "No se creó la entrdada de material.";
                 return respuesta;
             }
 
             List<AlmacenEntradaInsumoDTO> listaInsumos = new List<AlmacenEntradaInsumoDTO>();
             List<AlmacenExistenciaInsumoCreacionDTO> listaExistenciaEntrada = new List<AlmacenExistenciaInsumoCreacionDTO>();
-            var insumos = await _insumoService.ObtenXIdProyecto(Convert.ToInt32(almacen.IdProyecto));
+            var insumos = new List<InsumoDTO>();
+            if (almacen.IdProyecto != null)
+            {
+                insumos = await _insumoService.ObtenXIdProyecto(Convert.ToInt32(almacen.IdProyecto));
+            }
+            else
+            {
+                var listaIds = parametros.ListaInsumosEnAlmacenEntrada.Select(p => p.IdInsumo);
+                insumos = await _insumoService.ObtenerTodos();
+                insumos = insumos.Where(i => listaIds.Contains(i.id)).ToList();
+            }
             for (int i = 0; i < parametros.ListaInsumosEnAlmacenEntrada.Count(); i++)
             {
                 var objetoinsumo = insumos.Where(z => z.Descripcion.ToLower() == parametros.ListaInsumosEnAlmacenEntrada[i].Descripcion.ToLower() && z.Unidad.ToLower() == parametros.ListaInsumosEnAlmacenEntrada[i].Unidad.ToLower()).ToList();
@@ -427,7 +437,7 @@ namespace ERP_TECKIO
 
                 listaInsumos.Add(new AlmacenEntradaInsumoDTO()
                 {
-                    IdProyecto = Convert.ToInt32(almacen.IdProyecto),
+                    IdProyecto = (almacen.IdProyecto==null) ? null : Convert.ToInt32(almacen.IdProyecto),
                     IdRequisicion = 0,
                     IdOrdenCompra = 0,
                     IdAlmacenEntrada = almacenEntradaCreacion.Id,
@@ -454,13 +464,13 @@ namespace ERP_TECKIO
             if (!insumosEntrdaMaterial)
             {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "Ocurrió un problema";
+                respuesta.Descripcion = "Ocurrió un problema.";
                 return respuesta;
             }
             var insumosEntradaExistencia = await _almacenExistenciaInsumoService.CrearLista(listaExistenciaEntrada);
 
             respuesta.Estatus = true;
-            respuesta.Descripcion = "Entrada de almacen creada";
+            respuesta.Descripcion = "Entrada de almacen creada.";
             return respuesta;
 
         }
@@ -661,7 +671,7 @@ namespace ERP_TECKIO
             List<AlmacenEntradaInsumoDTO> lista = new List<AlmacenEntradaInsumoDTO>();
             var insumosEntradaAlmacen = await _insumoXAlmacenEntradaService.ObtenTodos();
             var IEA = insumosEntradaAlmacen.Where(z => z.IdProyecto == idProyecto).ToList();
-            var insumos = await _insumoService.ObtenXIdProyecto(IEA[0].IdProyecto);
+            var insumos = await _insumoService.ObtenXIdProyecto((int)IEA[0].IdProyecto);
             foreach (var ieap in IEA)
             {
                 var insumo = insumos.Where(z => z.id == ieap.IdInsumo).ToList();
@@ -688,7 +698,7 @@ namespace ERP_TECKIO
             List<AlmacenEntradaInsumoDTO> lista = new List<AlmacenEntradaInsumoDTO>();
             var insumosEntradaAlmacen = await _insumoXAlmacenEntradaService.ObtenTodos();
             var insumosEntradaAlmacenXidRequisicion = insumosEntradaAlmacen.Where(z => z.IdRequisicion == idRequisicion).ToList();
-            var insumos = await _insumoService.ObtenXIdProyecto(insumosEntradaAlmacenXidRequisicion[0].IdProyecto);
+            var insumos = await _insumoService.ObtenXIdProyecto((int)insumosEntradaAlmacenXidRequisicion[0].IdProyecto);
             foreach (var iear in insumosEntradaAlmacenXidRequisicion)
             {
                 var insumo = insumos.Where(z => z.id == iear.IdInsumo).ToList();
@@ -716,7 +726,7 @@ namespace ERP_TECKIO
             if (insumosEntradaAlmacenXidEntradaAlmacen.Count() <= 0) { 
                 return lista;
             }
-            var insumos = await _insumoService.ObtenXIdProyecto(insumosEntradaAlmacenXidEntradaAlmacen[0].IdProyecto);
+            var insumos = await _insumoService.ObtenXIdProyecto((int)insumosEntradaAlmacenXidEntradaAlmacen[0].IdProyecto);
             foreach (var iear in insumosEntradaAlmacenXidEntradaAlmacen)
             {
                 var insumo = insumos.Where(z => z.id == iear.IdInsumo).ToList();

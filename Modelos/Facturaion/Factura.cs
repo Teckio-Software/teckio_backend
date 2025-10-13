@@ -18,6 +18,7 @@ public partial class Factura : FacturaAbstract
     public virtual ICollection<FacturaReceptor> FacturaReceptors { get; set; } = new List<FacturaReceptor>();
     public virtual ICollection<MovimientoBancario> MovimientosBancarios { get; set; } = new List<MovimientoBancario>();
     public virtual ICollection<FacturaXOrdenCompra> FacturaXOrdenCompras { get; set; } = new List<FacturaXOrdenCompra>();
+    public virtual ICollection<FacturaXOrdenVenta> FacturaXOrdenVentas { get; set; } = new List<FacturaXOrdenVenta>();
     public virtual Clientes IdClienteNavigation { get; set; } = null!;
 
     public virtual FormaPagoSat IdFormaPagoNavigation { get; set; } = null!;
