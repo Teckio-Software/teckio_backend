@@ -93,13 +93,17 @@ namespace ERP_TECKIO.Procesos
                     return respuesta;
                 }
                 //Comprueba que la extensión del archivo sea correcta
-                if (!(System.IO.Path.GetExtension(archivo.FileName).ToLower().Contains("png")|| System.IO.Path.GetExtension(archivo.FileName).ToLower().Contains("jpg") || System.IO.Path.GetExtension(archivo.FileName).ToLower().Contains("jpeg") || System.IO.Path.GetExtension(archivo.FileName).ToLower().Contains("webp")))
+                if (!(System.IO.Path.GetExtension(archivo.FileName).ToLower().Contains("png")|| System.IO.Path.GetExtension(archivo.FileName).ToLower().Contains("jpg") || System.IO.Path.GetExtension(archivo.FileName).ToLower().Contains("jpeg")))
                 {
                     respuesta.Estatus = false;
                     respuesta.Descripcion = "El tipo de archivo es incorrecto, debe ser jpg, jpeg, webp o png";
-                    await _logProcess.RegistrarLog(NivelesLog.Warn, metodo, "El tipo de archivo es incorrecto, debe ser jpg, jpeg, webp o png", "", IdUsuario, 1);
+                    await _logProcess.RegistrarLog(NivelesLog.Warn, metodo, "El tipo de archivo es incorrecto, debe ser jpg, jpeg o png", "", IdUsuario, 1);
                     return respuesta;
                 }
+                //if (System.IO.Path.GetExtension(archivo.FileName).ToLower().Contains("webp"))
+                //{
+
+                //}
                 var fecha = DateTime.Now;
                 var mes = fecha.ToString("MMMM", new System.Globalization.CultureInfo("es-ES"));
                 //Obtiene el nombre del archivo
