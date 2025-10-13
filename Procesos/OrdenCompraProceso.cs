@@ -93,12 +93,12 @@ namespace ERP_TECKIO
             if (crearOrdenCompra.Id <= 0)
             {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "No se creó la orden de compra";
+                respuesta.Descripcion = "No se creó la orden de compra.";
                 return respuesta;
             }
 
             respuesta.Estatus = true;
-            respuesta.Descripcion = "Orden de compra creada";
+            respuesta.Descripcion = "Orden de compra creada.";
             return respuesta;
         }
 
@@ -109,7 +109,7 @@ namespace ERP_TECKIO
             if (!editarInsumoXCotizacion.Estatus)
             {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "No se pudo comprar el insumo";
+                respuesta.Descripcion = "No se pudo comprar el insumo.";
                 return respuesta;
             }
             var IOC = new InsumoXOrdenCompraDTO();
@@ -125,7 +125,7 @@ namespace ERP_TECKIO
             if (crearIOC.Id <= 0)
             {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "No se pudo comprar el insumo";
+                respuesta.Descripcion = "No se pudo comprar el insumo.";
                 return respuesta;
             }
             var ImpuestoIXC = await _impuestoInsumoCotizadoService.ObtenerXIdInsumoCotizado(crearIOC.IdInsumoXCotizacion);
@@ -151,7 +151,7 @@ namespace ERP_TECKIO
                 await _actualizaRequsicionEstatusInsumos.ActualizaEstatusRequisicionInsumos(OC.IdRequisicion);
             }
             respuesta.Estatus = true;
-            respuesta.Descripcion = "Insumo comprado";
+            respuesta.Descripcion = "Insumo comprado.";
             return respuesta;
         }
 
@@ -162,19 +162,19 @@ namespace ERP_TECKIO
             if (usuarioNombre.Count() <= 0)
             {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "No esta logueado";
+                respuesta.Descripcion = "No esta logueado.";
                 return respuesta;
             }
             if (string.IsNullOrEmpty(parametros.Chofer) || string.IsNullOrEmpty(parametros.Observaciones) || parametros.ListaInsumosOrdenCompra.Count() <= 0)
             {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "Capture todos los datos";
+                respuesta.Descripcion = "Capture todos los datos.";
                 return respuesta;
             }
             if(parametros.ListaInsumosOrdenCompra.Count() <= 0)
             {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "No hay insumos autorizados";
+                respuesta.Descripcion = "No hay insumos autorizados.";
                 return respuesta;
             }
             foreach (var item in parametros.ListaInsumosOrdenCompra) {
@@ -182,7 +182,7 @@ namespace ERP_TECKIO
                    || item.Cantidad == 0 || item.PrecioUnitario == 0 || item.ImporteConIva == 0 || item.ImporteSinIva == 0)
                 {
                     respuesta.Estatus = false;
-                    respuesta.Descripcion = "Capture todos los datos";
+                    respuesta.Descripcion = "Capture todos los datos.";
                     return respuesta;
                 }
             }
@@ -215,7 +215,7 @@ namespace ERP_TECKIO
             if (crearOrdenCompra.Id <= 0)
             {
                 respuesta.Estatus = false;
-                respuesta.Descripcion = "No se creó la orden de compra";
+                respuesta.Descripcion = "No se creó la orden de compra.";
                 return respuesta;
             }
 
@@ -226,7 +226,7 @@ namespace ERP_TECKIO
                 var editarInsumoXCotizacion = await _insumoXCotizacionService.VerificaEstatusAutorizado(idInsumoXCotizacion);
                 if (!editarInsumoXCotizacion.Estatus) {
                     respuesta.Estatus = false;
-                    respuesta.Descripcion = "No se pudo comprar el insumo";
+                    respuesta.Descripcion = "No se pudo comprar el insumo.";
                     return respuesta;
                 }
                 insumosOrdenCompra.Add(new InsumoXOrdenCompraDTO()
@@ -280,7 +280,7 @@ namespace ERP_TECKIO
                 
             }
             respuesta.Estatus = true;
-            respuesta.Descripcion = "Orden de compra creada";
+            respuesta.Descripcion = "Orden de compra creada.";
             return respuesta;
         }
 
