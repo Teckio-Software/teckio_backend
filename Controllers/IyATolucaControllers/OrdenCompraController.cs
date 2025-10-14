@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using ERP_TECKIO.Procesos;
 using ERP_TECKIO.Procesos.Facturacion;
 using ERP_TECKIO.DTO.Factura;
+using ERP_TECKIO.DTO;
 
 
 namespace ERP_TECKIO.Controllers
@@ -175,6 +176,13 @@ namespace ERP_TECKIO.Controllers
         public async Task<ActionResult<List<OrdenCompraDTO>>> ObtenerXIdContratistaSinPagar(int IdContratista)
         {
             var lista = await _Proceso.ObtenerXIdContratistaSinPagar(IdContratista);
+            return lista;
+        }
+
+        [HttpGet("ObtenerTodasSinPagar")]
+        public async Task<ActionResult<List<OrdenCompraDTO>>> ObtenerTodasSinPagar()
+        {
+            var lista = await _Proceso.ObtenerTodasSinPagar();
             return lista;
         }
 

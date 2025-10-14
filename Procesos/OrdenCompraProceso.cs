@@ -7,6 +7,9 @@ using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.Servicios.Contratos.Facturacion;
 using ERP_TECKIO.Modelos;
 using System.Text.Json;
+using ERP_TECKIO.DTO;
+using ERP_TECKIO.Servicios.Facturacion;
+using ERP_TECKIO.Servicios;
 
 namespace ERP_TECKIO
 {
@@ -26,6 +29,7 @@ namespace ERP_TECKIO
         private readonly IFacturaService<T> _facturaService;
         private readonly IProyectoService<T> _proyectoService;
         private readonly T _dbContext;
+        private readonly IContratistaService<T> _contratistaService;
 
         public OrdenCompraProceso(
             IOrdenCompraService<T> ordenCompraService,
@@ -41,7 +45,8 @@ namespace ERP_TECKIO
             , IFacturaXOrdenCompraService<T> facturaXOrdenCompraService
             , IFacturaService<T> facturaService
             , IProyectoService<T> proyectoService
-            , T dbContext
+            , T dbContext,
+            IContratistaService<T> contratistaService
             )
         {
             _ordenCompraService = ordenCompraService;
@@ -58,6 +63,7 @@ namespace ERP_TECKIO
             _facturaService = facturaService;
             _proyectoService = proyectoService;
             _dbContext = dbContext;
+            _contratistaService = contratistaService;
         }
 
         public async Task<RespuestaDTO> CrearOrdenCompra(OrdenCompraCreacionDTO parametros, List<System.Security.Claims.Claim> claims)
@@ -603,6 +609,8 @@ namespace ERP_TECKIO
                 var insumosXOrdeCompra = await _insumoXOrdenCompraService.ObtenXIdOrdenCompra(orden.Id);
                 decimal totalOc = insumosXOrdeCompra.Sum(z => z.ImporteConIva);
                 orden.EstatusInsumosSurtidosDescripcion = "";
+                orden.EstatusSaldadoDescripcion = "";
+                orden.NombreProyecto = "";
                 orden.Saldo = insumosXOrdeCompra.Sum(z => z.ImporteConIva) - orden.TotalSaldado;
                 orden.MontoAPagar = orden.Saldo;
 
@@ -740,6 +748,42 @@ namespace ERP_TECKIO
             string json = string.Join("", items);
             var datos = JsonSerializer.Deserialize<List<OrdenesCompraXInsumoDTO>>(json);
             return datos;
+        }
+
+        public async Task<List<OrdenCompraDTO>> ObtenerTodasSinPagar()
+        {
+            var ordenesCompra = await _ordenCompraService.ObtenTodas();
+            var proveedores = await _contratistaService.ObtenTodos();
+            var ordenesPorPagar = ordenesCompra.Where(z => z.EstatusSaldado != 3).ToList();
+            var OCsinFacturas = new List<OrdenCompraDTO>();
+            foreach (var orden in ordenesPorPagar)
+            {
+                var insumoXOrdenComrpa = _insumoXOrdenCompraService.ObtenXIdOrdenCompra(orden.Id).Result;
+                decimal totalOc = insumoXOrdenComrpa.Sum(z => z.ImporteConIva);
+                orden.ImporteTotal = totalOc;
+                orden.Saldo = orden.ImporteTotal - orden.TotalSaldado;
+                orden.MontoAPagar = orden.Saldo;
+
+                var proveedor = proveedores.FirstOrDefault(z => z.Id == orden.IdContratista);
+                if (proveedor != null)
+                {
+                    orden.RazonSocial = proveedor.RazonSocial;
+                }
+                else
+                {
+                    orden.RazonSocial = "";
+                }
+
+                var FacturasxOC = await _facturaXOrdenCompraService.ObtenerXIdOrdenCompra(orden.Id);
+                var FacturasAutorizadas = FacturasxOC.Where(z => z.Estatus != 1 && z.Estatus != 5);
+                if (FacturasAutorizadas.Count() >= 1 && (orden.TotalSaldado >= totalOc))
+                {
+                    continue;
+                }
+                OCsinFacturas.Add(orden);
+            }
+
+            return OCsinFacturas;
         }
     }
 }

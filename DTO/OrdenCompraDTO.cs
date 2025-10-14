@@ -39,6 +39,7 @@ namespace ERP_TECKIO
         public string EstatusInsumosSurtidosDescripcion {  get; set; }
         public int EstatusSaldado { get; set; }
         public string EstatusSaldadoDescripcion { get; set; }
+        public decimal ImporteTotal { get; set; }
         public decimal TotalSaldado { get; set; }
         public decimal Saldo { get; set; }
         public decimal MontoAPagar { get; set; }
