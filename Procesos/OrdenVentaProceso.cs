@@ -540,6 +540,35 @@ namespace ERP_TECKIO.Procesos
             return OVsinFacturas;
         }
 
+        public async Task<List<OrdenVentaDTO>> ObtenerTodasSinPagar()
+        {
+            var ordenesVenta = await _ordenVentaService.ObtenerTodos();
+            var clientes = await _clienteService.ObtenTodos();
+            var ordenesPorPagar = ordenesVenta.Where(z => z.EstatusSaldado != 3 && z.Estatus == 1).ToList();
+            var OVsinFacturas = new List<OrdenVentaDTO>();
+            foreach (var orden in ordenesPorPagar)
+            {
+                decimal totalOc = orden.ImporteTotal;
+                orden.Saldo = orden.ImporteTotal - orden.TotalSaldado;
+                orden.MontoAPagar = orden.Saldo;
+
+                var cliente = clientes.FirstOrDefault(z => z.Id == orden.IdCliente);
+                if (cliente != null) {
+                    orden.RazonSocialCliente = cliente.RazonSocial;
+                }
+
+                var FacturasxOv = await _facturaXOrdenVentaService.ObtenerXIdOrdenVenta(orden.Id);
+                var FacturasAutorizadas = FacturasxOv.Where(z => z.Estatus != 1 && z.Estatus != 5);
+                if (FacturasAutorizadas.Count() >= 1 && (orden.TotalSaldado >= totalOc))
+                {
+                    continue;
+                }
+                OVsinFacturas.Add(orden);
+            }
+
+            return OVsinFacturas;
+        }
+
         public async Task<List<FacturaXOrdenVentaDTO>> ObtenerFacturasXIdClienteSinPagar(int IdCliente)
         {
             var ordenesVenta = await _ordenVentaService.ObtenerXIdCliente(IdCliente);

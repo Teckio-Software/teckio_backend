@@ -1483,7 +1483,7 @@ namespace ERP_TECKIO.Procesos.Facturacion
             }
 
             ordenVentaFacturas.MontoTotalFactura = MontoTotalFactura;
-            ordenVentaFacturas.MontoTotalFactura = MontoTotalOV;
+            ordenVentaFacturas.MontoTotalOrdenVenta = MontoTotalOV;
             ordenVentaFacturas.FacturasXOrdenVenta = facturasXOrdenVenta;
             ordenVentaFacturas.EstatusSaldado = ordenVenta.EstatusSaldado;
 

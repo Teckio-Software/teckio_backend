@@ -104,6 +104,13 @@ namespace ERP_TECKIO.Controllers.IyAToluca
             return lista;
         }
 
+        [HttpGet("ObtenerTodasSinPagar")]
+        public async Task<ActionResult<List<OrdenVentaDTO>>> ObtenerTodasSinPagar()
+        {
+            var lista = await _ordenVentaProceso.ObtenerTodasSinPagar();
+            return lista;
+        }
+
         [HttpGet("ObtenerFacturasXIdClienteSinPagar/{IdCliente:int}")]
         public async Task<ActionResult<List<FacturaXOrdenVentaDTO>>> ObtenerFacturasXIdClienteSinPagar(int IdCliente)
         {
