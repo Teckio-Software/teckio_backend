@@ -556,6 +556,10 @@ namespace ERP_TECKIO.Procesos
                 if (cliente != null) {
                     orden.RazonSocialCliente = cliente.RazonSocial;
                 }
+                else
+                {
+                    orden.RazonSocialCliente = "";
+                }
 
                 var FacturasxOv = await _facturaXOrdenVentaService.ObtenerXIdOrdenVenta(orden.Id);
                 var FacturasAutorizadas = FacturasxOv.Where(z => z.Estatus != 1 && z.Estatus != 5);
