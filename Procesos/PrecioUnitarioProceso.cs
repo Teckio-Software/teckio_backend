@@ -1185,11 +1185,11 @@ for json path
                     {
                         await EliminarPrecioUnitarioHijos(hijos[i].Id, registros, programacionE);
 
-                        //await EliminarDetallesPorPrecioUnitario(hijos[i].Id);
-                        //PE = programacionE.Where(z => z.IdPrecioUnitario == hijos[i].Id).First();
-                        //await _ProgramacionEstimadaGanttService.Eliminar(Convert.ToInt32(PE.Id));
-                        //await _GeneradoresService.EliminarTodos(hijos[i].Id);
-                        //await _PrecioUnitarioService.Eliminar(hijos[i].Id);
+                        await EliminarDetallesPorPrecioUnitario(hijos[i].Id);
+                        PE = programacionE.Where(z => z.IdPrecioUnitario == hijos[i].Id).First();
+                        await _ProgramacionEstimadaGanttService.Eliminar(Convert.ToInt32(PE.Id));
+                        await _GeneradoresService.EliminarTodos(hijos[i].Id);
+                        await _PrecioUnitarioService.Eliminar(hijos[i].Id);
                     }
                 }
                 else
@@ -1217,15 +1217,13 @@ for json path
                     }
 
                 }
+                //await EliminarDetallesPorPrecioUnitario(Id);
+                //await _GeneradoresService.EliminarTodos(Id);
+                //await _PrecioUnitarioService.Eliminar(Id);
+
                 await EliminarDetallesPorPrecioUnitario(Id);
-                if (programacionE.Count > 0)
-                {
-                    PE = programacionE.Where(z => z.IdPrecioUnitario == Id).First();
-                    if (PE != null)
-                    {
-                        await _ProgramacionEstimadaGanttService.Eliminar(Convert.ToInt32(PE.Id));
-                    }
-                }
+                var PEglobal = programacionE.Where(z => z.IdPrecioUnitario == Id).First();
+                await _ProgramacionEstimadaGanttService.Eliminar(Convert.ToInt32(PEglobal.Id));
                 await _GeneradoresService.EliminarTodos(Id);
                 await _PrecioUnitarioService.Eliminar(Id);
 
