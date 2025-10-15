@@ -5,6 +5,7 @@ using ERP_TECKIO.Procesos.Facturacion;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace ERP_TECKIO.Controllers.IyAToluca
 {
@@ -94,6 +95,27 @@ namespace ERP_TECKIO.Controllers.IyAToluca
         public async Task<ActionResult<OrdenVentaFacturasDTO>> obtenerFacturasXOrdenVenta(int IdOrdenVenta)
         {
             return await _obtenFacturaProceso.ObtenFacturaXOrdenVenta(IdOrdenVenta);
+        }
+
+        [HttpGet("ObtenerXIdClienteSinPagar/{IdCliente:int}")]
+        public async Task<ActionResult<List<OrdenVentaDTO>>> ObtenerXIdClienteSinPagar(int IdCliente)
+        {
+            var lista = await _ordenVentaProceso.ObtenerXIdClienteSinPagar(IdCliente);
+            return lista;
+        }
+
+        [HttpGet("ObtenerTodasSinPagar")]
+        public async Task<ActionResult<List<OrdenVentaDTO>>> ObtenerTodasSinPagar()
+        {
+            var lista = await _ordenVentaProceso.ObtenerTodasSinPagar();
+            return lista;
+        }
+
+        [HttpGet("ObtenerFacturasXIdClienteSinPagar/{IdCliente:int}")]
+        public async Task<ActionResult<List<FacturaXOrdenVentaDTO>>> ObtenerFacturasXIdClienteSinPagar(int IdCliente)
+        {
+            var lista = await _ordenVentaProceso.ObtenerFacturasXIdClienteSinPagar(IdCliente);
+            return lista;
         }
 
         [HttpPost("AutorizarFacturaXOrdenVenta")]

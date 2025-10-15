@@ -1,8 +1,10 @@
 ﻿using ERP_TECKIO.DTO;
 using ERP_TECKIO.DTO.Factura;
 using ERP_TECKIO.Modelos;
+using ERP_TECKIO.Servicios;
 using ERP_TECKIO.Servicios.Contratos;
 using ERP_TECKIO.Servicios.Contratos.Facturacion;
+using ERP_TECKIO.Servicios.Facturacion;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +22,7 @@ namespace ERP_TECKIO.Procesos
         private readonly IFacturaDetalleService<T> _detalleFacturaService;
         private readonly IProductoYservicioService<T> _productoYservicioService;
         private readonly LogProcess _logProcess;
+        private readonly IFacturaXOrdenVentaService<T> _facturaXOrdenVentaService;
 
         public OrdenVentaProceso(
             IOrdenVentaService<T> ordenVentaService,
@@ -31,7 +34,8 @@ namespace ERP_TECKIO.Procesos
             IFacturaService<T> facturaService,
             IFacturaDetalleService<T> detalleFacturaService,
             IProductoYservicioService<T> productoYservicioService,
-            LogProcess logProcess
+            LogProcess logProcess,
+            IFacturaXOrdenVentaService<T> facturaXOrdenVentaService
             ) { 
             _ordenVentaService = ordenVentaService;
             _detalleOrdenVentaService = detalleOrdenVentaService;
@@ -43,6 +47,7 @@ namespace ERP_TECKIO.Procesos
             _detalleFacturaService = detalleFacturaService;
             _productoYservicioService = productoYservicioService;
             _logProcess = logProcess;
+            _facturaXOrdenVentaService = facturaXOrdenVentaService;
         }
 
         public async Task<OrdenVentaDTO> obtenerOrdenVentaXId(int IdOrdenVenta) {
@@ -510,6 +515,84 @@ namespace ERP_TECKIO.Procesos
                 respuesta.Descripcion = "Ocurrió un error al intentar facturar la orden de venta";
                 return respuesta;
             }
+        }
+
+        public async Task<List<OrdenVentaDTO>> ObtenerXIdClienteSinPagar(int IdCliente)
+        {
+            var ordenesVenta = await _ordenVentaService.ObtenerXIdCliente(IdCliente);
+            var ordenesPorPagar = ordenesVenta.Where(z => z.EstatusSaldado != 3 && z.Estatus == 1).ToList();
+            var OVsinFacturas = new List<OrdenVentaDTO>();
+            foreach (var orden in ordenesPorPagar)
+            {
+                decimal totalOc = orden.ImporteTotal;
+                orden.Saldo = orden.ImporteTotal - orden.TotalSaldado;
+                orden.MontoAPagar = orden.Saldo;
+
+                var FacturasxOv = await _facturaXOrdenVentaService.ObtenerXIdOrdenVenta(orden.Id);
+                var FacturasAutorizadas = FacturasxOv.Where(z => z.Estatus != 1 && z.Estatus != 5);
+                if (FacturasAutorizadas.Count() >= 1 && (orden.TotalSaldado >= totalOc))
+                {
+                    continue;
+                }
+                OVsinFacturas.Add(orden);
+            }
+
+            return OVsinFacturas;
+        }
+
+        public async Task<List<OrdenVentaDTO>> ObtenerTodasSinPagar()
+        {
+            var ordenesVenta = await _ordenVentaService.ObtenerTodos();
+            var clientes = await _clienteService.ObtenTodos();
+            var ordenesPorPagar = ordenesVenta.Where(z => z.EstatusSaldado != 3 && z.Estatus == 1).ToList();
+            var OVsinFacturas = new List<OrdenVentaDTO>();
+            foreach (var orden in ordenesPorPagar)
+            {
+                decimal totalOc = orden.ImporteTotal;
+                orden.Saldo = orden.ImporteTotal - orden.TotalSaldado;
+                orden.MontoAPagar = orden.Saldo;
+
+                var cliente = clientes.FirstOrDefault(z => z.Id == orden.IdCliente);
+                if (cliente != null) {
+                    orden.RazonSocialCliente = cliente.RazonSocial;
+                }
+                else
+                {
+                    orden.RazonSocialCliente = "";
+                }
+
+                var FacturasxOv = await _facturaXOrdenVentaService.ObtenerXIdOrdenVenta(orden.Id);
+                var FacturasAutorizadas = FacturasxOv.Where(z => z.Estatus != 1 && z.Estatus != 5);
+                if (FacturasAutorizadas.Count() >= 1 && (orden.TotalSaldado >= totalOc))
+                {
+                    continue;
+                }
+                OVsinFacturas.Add(orden);
+            }
+
+            return OVsinFacturas;
+        }
+
+        public async Task<List<FacturaXOrdenVentaDTO>> ObtenerFacturasXIdClienteSinPagar(int IdCliente)
+        {
+            var ordenesVenta = await _ordenVentaService.ObtenerXIdCliente(IdCliente);
+            var ordenesPorPagar = ordenesVenta.Where(z => z.EstatusSaldado != 3).ToList();
+            var facturasPendientes = new List<FacturaXOrdenVentaDTO>();
+            foreach (var orden in ordenesPorPagar)
+            {
+                var facturaXOv = await _facturaXOrdenVentaService.ObtenerXIdOrdenVenta(orden.Id);
+                var facturasSinPagar = facturaXOv.Where(z => z.Estatus == 2 || z.Estatus == 3);
+                foreach (var FXOC in facturasSinPagar)
+                {
+                    var factura = await _facturaService.ObtenXId(FXOC.IdFactura);
+                    FXOC.Uuid = factura.Uuid;
+                    FXOC.Saldo = factura.Total - (decimal)FXOC.TotalSaldado;
+                    FXOC.MontoAPagar = FXOC.Saldo;
+                    facturasPendientes.Add(FXOC);
+                }
+            }
+
+            return facturasPendientes;
         }
     }
 }

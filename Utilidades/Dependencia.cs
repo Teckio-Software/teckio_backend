@@ -182,7 +182,7 @@ namespace ERP_TECKIO
             services.AddScoped(typeof(IFacturaXOrdenCompraService<>), typeof(FacturaXOrdenCompraService<>));
             services.AddScoped(typeof(IInsumoXProductoYServicioService<>), typeof(InsumoXProductoYServicioService<>));
             services.AddScoped(typeof(IFacturaXOrdenVentaService<>), typeof(FacturaXOrdenVentaService<>));
-            services.AddScoped(typeof(IFacturaXOrdenCompraXMovimientoBancarioService<>), typeof(FacturaXOrdenCompraXMovimientoBancarioService<>));
+            services.AddScoped(typeof(IFacturaXOrdenVentaXMovimientoBancarioService<>), typeof(FacturaXOrdenVentaXMovimientoBancarioService<>));
             services.AddScoped(typeof(IOrdenVentaXMovimientoBancarioService<>), typeof(OrdenVentaXMovimientoBancarioService<>));
 
             //Produccion
