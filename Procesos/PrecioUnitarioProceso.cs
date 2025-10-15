@@ -515,7 +515,7 @@ namespace ERP_TECKIO
                 lista[i].PorcentajeIndirectoConFormato = String.Format("{0:#,##0.0000}", lista[i].PorcentajeIndirecto);
             }
             var listaEstructurada = await _PrecioUnitarioService.Estructurar(lista, indirectos);
-            var listaResult = listaEstructurada.OrderBy(z => z.Posicion).ToList();
+            var listaResult = listaEstructurada.OrderBy(z => z.Id).ToList();
             return listaResult;
         }
 
@@ -869,7 +869,7 @@ for json path
                 concepto.IdProyecto = registro.IdProyecto;
                 var nuevoConcepto = await _ConceptoService.CrearYObtener(concepto);
                 registro.IdConcepto = nuevoConcepto.Id;
-                var registrosFiltrados = registrosSinEstructurar.Where(z => z.IdPrecioUnitarioBase == registro.IdPrecioUnitarioBase).OrderBy(z => z.Posicion).ToList();
+                var registrosFiltrados = registrosSinEstructurar.Where(z => z.IdPrecioUnitarioBase == registro.IdPrecioUnitarioBase).OrderBy(z => z.Id).ToList();
                 var registrosEditarPosicion = new List<PrecioUnitarioDTO>();
                 for (var i = 0; i < registrosFiltrados.Count(); i++) {
                     if (registrosFiltrados[i].Posicion == 0) {
@@ -1599,6 +1599,7 @@ for json path
                             costo = costo + DetallesParaCalcularPorcentaje[i].Cantidad * insumo.CostoUnitario;
                         }
                     }
+                    registro.CostoBase = costo;
                     registro.CostoUnitario = costo;
                 }
                 if (registro.IdInsumo == 0)
@@ -2693,7 +2694,7 @@ for json path
 
             if (IdPrecioUnitarioBase > 0)
             {
-                var registrosFiltrados = registrosSinEstructurar.Where(z => z.IdPrecioUnitarioBase == IdPrecioUnitarioBase).OrderBy(z => z.Posicion).ToList();
+                var registrosFiltrados = registrosSinEstructurar.Where(z => z.IdPrecioUnitarioBase == IdPrecioUnitarioBase).OrderBy(z => z.Id).ToList();
                 var precioUnitarioBase = await _PrecioUnitarioService.ObtenXId(IdPrecioUnitarioBase);
                 for (int i = 0; i < precios.Count; i++)
                 {
@@ -4355,7 +4356,7 @@ for json path
                     return;
                 }
             }
-            var hermanos = registrosSinEstructurar.Where(z => z.IdPrecioUnitarioBase == registros.Destino.Id).OrderBy(z => z.Posicion).ToList();
+            var hermanos = registrosSinEstructurar.Where(z => z.IdPrecioUnitarioBase == registros.Destino.Id).OrderBy(z => z.Id).ToList();
             if (hermanos.Count() <= 0)
             {
                 registros.Seleccionado.Posicion = 0;
@@ -4404,7 +4405,7 @@ for json path
                     return;
                 }
             }
-            var registrosFiltrados = registrosSinEstructurar.Where(z => z.IdPrecioUnitarioBase == registros.Destino.IdPrecioUnitarioBase).OrderBy(z => z.Posicion).ToList();
+            var registrosFiltrados = registrosSinEstructurar.Where(z => z.IdPrecioUnitarioBase == registros.Destino.IdPrecioUnitarioBase).OrderBy(z => z.Id).ToList();
             var index = registrosFiltrados.FindIndex(z => z.Id == registros.Destino.Id);
             var listaRegistrosOrdenados = new List<PrecioUnitarioDTO>();
             if (registros.Seleccionado.IdPrecioUnitarioBase == registros.Destino.IdPrecioUnitarioBase)
