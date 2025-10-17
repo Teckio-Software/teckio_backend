@@ -7,6 +7,7 @@ namespace ERP_TECKIO
     {
         Task<bool> Crear(MBancarioBeneficiarioDTO modelo);
         Task<MBancarioBeneficiarioDTO> CrearYObtener(MBancarioBeneficiarioDTO modelo);
+        Task<MBancarioBeneficiarioDTO> ObtenerXIdMovimientoBancario(int IdMovimientoBancario);
         Task<List<MBancarioBeneficiarioDTO>> ObtenerTodos();
     }
 }
